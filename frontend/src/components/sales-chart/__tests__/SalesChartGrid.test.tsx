@@ -58,4 +58,27 @@ describe('SalesChartGrid', () => {
     expect(screen.getByRole('button', { name: 'A-03-01, Needs Action' }).dataset.lit).toBe('true')
     expect(screen.getByRole('button', { name: 'B-03A-02, SPA Signed' }).dataset.lit).toBe('false')
   })
+
+  test('marks the selected unit as current, not as a pressed toggle', () => {
+    render(<SalesChartGrid units={units} lit={null} selected="A-03-01" onSelect={vi.fn()} onHover={vi.fn()} />)
+    const cell = screen.getByRole('button', { name: 'A-03-01, Needs Action' })
+    expect(cell.getAttribute('aria-current')).toBe('true')
+    expect(cell.hasAttribute('aria-pressed')).toBe(false)
+  })
+
+  test('keeps one tab stop when the focused unit leaves the layout', () => {
+    const { rerender } = render(
+      <SalesChartGrid units={units} lit={null} selected={null} onSelect={vi.fn()} onHover={vi.fn()} />
+    )
+    const last = screen.getByRole('button', { name: 'B-03-02, Available' })
+    last.focus()
+    const smaller = units.filter((u) => u.block === 'A')
+    rerender(<SalesChartGrid units={smaller} lit={null} selected={null} onSelect={vi.fn()} onHover={vi.fn()} />)
+    expect(screen.getAllByRole('button').filter((b) => b.tabIndex === 0)).toHaveLength(1)
+  })
+
+  test('tells a phone that more blocks sit to the side', () => {
+    setup()
+    expect(screen.getByText('Swipe Sideways For More Blocks.')).toBeTruthy()
+  })
 })

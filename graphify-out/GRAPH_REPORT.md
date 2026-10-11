@@ -1,7 +1,7 @@
 # Graph Report - Mortar  (2026-10-11)
 
 ## Corpus Check
-- 396 files · ~340,121 words
+- 396 files · ~340,391 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 14 file(s) not represented in the graph (top: (none) 8, .css 3, .example 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `1cd82044`
+- Built from commit: `e01a114d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

@@ -8,7 +8,8 @@ describe('sceneColors', () => {
     '--status-warning': 'rgb(3, 3, 3)',
     '--status-danger': 'rgb(4, 4, 4)',
     '--status-signed': 'rgb(5, 5, 5)',
-    '--border': 'rgb(6, 6, 6)',
+    '--input': 'rgb(6, 6, 6)',
+    '--card': 'rgb(10, 10, 10)',
     '--muted': 'rgb(7, 7, 7)',
     '--foreground': 'rgb(8, 8, 8)',
     '--muted-foreground': 'rgb(9, 9, 9)'
@@ -26,6 +27,7 @@ describe('sceneColors', () => {
       ghost: 'rgb(7, 7, 7)',
       podium: 'rgb(7, 7, 7)',
       selected: 'rgb(8, 8, 8)',
+      selectedInner: 'rgb(10, 10, 10)',
       hovered: 'rgb(9, 9, 9)'
     })
   })

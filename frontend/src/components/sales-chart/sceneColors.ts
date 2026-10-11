@@ -5,11 +5,11 @@
  */
 import type { UnitState } from '@mortar/core'
 
-export type SceneColors = Record<UnitState | 'ghost' | 'podium' | 'selected' | 'hovered', string>
+export type SceneColors = Record<UnitState | 'ghost' | 'podium' | 'selected' | 'selectedInner' | 'hovered', string>
 
 const TOKENS: Record<keyof SceneColors, string> = {
-  // White blocks vanish against the white card in 3D, so stock reads in the border grey.
-  available: '--border',
+  // White blocks vanish against the card in 3D; the input grey reads in both themes.
+  available: '--input',
   booked: '--status-info',
   loan_approved: '--status-positive',
   needs_action: '--status-warning',
@@ -18,6 +18,8 @@ const TOKENS: Record<keyof SceneColors, string> = {
   ghost: '--muted',
   podium: '--muted',
   selected: '--foreground',
+  // The gap between the ink ring and the unit, as the Grid's ring offset: it shows on signed units too.
+  selectedInner: '--card',
   hovered: '--muted-foreground'
 }
 

@@ -3296,7 +3296,7 @@
       "file_type": "code",
       "norm_label": "scenecolors",
       "source_file": "frontend/src/components/sales-chart/sceneColors.ts",
-      "source_location": "L25"
+      "source_location": "L27"
     },
     {
       "id": "scripts_demo_speak_chatterboxrenderer",
@@ -14417,7 +14417,7 @@
       "file_type": "code",
       "norm_label": "saleschartbuilding()",
       "source_file": "frontend/src/components/sales-chart/SalesChartBuilding.tsx",
-      "source_location": "L406"
+      "source_location": "L412"
     },
     {
       "id": "frontend_src_components_sales_chart_saleschartbuilding_scene",
@@ -70217,7 +70217,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/components/sales-chart/SalesChartBuilding.tsx",
-      "source_location": "L407",
+      "source_location": "L413",
       "weight": 1.0
     },
     {
@@ -70229,7 +70229,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/components/sales-chart/SalesChartBuilding.tsx",
-      "source_location": "L408",
+      "source_location": "L414",
       "weight": 1.0
     },
     {
@@ -70241,7 +70241,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/components/sales-chart/SalesChartBuilding.tsx",
-      "source_location": "L432",
+      "source_location": "L438",
       "weight": 1.0
     },
     {
@@ -70253,7 +70253,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/components/sales-chart/SalesChartBuilding.tsx",
-      "source_location": "L472",
+      "source_location": "L478",
       "weight": 1.0
     },
     {
@@ -70289,7 +70289,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/components/sales-chart/SalesChartBuilding.tsx",
-      "source_location": "L365",
+      "source_location": "L366",
       "weight": 1.0
     },
     {
@@ -70301,7 +70301,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/components/sales-chart/SalesChartBuilding.tsx",
-      "source_location": "L381",
+      "source_location": "L382",
       "weight": 1.0
     },
     {
@@ -70313,7 +70313,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/components/sales-chart/SalesChartBuilding.tsx",
-      "source_location": "L387",
+      "source_location": "L393",
       "weight": 1.0
     },
     {
@@ -70325,7 +70325,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/components/sales-chart/SalesChartBuilding.tsx",
-      "source_location": "L399",
+      "source_location": "L405",
       "weight": 1.0
     },
     {
@@ -70337,7 +70337,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/components/sales-chart/SalesChartBuilding.tsx",
-      "source_location": "L400",
+      "source_location": "L406",
       "weight": 1.0
     },
     {
@@ -70349,7 +70349,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/components/sales-chart/SalesChartBuilding.tsx",
-      "source_location": "L401",
+      "source_location": "L407",
       "weight": 1.0
     },
     {
@@ -70373,7 +70373,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/components/sales-chart/SalesChartGrid.tsx",
-      "source_location": "L139",
+      "source_location": "L141",
       "weight": 1.0
     },
     {
@@ -70385,7 +70385,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/components/sales-chart/SalesChartGrid.tsx",
-      "source_location": "L145",
+      "source_location": "L147",
       "weight": 1.0
     },
     {
@@ -150173,7 +150173,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/components/sales-chart/SalesChartBuilding.tsx",
-      "source_location": "L406",
+      "source_location": "L412",
       "weight": 1.0
     },
     {
@@ -150305,7 +150305,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/components/sales-chart/sceneColors.ts",
-      "source_location": "L25",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -215460,5 +215460,5 @@
       "source_file": ".github/workflows/ci.yml"
     }
   ],
-  "built_at_commit": "1cd8204429307696c640ecec79e1dd300c78b9ea"
+  "built_at_commit": "e01a114d4b916aefeb5a23ce913d39f728fe44cf"
 }

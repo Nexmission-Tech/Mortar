@@ -215,13 +215,13 @@ function Units({
 }
 
 /** The edges drawn round a hovered or selected unit; one per scene, disposed with it. */
-function useOutlineGeometry(): THREE.EdgesGeometry {
+function useOutlineGeometry(scale = 1.1): THREE.EdgesGeometry {
   const geometry = useMemo(() => {
-    const box = new THREE.BoxGeometry(UNIT_SIZE.w * 1.1, UNIT_SIZE.h * 1.14, UNIT_SIZE.d * 1.1)
+    const box = new THREE.BoxGeometry(UNIT_SIZE.w * scale, UNIT_SIZE.h * (scale + 0.04), UNIT_SIZE.d * scale)
     const edges = new THREE.EdgesGeometry(box)
     box.dispose()
     return edges
-  }, [])
+  }, [scale])
   useEffect(() => () => geometry.dispose(), [geometry])
   return geometry
 }
@@ -342,6 +342,7 @@ function Scene({
 }) {
   const colors = useSceneColors()
   const outline = useOutlineGeometry()
+  const outerRing = useOutlineGeometry(1.24)
   const [hoverIndex, setHoverIndex] = useState<number | null>(null)
   const indexOf = useMemo(() => new Map(units.map((unit, i) => [unit.code, i])), [units])
   const selectedUnit = selected !== null ? units[indexOf.get(selected) ?? -1] : undefined
@@ -380,8 +381,13 @@ function Scene({
       {hoveredUnit && hoveredUnit.code !== selected ? (
         <Outline at={layout.positions.get(hoveredUnit.code)} color={colors.hovered} geometry={outline} />
       ) : null}
+      {/* A card-coloured ring inside an ink ring, as the Grid's ring offset, so the
+          selection shows on every state, black SPA Signed units included. */}
       {selectedUnit ? (
-        <Outline at={layout.positions.get(selectedUnit.code)} color={colors.selected} geometry={outline} />
+        <>
+          <Outline at={layout.positions.get(selectedUnit.code)} color={colors.selectedInner} geometry={outline} />
+          <Outline at={layout.positions.get(selectedUnit.code)} color={colors.selected} geometry={outerRing} />
+        </>
       ) : null}
 
       <LabelProjector anchors={anchors} labels={labels} />
@@ -440,7 +446,7 @@ export function SalesChartBuilding(props: SalesChartBuildingProps) {
           </button>
         ))}
       </div>
-      <p className="absolute right-0 top-1.5 z-[1] text-xs text-muted-foreground max-sm:hidden">
+      <p className="absolute right-0 top-0 z-[1] flex h-8 items-center rounded-md bg-muted px-2.5 text-xs text-muted-foreground max-sm:hidden">
         Drag To Turn · Ctrl Or ⌘ And Scroll To Zoom
       </p>
       <p className="sr-only">

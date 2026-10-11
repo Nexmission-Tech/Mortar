@@ -929,9 +929,10 @@ surface may use three.js or draw in 3D.
   give three fixed face steps; the top face shows the token's own colour. No
   gradient, glow, glass, texture, shadow or transparency.
 - **Colour:** read at runtime from the status tokens, so the scene follows dark
-  mode. Available draws in `--border`, because a white top face vanishes against
-  the white card; filtered-out units draw in `--muted`. Hover outlines in
-  `--muted-foreground`, selection in `--foreground`.
+  mode. Available draws in `--input`, because a white top face vanishes against
+  the card in either theme; filtered-out units draw in `--muted`. Hover outlines
+  in `--muted-foreground`; selection is a `--card` ring inside a `--foreground`
+  ring, as the Grid's ring offset, so it shows on SPA Signed units too.
 - **Motion:** none unless the viewer moves it. The scene renders on demand,
   never in a loop, and redraws after a lost GPU context returns. Dragging turns
   the building within limits; zoom needs Ctrl or ⌘ with the wheel (or a trackpad
