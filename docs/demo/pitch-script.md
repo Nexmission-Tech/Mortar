@@ -1,14 +1,18 @@
 # Mortar Pitch Script
 
-The talk track for the Kabel DXP weekly check-in on 29 September 2026. The same
-flow grows into the Chin Hin preliminary pitch in early October.
+The talk track for the Chin Hin preliminary pitch in October 2026: an online
+call with a shared screen and a live demo, in front of the sales department and
+top management. It grew from the Kabel DXP check-in on 29 September 2026.
 
 - **Deck:** [mortar-pitch-deck.html](mortar-pitch-deck.html), eleven slides.
   Press `N` for speaker notes; the [PDF](mortar-pitch-deck.pdf) is the backup.
 - **Live App:** [mortar-d18f.onrender.com](https://mortar-d18f.onrender.com), on
   simulated data only.
-- **Length:** about 21 minutes, then questions. The slides carry the business
-  case; the live walkthrough proves the critical workflow.
+- **Length:** about 22 minutes, then questions. The slides carry the business
+  case; the live walkthrough opens on the Sales Chart and proves the workflow.
+- **Online:** share one browser tab at 1440 × 900 or larger. Keep the camera
+  still while you talk, move it only to frame a block, and switch to the Grid if
+  the shared screen stutters.
 
 Speak to the room, not the slide. Every slide carries one idea; the lines below
 add to it rather than read it.
@@ -18,17 +22,17 @@ add to it rather than read it.
 | Time  | Slide                | Speaker | What It Must Land                                         |
 | ----- | -------------------- | ------- | --------------------------------------------------------- |
 | 00:00 | 1 Cover              | A       | Booked is not sold. Signed is.                            |
-| 00:45 | 2 The Business       | A       | Chin Hin earns on signed SPAs; stalled bookings cost it.  |
+| 00:45 | 2 The Business       | A       | SPA execution is the milestone; stalled bookings cost it. |
 | 02:15 | 3 The Workflow Today | A       | Three desks, five tools, nobody owning the gaps.          |
 | 03:45 | 4 Evidence           | B       | What we know, and what the pilot must prove.              |
 | 05:15 | 5 Solution Logic     | B       | AI proposes, a person confirms, a blocker becomes a task. |
 | 06:45 | 6 Meet MortarAI      | B       | Jev picks, it never writes; a person still confirms.      |
-| 08:45 | 7 Live Walkthrough   | C       | Work moves between desks; every click causes an action.   |
-| 15:45 | 8 Before And After   | C       | Ownership and evidence changed. The bank still decides.   |
-| 16:45 | 9 Adoption           | A       | A spreadsheet in, one project, one admin, one number.     |
-| 18:15 | 10 Technology        | B       | The desk keeps working when the AI does not.              |
-| 19:15 | 11 This Week         | All     | What shipped since 20 September, and three asks.          |
-| 21:00 | Questions            | All     | Anyone answers anything.                                  |
+| 08:45 | 7 Live Walkthrough   | C       | Booked is not sold, on one screen; then work moves.       |
+| 16:45 | 8 Before And After   | C       | Ownership and evidence changed. The bank still decides.   |
+| 17:45 | 9 Adoption           | A       | A spreadsheet in, one project, one admin, one number.     |
+| 19:15 | 10 Technology        | B       | The desk keeps working when the AI does not.              |
+| 20:15 | 11 This Week         | All     | What shipped since the check-in, and three asks.          |
+| 22:00 | Questions            | All     | Anyone answers anything.                                  |
 
 ## Speakers
 
@@ -129,10 +133,11 @@ within authorised bookings and cannot change records; a person still confirms.
 The Gemini answer on the slide is worded from BK-9001's case page, not captured
 from Gemini, so do not call it a live answer.
 
-### 7. Live Walkthrough — C, 7 Minutes
+### 7. Live Walkthrough — C, 8 Minutes
 
-Say "let me show you one booking" and switch to the browser. Follow
-[Live Walkthrough](#live-walkthrough) below, then come back to slide 8.
+Say "let me show you the project the way your sales gallery sees it" and switch
+to the browser. Follow [Live Walkthrough](#live-walkthrough) below, then come
+back to slide 8.
 
 ### 8. Before And After — C, 1 Minute
 
@@ -169,33 +174,36 @@ repository and recoloured to the deck's design system.
 
 ### 11. This Week — All, 1:45
 
-**Say:** "Since the qualification round on 20 September we shipped a Manager
-desk with a Team view that shows which desk every booking is waiting on, named
-profiles with scoped access, Ask MortarAI, rebuilt Today, Legal, Add Bookings
-and Forecast, grew the survey to eight, and moved production to Render. Before
-the Chin Hin pitch we need three things: one pilot project and the admin who
-would run it, an anonymised booking export, and two practitioner interviews.
-Thank you. Any of us can take any question."
+**Say:** "Since the check-in on 29 September we shipped the Sales Chart you just
+saw: every unit of the project by how far its booking has got, in 3D and as a
+grid, with the closing list one click away. The project now has one layout with
+the floor numbering your buyers know, and imports refuse a unit that is already
+held. Before that came the Manager desk, scoped staff profiles and Ask MortarAI.
+For a pilot we need three things: one project and the admin who would run it, an
+anonymised booking export with the unit register, and two practitioner
+interviews. Thank you. Any of us can take any question."
 
 ## Live Walkthrough
 
-Seven minutes on the live app. Speaker C drives and narrates the action each
+Eight minutes on the live app. Speaker C drives and narrates the action each
 click causes. Everything on screen is simulated.
 
-| Step | Profile                   | Where                             | Do                                                                                    | What The Room Sees                                        | Say                                                                                                          |
-| ---- | ------------------------- | --------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| 1    | Nurul Aina · Sales Admin  | `/chase` Today                    | Point at Your Tasks in the right rail, then the Recommended Actions cards             | Each card: blocker, owner, next step                      | "The Sales Admin's day starts from a queue, not from memory. Each card names the blocker and who acts next." |
-| 2    | Tan Mei Ling · Loan Admin | `/bookings/BK-9001`               | Show Waiting On and the Loan Track                                                    | Documents Requested · Payslip, still Unconfirmed          | "The banker asked for a payslip. Jev read the message, but nobody has confirmed it, so nothing has moved."   |
-| 3    | Tan Mei Ling              | Messages, the banker's message    | Click **Confirm** on Jev's suggestion; pause three seconds                            | Documents Requested turns Confirmed; the wait moves       | "A person confirmed it. The case now waits on the buyer's payslip, and the next step belongs to Sales."      |
-| 4    | Tan Mei Ling              | **Paste A Message**               | Paste the buyer's reply below, **Add Message**, then **Confirm**; pause three seconds | Documents Received · Payslip; the document blocker clears | "Receipt is verified, so the document blocker clears. The bank still decides the loan."                      |
-| 5    | Arvind Raj · Legal Admin  | `/legal`                          | On BK-9006 in No Appointment Yet, **Record Appointment**                              | The row moves to Appointment Set, Not Signed              | "An appointment is not a signing. Only a recorded signing counts as the sale."                               |
-| 6    | Robert Khoo · Manager     | `/chase` Today, Decisions For You | **Request Follow-Up** on a case waiting on Tan Mei Ling                               | A follow-up lands on Tan Mei Ling's Today and bell        | "The click creates owned internal work on that desk. Mortar never sends anything to the buyer or the bank."  |
-| 7    | Robert Khoo · Manager     | `/forecast`                       | Read the two numbers only                                                             | About 21 expected in 30 days, range 17–25; they move      | "Finance reads signings, not bookings. On simulated data this proves the method, not the business."          |
+| Step | Profile                   | Where                             | Do                                                                                        | What The Room Sees                                              | Say                                                                                                                                                 |
+| ---- | ------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | Robert Khoo · Manager     | `/sales-chart`, Building view     | Read the first two figures, then click **Loan Approved, No SPA Appointment**              | 123 Units Booked, 64 SPA Signed; seven units stay lit           | "This is Aster Heights the way your gallery sees it. We booked 123 units; 64 are signed. These seven have their loan and only need a signing date." |
+| 2    | Nurul Aina · Sales Admin  | `/chase` Today                    | Point at Your Tasks in the right rail, then the Recommended Actions cards                 | Each card: blocker, owner, next step                            | "The Sales Admin's day starts from a queue, not from memory. Each card names the blocker and who acts next."                                        |
+| 3    | Tan Mei Ling · Loan Admin | `/bookings/BK-9001`               | Show Waiting On, then click **Confirm** on Jev's suggestion under the banker's message    | Documents Requested · Payslip turns Confirmed; the wait moves   | "Jev read the banker's message. A person confirmed it, so the case now waits on the buyer's payslip, and the next step is Sales'."                  |
+| 4    | Tan Mei Ling              | **Paste A Message**               | Paste the buyer's reply below, **Add Message**, then **Confirm**; pause three seconds     | Documents Received · Payslip; the document blocker clears       | "Receipt is verified, so the document blocker clears. The bank still decides the loan."                                                             |
+| 5    | Arvind Raj · Legal Admin  | `/sales-chart`, the closing list  | Click unit **A-23A-02** (BK-9006), **Record An Update**: SPA Appointment Set, pick a date | The sheet saves; the unit drops out of the closing list (7 → 6) | "An appointment is not a signing. The unit leaves the closing list; only a recorded signing turns it black."                                        |
+| 6    | Robert Khoo · Manager     | `/chase` Today, Decisions For You | **Request Follow-Up** on a case waiting on Tan Mei Ling                                   | A follow-up lands on Tan Mei Ling's Today and bell              | "The click creates owned internal work on that desk. Mortar never sends anything to the buyer or the bank."                                         |
+| 7    | Robert Khoo · Manager     | `/sales-chart`                    | Point at **Expected SPAs In 30 Days**                                                     | About 21 expected, range 17–25, from 50 bookings under 30 days  | "Finance reads signings, not bookings. On simulated data this proves the method, not the business."                                                 |
 
-**Optional, If Time Allows:** as Tan Mei Ling, open Ask MortarAI with the
-sparkle button and ask "What is BK-9001 waiting on?". If the answer is tagged
-**Counted From Your Bookings**, Gemini was unavailable and the scripted fallback
-answered; say so rather than presenting it as Gemini.
+**Optional, If Time Allows:** on the Sales Chart, drag to turn the building,
+then click **Grid**: the same units, flat, the way the gallery's spreadsheet
+shows them. Or, as Tan Mei Ling, open Ask MortarAI with the sparkle button and
+ask "What is BK-9001 waiting on?". If the answer is tagged **Counted From Your
+Bookings**, Gemini was unavailable and the scripted fallback answered; say so
+rather than presenting it as Gemini.
 
 **Buyer Reply To Paste:**
 `Hi Nurul, slip gaji 3 bulan dah saya hantar ke Mei Ling tadi. Dokumen semua lengkap ya.`
@@ -205,6 +213,10 @@ answered; say so rather than presenting it as Gemini.
 
 Check these an hour before, signed in as each profile:
 
+- As Robert Khoo, `/sales-chart` shows Aster Heights with 936 units, the
+  Building view draws, and **Loan Approved, No SPA Appointment** reads 7 with
+  A-23A-02 among them. If the chart shows another project or fewer blocks, run
+  the reset below: the live data predates the layout.
 - BK-9001 still shows Documents Requested · Payslip as Unconfirmed, with
   **Confirm**, **Dispute** and **Dismiss** under the banker's message.
 - BK-9001 already has one open payslip task. Show it; do not create a duplicate.
@@ -216,6 +228,8 @@ Check these an hour before, signed in as each profile:
 
 ### If Something Goes Wrong
 
+- **The Building View Is Blank Or Stutters On The Shared Screen:** click
+  **Grid**. It shows the same units and filters; say so and carry on.
 - **Jev Is Slow Or Wrong:** use **Record An Update** instead: Documents
   Received, Payslip, Apex Bank. Say that this is the manual path the design
   keeps open.
@@ -230,16 +244,17 @@ Check these an hour before, signed in as each profile:
 
 ## Evidence And Assumptions
 
-| Claim                                          | Kind       | Source                                         |
-| ---------------------------------------------- | ---------- | ---------------------------------------------- |
-| RM2.2 billion unbilled sales, 30 June 2026     | Public     | CHGP 2Q 2026 results, 27 August 2026           |
-| Six to twelve weeks a booking can hold a unit  | Brief      | Chin Hin challenge brief, bracketed as a range |
-| 38% loan rejections, RM500k–700k homes, 2H2025 | Public     | REHDA Property Industry Survey, March 2026     |
-| 7 of 8 name loan rejection the biggest cause   | Survey     | Practitioner survey, n = 8, mixed roles        |
-| 5 of 8 say bookings stall at credit assessment | Survey     | Practitioner survey, n = 8                     |
-| 21 expected signings, range 17–25              | Prototype  | Simulated; the numbers move as the demo runs   |
-| Follow-up lifts stalled bookings 20% to 40%    | Assumption | Planning input the pilot replaces              |
-| Chin Hin's leaks follow the survey's order     | Assumption | Rebuilt from closed files in pilot weeks 1–2   |
+| Claim                                          | Kind       | Source                                                                    |
+| ---------------------------------------------- | ---------- | ------------------------------------------------------------------------- |
+| RM2.2 billion unbilled sales, 30 June 2026     | Public     | CHGP 2Q 2026 results, 27 August 2026                                      |
+| Six to twelve weeks a booking can hold a unit  | Brief      | Chin Hin challenge brief, bracketed as a range                            |
+| 38% loan rejections, RM500k–700k homes, 2H2025 | Public     | REHDA Property Industry Survey, March 2026                                |
+| 7 of 8 name loan rejection the biggest cause   | Survey     | Practitioner survey, n = 8, mixed roles                                   |
+| 5 of 8 say bookings stall at credit assessment | Survey     | Practitioner survey, n = 8                                                |
+| 21 expected signings, range 17–25              | Prototype  | Simulated; the numbers move as the demo runs                              |
+| Aster Heights: 936 units, 148 bookings         | Prototype  | Simulated layout; real inventory comes from the developer's unit register |
+| Follow-up lifts stalled bookings 20% to 40%    | Assumption | Planning input the pilot replaces                                         |
+| Chin Hin's leaks follow the survey's order     | Assumption | Rebuilt from closed files in pilot weeks 1–2                              |
 
 **Figures To Avoid:** "60 percent of loans rejected" (a misread of BNM's
 approval-by-value ratio), the RM5.41 billion group order pipeline (not property
@@ -249,6 +264,38 @@ bookings), and any cash figure derived from the 40 × 20% arithmetic.
 
 Short answers, spoken in the first person plural. The basis matters: say
 "evidence", "our assumption" or "what the prototype does" when asked.
+
+**Q:** Where does "Available" come from?
+
+**A:** In the prototype, from the project layout in Settings: blocks, floors and
+units a floor. In a pilot it comes from your unit register, imported beside the
+bookings. Without a register we would show a unit as unknown, never as
+available.
+
+**Q:** Is the 3D view just decoration?
+
+**A:** It is the same data as the grid next to it: every unit, its state, and a
+click that opens the case. The building is the sales chart your team already
+reads; the Grid is there for keyboards, small screens and anyone who prefers it.
+
+**Q:** Can one salesperson see another's units?
+
+**A:** They see every unit's state, so the whole team reads the same tower. The
+buyer and the case open only on the desk that holds the booking; anyone else
+sees whose desk to ask.
+
+**Q:** What is Release Review?
+
+**A:** A flag for a person, never an action. It lights a booking whose recovery
+paths look spent: the buyer withdrew, two banks rejected with nothing live, or a
+month with no live application. An authorised person decides whether to release
+the unit. Mortar never cancels a booking.
+
+**Q:** Why are some floors 3A, 13A and 23A?
+
+**A:** Many Malaysian developers skip the number four. The project settings
+choose skip-four or plain numbering, and Add Bookings checks each unit against
+it.
 
 **Q:** Chin Hin is rolling out Kingdee. Why add another tool?
 
@@ -397,6 +444,13 @@ Sources:
 - That Mortar sends WhatsApp messages. Staff paste messages in; Mortar never
   sends anything.
 - That the forecast is AI. It is arithmetic on stage rates, with a range.
+- That a signed SPA means cash received, revenue earned or commission payable.
+  Say "SPA execution is the conversion milestone we measure".
+- That Available means unsold in Chin Hin's own system. It comes from the
+  prototype's layout; a pilot imports the unit register.
+- That Release Review cancels anything, or that two rejections mean release. A
+  person decides; banks apply their own credit policies.
+- That every unsigned day costs a set amount in late-delivery damages.
 - That Jev and Ask MortarAI are two separate AIs. MortarAI is the AI layer: Jev
   reads, Gemini answers, and Ask MortarAI is the panel where staff ask.
 
