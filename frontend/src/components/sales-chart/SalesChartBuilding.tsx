@@ -899,6 +899,8 @@ export function SalesChartBuilding(props: SalesChartBuildingProps) {
               shadows="percentage"
               frameloop="demand"
               dpr={[1, 2]}
+              // Measured without transforms, so the expanded modal's zoom-in does not shrink the canvas.
+              resize={{ offsetSize: true }}
               camera={{ fov: FOV, near: 1, far: 5000, position: [-300, 220, 400] }}
             >
               <Scene
