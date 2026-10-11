@@ -4781,7 +4781,7 @@
       "file_type": "code",
       "norm_label": "faqpage()",
       "source_file": "frontend/src/pages/FaqPage.tsx",
-      "source_location": "L76"
+      "source_location": "L83"
     },
     {
       "id": "frontend_src_pages_tests_faqpage_test_renderpage",
@@ -152945,7 +152945,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/pages/FaqPage.tsx",
-      "source_location": "L76",
+      "source_location": "L83",
       "weight": 1.0
     },
     {
@@ -215460,5 +215460,5 @@
       "source_file": ".github/workflows/ci.yml"
     }
   ],
-  "built_at_commit": "c4bae850d752ee2beb6ad0365c349c38286157eb"
+  "built_at_commit": "1cd8204429307696c640ecec79e1dd300c78b9ea"
 }
