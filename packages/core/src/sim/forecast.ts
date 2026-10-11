@@ -1,8 +1,7 @@
 import type { Backtest, Dataset, Forecast, ForecastModel, IsoDate, IsoDateTime, StageRate } from '../types'
 import { deriveCase, FUNNEL_STAGES, groupBy, type CaseFacts } from './cases'
 import { dateOf, diffDays } from './dates'
-import { createRng } from './random'
-import { DEFAULT_SEED, HORIZON_DAYS } from './constants'
+import { HORIZON_DAYS } from './constants'
 
 /** Wilson score interval at 95% (Brown, Cai and DasGupta 2001). */
 export function wilsonInterval(signed: number, n: number, z = 1.96): { low: number; high: number } {
@@ -130,26 +129,18 @@ function factsFor(data: Dataset, asOf: IsoDate): CaseFacts[] {
   return data.bookings.map((b) => deriveCase(b, appsByBooking.get(b.id) ?? [], eventsByBooking.get(b.id) ?? [], asOf))
 }
 
-/** Expected signings within the horizon for live bookings, with a range from repeated draws. */
+/** Expected signings within the horizon for live bookings, with an exact independent-outcome count range. */
 export function forecast(
   data: Dataset,
   asOf: IsoDate,
   options: { draws?: number; seed?: number; model?: ForecastModel } = {}
 ): Forecast {
-  const { draws = 2000, seed = DEFAULT_SEED } = options
   const local = buildModel(factsFor(data, asOf))
   const { live } = local
   const model = options.model ? modelFromAggregate(options.model) : local.model
   const perBooking = live.map((f) => ({ bookingId: f.booking.id, probability: probability(f, model) }))
   const expectedSignings = perBooking.reduce((s, p) => s + p.probability, 0)
-  const rng = createRng(seed)
-  const counts = new Array<number>(draws).fill(0)
-  for (let d = 0; d < draws; d += 1) {
-    let c = 0
-    for (const p of perBooking) if (rng.next() < p.probability) c += 1
-    counts[d] = c
-  }
-  counts.sort((a, b) => a - b)
+  const [rangeLow, rangeHigh] = exactCountRange(perBooking.map((p) => p.probability))
   const stageRates: StageRate[] = FUNNEL_STAGES.map((stage, r) => {
     const { signed, n } = model.stages[r]
     const { low, high } = wilsonInterval(signed, n)
@@ -160,12 +151,35 @@ export function forecast(
     horizonDays: HORIZON_DAYS,
     liveBookings: live.length,
     expectedSignings,
-    rangeLow: counts[Math.floor(0.1 * (draws - 1))],
-    rangeHigh: counts[Math.floor(0.9 * (draws - 1))],
+    rangeLow,
+    rangeHigh,
     stageRates,
     perBooking,
     support: model.overall.n > 0 ? 'supported' : 'insufficient-history'
   }
+}
+
+function exactCountRange(probabilities: number[]): [number, number] {
+  if (probabilities.length === 0) return [0, 0]
+  let mass = [1]
+  for (const probability of probabilities) {
+    const next = new Array<number>(mass.length + 1).fill(0)
+    for (let count = 0; count < mass.length; count += 1) {
+      next[count] += mass[count]! * (1 - probability)
+      next[count + 1] += mass[count]! * probability
+    }
+    mass = next
+  }
+  const tolerance = Number.EPSILON * Math.max(1, probabilities.length) * 8
+  const quantile = (q: number) => {
+    let cumulative = 0
+    for (let count = 0; count < mass.length; count += 1) {
+      cumulative += mass[count]!
+      if (cumulative >= q || q - cumulative <= tolerance) return count
+    }
+    return mass.length - 1
+  }
+  return [quantile(0.1), quantile(0.9)]
 }
 
 const CALIBRATION_BUCKETS = [

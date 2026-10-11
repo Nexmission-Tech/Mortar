@@ -38,8 +38,8 @@ transitions stay reserved for verified human confirmation.
 
 Finally, the platform replaces speculative booking-face-value projections with a
 statistical, stage-weighted 30-day SPA conversion forecast grounded in
-historical conversion rates, Wilson score confidence intervals, and Monte Carlo
-simulation bounds.
+historical conversion rates, Wilson score intervals for those rates, and an
+exact independent-outcome count range.
 
 | Category    | In-Scope Prototype Goal                                                         | Out-Of-Scope Non-Goal                                                         |
 | ----------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
@@ -199,20 +199,21 @@ row.
 
 ### Forecast (`/forecast`)
 
-- **US-14 (Risk-Weighted SPA Forecast):** As a user on any desk, I want to view
-  projected SPA signings within 30 days of booking, with an expected figure,
-  10th to 90th percentile simulation range, and the "Bookings In The Forecast"
-  tile.
-- **US-15 (Conversion Rates And Accuracy):** As a user on any desk, I want stage
-  conversion rates with sample sizes and Wilson 95% intervals, and an accuracy
-  score stated as a complete sentence.
-- **US-16 (Historical Backtesting):** As a user on any desk, I want to inspect a
-  backtest cut at reference date minus 30 days showing predicted versus observed
-  signings, Brier score, and calibration table.
-- **US-17 (Assumptions Transparency):** As a user on any desk, I want an
-  assumptions table detailing simulation parameters, folded behind a control.
-- **US-18 (Client-Side Seed Variance):** As a user on any desk, I want a "Try
-  Another Seed" action that regenerates bookings in-browser.
+- **US-14 (Signing Outlook):** As a user on any desk, I want estimated signings
+  by each booking's day-30 deadline, an estimated range, the eligible cases and
+  their deadlines, and separate recorded appointment counts.
+- **US-15 (Conversion And Turnaround):** As a user on any desk, I want observed
+  stage-to-signing rates and completed signing durations with sample sizes,
+  evidence dates and access scope, rather than an unsupported accuracy claim.
+- **US-16 (Approved, Awaiting SPA):** As a user on any desk, I want approved but
+  unsigned bookings ordered by approval wait, with their appointment evidence,
+  responsible staff and booked value, without implying verified legal readiness.
+- **US-17 (Where Bookings Are Waiting):** As a user on any desk, I want to see
+  who holds the next move and how long bookings have waited, including open
+  bookings older than the forecast's 30-day window.
+- **US-18 (Lost Bookings):** As a user on any desk, I want recorded exits,
+  observed second-bank outcomes and actionable financing reviews, without
+  hypothetical recovery amounts or alternate generated booking datasets.
 
 ### Legal (`/legal`)
 
@@ -454,8 +455,11 @@ transition frequencies.
   for all stage conversion rates.
 - **AC-8.5:** Expected signings must equal the sum of individual live booking
   probabilities.
-- **AC-8.6:** The forecast range must represent the 10th to 90th percentiles of
-  2,000 seeded Monte Carlo simulation draws.
+- **AC-8.6:** The forecast range must represent the exact 10th to 90th
+  percentiles of independent booking outcomes under the historical signing
+  chances. It must be unaffected by random seeds or draw counts and must not be
+  described as a guarantee or a confidence interval for all forecast
+  uncertainty.
 - **AC-8.7:** The headline remains visible while supporting documents sit in an
   accessible stack, operable by keyboard and touch, without changing the
   forecast calculation.
@@ -471,22 +475,28 @@ The system must evaluate model reliability through historical cut backtesting.
 - **AC-9.3:** The backtest must output overall predicted count, observed count,
   Brier score, and a four-bucket calibration table comparing predicted versus
   observed conversion rates.
-- **AC-9.4:** The UI must display the mandatory caption: "A Backtest On
-  Simulated Data Proves The Method, Not The Business".
+- **AC-9.4:** Backtesting remains an engineering validation tool, not a business
+  document on `/forecast`. Results on synthetic histories must not be presented
+  as evidence of real-world company accuracy.
 
-### FR-10: Transparent Assumptions And Browser Re-Simulation
+### FR-10: Booking-Backed Forecast Documents
 
-The system must expose all simulation parameters and enable client-side variance
-testing.
+The Forecast deck must turn the existing authorized records into five useful
+reports rather than expose generator settings or alternate datasets.
 
-- **AC-10.1:** The `/forecast` assumptions panel must list every parameter in
-  `DEFAULT_ASSUMPTIONS` showing label, value, unit, source tag (`official`,
-  `industry`, `anecdotal`, `survey`, `assumption`), and source reference.
-- **AC-10.2:** The panel must carry the caption: "Placeholder To Calibrate On
-  Company Data".
-- **AC-10.3:** Clicking "Try Another Seed" must regenerate 140 bookings in the
-  browser with a randomized seed and recompute the forecast, displaying the new
-  forecast beside the canonical baseline without altering database records.
+- **AC-10.1:** The reports are Signing Outlook; Approved, Awaiting SPA; Where
+  Bookings Are Waiting; Conversion And Turnaround; and Lost Bookings. Covers,
+  full documents and both assistant paths must use the same calculations.
+- **AC-10.2:** Each report must show its date and scope, distinguish estimates
+  from recorded facts, preserve unavailable values, and link contributing cases
+  only within the active profile's access.
+- **AC-10.3:** Operational queues must retain older open bookings. Appointments
+  require confirmed scheduling evidence; second-bank outcomes require a later
+  confirmed submission to a distinct bank. Application rows alone do not prove a
+  retry, and current queue age does not measure completed turnaround.
+- **AC-10.4:** Monetary totals must describe booking value, not collected cash,
+  recognized revenue or guaranteed recovery. The deck must not regenerate
+  bookings or display placeholder simulation parameters.
 
 ### FR-11: Database Persistence And Demo Data Management
 
@@ -593,9 +603,9 @@ The system must enforce persona routing and adhere to visual design standards.
   handoff. Manager can open every desk and booking.
 - **AC-14.5:** `/settings` must display Demo Data first and fold unit layouts,
   stating plainly that data is simulated, with seed and reference date.
-  `/forecast` displays its accuracy score as a sentence, labels its summary tile
-  "Bookings In The Forecast", and notes that a backtest on simulated data proves
-  method, not business.
+  `/forecast` distinguishes estimated signings from recorded outcomes, labels
+  its eligible count "Bookings In The Estimate", and keeps its evidence date,
+  profile scope and booking-day-30 horizon explicit.
 - **AC-14.6:** All UI elements must follow `docs/DESIGN.md`: monochrome ledger
   styling on a white ground, 6px corner radius, 1px hairlines, Geist and Geist
   Mono typefaces, status tones with explicit words, zero emoji, and exactly 10
@@ -1027,16 +1037,16 @@ following six-step pitch video script without error or manual intervention:
 5.  **Legal Admin Opens `/forecast`:**
     - The user switches persona to Legal Admin, which navigates to Legal
       (`/legal`), then opens `/forecast`.
-    - The summary tile reads "Bookings In The Forecast" and the accuracy score
-      displays as a sentence.
-    - The headline card displays expected SPA signings within 30 days of
-      booking, with 10th to 90th percentile range, stage conversion rates,
-      resolved sample sizes (n), and Wilson 95% confidence intervals.
-    - The backtest panel displays predicted versus observed signings, Brier
-      score, and calibration table.
-    - The assumptions panel lists all `DEFAULT_ASSUMPTIONS` with source tags.
-    - Clicking "Try Another Seed" generates a new in-browser forecast,
-      displaying the outcome spread beside the canonical baseline.
+    - The headline shows estimated signings by booking day 30, the estimated
+      count range and "Bookings In The Estimate". Older open bookings remain
+      available in the operational reports.
+    - The five document covers show calculated findings. Opening a document
+      reveals contributing cases, dates, booked values and sample support.
+    - Approval waits, recorded appointments and completed turnaround use their
+      own evidence; the page does not imply legal readiness or cash collection.
+    - Moving between documents shuffles the sheets. Reduced motion uses a fade;
+      closing a document restores focus. Ask MortarAI answers from the same
+      profile-restricted calculations, including without an external AI key.
 6.  **Settings Reset:**
     - The user opens `/settings` and can add the canonical demo dataset.
     - Deleting demo data requires confirmation and removes every example booking
@@ -1093,10 +1103,10 @@ benchmarks.
 | Margin of financing cap                      | 70% from the third home; about 90% before it     | Official, Industry | Bank Negara Malaysia, Nov 2010; press      |
 | Maximum loan tenure                          | 35 years; simulation also ends it by age 70      | Official           | Bank Negara Malaysia, Jul 2013             |
 | Debt service ratio cap                       | Instalments <= 40% of gross income               | Industry           | Association of Banks in Malaysia, 2017     |
-| Tenure age bound                             | Loan matures by buyer age 70                     | Assumption         | Assumptions panel                          |
-| Missing document rate at intake              | Approximately 35% of submissions                 | Assumption         | Assumptions panel                          |
+| Tenure age bound                             | Loan matures by buyer age 70                     | Assumption         | Documented model input                     |
+| Missing document rate at intake              | Approximately 35% of submissions                 | Assumption         | Documented model input                     |
 | Default per-application approval             | 0.62                                             | Assumption         | Between REHDA band (55–69%) and 74%        |
-| Annual mortgage interest rate                | 4.2% per annum                                   | Assumption         | Assumptions panel                          |
+| Annual mortgage interest rate                | 4.2% per annum                                   | Assumption         | Documented model input                     |
 
 ### Statutory And Legal Constraints
 

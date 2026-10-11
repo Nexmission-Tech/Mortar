@@ -553,12 +553,6 @@ select:focus-visible,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .forecast-document-stack,
-  .forecast-document-stack * {
-    transition: none !important;
-    transform: none !important;
-  }
-
   .sidebar-scrim {
     transition: none;
   }

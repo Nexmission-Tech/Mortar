@@ -228,7 +228,7 @@ export interface Forecast {
   horizonDays: number
   liveBookings: number
   expectedSignings: number
-  /** 10th to 90th percentile of simulated signing counts. */
+  /** Exact 10th to 90th percentile range of independent-outcome counts. */
   rangeLow: number
   rangeHigh: number
   stageRates: StageRate[]
@@ -411,7 +411,7 @@ export interface StaffProfile {
 
 /**
  * Everything a scripted answer may read. Built once per snapshot — the
- * forecast is a Monte Carlo and must not run per question.
+ * forecast is computed once so every answer uses the same count range.
  */
 export interface AskContext {
   snapshot: Snapshot
