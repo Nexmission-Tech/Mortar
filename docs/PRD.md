@@ -922,8 +922,9 @@ towards a signed SPA, on one page at `/sales-chart`.
 - **AC-25.7:** Every state must carry a word in the legend, the readout and each
   cell's accessible name.
 - **AC-25.8:** The Building view must load in its own chunk, render on demand,
-  open the same case panel on click (never on a drag), and fall back to the
-  Grid, with the reason shown, where the browser cannot draw WebGL.
+  raise the unit island on click (never on a drag), whose Open Case opens the
+  same case panel, and fall back to the Grid, with the reason shown, where the
+  browser cannot draw WebGL.
 
 ## Non-Functional Requirements
 

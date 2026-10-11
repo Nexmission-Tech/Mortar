@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { act, fireEvent, render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { summarizeCases, type Snapshot } from '@mortar/core'
 import { PersonaProvider, type Persona } from '@/lib/persona'
@@ -96,9 +96,18 @@ describe('SalesChartPage', () => {
     expect(chip.getAttribute('aria-pressed')).toBe('false')
 
     fireEvent.click(screen.getByRole('button', { name: label9001() }))
-    const sheet = await screen.findByRole('dialog')
+    const island = screen.getByRole('region', { name: 'Selected Unit' })
+    expect(within(island).getByText('A-12-03')).toBeTruthy()
+    expect(within(island).getByText('Block A · Floor 12 · Unit 03')).toBeTruthy()
+    expect(within(island).getByText(/BK-9001/)).toBeTruthy()
+    // The island is not a modal: nothing opens until Open Case.
+    expect(screen.queryByRole('dialog')).toBeNull()
+
+    fireEvent.click(within(island).getByRole('button', { name: 'Open Case' }))
+    const panel = await screen.findByRole('dialog')
+    expect(panel.getAttribute('data-side')).toBe('floating')
     expect(
-      within(sheet)
+      within(panel)
         .getByRole('link', { name: /Open Full Case/ })
         .getAttribute('href')
     ).toBe('/bookings/BK-9001')
@@ -109,8 +118,9 @@ describe('SalesChartPage', () => {
       units: [{ code: 'C-03-01', state: 'needs_action', bookingId: null, heldBy: 'Farah Izzati' }]
     })
     fireEvent.click(await screen.findByRole('button', { name: 'C-03-01, Needs Action' }))
-    expect(screen.getByText(/Farah Izzati’s Desk/)).toBeTruthy()
-    expect(screen.queryByText(/Held By Farah Izzati ·/)).toBeNull()
+    const island = screen.getByRole('region', { name: 'Selected Unit' })
+    expect(within(island).getByText('Held By Farah Izzati’s Desk')).toBeTruthy()
+    expect(within(island).queryByRole('button', { name: 'Open Case' })).toBeNull()
     expect(screen.queryByRole('dialog')).toBeNull()
   })
 
@@ -156,13 +166,19 @@ describe('SalesChartPage', () => {
     // What CaseQuickView's onChanged does after Record An Update.
     vi.mocked(fetchSnapshot).mockClear()
     fireEvent.click(screen.getByRole('button', { name: 'A-12-03, Needs Action' }))
-    const sheet = await screen.findByRole('dialog')
-    expect(sheet).toBeTruthy()
+    fireEvent.click(
+      within(screen.getByRole('region', { name: 'Selected Unit' })).getByRole('button', { name: 'Open Case' })
+    )
+    expect(await screen.findByRole('dialog')).toBeTruthy()
     await act(async () => {
       await refreshRef.current?.()
     })
     // The modal sheet hides the page from the accessibility tree while it is open.
     expect(await screen.findByRole('button', { name: 'A-12-03, SPA Signed', hidden: true })).toBeTruthy()
+    // The island outlives the save and reads the new state.
+    // The modal hides the island from the accessibility tree, and with it its name.
+    const island = document.querySelector<HTMLElement>('section[aria-label="Selected Unit"]')!
+    expect(within(island).getByText('SPA Signed')).toBeTruthy()
   })
 
   it('opens on the Building view where WebGL works, and remembers a switch to the Grid', async () => {
@@ -201,5 +217,43 @@ describe('SalesChartPage', () => {
     expect((within(views).getByRole('button', { name: 'Building' }) as HTMLButtonElement).disabled).toBe(true)
     expect(window.localStorage.getItem('mortar.salesChart.view')).toBe('grid')
     quiet.mockRestore()
+  })
+  it('swaps the island to the next unit clicked and closes it on Esc', async () => {
+    renderPage('manager', { units: [] })
+    fireEvent.click(await screen.findByRole('button', { name: 'A-03-01, Available' }))
+    expect(within(screen.getByRole('region', { name: 'Selected Unit' })).getByText('A-03-01')).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: 'A-03-02, Available' }))
+    const island = screen.getByRole('region', { name: 'Selected Unit' })
+    expect(within(island).getByText('A-03-02')).toBeTruthy()
+    expect(within(island).getByText('Available · Not Booked')).toBeTruthy()
+    fireEvent.keyDown(window, { key: 'Escape' })
+    expect(screen.queryByRole('region', { name: 'Selected Unit' })).toBeNull()
+  })
+
+  it('closes the island from its close button', async () => {
+    renderPage('manager', { units: [] })
+    fireEvent.click(await screen.findByRole('button', { name: 'A-03-01, Available' }))
+    fireEvent.click(
+      within(screen.getByRole('region', { name: 'Selected Unit' })).getByRole('button', { name: 'Close' })
+    )
+    expect(screen.queryByRole('region', { name: 'Selected Unit' })).toBeNull()
+  })
+
+  it('keeps the island when Esc closes the case panel', async () => {
+    renderPage('manager')
+    fireEvent.click(await screen.findByRole('button', { name: label9001() }))
+    fireEvent.click(
+      within(screen.getByRole('region', { name: 'Selected Unit' })).getByRole('button', { name: 'Open Case' })
+    )
+    const panel = await screen.findByRole('dialog')
+    fireEvent.keyDown(panel, { key: 'Escape' })
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+    expect(screen.getByRole('region', { name: 'Selected Unit' })).toBeTruthy()
+  })
+
+  it('leaves room below the chart for the island', async () => {
+    renderPage('manager', { units: [] })
+    fireEvent.click(await screen.findByRole('button', { name: 'A-03-01, Available' }))
+    expect(document.querySelector('[data-island-spacer]')).toBeTruthy()
   })
 })

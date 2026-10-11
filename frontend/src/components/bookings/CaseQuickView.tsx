@@ -41,7 +41,8 @@ export function CaseQuickView({
     <Sheet open={row !== null} onOpenChange={(open) => (open ? undefined : onClose())}>
       {row ? (
         <SheetContent
-          // Focus the sheet itself on open. Left to the default, focus lands on
+          side="floating"
+          // Focus the panel itself on open. Left to the default, focus lands on
           // the first control, the risk chip, and pops its tooltip unasked.
           onOpenAutoFocus={(e) => {
             e.preventDefault()

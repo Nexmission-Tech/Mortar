@@ -1,8 +1,9 @@
 /**
  * Sales Chart: every unit of the project by how far its booking has got
  * towards a signed SPA. Four figures, three filters, the legend, the chart,
- * and a readout of the unit under the pointer. Clicking a unit the viewer may
- * open brings up the same case panel Today and Bookings use.
+ * and a readout of the unit under the pointer. Clicking a unit raises the unit
+ * island with its overview; Open Case brings up the same case panel Today and
+ * Bookings use.
  */
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
@@ -36,6 +37,8 @@ import {
 import { UNIT_FILL } from '@/components/sales-chart/unitTone'
 import { canUseWebGL } from '@/components/sales-chart/webgl'
 import { BuildingBoundary } from '@/components/sales-chart/BuildingBoundary'
+import { UnitIsland } from '@/components/sales-chart/UnitIsland'
+import { unitOverview } from '@/components/sales-chart/unitOverview'
 
 // three.js loads only when the Building view first draws.
 const SalesChartBuilding = lazy(() => import('@/components/sales-chart/SalesChartBuilding'))
@@ -113,12 +116,20 @@ export function SalesChartPage() {
   const settings = snapshot?.projectSettings ?? DEFAULT_PROJECT_SETTINGS
   const row = snapshot && inspecting ? quickViewRow(snapshot, cases, inspecting) : null
   const shown = units.find((u) => u.code === (hoveredCode ?? selected)) ?? null
+  const selectedUnit = units.find((u) => u.code === selected) ?? null
+  const overview = useMemo(
+    () =>
+      selectedUnit
+        ? unitOverview(
+            selectedUnit,
+            snapshot && selectedUnit.bookingId ? quickViewRow(snapshot, cases, selectedUnit.bookingId) : null
+          )
+        : null,
+    [selectedUnit, snapshot, cases]
+  )
   const totals = useMemo(() => bookedAndSigned(cases), [cases])
 
-  const select = useCallback((unit: ChartUnit) => {
-    setSelected(unit.code)
-    if (unit.bookingId) setInspecting(unit.bookingId)
-  }, [])
+  const select = useCallback((unit: ChartUnit) => setSelected(unit.code), [])
   // Leaving one cell for the next crosses a 2px gap; wait a beat before
   // clearing so the readout does not blink between them.
   const hover = useCallback((unit: ChartUnit | null) => {
@@ -127,6 +138,16 @@ export function SalesChartPage() {
     else clearHover.current = setTimeout(() => setHoveredCode(null), 150)
   }, [])
   useEffect(() => () => void (clearHover.current && clearTimeout(clearHover.current)), [])
+  // Esc clears the selection, but only while the case panel is shut: Esc on the
+  // panel closes the panel alone.
+  useEffect(() => {
+    if (!selected || inspecting) return
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setSelected(null)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [selected, inspecting])
 
   return (
     <PageContainer>
@@ -281,6 +302,20 @@ export function SalesChartPage() {
         </>
       )}
 
+      {overview ? (
+        <>
+          {/* Room below the chart, so the island never covers its last rows. */}
+          <div data-island-spacer aria-hidden="true" className="h-48" />
+          <UnitIsland
+            overview={overview}
+            onOpenCase={() => {
+              if (selectedUnit?.bookingId) setInspecting(selectedUnit.bookingId)
+            }}
+            onClose={() => setSelected(null)}
+          />
+        </>
+      ) : null}
+
       <CaseQuickView
         row={row}
         referenceDate={snapshot?.meta.referenceDate ?? ''}
@@ -309,7 +344,7 @@ function Readout({ unit }: { unit: ChartUnit | null }) {
             {unit.state === 'available'
               ? 'No Booking Holds This Unit'
               : unit.bookingId
-                ? `${unit.heldBy}’s Desk · Click To Open The Case`
+                ? `${unit.heldBy}’s Desk · Click To See Its Overview`
                 : `${unit.heldBy}’s Desk · Ask Them To Open It`}
           </span>
         </>
