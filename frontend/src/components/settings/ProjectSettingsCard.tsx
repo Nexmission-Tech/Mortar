@@ -144,6 +144,21 @@ export function ProjectSettingsCard() {
               />
             </div>
             <div className="flex flex-col gap-1.5">
+              <Label htmlFor="setting-numbering">Floor And Unit Numbering</Label>
+              <Select
+                value={draft.numbering ?? 'plain'}
+                onValueChange={(value) => change('numbering', value as ProjectSettings['numbering'])}
+              >
+                <SelectTrigger id="setting-numbering" className="h-9">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="skip-four">Skip Four (3A, 13A, 23A)</SelectItem>
+                  <SelectItem value="plain">Plain (04, 14, 24)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1.5">
               <Label htmlFor="setting-price">Default SPA Price</Label>
               <div className="relative">
                 <span className="absolute left-3 top-2.5 text-xs text-muted-foreground">RM</span>
