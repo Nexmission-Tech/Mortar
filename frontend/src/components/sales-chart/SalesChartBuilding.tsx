@@ -1,7 +1,7 @@
 /**
  * The Sales Chart's Building view: the project's towers in an isometric 3D
  * scene, every unit a block in its state's tone. It takes the same props as
- * the Grid, so filters, the readout and the side sheet work the same way.
+ * the Grid, so filters, the readout and the case panel work the same way.
  *
  * DESIGN.md names this the one 3D surface in the product: flat shading from
  * the status tokens at three face steps, no gradient, glow, texture, shadow or

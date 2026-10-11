@@ -158,7 +158,7 @@ row.
   button that creates the selected step.
 - **US-3 (Quick View And Card Limits):** As a staff member, I want to view nine
   cards before "Show N More", and click a card's unit code to open the
-  `CaseQuickView` side sheet without leaving the screen.
+  `CaseQuickView` case panel without leaving the screen.
 - **US-4 (Desk Views):** As a Sales Admin, I want to see every desk's bookings
   and tasks by default; as a Loan Admin or Legal Admin, I want to start on my
   own desk and my own tasks ("Mine").
@@ -169,7 +169,7 @@ row.
   stat tiles (Stalled, No Update 10+ Days), the "Who Holds Each Booking" filter
   strip (Buyer, Bank, Solicitor, Signed, Us) opening preset to Bank, and a
   single filter row (Active/Closed, Stage, Risk, No Update 10+ Days, Stalled).
-- **US-6 (Side Sheet Quick View):** As a staff member, I want clicking any row
+- **US-6 (Case Panel Quick View):** As a staff member, I want clicking any row
   in Bookings to open `CaseQuickView` showing who the case waits on, the next
   step with Add Task, Record An Update, and a link to Open Full Case.
 
@@ -378,8 +378,8 @@ The system must present stalled live bookings in an actionable queue on Today
   button.
 - **AC-5.3:** Each card must state the blocker in words, one next step and its
   owner, one status pill (`Overdue` if past due, else `Task Open`), and a Create
-  Task button. Clicking a card's unit code must open the `CaseQuickView` side
-  sheet.
+  Task button. Clicking a card's unit code must open the `CaseQuickView` case
+  panel.
 - **AC-5.4:** Sales Admin sees every desk's bookings and every open task by
   default. Loan Admin and Legal Admin start on their own desk and tasks
   ("Mine"), with the ability to switch scope.
@@ -651,7 +651,7 @@ which is otherwise measured nowhere.
   `daysSinceSpaSet`, both nullable, so the desk and Today read one derivation
   rather than two.
 
-### FR-17: Waiting On Party, Quick View Side Sheet, And Next Move
+### FR-17: Waiting On Party, Quick View Case Panel, And Next Move
 
 The system must name who is holding up each open case, what they owe, and the
 next move, on the bookings ledger and on the case page alike.
@@ -674,7 +674,7 @@ next move, on the bookings ledger and on the case page alike.
   booking ID, bank and solicitor. Row selection opens a bulk action island for
   task creation, export, safe delete and clearing the selection.
 - **AC-17.4:** Clicking any row in Bookings or a card's unit code on Today must
-  open the unified `CaseQuickView` side sheet. The sheet displays who the case
+  open the unified `CaseQuickView` case panel. The panel shows who the case
   waits on, the recommended next step with Add Task, Record An Update, and an
   Open Full Case link, preserving table filter and scroll state.
 - **AC-17.5:** `/bookings/:id` must display the same waiting party and next step
@@ -725,14 +725,14 @@ behavior can be demonstrated without a TypeSafe key.
 
 ### FR-19: Record An Update
 
-Staff can record what happened on a booking by hand from the case page, the side
-sheet, or inline legal dialogs, so the case moves at once without waiting for a
+Staff can record what happened on a booking by hand from the case page, the case
+panel, or inline legal dialogs, so the case moves at once without waiting for a
 message for Jev to read.
 
 **Status:** Built.
 
 - **AC-19.1:** Record An Update, opened from the case page, the `CaseQuickView`
-  side sheet, or inline on `/legal`, must let staff choose an update from a list
+  case panel, or inline on `/legal`, must let staff choose an update from a list
   grouped by track (Sales: Buyer Contacted, Buyer Hesitant, Buyer Withdrew,
   Cancelled, Lapsed; Loan: Submitted To A Bank, Documents Requested, Documents
   Received, Valuation Shortfall, Loan Approved, Loan Rejected, Loan Agreement
@@ -914,16 +914,17 @@ towards a signed SPA, on one page at `/sales-chart`.
 - **AC-25.4:** Each filter's count must equal the number of units it lights. The
   Loan Approved, No SPA Appointment count must equal the Legal desk's No
   Appointment Yet count for the same viewer.
-- **AC-25.5:** Clicking an openable unit must open `CaseQuickView` for its
-  booking. Recording an update there must change the unit's state without a page
-  reload.
+- **AC-25.5:** Clicking a unit must raise the unit island with its overview, and
+  Open Case on an openable unit must open `CaseQuickView` for its booking.
+  Recording an update there must change the unit's state without a page reload.
 - **AC-25.6:** The grid must work by keyboard: one tab stop, arrow keys between
   cells, and Enter to select.
 - **AC-25.7:** Every state must carry a word in the legend, the readout and each
   cell's accessible name.
 - **AC-25.8:** The Building view must load in its own chunk, render on demand,
-  open the same side sheet on click (never on a drag), and fall back to the
-  Grid, with the reason shown, where the browser cannot draw WebGL.
+  raise the unit island on click (never on a drag), whose Open Case opens the
+  same case panel, and fall back to the Grid, with the reason shown, where the
+  browser cannot draw WebGL.
 
 ## Non-Functional Requirements
 
@@ -999,7 +1000,7 @@ following six-step pitch video script without error or manual intervention:
       requesting the buyer's missing payslip ("Ask For Payslip"), owner Sales,
       due today.
     - Clicking the action button creates the task with one click. Clicking the
-      unit code opens the `CaseQuickView` side sheet.
+      unit code opens the `CaseQuickView` case panel.
 2.  **Opens Case `BK-9001`:**
     - The user navigates to `/bookings/BK-9001`.
     - The header displays one status sentence.

@@ -19,7 +19,7 @@ const FAQS: { question: string; answer: string[] }[] = [
     answer: [
       'Four staff roles, chosen as named demo profiles on the sign-in page or switched in the header. Each persona sees only its own pages. Sales Admin: Today (home), Sales Chart, Bookings, Add Bookings, Forecast, Settings. Loan Admin: Bookings (home), Today, Sales Chart, Forecast, Settings. Legal Admin: Legal (home), Today, Sales Chart, Bookings, Forecast, Settings. Manager: Today (home), Team, Sales Chart, Bookings, Legal, Add Bookings, Forecast, Settings. Switching persona in the top bar opens that persona’s home.',
       'Today lists stalled bookings, with the ones awaiting a person’s review first; each card names the blocker, the one next step and who owns it. A sales admin sees only the bookings they took; loan and legal admins see only cases currently assigned to them or with an open task assigned to them; and the Manager sees everything.',
-      'The Bookings page’s strip, Who Holds Each Booking, filters the table by Buyer, Bank, Solicitor, Signed or Us. Clicking any booking opens a side sheet where you can record what happened.'
+      'The Bookings page’s strip, Who Holds Each Booking, filters the table by Buyer, Bank, Solicitor, Signed or Us. Clicking any booking opens a case panel where you can record what happened.'
     ]
   },
   {
@@ -46,7 +46,7 @@ const FAQS: { question: string; answer: string[] }[] = [
     question: 'What Is The Sales Chart?',
     answer: [
       'Every unit of the project on one page, coloured by how far its booking has got: Available, In Progress, Loan Approved, Needs Action, Release Review or SPA Signed. It is the floor-by-unit chart a sales gallery keeps, joined to the loan and legal evidence Mortar holds. The figures above it read Units Booked beside SPA Signed, because booked is not sold.',
-      'The Building view stands the blocks up in 3D; the Grid lays them out flat and works by keyboard. Loan Approved, No SPA Appointment lights the buyers who only need a signing date. Clicking a unit on your own desk opens its case; a unit on another desk names whose desk to ask. Release Review is a flag for a person: Mortar never cancels a booking.'
+      'The Building view stands the blocks up in 3D; the Grid lays them out flat and works by keyboard. Loan Approved, No SPA Appointment lights the buyers who only need a signing date. Clicking a unit shows its overview, and Open Case opens a unit on your own desk; a unit on another desk names whose desk to ask. Release Review is a flag for a person: Mortar never cancels a booking.'
     ]
   },
   {

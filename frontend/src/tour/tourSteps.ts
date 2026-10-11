@@ -14,7 +14,8 @@ export const TOUR_STEPS: Record<Persona, TourStep[]> = {
       label: 'Sales Chart',
       route: '/sales-chart',
       target: '[data-tour="sales-chart-header"]',
-      caption: 'Sales Chart shows every unit by how far its booking has got. Click a unit to open its case.'
+      caption:
+        'Sales Chart shows every unit by how far its booking has got. Click a unit for its overview, then Open Case.'
     },
     {
       label: 'Team',
@@ -40,7 +41,8 @@ export const TOUR_STEPS: Record<Persona, TourStep[]> = {
       label: 'Sales Chart',
       route: '/sales-chart',
       target: '[data-tour="sales-chart-header"]',
-      caption: 'Sales Chart shows every unit by how far its booking has got. Click a unit to open its case.'
+      caption:
+        'Sales Chart shows every unit by how far its booking has got. Click a unit for its overview, then Open Case.'
     },
     {
       label: 'The Next Move',
@@ -60,7 +62,7 @@ export const TOUR_STEPS: Record<Persona, TourStep[]> = {
       route: '/chase',
       target: '[data-tour="today-quick-view"]',
       caption:
-        'When a booking is shown, open it to record what happened in its side sheet. This does not take you away from Today.'
+        'When a booking is shown, open it to record what happened in its case panel. This does not take you away from Today.'
     },
     {
       label: 'Open Tasks',

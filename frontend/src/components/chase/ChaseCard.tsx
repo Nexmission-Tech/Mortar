@@ -3,7 +3,7 @@
  *
  * Card stack, in reading order: unit and buyer, the blocker in plain words,
  * one muted meta line, the next step, the footer. The unit and buyer open the
- * case's side sheet, the same one a row click opens on the ledger, so an update
+ * case's case panel, the same one a row click opens on the ledger, so an update
  * can be recorded without leaving Today. One pill per card — urgency when the
  * card is overdue, otherwise Task Open — and the risk chip only when the
  * financing risk is High, because a chip true of every card on the page is not
@@ -69,7 +69,7 @@ export function ChaseCard({
   tourTarget?: string
   actionsTarget?: string
   quickViewTarget?: string
-  /** Opens the case's side sheet over the queue. */
+  /** Opens the case's case panel over the queue. */
   onInspect: () => void
   onSuggest: () => void
   /** Raises the task for the step the person picked. */
@@ -96,7 +96,7 @@ export function ChaseCard({
       data-card-interactive=""
       className="flex flex-col gap-3 rounded-md border border-card-border bg-card p-4 shadow-card transition-[box-shadow,transform] duration-[160ms] ease-[var(--ease-out)] hover:-translate-y-px hover:shadow-card-hover"
     >
-      {/* Header: unit + buyer. The whole pair opens the case's side sheet, the
+      {/* Header: unit + buyer. The whole pair opens the case's case panel, the
           same one a row click opens on the ledger, so what happened can be
           recorded without leaving Today. */}
       <div className="flex items-start justify-between gap-2">

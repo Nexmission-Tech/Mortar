@@ -15,7 +15,7 @@
  * the rule-based move from `ballInCourt` — the same move Waiting On and the
  * table's Task column raise, so one click anywhere creates one task. Jev's
  * cached answer appears only where it differs, as a single extra line. Clicking
- * the unit and buyer opens the same side sheet a row opens on the ledger.
+ * the unit and buyer opens the same case panel a row opens on the ledger.
  */
 import { useMemo, useState, type Dispatch, type ReactNode, type SetStateAction } from 'react'
 import { AlertTriangle, Banknote, BellRing, SearchX, SlidersHorizontal, Users } from 'lucide-react'
@@ -213,7 +213,7 @@ function AdminToday() {
 
   const valueAtRisk = allStalled.reduce((sum, c) => sum + (bookings.get(c.bookingId)?.priceRm ?? 0), 0)
 
-  /** The confirmed evidence kinds per booking, for the side sheet's journey. */
+  /** The confirmed evidence kinds per booking, for the case panel's journey. */
   const confirmedKinds = useMemo(() => {
     const map = new Map<string, Set<EventKind>>()
     for (const event of snapshot?.events ?? []) {
@@ -225,7 +225,7 @@ function AdminToday() {
     return map
   }, [snapshot])
 
-  /** The row the side sheet shows, built the way `/bookings` builds it. */
+  /** The row the case panel shows, built the way `/bookings` builds it. */
   const quickViewRow = useMemo((): BookingRow | null => {
     if (!inspecting) return null
     const booking = bookings.get(inspecting)
@@ -403,7 +403,7 @@ function AdminToday() {
         </>
       )}
 
-      {/* The same side sheet a row opens on the ledger, so what happened
+      {/* The same case panel a row opens on the ledger, so what happened
           can be recorded from Today without leaving it. A save in here
           refreshes the queue behind the sheet, as it does there. */}
       <CaseQuickView

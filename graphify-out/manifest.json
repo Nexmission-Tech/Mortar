@@ -312,10 +312,10 @@
     "semantic_hash": "29707107d3832151f6f4e80b3e615364"
   },
   "frontend/src/pages/BookingDetailPage.tsx": {
-    "mtime": 1791695588.4241161,
-    "seen": 1791698273.7374153,
-    "ast_hash": "8479e11b25c81ebd5681112359501871",
-    "semantic_hash": "8479e11b25c81ebd5681112359501871"
+    "mtime": 1791730326.5654433,
+    "seen": 1791731818.904637,
+    "ast_hash": "de5b909e647591c1a2f98615263c3734",
+    "semantic_hash": ""
   },
   "frontend/src/pages/BookingsPage.tsx": {
     "mtime": 1791695588.4241161,
@@ -324,15 +324,15 @@
     "semantic_hash": "2147f7c867aab67fd85c3f0096083765"
   },
   "frontend/src/pages/ChasePage.tsx": {
-    "mtime": 1791695588.4241161,
-    "seen": 1791698273.737417,
-    "ast_hash": "48b5c8838de2f81b8dbe5318566324f1",
-    "semantic_hash": "48b5c8838de2f81b8dbe5318566324f1"
+    "mtime": 1791730326.566656,
+    "seen": 1791731818.904638,
+    "ast_hash": "e22825013a850d86f300ba572ae445be",
+    "semantic_hash": ""
   },
   "frontend/src/pages/FaqPage.tsx": {
-    "mtime": 1791714502.217452,
-    "seen": 1791715898.3087764,
-    "ast_hash": "91e9f3e2bab3c542e2a08bd75a288d2d",
+    "mtime": 1791731599.9765224,
+    "seen": 1791731818.9046385,
+    "ast_hash": "d090936bf45909a851ccc4d94b236401",
     "semantic_hash": ""
   },
   "frontend/src/pages/ForecastPage.tsx": {
@@ -450,16 +450,16 @@
     "semantic_hash": "b4cb549cf57764261f02df585c6a7e8d"
   },
   "docs/DESIGN.md": {
-    "mtime": 1791715884.3063378,
-    "seen": 1791715898.3088856,
-    "ast_hash": "c79009d7393bad7994585c5dfe181dd0",
+    "mtime": 1791730861.6137102,
+    "seen": 1791731818.9047155,
+    "ast_hash": "028882af436fa026186d7f10b276dd00",
     "semantic_hash": ""
   },
   "docs/README.md": {
-    "mtime": 1791695588.3746996,
-    "seen": 1791698273.7375252,
-    "ast_hash": "9c8fd626508ad42b4956cccce1cd3827",
-    "semantic_hash": "9c8fd626508ad42b4956cccce1cd3827"
+    "mtime": 1791730326.552273,
+    "seen": 1791731818.904717,
+    "ast_hash": "4cd1277b199d53893d5ce68eec34a209",
+    "semantic_hash": ""
   },
   "docs/research/design/README.md": {
     "mtime": 1789918609.1253948,
@@ -516,9 +516,9 @@
     "semantic_hash": "3dc1f75ab34333b53ce9b16521001fa9"
   },
   "docs/agents/notes.md": {
-    "mtime": 1791714502.1881323,
-    "seen": 1791715898.3088896,
-    "ast_hash": "997db85037be4656716165819af47c9f",
+    "mtime": 1791730546.3754518,
+    "seen": 1791731818.9047196,
+    "ast_hash": "5aa55e275fae3ced925497fd0e21b662",
     "semantic_hash": ""
   },
   "docs/agents/rtk.md": {
@@ -660,10 +660,10 @@
     "semantic_hash": "1f3fcae8543e50a91a4606044e9cf61e"
   },
   "frontend/src/components/bookings/CaseQuickView.tsx": {
-    "mtime": 1791695588.415116,
-    "seen": 1791698273.7372644,
-    "ast_hash": "6cb68cc8d6575bb31843351893c958ae",
-    "semantic_hash": "6cb68cc8d6575bb31843351893c958ae"
+    "mtime": 1791730459.33891,
+    "seen": 1791731818.904538,
+    "ast_hash": "922ac553ef6e8ae1587e21949b4a3600",
+    "semantic_hash": ""
   },
   "frontend/src/components/bookings/DateField.tsx": {
     "mtime": 1791695588.415116,
@@ -984,10 +984,10 @@
     "semantic_hash": "a32508c07e8866844a1869f312bc0d07"
   },
   "frontend/src/components/chase/ChaseCard.tsx": {
-    "mtime": 1791695588.4185457,
-    "seen": 1791698273.7373354,
-    "ast_hash": "3789188f39fb2b8a98f0095df7868f93",
-    "semantic_hash": "3789188f39fb2b8a98f0095df7868f93"
+    "mtime": 1791730326.563997,
+    "seen": 1791731818.9045691,
+    "ast_hash": "5862f7b596fce3bc857cd043e66d59a8",
+    "semantic_hash": ""
   },
   "frontend/src/components/chase/__tests__/ChaseCard.test.tsx": {
     "mtime": 1791695588.4188704,
@@ -1284,10 +1284,10 @@
     "semantic_hash": "0fa5947deb04a86ccf36c2917b484c40"
   },
   "frontend/src/components/ui/sheet.tsx": {
-    "mtime": 1791695588.4231162,
-    "seen": 1791698273.7374,
-    "ast_hash": "2203923e3865da0a4aaf671862f88d27",
-    "semantic_hash": "2203923e3865da0a4aaf671862f88d27"
+    "mtime": 1791730741.0438929,
+    "seen": 1791731818.9046254,
+    "ast_hash": "a0bbc11a0813124bfa97f8067cc897e0",
+    "semantic_hash": ""
   },
   "frontend/src/lib/__tests__/api.test.ts": {
     "mtime": 1791695588.4231162,
@@ -1338,10 +1338,10 @@
     "semantic_hash": "32329323354d0cae5ddcf4a88792cecd"
   },
   "frontend/src/pages/__tests__/ChasePage.test.tsx": {
-    "mtime": 1791695588.4241161,
-    "seen": 1791698273.7374253,
-    "ast_hash": "0fbd5419cd1b605c817aa2db0fc4041f",
-    "semantic_hash": "0fbd5419cd1b605c817aa2db0fc4041f"
+    "mtime": 1791731599.986777,
+    "seen": 1791731818.9046443,
+    "ast_hash": "2b90d8036391eb670592274907e24f2c",
+    "semantic_hash": ""
   },
   "frontend/src/pages/__tests__/ForecastPage.test.tsx": {
     "mtime": 1791695588.425116,
@@ -1902,21 +1902,21 @@
     "semantic_hash": "d7b6c7d49e6a06179f664732811cb47f"
   },
   "docs/PRD.md": {
-    "mtime": 1791714502.1873305,
-    "seen": 1791715898.308886,
-    "ast_hash": "a1a79f9264bd964d9298d6c51a006c8d",
+    "mtime": 1791731608.0667937,
+    "seen": 1791731818.904716,
+    "ast_hash": "ff7c9eb947b0ff57d011b119d6771292",
     "semantic_hash": ""
   },
   "docs/PRODUCT.md": {
-    "mtime": 1791714502.1873305,
-    "seen": 1791715898.3088863,
-    "ast_hash": "5cb31b4bb4ae561b98d9b837a1ea335f",
+    "mtime": 1791731608.1257944,
+    "seen": 1791731818.9047165,
+    "ast_hash": "e62e13c1f169efa89f95ee831e739a35",
     "semantic_hash": ""
   },
   "docs/TRD.md": {
-    "mtime": 1791714502.18791,
-    "seen": 1791715898.3088872,
-    "ast_hash": "0cfcf72d4c7f592a707d3ea22d297c97",
+    "mtime": 1791730326.5551996,
+    "seen": 1791731818.9047172,
+    "ast_hash": "30b8462ba2b4509110bcb9079d6344f5",
     "semantic_hash": ""
   },
   "docs/agents/github.md": {
@@ -2010,10 +2010,10 @@
     "semantic_hash": "efc28029478439ee57f098da74ba3b67"
   },
   "frontend/src/components/ui/__tests__/modal-scrim.test.tsx": {
-    "mtime": 1791695588.4231162,
-    "seen": 1791698273.737389,
-    "ast_hash": "694a9c426b679b4397101d5cf9a8a551",
-    "semantic_hash": "694a9c426b679b4397101d5cf9a8a551"
+    "mtime": 1791730281.8553877,
+    "seen": 1791731818.904618,
+    "ast_hash": "4650fb9434bb1759fcc169ac14bcf25b",
+    "semantic_hash": ""
   },
   "frontend/src/tour/Spotlight.tsx": {
     "mtime": 1791695588.425116,
@@ -2052,9 +2052,9 @@
     "semantic_hash": "2a580b21c02949b3d72aa27b133e660d"
   },
   "frontend/src/tour/tourSteps.ts": {
-    "mtime": 1791714502.2186985,
-    "seen": 1791715898.3088186,
-    "ast_hash": "444c767ac570d13514742914b114bd99",
+    "mtime": 1791731609.719816,
+    "seen": 1791731818.9046545,
+    "ast_hash": "e5518ccb18a3a7544ff74cbdce8a0069",
     "semantic_hash": ""
   },
   "frontend/src/tour/tourAnchors.test.tsx": {
@@ -2328,14 +2328,14 @@
     "semantic_hash": ""
   },
   "frontend/src/components/sales-chart/SalesChartGrid.tsx": {
-    "mtime": 1791715887.1170237,
-    "seen": 1791715898.3087382,
+    "mtime": 1791716125.4535644,
+    "seen": 1791731818.9046013,
     "ast_hash": "7874f442dfc6c7ca9f5b5b029f4f3cda",
     "semantic_hash": ""
   },
   "frontend/src/components/sales-chart/__tests__/SalesChartGrid.test.tsx": {
-    "mtime": 1791715715.6089833,
-    "seen": 1791715898.3087387,
+    "mtime": 1791716125.4535644,
+    "seen": 1791731818.9046032,
     "ast_hash": "9f0cf447211ebae4c5cb816451f93533",
     "semantic_hash": ""
   },
@@ -2358,15 +2358,15 @@
     "semantic_hash": ""
   },
   "frontend/src/pages/SalesChartPage.tsx": {
-    "mtime": 1791714502.217735,
-    "seen": 1791715898.308803,
-    "ast_hash": "df2cfbe22ee8b2da6314c0d0235cfe98",
+    "mtime": 1791731564.3509545,
+    "seen": 1791731818.9046416,
+    "ast_hash": "eaf41de2134c7a8236f54e770566fdc1",
     "semantic_hash": ""
   },
   "frontend/src/pages/__tests__/SalesChartPage.test.tsx": {
-    "mtime": 1791714502.2180836,
-    "seen": 1791715898.3088112,
-    "ast_hash": "e437f4eb87720ca61b4c6ea0b860eb08",
+    "mtime": 1791731522.420295,
+    "seen": 1791731818.9046476,
+    "ast_hash": "445c42c30322e525078d7a11d1492309",
     "semantic_hash": ""
   },
   "docs/research/sales-chart/plan-3-building.md": {
@@ -2382,9 +2382,9 @@
     "semantic_hash": ""
   },
   "frontend/src/components/sales-chart/SalesChartBuilding.tsx": {
-    "mtime": 1791715813.6254272,
-    "seen": 1791715898.3087375,
-    "ast_hash": "c6e7705865f2e1e92ab56974a43ec6b2",
+    "mtime": 1791730326.5614934,
+    "seen": 1791731818.9046009,
+    "ast_hash": "227f6b3894be3b3825934a82a6a8a364",
     "semantic_hash": ""
   },
   "frontend/src/components/sales-chart/__tests__/buildingLayout.test.ts": {
@@ -2394,8 +2394,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/sales-chart/__tests__/sceneColors.test.ts": {
-    "mtime": 1791715715.608878,
-    "seen": 1791715898.3087406,
+    "mtime": 1791731529.3577304,
+    "seen": 1791731818.9046047,
     "ast_hash": "ac28c332c2feb9d61ba4b08af51d4193",
     "semantic_hash": ""
   },
@@ -2412,8 +2412,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/sales-chart/sceneColors.ts": {
-    "mtime": 1791715730.4005084,
-    "seen": 1791715898.308743,
+    "mtime": 1791731529.3577304,
+    "seen": 1791731818.9046073,
     "ast_hash": "b83f1de5dc7652e08907e3e54112574c",
     "semantic_hash": ""
   },
@@ -2421,6 +2421,42 @@
     "mtime": 1791714502.215735,
     "seen": 1791715898.308744,
     "ast_hash": "d28962d2197c64311ddf07b3381f73e6",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/sales-chart/UnitIsland.tsx": {
+    "mtime": 1791731564.3507888,
+    "seen": 1791731818.904602,
+    "ast_hash": "875b9890fe734bdd178d2355771945e8",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/sales-chart/__tests__/unitOverview.test.ts": {
+    "mtime": 1791731522.420602,
+    "seen": 1791731818.9046052,
+    "ast_hash": "fe35bacd89e937091f0d6f0f97fc75c0",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/sales-chart/unitOverview.ts": {
+    "mtime": 1791731583.560012,
+    "seen": 1791731818.9046078,
+    "ast_hash": "1b45b819926821d2d163a6fc9896e154",
+    "semantic_hash": ""
+  },
+  "frontend/src/tour/__tests__/tourCopy.test.ts": {
+    "mtime": 1791731522.4236367,
+    "seen": 1791731818.904653,
+    "ast_hash": "ad9ddcfd74127504d1b71a50333754c8",
+    "semantic_hash": ""
+  },
+  "docs/research/sales-chart/plan-4-panel-island.md": {
+    "mtime": 1791717872.6258307,
+    "seen": 1791731818.9047334,
+    "ast_hash": "1efce473eab4fd1777ce3829713a7b6c",
+    "semantic_hash": ""
+  },
+  "docs/research/sales-chart/showhouse-model.md": {
+    "mtime": 1791717671.8880482,
+    "seen": 1791731818.9047337,
+    "ast_hash": "1b5a285924fbc35b60fa3c3591deef5f",
     "semantic_hash": ""
   }
 }
