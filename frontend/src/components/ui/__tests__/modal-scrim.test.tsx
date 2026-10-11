@@ -28,7 +28,7 @@ describe('modal scrims', () => {
     expect(overlay?.className).toContain('bg-[var(--scrim)]')
     expect(overlay?.className).toContain('backdrop-blur-[var(--scrim-blur)]')
   })
-  it('floats a sheet above the bottom edge, centred and capped in width', () => {
+  it('floats a sheet up into the middle of the screen, centred and capped in width', () => {
     render(
       <Sheet open>
         <SheetContent side="floating" aria-describedby={undefined}>
@@ -38,8 +38,10 @@ describe('modal scrims', () => {
     )
     const panel = screen.getByRole('dialog')
     expect(panel.getAttribute('data-side')).toBe('floating')
-    for (const token of ['inset-x-4', 'bottom-4', 'mx-auto', 'max-w-[720px]', 'max-h-[85vh]', 'rounded-md'])
+    // Centred both ways: pinned 16px in on every side, as tall as its content, auto margins.
+    for (const token of ['inset-4', 'm-auto', 'h-fit', 'max-w-[720px]', 'max-h-[calc(100dvh-2rem)]', 'rounded-md'])
       expect(panel.className).toContain(token)
+    expect(panel.className).not.toMatch(/(^|\s)bottom-4(\s|$)/)
     // It slides only where motion is welcome; under reduced motion it just fades.
     expect(panel.className).toContain('motion-safe:data-[state=open]:slide-in-from-bottom')
     expect(panel.className).not.toMatch(/(^|\s)data-\[state=open\]:slide-in-from-bottom/)
