@@ -609,6 +609,26 @@ describe('createApp', () => {
     expect(mismatch?.status).toBe(409)
   })
 
+  test('sends every held unit, with booking ids only for the viewer’s own bookings', async () => {
+    const db = new FakeDb()
+    db.bookings.push({ ...OTHER_BOOKING, unit: 'C-28-12', salesOwner: 'Farah Izzati' })
+    deriveCases = true
+    const body = await (async () => {
+      try {
+        return (await (await call(makeApp(db), '/api/snapshot'))?.json()) as Snapshot
+      } finally {
+        deriveCases = false
+      }
+    })()
+    const own = new Set(body.bookings.map((booking) => booking.id))
+    expect(body.units?.length).toBe(2)
+    expect(body.units?.find((unit) => unit.code === 'C-28-12')).toMatchObject({
+      bookingId: null,
+      heldBy: 'Farah Izzati'
+    })
+    for (const unit of body.units ?? []) expect(unit.bookingId === null || own.has(unit.bookingId)).toBe(true)
+  })
+
   test('allows only the manager profile to persist shared project settings', async () => {
     const db = new FakeDb()
     const app = makeApp(db)

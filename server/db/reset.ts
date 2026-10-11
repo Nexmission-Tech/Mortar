@@ -6,6 +6,7 @@
  */
 import { SQL } from 'bun'
 import {
+  DEFAULT_PROJECT_SETTINGS,
   DEFAULT_SEED,
   PLAYBOOKS,
   REFERENCE_DATE,
@@ -76,6 +77,9 @@ export async function addDemoData(sql: SQL): Promise<SimulationMeta> {
     await tx`delete from meta where key = 'forecast_model_v1'`
     const seeded = await tx`select exists(select 1 from bookings where demo_seed) as seeded`
     if (seeded[0]?.seeded) return
+    // The demo bookings sit in the demo layout, so seeding restores it.
+    await tx`insert into meta (key, value) values ('project_settings', ${JSON.stringify(DEFAULT_PROJECT_SETTINGS)}::jsonb)
+      on conflict (key) do update set value = excluded.value`
     // Multi-row inserts: one round trip per chunk instead of one per row.
     const chunks = <T>(rows: T[]) => {
       const out: T[][] = []
