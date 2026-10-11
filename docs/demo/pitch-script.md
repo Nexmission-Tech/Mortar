@@ -198,12 +198,13 @@ click causes. Everything on screen is simulated.
 | 6    | Robert Khoo · Manager     | `/chase` Today, Decisions For You | **Request Follow-Up** on a case waiting on Tan Mei Ling                                   | A follow-up lands on Tan Mei Ling's Today and bell              | "The click creates owned internal work on that desk. Mortar never sends anything to the buyer or the bank."                                         |
 | 7    | Robert Khoo · Manager     | `/sales-chart`                    | Point at **Expected SPAs In 30 Days**                                                     | About 21 expected, range 17–25, from 50 bookings under 30 days  | "Finance reads signings, not bookings. On simulated data this proves the method, not the business."                                                 |
 
-**Optional, If Time Allows:** on the Sales Chart, drag to turn the building,
-then click **Grid**: the same units, flat, the way the gallery's spreadsheet
-shows them. Or, as Tan Mei Ling, open Ask MortarAI with the sparkle button and
-ask "What is BK-9001 waiting on?". If the answer is tagged **Counted From Your
-Bookings**, Gemini was unavailable and the scripted fallback answered; say so
-rather than presenting it as Gemini.
+**Optional, If Time Allows:** on the Sales Chart, drag to turn the building
+(hold Ctrl or ⌘ and scroll to zoom; **All** puts it back), then click **Grid**:
+the same units, flat, the way the gallery's spreadsheet shows them. Or, as Tan
+Mei Ling, open Ask MortarAI with the sparkle button and ask "What is BK-9001
+waiting on?". If the answer is tagged **Counted From Your Bookings**, Gemini was
+unavailable and the scripted fallback answered; say so rather than presenting it
+as Gemini.
 
 **Buyer Reply To Paste:**
 `Hi Nurul, slip gaji 3 bulan dah saya hantar ke Mei Ling tadi. Dokumen semua lengkap ya.`
