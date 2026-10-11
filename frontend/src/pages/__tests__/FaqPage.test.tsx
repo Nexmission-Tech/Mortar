@@ -47,6 +47,7 @@ describe('FaqPage', () => {
       'Is The Data Real?',
       'What Do The Stage And Risk Labels Mean?',
       'When Does A Booking Land On Today?',
+      'What Is The Sales Chart?',
       'What Does Jev Do?',
       'Where Does The Data Come From, And How Is It Refreshed?',
       'How Does The Forecast Work?',
@@ -55,6 +56,14 @@ describe('FaqPage', () => {
     for (const question of questions) {
       expect(screen.getByRole('heading', { level: 2, name: question })).toBeTruthy()
     }
+  })
+
+  it('lists the Sales Chart among every role’s pages', () => {
+    renderPage()
+    const roles = screen.getByRole('heading', { level: 2, name: 'Who Uses Mortar, And Where Does Each Role Start?' })
+    const answer = roles.parentElement?.textContent ?? ''
+    expect(answer.match(/Sales Chart/g)?.length).toBeGreaterThanOrEqual(4)
+    expect(answer).toContain('Manager: Today (home), Team, Sales Chart')
   })
 
   it('says plainly that the prototype runs on simulated data', () => {
@@ -83,11 +92,15 @@ describe('FaqPage', () => {
 
   it('details persona pages, Today list, Ask MortarAI, and stage labels', () => {
     renderPage()
-    expect(screen.getByText(/Sales Admin: Today \(home\), Bookings, Add Bookings, Forecast, Settings/i)).toBeTruthy()
-    expect(screen.getByText(/Loan Admin: Bookings \(home\), Today, Forecast, Settings/i)).toBeTruthy()
-    expect(screen.getByText(/Legal Admin: Legal \(home\), Today, Bookings, Forecast, Settings/i)).toBeTruthy()
     expect(
-      screen.getByText(/Manager: Manager \(home\), Today, Bookings, Legal, Add Bookings, Forecast, Settings/i)
+      screen.getByText(/Sales Admin: Today \(home\), Sales Chart, Bookings, Add Bookings, Forecast, Settings/i)
+    ).toBeTruthy()
+    expect(screen.getByText(/Loan Admin: Bookings \(home\), Today, Sales Chart, Forecast, Settings/i)).toBeTruthy()
+    expect(
+      screen.getByText(/Legal Admin: Legal \(home\), Today, Sales Chart, Bookings, Forecast, Settings/i)
+    ).toBeTruthy()
+    expect(
+      screen.getByText(/Manager: Today \(home\), Team, Sales Chart, Bookings, Legal, Add Bookings, Forecast, Settings/i)
     ).toBeTruthy()
     expect(
       screen.getByText(
