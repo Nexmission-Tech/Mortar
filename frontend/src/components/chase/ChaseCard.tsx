@@ -1,46 +1,34 @@
 /**
- * Chase card — one stalled live booking in Today's queue.
+ * Chase row — one stalled live booking in Today's worklist.
  *
- * Card stack, in reading order: unit and buyer, the blocker in plain words,
- * one muted meta line, the next step, the footer. The unit and buyer open the
- * case's case panel, the same one a row click opens on the ledger, so an update
- * can be recorded without leaving Today. One pill per card — urgency when the
- * card is overdue, otherwise Task Open — and the risk chip only when the
- * financing risk is High, because a chip true of every card on the page is not
- * a warning any more.
+ * Read across, it answers three questions in order: which booking (unit, buyer
+ * and ID, which open the case panel), what blocks it (the first specific
+ * reason, with the generic "No Update For N Days" set quietly when it is the
+ * only one), and what to do next (the rule-based step from `ballInCourt`, the
+ * desk that owns it, and the controls). Every fact and every blocker sits one
+ * click away under Details.
  *
- * Sales Admin's Today shows every desk's stalled bookings, so a card names the
- * desk that owns its next step, as a role label, whenever that is not the
- * reader's own: a move marked Loan Admin is not one the person reading it can
- * make.
- *
- * There is one next step. It is the rule-based move from `ballInCourt`, which
- * every screen leads with, so the same click here, in Waiting On and in the
- * table raises the same task. When Jev's cached answer names a different move,
- * it gets one extra muted line and its own small button — never a second block
- * of equal weight. The "Jev checked earlier" note lives in a tooltip on the
- * suggestion's glyph rather than on a pill.
+ * The step is always the rule-based move every screen leads with, so the same
+ * click here, in Waiting On and in the table raises the same task. When Mortar
+ * AI's cached answer names a different move, it gets one muted line with a
+ * text action that raises it directly. No solid ink control sits in the row:
+ * Create Task is outline, and the refresh and Details are ghost icons.
  */
 
 import type { Booking, CaseSummary, Task } from '@mortar/core'
-import { RiskChip, STAGE_LABELS, formatDate, formatDaysLong, formatRm } from '@/components/case'
-import { OWNER_ROLE_LABELS } from '@/components/case/OwnerBadge'
-import { DESK_OF_ROLE, RoleLabel } from '@/components/people/RoleLabel'
+import { RiskChip, STAGE_LABELS, formatDate, formatRm } from '@/components/case'
+import { DESK_LABELS, DESK_OF_ROLE, RoleLabel } from '@/components/people/RoleLabel'
 import type { NextStep } from '@/components/case/nextStep'
-import { PERSONA_DESK_ROLE, usePersona } from '@/lib/persona'
-import type { LucideIcon } from 'lucide-react'
 import { Plus, RefreshCw } from 'lucide-react'
-import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { StatusPill } from '@/components/ui/status-pill'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { actionIcon, blockerIcon, documentStepLabel, urgencyFor } from './chase'
+import { blockerIcon, documentStepLabel } from './chase'
+import { headlineBlocker } from './today'
+import { ClockPill, RowBlocker, RowFacts, RowIdentity, WorklistRow, daysTitle, useDetails } from './worklist'
 
-/** Renders a decorative glyph handed in as a prop, so the icon component is
-    never created inside the card's own render. */
-function Glyph({ icon: Icon, className }: { icon: LucideIcon; className?: string }) {
-  return <Icon aria-hidden="true" className={cn('size-4 shrink-0 text-muted-foreground', className)} />
-}
+/** Days without a confirmed update before a row calls itself overdue. */
+const OVERDUE_DAYS = 10
 
 export function ChaseCard({
   tourTarget,
@@ -61,7 +49,7 @@ export function ChaseCard({
   summary: CaseSummary
   /** The case's one next step, from `nextStepFor`. */
   step: NextStep
-  /** Jev's differing move, when there is one. */
+  /** Mortar AI's differing move, when there is one. */
   alternativeStep?: NextStep
   openTask?: Task | null
   suggesting?: boolean
@@ -69,123 +57,123 @@ export function ChaseCard({
   tourTarget?: string
   actionsTarget?: string
   quickViewTarget?: string
-  /** Opens the case's case panel over the queue. */
+  /** Opens the case's case panel over the worklist. */
   onInspect: () => void
   onSuggest: () => void
   /** Raises the task for the step the person picked. */
   onCreateTask: (step: NextStep) => void
 }) {
-  // Today is read as one persona, so the card asks the same question its
-  // reader would: is this move mine to make, or another desk's?
-  const { persona } = usePersona()
-  const desk = PERSONA_DESK_ROLE[persona]
-  const otherDesk = step.ownerRole === desk ? null : DESK_OF_ROLE[step.ownerRole]
+  const headline = headlineBlocker(summary.stallReasons)
+  const overdue = !openTask && summary.daysSinceEvidence >= OVERDUE_DAYS
+  const highRisk = summary.risk.level === 'high'
 
-  const urgency = urgencyFor(undefined, summary.daysSinceEvidence)
-  // One pill per card: the overdue date when the card is late, otherwise
-  // whether a task is already open. Due-today is the queue's norm, so it says
-  // nothing, and a card with a task is already reported in the footer.
-  const pill = openTask ? null : urgency.tone === 'danger' ? (
-    <StatusPill tone={urgency.tone}>{urgency.label}</StatusPill>
-  ) : null
+  const { toggle, panel } = useDetails(
+    booking.unit,
+    <RowFacts
+      facts={[
+        { label: 'Stage', value: STAGE_LABELS[summary.stage] },
+        { label: 'Booking Age', value: daysTitle(summary.bookingAgeDays), numeric: true },
+        { label: 'Last Update', value: `${daysTitle(summary.daysSinceEvidence)} Ago`, numeric: true },
+        { label: 'Booking Value', value: formatRm(booking.priceRm), numeric: true },
+        { label: 'Financing Risk', value: <RiskChip risk={summary.risk} /> }
+      ]}
+      blockers={summary.stallReasons}
+    />
+  )
 
   return (
-    <article
-      data-testid={`chase-card-${booking.id}`}
-      data-tour={tourTarget}
-      data-card-interactive=""
-      className="flex flex-col gap-3 rounded-md border border-card-border bg-card p-4 shadow-card transition-[box-shadow,transform] duration-[160ms] ease-[var(--ease-out)] hover:-translate-y-px hover:shadow-card-hover"
-    >
-      {/* Header: unit + buyer. The whole pair opens the case's case panel, the
-          same one a row click opens on the ledger, so what happened can be
-          recorded without leaving Today. */}
-      <div className="flex items-start justify-between gap-2">
-        <button
-          data-tour={quickViewTarget}
-          type="button"
-          onClick={onInspect}
-          aria-label={`Quick View ${booking.unit}: ${booking.id} · ${booking.buyer.name}`}
-          className="-mx-1 min-w-0 rounded-sm px-1 py-0.5 text-left transition-colors duration-[var(--motion-fast)] hover:bg-accent"
-        >
-          <span className="block font-mono text-[13px] font-medium text-foreground">{booking.unit}</span>
-          <span className="block truncate text-[13px] text-muted-foreground">
-            {booking.id} · {booking.buyer.name}
-          </span>
-        </button>
-        {pill}
-      </div>
-
-      {/* Blocker. The glyph names the kind of blocker, never its severity. */}
-      <p className="flex items-start gap-2 text-base font-semibold tracking-[-0.01em] text-foreground">
-        <Glyph icon={blockerIcon(summary.stallReasons, step.document)} className="mt-0.5" />
-        <span>{summary.stallReasons.join(' · ')}</span>
-      </p>
-
-      {/* One muted meta line. The risk chip only earns its place when the
-          financing risk is High; the stage, age and price read in a line. */}
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-muted-foreground">
-        {summary.risk.level === 'high' ? <RiskChip risk={summary.risk} /> : null}
-        <span>
-          {STAGE_LABELS[summary.stage]} · {formatDaysLong(summary.bookingAgeDays)} Old · Last Update{' '}
-          {formatDaysLong(summary.daysSinceEvidence)} Ago
-        </span>
-        <span className="tabular-nums">{formatRm(booking.priceRm)}</span>
-      </div>
-
-      {/* The one next step, and Jev's alternative as a single muted line. */}
-      <div className="flex flex-col gap-1.5 text-[13px]">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <Glyph icon={actionIcon(step.action)} />
-          <span className="font-medium text-foreground">{documentStepLabel(step.label, step.document)}</span>
-          {otherDesk ? <RoleLabel desk={otherDesk}>{OWNER_ROLE_LABELS[step.ownerRole]}</RoleLabel> : null}
-        </div>
-        {alternativeStep ? (
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground">
-            <span>Mortar AI Suggests: {documentStepLabel(alternativeStep.label, alternativeStep.document)}</span>
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              className="h-7 px-2 text-[13px]"
-              disabled={creating}
-              onClick={() => onCreateTask(alternativeStep)}
-            >
-              {creating ? 'Creating…' : 'Use This Action'}
-            </Button>
-          </div>
-        ) : null}
-      </div>
-
-      {/* Footer */}
-      <div data-tour={actionsTarget} className="flex items-center justify-end gap-2">
-        {openTask ? (
-          <p className="mr-auto flex min-w-0 items-center gap-2 text-[13px] text-muted-foreground">
-            <StatusPill tone="info" className="shrink-0">
-              Task Open
-            </StatusPill>
-            <span className="truncate">
-              Due {formatDate(openTask.dueOn)} · {openTask.ownerName}
+    <WorklistRow
+      testId={`chase-card-${booking.id}`}
+      tourTarget={tourTarget}
+      identity={<RowIdentity booking={booking} onInspect={onInspect} tourTarget={quickViewTarget} />}
+      blocker={
+        <RowBlocker
+          icon={blockerIcon(summary.stallReasons, step.document)}
+          text={headline?.text ?? 'No Stall Recorded'}
+          generic={headline?.generic ?? true}
+          pills={
+            overdue || highRisk ? (
+              <>
+                {overdue ? (
+                  <ClockPill
+                    tone="danger"
+                    label={`Overdue ${daysTitle(summary.daysSinceEvidence)}`}
+                    clock="Days Without A Confirmed Update, Counted From 10 Days."
+                  />
+                ) : null}
+                {highRisk ? <RiskChip risk={summary.risk} /> : null}
+              </>
+            ) : null
+          }
+        />
+      }
+      action={
+        <div className="flex min-w-0 flex-col gap-1">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+            <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+              <span className="text-sm font-medium leading-5 text-foreground">
+                {documentStepLabel(step.label, step.document)}
+              </span>
+              <RoleLabel desk={DESK_OF_ROLE[step.ownerRole]} />
             </span>
-          </p>
-        ) : null}
-        <JevRefresh suggesting={suggesting} onSuggest={onSuggest} />
-        {openTask ? null : (
-          <Button type="button" variant="default" size="sm" disabled={creating} onClick={() => onCreateTask(step)}>
-            <Plus aria-hidden="true" />
-            {creating ? 'Creating…' : 'Create Task'}
-          </Button>
-        )}
-      </div>
-    </article>
+            <div
+              data-tour={actionsTarget}
+              className="ml-auto flex items-center gap-1 max-md:w-full max-md:justify-between max-md:pt-1"
+            >
+              {openTask ? (
+                <p className="mr-auto flex min-w-0 items-center gap-2 text-[13px] text-muted-foreground md:mr-1">
+                  <StatusPill tone="info" className="shrink-0">
+                    Task Open
+                  </StatusPill>
+                  <span className="truncate">
+                    Due {formatDate(openTask.dueOn)} · {openTask.ownerName}
+                  </span>
+                </p>
+              ) : (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="max-md:mr-auto"
+                  disabled={creating}
+                  onClick={() => onCreateTask(step)}
+                >
+                  <Plus aria-hidden="true" />
+                  {creating ? 'Creating…' : 'Create Task'}
+                </Button>
+              )}
+              <span className="flex items-center gap-1">
+                <AskAgain suggesting={suggesting} onSuggest={onSuggest} />
+                {toggle}
+              </span>
+            </div>
+          </div>
+          {alternativeStep ? (
+            <p className="text-[13px] leading-[18px] text-muted-foreground">
+              Mortar AI Suggests {documentStepLabel(alternativeStep.label, alternativeStep.document)} ·{' '}
+              {DESK_LABELS[DESK_OF_ROLE[alternativeStep.ownerRole]]} ·{' '}
+              <button
+                type="button"
+                disabled={creating}
+                onClick={() => onCreateTask(alternativeStep)}
+                className="inline-flex min-h-6 items-center rounded-sm font-medium text-foreground underline underline-offset-4 outline-none hover:text-link focus-visible:ring-2 focus-visible:ring-ring disabled:text-disabled-foreground"
+              >
+                {creating ? 'Creating…' : 'Use This Action'}
+              </button>
+            </p>
+          ) : null}
+        </div>
+      }
+      details={panel}
+    />
   )
 }
 
 /**
- * "Ask Jev again" as a ghost icon button, with the note on when Jev last
- * checked in its tooltip — a note that was true of every card on the page is
- * not a warning, so it explains rather than shouts.
+ * Ask Mortar AI Again as a 32px ghost icon button, with the note on when it
+ * last checked in its tooltip rather than on every row.
  */
-function JevRefresh({ suggesting, onSuggest }: { suggesting?: boolean; onSuggest: () => void }) {
+function AskAgain({ suggesting, onSuggest }: { suggesting?: boolean; onSuggest: () => void }) {
   return (
     <TooltipProvider delayDuration={300}>
       <Tooltip>

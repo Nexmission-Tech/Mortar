@@ -69,6 +69,25 @@ export function dueTodayPhrase(count: number): string {
   return `${count} ${count === 1 ? 'Task' : 'Tasks'} Due Today`
 }
 
+/** The Your Tasks shortcut: the count includes overdue tasks, so it says so. */
+export function dueOrOverduePhrase(count: number): string {
+  return `${count} ${count === 1 ? 'Task' : 'Tasks'} Due Or Overdue`
+}
+
+const GENERIC_STALL = /^No Update For \d+ Days?$/
+
+/**
+ * The one blocker a worklist row leads with: the first specific reason, since
+ * "No Update For N Days" is true of almost every stalled case and says least.
+ * The generic reason leads only when it is the only one, and is marked so the
+ * row can set it quietly. Every reason stays in the row's Details.
+ */
+export function headlineBlocker(reasons: readonly string[]): { text: string; generic: boolean } | null {
+  const specific = reasons.find((reason) => !GENERIC_STALL.test(reason))
+  if (specific) return { text: specific, generic: false }
+  return reasons[0] ? { text: reasons[0], generic: true } : null
+}
+
 /** Stalled cases whose next step sits with the given desk ('all' for every desk). */
 export function stalledFor(snapshot: Snapshot, cases: readonly CaseSummary[], owner: 'all' | OwnerRole): CaseSummary[] {
   const bookings = new Map(snapshot.bookings.map((b) => [b.id, b]))
