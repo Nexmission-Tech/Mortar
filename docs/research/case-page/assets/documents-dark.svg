@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="64" height="64"><title>Documents — Mortar Case Journey</title><style>.journey-art-line{fill:none;stroke:#FAFAFA;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.journey-art-paper{fill:#141414}.journey-art-shade{fill:#262626}.journey-art-ground{fill:#FAFAFA;opacity:.10}</style><ellipse class="journey-art-ground" cx="48" cy="89" rx="34" ry="3"/><path class="journey-art-shade journey-art-line" d="M13 31h24l6 6h39v43H13z"/>
+<path class="journey-art-paper journey-art-line" d="M26 14h35l10 11v38H26z"/>
+<path class="journey-art-shade journey-art-line" d="M61 14v11h10"/>
+<path class="journey-art-line" d="M35 32h23M35 41h23"/>
+<path class="journey-art-paper journey-art-line" d="M12 46h27l7 6h38l-7 29H18z"/>
+<rect class="journey-art-shade journey-art-line" x="27" y="58" width="19" height="8" rx="1"/></svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="64" height="64"><title>Signed — Mortar Case Journey</title><style>.journey-art-line{fill:none;stroke:#FAFAFA;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.journey-art-paper{fill:#141414}.journey-art-shade{fill:#262626}.journey-art-ground{fill:#FAFAFA;opacity:.10}</style><ellipse class="journey-art-ground" cx="48" cy="89" rx="34" ry="3"/><path class="journey-art-shade journey-art-line" d="M25 16h32l12 12v55H25z"/>
+<path class="journey-art-paper journey-art-line" d="M19 12h33l11 11v56H19z"/>
+<path class="journey-art-shade journey-art-line" d="M52 12v11h11"/>
+<path class="journey-art-line" d="M28 32h23M28 44h25M28 53h18M28 68c9-11 12-11 8-3s8-4 9-1-2 5 8 0"/>
+<g transform="rotate(23 75 47)"><path class="journey-art-paper journey-art-line" d="M71 16h8v47l-4 14-4-14z"/>
+<path class="journey-art-shade journey-art-line" d="M71 16h8v29h-8z"/>
+<path class="journey-art-line" d="M71 63h8M75 67v7"/></g></svg>
