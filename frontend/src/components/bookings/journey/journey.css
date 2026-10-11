@@ -50,11 +50,12 @@
   stroke-width: 1.5;
   stroke-dasharray: 3 6;
 }
+/* The dash exists only during the entrance, so the resting line is always solid,
+   whatever a resize or zoom does to dash lengths on a non-scaling stroke. */
 .journey-road-travelled {
   stroke: var(--foreground);
   stroke-width: 1.75;
-  stroke-dasharray: 1;
-  animation: journey-trace 560ms ease-out both;
+  animation: journey-trace 560ms ease-out;
 }
 .journey-road-cap {
   stroke: var(--foreground);
@@ -69,9 +70,11 @@
 }
 @keyframes journey-trace {
   from {
+    stroke-dasharray: 1;
     stroke-dashoffset: 1;
   }
   to {
+    stroke-dasharray: 1;
     stroke-dashoffset: 0;
   }
 }
@@ -496,7 +499,6 @@
 @media (prefers-reduced-motion: reduce) {
   .journey-road-travelled {
     animation: none;
-    stroke-dashoffset: 0;
   }
   .journey-station {
     transition: none;

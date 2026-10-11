@@ -132,6 +132,13 @@ const span = (kind: JourneyDuration['kind'], from: IsoDate, through: IsoDate): J
   ordinal(through) < ordinal(from) ? null : { kind, from, through, calendarDays: ordinal(through) - ordinal(from) }
 const shortDate = (d: IsoDate) => `${Number(d.slice(8, 10))} ${MONTHS[Number(d.slice(5, 7)) - 1]}`
 const last = <T>(xs: readonly T[]): T | undefined => xs[xs.length - 1]
+/** The wait for a bank's decision in one sentence; a silence stall says so without repeating the count. */
+const approvalWait = (days: number, stallReasons: readonly string[]) => {
+  const span = `${days} calendar day${days === 1 ? '' : 's'}`
+  if (stallReasons.length > 0 && stallReasons.every((r) => r.startsWith('No Update For')))
+    return `No update has been recorded in the ${span} since submission.`
+  return `${span} since submission.${stallReasons.length ? ` Stalled: ${stallReasons.join('; ')}.` : ''}`
+}
 const isLive = (s: ApplicationStatus | null) => s === 'submitted' || s === 'documents_pending'
 const byEvent = (a: CaseEvent | null, b: CaseEvent | null) => (a && b ? byOccurred(a, b) : a ? -1 : b ? 1 : 0)
 const evidenceOf = (e: CaseEvent): JourneyEvidence => ({
@@ -354,9 +361,7 @@ export function bookingJourney({
           : [{ label: 'Date', value: '—' }]
     const note =
       current && id === 'loan_approved' && duration
-        ? `${duration.calendarDays} calendar days since submission.${
-            ball.stalled && summary.stallReasons.length ? ` Stalled: ${summary.stallReasons.join('; ')}.` : ''
-          } Approval has not been confirmed.`
+        ? `${approvalWait(duration.calendarDays, ball.stalled ? summary.stallReasons : [])} Approval has not been confirmed.`
         : state === 'record_missing' && id === 'documents'
           ? 'Later work is recorded, but no document receipt is on the log.'
           : (hit?.note ?? null)
