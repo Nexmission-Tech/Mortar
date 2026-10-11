@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils'
 import { modelKey, towerModel, type Box, type TowerModel, type Vec3 } from './towerModel'
 import { sceneColors, type SceneColors } from './sceneColors'
 import { siteModel, type SiteMaterial, type SiteModel } from './siteModel'
+import { ExpandableViewport } from './ExpandableViewport'
 
 type SalesChartBuildingProps = {
   units: ChartUnit[]
@@ -29,6 +30,8 @@ type SalesChartBuildingProps = {
   onHover: (unit: ChartUnit | null) => void
   /** Read out to screen readers in place of the canvas. */
   projectName?: string
+  /** Told when the view opens in, or returns from, its expanded modal. */
+  onExpandedChange?: (expanded: boolean) => void
 }
 
 type Side = 'front' | 'back'
@@ -498,6 +501,23 @@ function WheelZoom() {
   return null
 }
 
+/** Hands the zoom buttons outside the canvas a way to zoom the camera inside it, within the wheel's limits. */
+function ZoomBridge({ zoomRef }: { zoomRef: RefObject<((factor: number) => void) | null> }) {
+  const get = useThree((s) => s.get)
+  useEffect(() => {
+    zoomRef.current = (factor: number) => {
+      const { camera, invalidate } = get()
+      camera.zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, camera.zoom * factor))
+      camera.updateProjectionMatrix()
+      invalidate()
+    }
+    return () => {
+      zoomRef.current = null
+    }
+  }, [get, zoomRef])
+  return null
+}
+
 /** Draws again once the browser hands back a lost GPU context; on demand, nothing else would. */
 function ContextRestore() {
   const invalidate = useThree((s) => s.invalidate)
@@ -655,7 +675,8 @@ function Scene({
   nonce,
   anchors,
   labels,
-  site
+  site,
+  zoomRef
 }: SalesChartBuildingProps & {
   model: TowerModel
   site: SiteModel
@@ -664,6 +685,7 @@ function Scene({
   nonce: number
   anchors: Anchor[]
   labels: RefObject<Map<string, HTMLSpanElement>>
+  zoomRef: RefObject<((factor: number) => void) | null>
 }) {
   const colors = useSceneColors()
   const cube = useUnitCube()
@@ -752,6 +774,7 @@ function Scene({
         maxPolarAngle={MAX_POLAR}
       />
       <WheelZoom />
+      <ZoomBridge zoomRef={zoomRef} />
       <ContextRestore />
       <Framing model={model} site={site} focus={focus} side={side} nonce={nonce} />
     </>
@@ -801,73 +824,99 @@ export function SalesChartBuilding(props: SalesChartBuildingProps) {
   const reframe = () => setNonce((n) => n + 1)
   const blocks = [{ id: null, label: 'All' }, ...model.towers.map((t) => ({ id: t.block, label: `Block ${t.block}` }))]
 
+  const zoomRef = useRef<((factor: number) => void) | null>(null)
+  const [expanded, setExpanded] = useState(false)
+  const { onExpandedChange } = props
+  const changeExpanded = useCallback(
+    (next: boolean) => {
+      setExpanded(next)
+      onExpandedChange?.(next)
+    },
+    [onExpandedChange]
+  )
+
   return (
-    <div className="relative">
-      <div className="absolute left-0 top-0 z-[1] flex flex-wrap gap-2">
-        <Segmented
-          label="Frame the building"
-          options={blocks}
-          value={focus}
-          onPick={(id) => {
-            setFocus(id)
-            reframe()
-          }}
-        />
-        <Segmented
-          label="Side of the building"
-          options={[
-            { id: 'front' as Side, label: 'Front' },
-            { id: 'back' as Side, label: 'Back' }
-          ]}
-          value={side}
-          onPick={(id) => {
-            setSide(id)
-            reframe()
-          }}
-        />
-      </div>
-      <p className="absolute right-0 top-0 z-[1] flex h-8 items-center rounded-md bg-muted px-2.5 text-xs text-muted-foreground max-sm:hidden">
-        Drag To Turn · Ctrl Or ⌘ And Scroll To Zoom
-      </p>
-      <p className="sr-only">
-        Building View Of {props.projectName ?? 'The Project'}. Use The Grid View To Move Between Units By Keyboard.
-      </p>
-      <div aria-hidden="true" className="relative h-[620px] w-full overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 z-[1] select-none">
-          {anchors.map((anchor) => (
-            <span
-              key={anchor.key}
-              ref={(node) => {
-                if (node) labels.current.set(anchor.key, node)
-                else labels.current.delete(anchor.key)
+    <ExpandableViewport
+      label={`Building View Of ${props.projectName ?? 'The Project'}`}
+      expanded={expanded}
+      onExpandedChange={changeExpanded}
+      // A selected unit owns the first Escape: it closes the unit, the next one collapses.
+      escapeEnabled={props.selected === null}
+      onZoom={(factor) => zoomRef.current?.(factor)}
+    >
+      {(mode) => (
+        <div className={cn('relative', mode === 'expanded' && 'flex h-full flex-col')}>
+          <div className="absolute left-0 top-0 z-[1] flex flex-wrap gap-2">
+            <Segmented
+              label="Frame the building"
+              options={blocks}
+              value={focus}
+              onPick={(id) => {
+                setFocus(id)
+                reframe()
               }}
-              className={cn('absolute left-0 top-0 whitespace-nowrap', anchor.className)}
-              style={{ transform: 'translate(-9999px, -9999px)' }}
+            />
+            <Segmented
+              label="Side of the building"
+              options={[
+                { id: 'front' as Side, label: 'Front' },
+                { id: 'back' as Side, label: 'Back' }
+              ]}
+              value={side}
+              onPick={(id) => {
+                setSide(id)
+                reframe()
+              }}
+            />
+          </div>
+          <p className="absolute right-0 top-0 z-[1] flex h-8 items-center rounded-md bg-muted px-2.5 text-xs text-muted-foreground max-sm:hidden">
+            Drag To Turn · Ctrl Or ⌘ And Scroll To Zoom
+          </p>
+          <p className="sr-only">
+            Building View Of {props.projectName ?? 'The Project'}. Use The Grid View To Move Between Units By Keyboard.
+          </p>
+          <div
+            aria-hidden="true"
+            className={cn('relative w-full overflow-hidden', mode === 'expanded' ? 'min-h-0 flex-1' : 'h-[620px]')}
+          >
+            <div className="pointer-events-none absolute inset-0 z-[1] select-none">
+              {anchors.map((anchor) => (
+                <span
+                  key={anchor.key}
+                  ref={(node) => {
+                    if (node) labels.current.set(anchor.key, node)
+                    else labels.current.delete(anchor.key)
+                  }}
+                  className={cn('absolute left-0 top-0 whitespace-nowrap', anchor.className)}
+                  style={{ transform: 'translate(-9999px, -9999px)' }}
+                >
+                  {anchor.text}
+                </span>
+              ))}
+            </div>
+            <Canvas
+              flat
+              shadows="percentage"
+              frameloop="demand"
+              dpr={[1, 2]}
+              camera={{ fov: FOV, near: 1, far: 5000, position: [-300, 220, 400] }}
             >
-              {anchor.text}
-            </span>
-          ))}
+              <Scene
+                {...props}
+                model={model}
+                site={site}
+                focus={focus}
+                side={side}
+                nonce={nonce}
+                anchors={anchors}
+                labels={labels}
+                zoomRef={zoomRef}
+              />
+            </Canvas>
+          </div>
         </div>
-        <Canvas
-          flat
-          shadows="percentage"
-          frameloop="demand"
-          dpr={[1, 2]}
-          camera={{ fov: FOV, near: 1, far: 5000, position: [-300, 220, 400] }}
-        >
-          <Scene
-            {...props}
-            model={model}
-            site={site}
-            focus={focus}
-            side={side}
-            nonce={nonce}
-            anchors={anchors}
-            labels={labels}
-          />
-        </Canvas>
-      </div>
-    </div>
+      )}
+    </ExpandableViewport>
   )
 }
 

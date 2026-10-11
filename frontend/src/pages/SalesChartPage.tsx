@@ -68,6 +68,8 @@ export function SalesChartPage() {
   const clearHover = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [selected, setSelected] = useState<string | null>(null)
   const [inspecting, setInspecting] = useState<string | null>(null)
+  /** The Building view is open in its expanded modal; the island then rises above it. */
+  const [buildingExpanded, setBuildingExpanded] = useState(false)
   const [webgl, setWebgl] = useState(canUseWebGL)
   const [sceneFailed, setSceneFailed] = useState(false)
   const [view, setViewState] = useState<ChartView>(() => initialView(webgl))
@@ -311,6 +313,7 @@ export function SalesChartPage() {
                       onSelect={select}
                       onHover={hover}
                       projectName={settings.projectName}
+                      onExpandedChange={setBuildingExpanded}
                     />
                   </Suspense>
                 </BuildingBoundary>
@@ -335,6 +338,7 @@ export function SalesChartPage() {
             ref={islandRef}
             overview={overview}
             onHeight={setIslandHeight}
+            elevated={buildingExpanded && view === 'building'}
             onOpenCase={() => {
               if (selectedUnit?.bookingId) setInspecting(selectedUnit.bookingId)
             }}

@@ -14,9 +14,26 @@ const state = vi.hoisted(() => ({ snapshot: null as Snapshot | null, webgl: fals
 vi.mock('@/components/sales-chart/webgl', () => ({ canUseWebGL: () => state.webgl }))
 // jsdom has no WebGL; the scene is checked in a real browser.
 vi.mock('@/components/sales-chart/SalesChartBuilding', () => ({
-  default: () => {
+  default: ({
+    units,
+    onSelect,
+    onExpandedChange
+  }: {
+    units: { code: string }[]
+    onSelect: (unit: { code: string }) => void
+    onExpandedChange?: (expanded: boolean) => void
+  }) => {
     if (state.sceneFails) throw new Error('Error creating WebGL context.')
-    return <div data-testid="building" />
+    return (
+      <div data-testid="building">
+        <button type="button" onClick={() => onExpandedChange?.(true)}>
+          Expand The Model
+        </button>
+        <button type="button" onClick={() => onSelect(units[0]!)}>
+          Pick The First Unit
+        </button>
+      </div>
+    )
   }
 }))
 
@@ -294,6 +311,18 @@ describe('SalesChartPage', () => {
         }
       )
     }
+  })
+
+  it('raises the island above the expanded Building view, and lowers it again on the Grid', async () => {
+    state.webgl = true
+    renderPage('manager', { units: [] })
+    fireEvent.click(await screen.findByRole('button', { name: 'Expand The Model' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Pick The First Unit' }))
+    const island = screen.getByRole('region', { name: 'Selected Unit' })
+    expect(island.parentElement).toBe(document.body)
+    expect(island.className).toContain('z-[64]')
+    fireEvent.click(within(screen.getByRole('group', { name: 'Chart view' })).getByRole('button', { name: 'Grid' }))
+    expect(screen.getByRole('region', { name: 'Selected Unit' }).className).toContain('z-40')
   })
 
   it('returns focus to the unit when the island closes from inside', async () => {
