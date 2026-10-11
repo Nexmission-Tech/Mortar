@@ -19,20 +19,20 @@ add to it rather than read it.
 
 ## Run Of Show
 
-| Time  | Slide                | Speaker | What It Must Land                                         |
-| ----- | -------------------- | ------- | --------------------------------------------------------- |
-| 00:00 | 1 Cover              | A       | Booked is not sold. Signed is.                            |
-| 00:45 | 2 The Business       | A       | SPA execution is the milestone; stalled bookings cost it. |
-| 02:15 | 3 The Workflow Today | A       | Three desks, five tools, nobody owning the gaps.          |
-| 03:45 | 4 Evidence           | B       | What we know, and what the pilot must prove.              |
-| 05:15 | 5 Solution Logic     | B       | AI proposes, a person confirms, a blocker becomes a task. |
-| 06:45 | 6 Meet MortarAI      | B       | Jev picks, it never writes; a person still confirms.      |
-| 08:45 | 7 Live Walkthrough   | C       | Booked is not sold, on one screen; then work moves.       |
-| 16:45 | 8 Before And After   | C       | Ownership and evidence changed. The bank still decides.   |
-| 17:45 | 9 Adoption           | A       | A spreadsheet in, one project, one admin, one number.     |
-| 19:15 | 10 Technology        | B       | The desk keeps working when the AI does not.              |
-| 20:15 | 11 This Week         | All     | What shipped since the check-in, and three asks.          |
-| 22:00 | Questions            | All     | Anyone answers anything.                                  |
+| Time  | Slide                | Speaker | What It Must Land                                          |
+| ----- | -------------------- | ------- | ---------------------------------------------------------- |
+| 00:00 | 1 Cover              | A       | Booked is not sold. Signed is.                             |
+| 00:45 | 2 The Business       | A       | SPA execution is the milestone; stalled bookings cost it.  |
+| 02:15 | 3 The Workflow Today | A       | Three desks, five tools, nobody owning the gaps.           |
+| 03:45 | 4 Evidence           | B       | What we know, and what the pilot must prove.               |
+| 05:15 | 5 Solution Logic     | B       | AI proposes, a person confirms, a blocker becomes a task.  |
+| 06:45 | 6 Meet Mortar AI     | B       | Mortar AI picks, it never writes; a person still confirms. |
+| 08:45 | 7 Live Walkthrough   | C       | Booked is not sold, on one screen; then work moves.        |
+| 16:45 | 8 Before And After   | C       | Ownership and evidence changed. The bank still decides.    |
+| 17:45 | 9 Adoption           | A       | A spreadsheet in, one project, one admin, one number.      |
+| 19:15 | 10 Technology        | B       | The desk keeps working when the AI does not.               |
+| 20:15 | 11 This Week         | All     | What shipped since the check-in, and three asks.           |
+| 22:00 | Questions            | All     | Anyone answers anything.                                   |
 
 ## Speakers
 
@@ -96,42 +96,43 @@ financing.
 
 ### 5. Solution Logic — B, 1:30
 
-**Say:** "Our logic in five steps. A banker's message is pasted in. MortarAI,
-our AI layer, reads it and proposes: a payslip request, owned by Sales. The
-black step is the rule: a person confirms, and only confirmed evidence moves the
-case. The blocker becomes a task with a named owner and a date, and the forecast
-counts expected signings, not bookings."
+**Say:** "Our logic in five steps. A banker's message is pasted in. Mortar AI
+reads it and proposes: a payslip request, owned by Sales. The black step is the
+rule: a person confirms, and only confirmed evidence moves the case. The blocker
+becomes a task with a named owner and a date, and the forecast counts expected
+signings, not bookings."
 
 **Land:** AI proposes; people confirm; every blocker gets an owner.
 
-### 6. Meet MortarAI — B, 2 Minutes
+### 6. Meet Mortar AI — B, 2 Minutes
 
-**Say:** "MortarAI is our AI layer, and it has two engines, each with one job.
-Jev, from TypeSafe, reads. Gemini, from Google, answers."
+**Say:** "Mortar AI does two jobs: it reads, and it answers."
 
-**Then, How Jev Works:** "Most AI you have seen writes paragraphs. Jev chooses
-from a fixed list: what happened, which document, and who acts next. It shows
-how sure it is, calibrated against how often it is right. Below 60 percent, the
-proposal goes to Needs Review for a person. Unlike a general chatbot, it cannot
-invent a status. This is the exact proposal the live app shows for BK-9001."
+**Then, How It Reads:** "Most AI you have seen writes paragraphs. Mortar AI
+chooses from a fixed list: what happened, which document, and who acts next. It
+shows how sure it is, calibrated against how often it is right. Below 60
+percent, the proposal goes to Needs Review for a person. Unlike a general
+chatbot, it cannot invent a status. This is the exact proposal the live app
+shows for BK-9001."
 
 **Then, Why It Helps:** "Follow-up is slow when staff have to spot every change.
-Jev reads buyer, banker and lawyer messages, Manglish included, inside three
-seconds, with a cached answer if needed. Nobody retypes WhatsApp into Mortar,
-and a person confirms with one click. Jev also suggests the next step on each
-Today card, ranks case playbooks and flags buyers who may be going quiet. Few
-teams use Jev. We chose it because updates should be checkable, not eloquent."
+Mortar AI reads buyer, banker and lawyer messages, Manglish included, inside
+three seconds, with a cached answer if needed. Nobody retypes WhatsApp into
+Mortar, and a person confirms with one click. It also suggests the next step on
+each Today card, ranks case playbooks and flags buyers who may be going quiet.
+We built it this way because updates should be checkable, not eloquent."
 
-**Then, Gemini:** "Gemini answers Ask MortarAI questions only from the staff
-member's authorised bookings, using five read-only tools. It cites the booking,
-can read a bank-letter photo and never changes a record. Unlike a general
-chatbot, Gemini stays within the cases staff may see; if it is down, a scripted
-answer steps in."
+**Then, How It Answers:** "In Ask Mortar AI, it answers questions only from the
+staff member's authorised bookings, using five read-only tools. It cites the
+booking, can read a bank-letter photo and never changes a record. Unlike a
+general chatbot, it stays within the cases staff may see; if it is down, a
+scripted answer steps in."
 
-**Land:** Jev picks from a fixed list and cannot invent a status; Gemini stays
-within authorised bookings and cannot change records; a person still confirms.
-The Gemini answer on the slide is worded from BK-9001's case page, not captured
-from Gemini, so do not call it a live answer.
+**Land:** Mortar AI picks from a fixed list and cannot invent a status; it
+answers only from authorised bookings and cannot change records; a person still
+confirms. The answer on the slide is worded from BK-9001's case page, not
+captured live, so do not call it a live answer. If someone asks what runs it,
+use the Q&A answer "What Runs Mortar AI?".
 
 ### 7. Live Walkthrough — C, 8 Minutes
 
@@ -162,12 +163,12 @@ number judges it: the 30-day verified SPA rate."
 
 **Say:** "Read the diagram left to right. Four desks share one React app that
 runs the same rules as the server. One Bun server on Render holds the signed
-session and the only AI keys, and Neon Postgres keeps one case history. MortarAI
-sits behind the server: Jev gets three seconds, Gemini thirty. The choice that
-matters is the strip at the bottom: the desk never waits on AI. Jev falls back
-to a cached answer, then a stale one, then none, and staff record the update by
-hand; Ask MortarAI switches to answers counted from your bookings. 948 automated
-tests pass, and every deploy waits for CI."
+session and the only AI keys, and Neon Postgres keeps one case history. Mortar
+AI sits behind the server: reading gets three seconds, answering thirty. The
+choice that matters is the strip at the bottom: the desk never waits on AI.
+Reading falls back to a cached answer, then a stale one, then none, and staff
+record the update by hand; Ask Mortar AI switches to answers counted from your
+bookings. 948 automated tests pass, and every deploy waits for CI."
 
 The diagram was drawn with [Archify](https://github.com/tt-a1i/archify) from the
 repository and recoloured to the deck's design system.
@@ -178,9 +179,9 @@ repository and recoloured to the deck's design system.
 saw: every unit of the project by how far its booking has got, in 3D and as a
 grid, with the closing list one click away. The project now has one layout with
 the floor numbering your buyers know, and imports refuse a unit that is already
-held. Before that came the Manager desk, scoped staff profiles and Ask MortarAI.
-For a pilot we need three things: one project and the admin who would run it, an
-anonymised booking export with the unit register, and two practitioner
+held. Before that came the Manager desk, scoped staff profiles and Ask Mortar
+AI. For a pilot we need three things: one project and the admin who would run
+it, an anonymised booking export with the unit register, and two practitioner
 interviews. Thank you. Any of us can take any question."
 
 ## Live Walkthrough
@@ -188,23 +189,23 @@ interviews. Thank you. Any of us can take any question."
 Eight minutes on the live app. Speaker C drives and narrates the action each
 click causes. Everything on screen is simulated.
 
-| Step | Profile                   | Where                             | Do                                                                                        | What The Room Sees                                              | Say                                                                                                                                                 |
-| ---- | ------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1    | Robert Khoo · Manager     | `/sales-chart`, Building view     | Read the first two figures, then click **Loan Approved, No SPA Appointment**              | 123 Units Booked, 64 SPA Signed; seven units stay lit           | "This is Aster Heights the way your gallery sees it. We booked 123 units; 64 are signed. These seven have their loan and only need a signing date." |
-| 2    | Nurul Aina · Sales Admin  | `/chase` Today                    | Point at Your Tasks in the right rail, then the Recommended Actions cards                 | Each card: blocker, owner, next step                            | "The Sales Admin's day starts from a queue, not from memory. Each card names the blocker and who acts next."                                        |
-| 3    | Tan Mei Ling · Loan Admin | `/bookings/BK-9001`               | Show Waiting On, then click **Confirm** on Jev's suggestion under the banker's message    | Documents Requested · Payslip turns Confirmed; the wait moves   | "Jev read the banker's message. A person confirmed it, so the case now waits on the buyer's payslip, and the next step is Sales'."                  |
-| 4    | Tan Mei Ling              | **Paste A Message**               | Paste the buyer's reply below, **Add Message**, then **Confirm**; pause three seconds     | Documents Received · Payslip; the document blocker clears       | "Receipt is verified, so the document blocker clears. The bank still decides the loan."                                                             |
-| 5    | Arvind Raj · Legal Admin  | `/sales-chart`, the closing list  | Click unit **A-23A-02** (BK-9006), **Record An Update**: SPA Appointment Set, pick a date | The sheet saves; the unit drops out of the closing list (7 → 6) | "An appointment is not a signing. The unit leaves the closing list; only a recorded signing turns it black."                                        |
-| 6    | Robert Khoo · Manager     | `/chase` Today, Decisions For You | **Request Follow-Up** on a case waiting on Tan Mei Ling                                   | A follow-up lands on Tan Mei Ling's Today and bell              | "The click creates owned internal work on that desk. Mortar never sends anything to the buyer or the bank."                                         |
-| 7    | Robert Khoo · Manager     | `/sales-chart`                    | Point at **Expected SPAs In 30 Days**                                                     | About 21 expected, range 17–25, from 50 bookings under 30 days  | "Finance reads signings, not bookings. On simulated data this proves the method, not the business."                                                 |
+| Step | Profile                   | Where                             | Do                                                                                           | What The Room Sees                                              | Say                                                                                                                                                 |
+| ---- | ------------------------- | --------------------------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | Robert Khoo · Manager     | `/sales-chart`, Building view     | Read the first two figures, then click **Loan Approved, No SPA Appointment**                 | 123 Units Booked, 64 SPA Signed; seven units stay lit           | "This is Aster Heights the way your gallery sees it. We booked 123 units; 64 are signed. These seven have their loan and only need a signing date." |
+| 2    | Nurul Aina · Sales Admin  | `/chase` Today                    | Point at Your Tasks in the right rail, then the Recommended Actions cards                    | Each card: blocker, owner, next step                            | "The Sales Admin's day starts from a queue, not from memory. Each card names the blocker and who acts next."                                        |
+| 3    | Tan Mei Ling · Loan Admin | `/bookings/BK-9001`               | Show Waiting On, then click **Confirm** on Mortar AI's suggestion under the banker's message | Documents Requested · Payslip turns Confirmed; the wait moves   | "Mortar AI read the banker's message. A person confirmed it, so the case now waits on the buyer's payslip, and the next step is Sales'."            |
+| 4    | Tan Mei Ling              | **Paste A Message**               | Paste the buyer's reply below, **Add Message**, then **Confirm**; pause three seconds        | Documents Received · Payslip; the document blocker clears       | "Receipt is verified, so the document blocker clears. The bank still decides the loan."                                                             |
+| 5    | Arvind Raj · Legal Admin  | `/sales-chart`, the closing list  | Click unit **A-23A-02** (BK-9006), **Record An Update**: SPA Appointment Set, pick a date    | The sheet saves; the unit drops out of the closing list (7 → 6) | "An appointment is not a signing. The unit leaves the closing list; only a recorded signing turns it black."                                        |
+| 6    | Robert Khoo · Manager     | `/chase` Today, Decisions For You | **Request Follow-Up** on a case waiting on Tan Mei Ling                                      | A follow-up lands on Tan Mei Ling's Today and bell              | "The click creates owned internal work on that desk. Mortar never sends anything to the buyer or the bank."                                         |
+| 7    | Robert Khoo · Manager     | `/sales-chart`                    | Point at **Expected SPAs In 30 Days**                                                        | About 21 expected, range 17–25, from 50 bookings under 30 days  | "Finance reads signings, not bookings. On simulated data this proves the method, not the business."                                                 |
 
 **Optional, If Time Allows:** on the Sales Chart, drag to turn the building
 (hold Ctrl or ⌘ and scroll to zoom; **All** puts it back), then click **Grid**:
 the same units, flat, the way the gallery's spreadsheet shows them. Or, as Tan
-Mei Ling, open Ask MortarAI with the sparkle button and ask "What is BK-9001
-waiting on?". If the answer is tagged **Counted From Your Bookings**, Gemini was
+Mei Ling, open Ask Mortar AI with the sparkle button and ask "What is BK-9001
+waiting on?". If the answer is tagged **Counted From Your Bookings**, the AI was
 unavailable and the scripted fallback answered; say so rather than presenting it
-as Gemini.
+as the AI's own answer.
 
 **Buyer Reply To Paste:**
 `Hi Nurul, slip gaji 3 bulan dah saya hantar ke Mei Ling tadi. Dokumen semua lengkap ya.`
@@ -231,15 +232,15 @@ Check these an hour before, signed in as each profile:
 
 - **The Building View Is Blank Or Stutters On The Shared Screen:** click
   **Grid**. It shows the same units and filters; say so and carry on.
-- **Jev Is Slow Or Wrong:** use **Record An Update** instead: Documents
+- **Mortar AI Is Slow Or Wrong:** use **Record An Update** instead: Documents
   Received, Payslip, Apex Bank. Say that this is the manual path the design
   keeps open.
 - **Receipt Already Confirmed:** someone rehearsed on the shared data. Reset it
   as above, or narrate from slide 7.
-- **Ask MortarAI Says Counted From Your Bookings:** Gemini is busy or down, and
+- **Ask Mortar AI Says Counted From Your Bookings:** the AI is busy or down, and
   the panel fell back to answers counted from the same bookings. Name it as the
-  fallback on slide 10 and move on. On 29 September at 00:10 every Gemini Flash
-  model was returning "high demand" errors, so check it an hour before.
+  fallback on slide 10 and move on. On 29 September at 00:10 the answering
+  engine was returning "high demand" errors, so check it an hour before.
 - **The App Will Not Load:** return to slide 7 and walk the five steps from the
   screenshot. Do not debug in front of the room.
 
@@ -329,25 +330,26 @@ messages in and confirm what they say.
 
 **Q:** Can the AI approve a loan or move a case on its own?
 
-**A:** No. MortarAI's reading is a proposal; only a person's confirmation moves
+**A:** No. Mortar AI's reading is a proposal; only a person's confirmation moves
 the case, and below 0.60 confidence it is flagged Needs Review.
 
-**Q:** Why two AI engines?
+**Q:** What Runs Mortar AI?
 
-**A:** Different jobs. Jev returns typed choices with a probability, which code
-can check and a person can confirm, so it reads messages. Gemini writes
-language, so it answers questions, only from the asker's bookings and through
-five read-only tools. Together they are MortarAI.
+**A:** Only if asked, and in one breath: two engines behind one name. Reading
+runs on TypeSafe's Jev, which returns typed choices with a probability that code
+can check and a person can confirm. Answering runs on Google's Gemini, which
+writes a sentence, only from the asker's bookings and through five read-only
+tools. Staff only ever see Mortar AI.
 
-**Q:** Why not just use ChatGPT or Gemini for everything?
+**Q:** Why not just use ChatGPT for everything?
 
-**A:** A chatbot writes free text that someone still has to interpret. Jev
+**A:** A chatbot writes free text that someone still has to interpret. Mortar AI
 answers fixed questions with a calibrated confidence, so the software can check
 the answer, route it to the right desk and hold it for a person. For turning a
-message into a case update, that is the whole job. Gemini does what writing
-models are good at: answering a person's question in a sentence.
+message into a case update, that is the whole job. Answering a person's question
+in a sentence is the one place it writes.
 
-**Q:** What does Jev actually do in Mortar?
+**Q:** What does Mortar AI actually do?
 
 **A:** Four jobs, each a handful of fixed questions: read a message into an
 event, a document and an owner; pick the next move for a stalled case; rank our
@@ -358,9 +360,9 @@ it.
 **Q:** What if the AI is wrong, or down?
 
 **A:** Staff dispute or dismiss the proposal and record the right event by hand.
-If Jev is down it falls back to a cached or stale answer, or none; if Gemini is
-down, Ask MortarAI answers from counts of the same bookings. Pages never wait on
-either.
+If reading is down it falls back to a cached or stale answer, or none; if
+answering is down, Ask Mortar AI answers from counts of the same bookings. Pages
+never wait on either.
 
 **Q:** Is the forecast AI?
 
@@ -377,8 +379,8 @@ needs proper single sign-on.
 **Q:** Can we load real buyer data next week?
 
 **A:** Not yet. Everything today is simulated. Real data needs agreed identity,
-processing and retention terms, and MortarAI's Gemini engine runs on a free tier
-we restrict to simulated data.
+processing and retention terms, and Mortar AI's answering engine runs on a free
+tier we restrict to simulated data.
 
 **Q:** What does it cost to run?
 
@@ -452,8 +454,8 @@ Sources:
 - That Release Review cancels anything, or that two rejections mean release. A
   person decides; banks apply their own credit policies.
 - That every unsigned day costs a set amount in late-delivery damages.
-- That Jev and Ask MortarAI are two separate AIs. MortarAI is the AI layer: Jev
-  reads, Gemini answers, and Ask MortarAI is the panel where staff ask.
+- That Mortar AI and Ask Mortar AI are two separate AIs. Mortar AI reads and
+  answers; Ask Mortar AI is the panel where staff ask.
 
 ## Before You Present
 
@@ -461,7 +463,7 @@ Sources:
   and time it.
 - **One Hour Before:** open the live app once so Render is warm, sign in as each
   profile, check the preconditions in [Live Walkthrough](#live-walkthrough), and
-  ask Ask MortarAI one question to see whether Gemini or the counted fallback
+  ask Ask Mortar AI one question to see whether the AI or the counted fallback
   answers.
 - **Ten Minutes Before:** open the deck full screen, keep the PDF and a second
   browser tab on the app as fallbacks, and close every notification.
