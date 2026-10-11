@@ -43,10 +43,16 @@ describe('filters and counts', () => {
   test('a filter lights exactly the units whose case matches', () => {
     for (const filter of FILTERS) {
       const lit = litUnits(units, cases, filter)
-      const expected = units.filter((u) => u.bookingId && matchesFilter(filter, byId.get(u.bookingId)!))
+      const expected = units.filter((u) => matchesFilter(filter, u, u.bookingId ? byId.get(u.bookingId) : undefined))
       expect([...lit].sort()).toEqual(expected.map((u) => u.code).sort())
     }
     expect(litUnits(units, cases, 'awaiting_appointment').size).toBeGreaterThan(0)
+  })
+
+  test('the state filters agree with the legend', () => {
+    const counts = legendCounts(units)
+    expect(litUnits(units, cases, 'needs_action').size).toBe(counts.needs_action)
+    expect(litUnits(units, cases, 'release_review').size).toBe(counts.release_review)
   })
 
   test('never lights a unit the viewer cannot open', () => {

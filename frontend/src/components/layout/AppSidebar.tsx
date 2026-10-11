@@ -10,7 +10,18 @@
 import { useState, useCallback, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import type { LucideIcon } from 'lucide-react'
-import { BellRing, ChevronLeft, ClipboardList, FileUp, Scale, Settings, TrendingUp, UsersRound, X } from 'lucide-react'
+import {
+  Building2,
+  BellRing,
+  ChevronLeft,
+  ClipboardList,
+  FileUp,
+  Scale,
+  Settings,
+  TrendingUp,
+  UsersRound,
+  X
+} from 'lucide-react'
 import { MortarMark } from '@/components/brand/MortarMark'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { NAV_GROUP_LABELS, pagesForPersona, usePersona, type NavGroup, type PersonaPage } from '@/lib/persona'
@@ -22,6 +33,7 @@ const SIDEBAR_COLLAPSED = 64
 const PAGE_ICONS: Record<string, LucideIcon> = {
   '/chase': BellRing,
   '/team': UsersRound,
+  '/sales-chart': Building2,
   '/bookings': ClipboardList,
   '/legal': Scale,
   '/import': FileUp,

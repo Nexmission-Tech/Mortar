@@ -105,7 +105,7 @@ describe('TourProvider', () => {
     renderTour()
     fireEvent.click(screen.getByRole('button', { name: 'Start tour' }))
     fireEvent.click(screen.getByRole('button', { name: 'Next' }))
-    expect(progress().textContent).toContain('2 / 8')
+    expect(progress().textContent).toContain('2 / 9')
 
     fireEvent.click(screen.getByRole('button', { name: 'Switch to Legal' }))
     await waitFor(() => expect(screen.getByTestId('location').textContent).toBe('/legal'))
@@ -125,14 +125,14 @@ describe('TourProvider', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Start tour' }))
     const input = screen.getByRole('textbox', { name: 'Dialog input' })
     fireEvent.keyDown(input, { key: 'ArrowRight' })
-    expect(progress().textContent).toContain('1 / 8')
+    expect(progress().textContent).toContain('1 / 9')
     fireEvent.keyDown(input, { key: 'Escape' })
-    expect(progress().textContent).toContain('1 / 8')
+    expect(progress().textContent).toContain('1 / 9')
 
     fireEvent.keyDown(screen.getByRole('button', { name: 'Dialog button' }), { key: 'ArrowRight' })
-    expect(progress().textContent).toContain('1 / 8')
+    expect(progress().textContent).toContain('1 / 9')
     fireEvent.keyDown(document.body, { key: 'ArrowRight' })
-    expect(progress().textContent).toContain('2 / 8')
+    expect(progress().textContent).toContain('2 / 9')
   })
 
   it('keeps the caption available when a step has no matching target', () => {

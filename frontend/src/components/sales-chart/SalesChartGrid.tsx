@@ -72,7 +72,7 @@ export function SalesChartGrid({ units, lit, selected, onSelect, onHover }: Sale
   }
 
   return (
-    <div className="flex gap-8 overflow-x-auto pb-2">
+    <div className="relative flex gap-8 overflow-x-auto pb-2">
       {blocks.map((grid, b) => (
         <table key={grid.block} className="shrink-0 border-separate border-spacing-[2px]">
           <caption className="pb-2 text-left text-xs font-semibold text-foreground">

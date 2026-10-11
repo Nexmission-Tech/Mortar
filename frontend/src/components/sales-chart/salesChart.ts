@@ -8,8 +8,6 @@ import {
   chartUnits,
   DEFAULT_PROJECT_SETTINGS,
   heldUnits,
-  needsAction,
-  releaseReview,
   type CaseSummary,
   type ChartUnit,
   type Snapshot,
@@ -38,7 +36,11 @@ export const STATE_LABELS: Record<UnitState, string> = {
 export type ChartFilter = 'needs_action' | 'awaiting_appointment' | 'release_review'
 
 export const CHART_FILTERS: readonly { id: ChartFilter; label: string; info: string }[] = [
-  { id: 'needs_action', label: 'Needs Action', info: 'Live Bookings The Stall Rule Flagged: The Cases On Today.' },
+  {
+    id: 'needs_action',
+    label: 'Needs Action',
+    info: 'Units Whose Booking The Stall Rule Flagged. Release Reviews Are Counted On Their Own.'
+  },
   {
     id: 'awaiting_appointment',
     label: 'Loan Approved, No SPA Appointment',
@@ -51,10 +53,15 @@ export const CHART_FILTERS: readonly { id: ChartFilter; label: string; info: str
   }
 ]
 
-export function matchesFilter(filter: ChartFilter, summary: CaseSummary): boolean {
-  if (filter === 'needs_action') return needsAction(summary)
+/**
+ * Whether a unit the viewer may open matches a filter. Needs Action and Release
+ * Review follow the unit's state, so the chip, the figure and the legend agree;
+ * the closing list reads the case, because it cuts across states.
+ */
+export function matchesFilter(filter: ChartFilter, unit: ChartUnit, summary: CaseSummary | undefined): boolean {
+  if (!unit.bookingId || !summary) return false
   if (filter === 'awaiting_appointment') return awaitingSpaAppointment(summary)
-  return releaseReview(summary)
+  return unit.state === filter
 }
 
 /**
@@ -72,8 +79,7 @@ export function litUnits(units: ChartUnit[], cases: CaseSummary[], filter: Chart
   const byId = new Map(cases.map((c) => [c.bookingId, c]))
   const lit = new Set<string>()
   for (const unit of units) {
-    const summary = unit.bookingId ? byId.get(unit.bookingId) : undefined
-    if (summary && matchesFilter(filter, summary)) lit.add(unit.code)
+    if (matchesFilter(filter, unit, unit.bookingId ? byId.get(unit.bookingId) : undefined)) lit.add(unit.code)
   }
   return lit
 }

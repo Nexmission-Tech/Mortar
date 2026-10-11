@@ -11,6 +11,12 @@ export const TOUR_STEPS: Record<Persona, TourStep[]> = {
       caption: 'Today lists the overdue cases waiting on a decision from you, across every desk.'
     },
     {
+      label: 'Sales Chart',
+      route: '/sales-chart',
+      target: '[data-tour="sales-chart-header"]',
+      caption: 'Sales Chart shows every unit by how far its booking has got. Click a unit to open its case.'
+    },
+    {
       label: 'Team',
       route: '/team',
       target: '[data-tour="team-header"]',
@@ -29,6 +35,12 @@ export const TOUR_STEPS: Record<Persona, TourStep[]> = {
       route: '/chase',
       target: '[data-tour="today-header"]',
       caption: 'Today shows the bookings that need a move and the tasks due today.'
+    },
+    {
+      label: 'Sales Chart',
+      route: '/sales-chart',
+      target: '[data-tour="sales-chart-header"]',
+      caption: 'Sales Chart shows every unit by how far its booking has got. Click a unit to open its case.'
     },
     {
       label: 'The Next Move',

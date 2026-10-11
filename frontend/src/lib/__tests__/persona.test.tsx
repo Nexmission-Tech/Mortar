@@ -57,15 +57,23 @@ describe('persona pages', () => {
   it('gives each persona only the pages that role can open', () => {
     expect(pagesForPersona('sales-admin').map((p) => p.to)).toEqual([
       '/chase',
+      '/sales-chart',
       '/bookings',
       '/import',
       '/forecast',
       '/settings'
     ])
-    expect(pagesForPersona('loan-admin').map((p) => p.to)).toEqual(['/bookings', '/chase', '/forecast', '/settings'])
+    expect(pagesForPersona('loan-admin').map((p) => p.to)).toEqual([
+      '/bookings',
+      '/chase',
+      '/sales-chart',
+      '/forecast',
+      '/settings'
+    ])
     expect(pagesForPersona('legal-admin').map((p) => p.to)).toEqual([
       '/legal',
       '/chase',
+      '/sales-chart',
       '/bookings',
       '/forecast',
       '/settings'
