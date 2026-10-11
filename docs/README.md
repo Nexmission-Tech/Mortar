@@ -8,9 +8,9 @@
 
   <p>
     <b>Know which bookings will really become sales.</b><br />
-    One live view of every booking across Sales, Loan Admin and Legal — the
-    daily Today queue for the stuck ones, and a cash forecast that only counts
-    bookings likely to sign.
+    One live view of every booking across Sales, Loan Admin and Legal — a Sales
+    Chart of every unit, the daily Today queue for the stuck ones, and a cash
+    forecast that only counts bookings likely to sign.
   </p>
 
 [![TypeScript][TypeScript-badge]][TypeScript-url]
@@ -18,7 +18,8 @@
 [![Bun][Bun-badge]][Bun-url] [![Tailwind][Tailwind-badge]][Tailwind-url]
 [![shadcn/ui][shadcn-badge]][shadcn-url]
 [![Recharts][Recharts-badge]][Recharts-url]
-[![Vitest][Vitest-badge]][Vitest-url] [![MIT][MIT-badge]][LICENSE]
+[![three.js][three-badge]][three-url] [![Vitest][Vitest-badge]][Vitest-url]
+[![MIT][MIT-badge]][LICENSE]
 
 <a href="https://mortar-d18f.onrender.com"><strong>Live Demo »</strong></a>
 &middot;
@@ -49,7 +50,7 @@ A Feature</a> <br />
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
         <li><a href="#run-jev-locally">Run Jev Locally</a></li>
-        <li><a href="#ask-mortarai-mortarais-gemini-engine">Ask MortarAI</a></li>
+        <li><a href="#ask-mortar-ai-mortar-ais-gemini-engine">Ask Mortar AI</a></li>
         <li><a href="#test-database">Test Database</a></li>
         <li><a href="#project-structure">Project Structure</a></li>
       </ul>
@@ -78,7 +79,7 @@ is RM24M of reported sales that is not real.
 
 Built by **NexTechnologies** for the YEI 3.0 Youth Innovation Sandbox by Kabel
 (Premium track), tackling the Chin Hin Group property booking conversion
-challenge. Proposal PDF and pitch video are due Sunday, 20 September 2026.
+challenge. The final pitch to Chin Hin Group is in October 2026.
 
 Read next: [Design Spec](DESIGN.md) ·
 [Problem Statement](source/problem-statement.md) ·
@@ -100,29 +101,29 @@ simulated; the screens are not mockups.
     <td width="33%">
       <img src="assets/screens/landing.webp" alt="The Mortar landing page" width="100%">
       <br /><strong>Landing</strong>
-      <br />The public entry point: the claim, and how the three desks fit together.
+      <br />The public entry point: booked is not sold, and how the desks fit together.
     </td>
     <td width="33%">
       <img src="assets/screens/today.webp" alt="The Today desk as Sales Admin" width="100%">
       <br /><strong>Today · Sales Admin</strong>
-      <br />Nurul Aina's daily desk. Stalled bookings first, each with the rule-based next step, beside a rail of figures and tasks.
+      <br />Nurul Aina's daily desk. Stalled bookings first, each with the next step and Mortar AI's alternative, beside her figures and tasks.
     </td>
     <td width="33%">
       <img src="assets/screens/today-manager.webp" alt="The Today desk as Manager" width="100%">
       <br /><strong>Today · Manager</strong>
-      <br />Robert Khoo's desk: the overdue cases nobody has followed up yet, drawn as the same chase cards.
+      <br />Robert Khoo's desk: the overdue cases nobody has followed up yet, and the busiest desk.
     </td>
   </tr>
   <tr>
     <td width="33%">
+      <img src="assets/screens/sales-chart.webp" alt="The Sales Chart as a 3D showhouse model" width="100%">
+      <br /><strong>Sales Chart</strong>
+      <br />Every unit of the project in its booking-to-SPA state, as a showhouse scale model or a flat grid, with the closing list one click away.
+    </td>
+    <td width="33%">
       <img src="assets/screens/team.webp" alt="The Team page of desk loads" width="100%">
       <br /><strong>Team</strong>
       <br />One row per staff profile: who is holding bookings up, how long, and what that wait is worth.
-    </td>
-    <td width="33%">
-      <img src="assets/screens/profile-menu.webp" alt="The profile menu open from the top bar avatar" width="100%">
-      <br /><strong>Profile Menu</strong>
-      <br />The avatar carries the signed-in persona and its two figures; it opens the five demo profiles.
     </td>
     <td width="33%">
       <img src="assets/screens/bookings.webp" alt="The bookings ledger" width="100%">
@@ -134,34 +135,34 @@ simulated; the screens are not mockups.
     <td width="33%">
       <img src="assets/screens/case.webp" alt="A single booking case page" width="100%">
       <br /><strong>Case Page</strong>
-      <br />One booking end to end: loan and legal tracks, Waiting On and next move, messages, tasks and evidence.
+      <br />Who holds the case and the next step, the illustrated booking journey, then Overview, Messages, History and Tasks.
+    </td>
+    <td width="33%">
+      <img src="assets/screens/proposal.webp" alt="Mortar AI proposing a case update from a banker's message" width="100%">
+      <br /><strong>Mortar AI Proposal</strong>
+      <br />Mortar AI reads each message and proposes an update in words. Staff confirm, dispute or dismiss.
     </td>
     <td width="33%">
       <img src="assets/screens/legal.webp" alt="The legal queue awaiting SPA execution" width="100%">
       <br /><strong>Legal</strong>
       <br />What sits between an approved loan and a signed SPA, with whom, and for how long.
     </td>
-    <td width="33%">
-      <img src="assets/screens/forecast.webp" alt="The forecast of projected signings" width="100%">
-      <br /><strong>Forecast</strong>
-      <br />Expected signings inside 30 days, with stage conversion rates, over a stack of the documents behind the figure.
-    </td>
   </tr>
   <tr>
     <td width="33%">
+      <img src="assets/screens/forecast.webp" alt="The forecast of SPA signings" width="100%">
+      <br /><strong>Forecast</strong>
+      <br />Estimated SPAs by booking day 30 with a range, over five reports laid out as documents.
+    </td>
+    <td width="33%">
       <img src="assets/screens/import.webp" alt="The Add Bookings intake page" width="100%">
       <br /><strong>Add Bookings</strong>
-      <br />Upload a booking sheet or type them in, review row by row, and send to the main desks.
+      <br />Upload a booking sheet or type bookings in, review row by row, and send them to the desks.
     </td>
     <td width="33%">
       <img src="assets/screens/settings.webp" alt="The settings and demo data page" width="100%">
       <br /><strong>Settings</strong>
-      <br />The demo dataset: seed, reference date, record counts, and a reset.
-    </td>
-    <td width="33%">
-      <img src="assets/screens/proposal.webp" alt="Jev proposing a case update on a banker message" width="100%">
-      <br /><strong>Jev Proposal</strong>
-      <br />Jev reads each message and proposes an update. Staff confirm, dispute or dismiss.
+      <br />The project layout and unit numbering, and the demo dataset with its reset.
     </td>
   </tr>
 </table>
@@ -203,12 +204,13 @@ personas: two Sales Admins, one Loan Admin, one Legal Admin and one Manager.
 | `/`             | Public landing page                                                                                                                  |
 | `/sign-in`      | Named demo profile picker and signed session cookie, no password                                                                     |
 | `/app`          | Redirects to the active persona's home                                                                                               |
-| `/chase`        | Today: who to chase today, with rule-based next steps, blocker reasons, and WhatsApp click-to-chat links                             |
+| `/chase`        | Today: who to chase today, with rule-based next steps, Mortar AI's alternative, blocker reasons and one-click tasks                  |
 | `/team`         | Team: every desk's load side by side, most overdue first, with Open Bookings, Overdue Cases, Value At Risk and Expected Signings     |
 | `/bookings`     | Bookings: unit pipeline, Who Holds Each Booking filter, and case panel quick view; hand-entry Add Booking and closed Excel export    |
-| `/bookings/:id` | Case page: single-sentence status header, dual tracks, button-driven updates, and verbal Jev readings                                |
+| `/bookings/:id` | Case page: who holds the case and the next step, the illustrated booking journey, then Overview, Messages, History and Tasks         |
 | `/legal`        | Legal: SPA execution queue with No Appointment Yet and Appointment Set, Not Signed sections, with inline appointment/signing dialogs |
-| `/forecast`     | Forecast: projected signings, accuracy score sentence, the supporting document stack, and where bookings died                        |
+| `/forecast`     | Forecast: estimated SPAs by booking day 30 with a range, and five reports as a document stack                                        |
+| `/sales-chart`  | Sales Chart: every unit by its booking-to-SPA state, as a 3D showhouse model or a grid, with the closing list as a filter            |
 | `/import`       | Add Bookings: upload a spreadsheet or type bookings in directly, with row-by-row review                                              |
 | `/faq`          | FAQ                                                                                                                                  |
 | `/settings`     | Settings: demo dataset controls, reset, server health, and folded layouts                                                            |
@@ -239,12 +241,29 @@ and the avatar, never a status, and the top bar carries only a silhouette
 avatar, so the signed-in profile, its figures and the switcher live in one
 popover.
 
+The **Sales Chart** draws the whole project the way a sales gallery would: three
+towers on a landscaped showhouse model, every unit coloured by where its booking
+stands, from Available to SPA Signed. One filter, Loan Approved, No SPA
+Appointment, lights the closing list. Clicking a unit raises its booking, and
+the same units also read as a flat grid.
+
+Each **case page** opens on the decision, not the record. It says who holds the
+case, what they owe and who acts next, and draws the booking journey as an
+illustrated road: Booked, Documents, Loan Submitted, Loan Approved, SPA Signed,
+with You Are Here at the milestone being waited on. Only confirmed evidence
+checks a milestone. Messages, history and tasks sit one click below, and forms
+open in a floating panel.
+
+**Mortar AI** reads every buyer, banker and solicitor message and proposes the
+update in words, never as a percentage, and nothing is recorded until a person
+confirms it.
+
 Measured, not estimated.
 
 |                               |        |
 | ----------------------------- | ------ |
-| App pages                     | **12** |
-| API routes                    | **15** |
+| App pages                     | **13** |
+| API routes                    | **22** |
 | Personas                      | **4**  |
 | Demo profiles                 | **5**  |
 | Funnel stages tracked         | **6**  |
@@ -265,10 +284,10 @@ a Bun API reading Postgres.
 
 Four staff personas handle case messages from buyers, bankers and lawyers in one
 web app. A single Bun process serves the frontend and API, while `@mortar/core`
-keeps the browser and server on the same rules. The server sends classifications
-to Jev through TypeSafe, answers staff questions with Google Gemini, and stores
-case history in Neon PostgreSQL. Render hosts the service after GitHub Actions
-checks pass.
+keeps the browser and server on the same rules. Mortar AI runs on two engines:
+the server sends classifications to Jev through TypeSafe and answers staff
+questions with Google Gemini. Case history lives in Neon PostgreSQL. Render
+hosts the service after GitHub Actions checks pass.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/architecture-dark.svg">
@@ -321,10 +340,11 @@ checks pass.
 | Tooling  | Bun 1.3.14 workspaces (`frontend`, `packages/*`, `server`) |
 | Styling  | Tailwind CSS 4, shadcn/ui (Radix)                          |
 | Charts   | Recharts 3                                                 |
+| 3D       | three.js 0.186, React Three Fiber 9, drei 10 (Sales Chart) |
 | State    | React Context for persona; case data from `/api`           |
 | Tests    | Vitest, Testing Library, jsdom                             |
 | Serving  | One Bun process serves `/api/*` and `frontend/dist`        |
-| AI       | MortarAI: Jev (TypeSafe SDK) and Gemini (`assistant/`)     |
+| AI       | Mortar AI: Jev (TypeSafe SDK) and Gemini (`assistant/`)    |
 | Hosting  | Render web service, Free instance (Singapore)              |
 
 <p align="right"><a href="#readme-top">&uarr;</a></p>
@@ -400,11 +420,11 @@ information.
 
 <p align="right"><a href="#readme-top">&uarr;</a></p>
 
-### Ask MortarAI (MortarAI's Gemini Engine)
+### Ask Mortar AI (Mortar AI's Gemini Engine)
 
-MortarAI is Mortar's AI layer: Jev classifies messages, and Gemini answers staff
-questions in Ask MortarAI. Ask MortarAI connects to Google's Gemini API over
-`fetch` (`POST /api/assistant`) to answer questions grounded in the live
+Mortar AI is Mortar's AI layer: Jev classifies messages, and Gemini answers
+staff questions in Ask Mortar AI. Ask Mortar AI connects to Google's Gemini API
+over `fetch` (`POST /api/assistant`) to answer questions grounded in the live
 snapshot using five read-only tools. Set `GEMINI_API_KEY` in `.env` to enable
 it:
 
@@ -442,7 +462,8 @@ database is the separate Neon project `mortar-test`.
 docs/            This file, DESIGN.md, sources, agent notes
 frontend/        The app: React 19 + Vite SPA
   src/pages/     One file per route
-  src/components/layout/, ui/ (shadcn), charts/
+  src/components/bookings/ (case page, journey), sales-chart/ (grid, 3D
+                 model), layout/, ui/ (shadcn), charts/
   src/lib/       Persona context, stores, formatters
 packages/core/   @mortar/core: shared TypeScript domain rules
 packages/jev/    @mortar/jev: proposals, playbooks, answer cache
@@ -498,7 +519,7 @@ Released under the [MIT License](../LICENSE).
 - [shadcn/ui](https://ui.shadcn.com/), [Radix UI](https://www.radix-ui.com/),
   and [Lucide](https://lucide.dev/)
 - [TypeSafe](https://docs.typesafe.ai/) and
-  [Google Gemini](https://ai.google.dev/), for MortarAI's two engines
+  [Google Gemini](https://ai.google.dev/), for Mortar AI's two engines
 - Everyone who answered the anonymous practitioner survey behind the leakage
   ranking
 
@@ -525,6 +546,9 @@ Released under the [MIT License](../LICENSE).
 [Recharts-badge]:
   https://img.shields.io/badge/Recharts_3-FF6384?style=for-the-badge
 [Recharts-url]: https://recharts.org/
+[three-badge]:
+  https://img.shields.io/badge/three.js_0.186-000000?style=for-the-badge&logo=threedotjs&logoColor=white
+[three-url]: https://threejs.org/
 [Vitest-badge]:
   https://img.shields.io/badge/Vitest_3-6E9F18?style=for-the-badge&logo=vitest&logoColor=white
 [Vitest-url]: https://vitest.dev/
