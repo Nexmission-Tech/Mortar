@@ -316,13 +316,18 @@ no third-party schema validation libraries are loaded.
   hash the answer was saved under, returning `stale: true` on a mismatch;
   `extract` is keyed to an immutable message and is never stale. This is a
   separate staleness check from the per-route fallback ladder described under
-  "Fallback And Caching Ladder" below. The server builds one snapshot and shares
-  it between requests: every `Database` method that writes, and Add and Delete
-  Demo Data, drop it, so a write through this server shows on the next request.
-  A write made through another server on the same database shows within 10
-  seconds (`SNAPSHOT_TTL_MS`). Each profile's scoped body is rendered once per
-  built snapshot. On Render's Free instance this keeps a burst of page loads
-  from starving the process past its health check.
+  "Fallback And Caching Ladder" below. It also carries `projectSettings`, the
+  stored layout (the demo layout when none is stored or it no longer reads), and
+  `units`, which `scopeSnapshot` adds per profile: every unit a live or signed
+  booking holds, with its Sales Chart state and sales owner, and the booking id
+  only where the viewer may open the case. The client fills in every other unit
+  as available with `chartUnits`. The server builds one snapshot and shares it
+  between requests: every `Database` method that writes, and Add and Delete Demo
+  Data, drop it, so a write through this server shows on the next request. A
+  write made through another server on the same database shows within 10 seconds
+  (`SNAPSHOT_TTL_MS`). Each profile's scoped body is rendered once per built
+  snapshot. On Render's Free instance this keeps a burst of page loads from
+  starving the process past its health check.
 - `POST /api/assistant`: Grounded assistant powered by Google's Gemini API
   (`server/src/assistant/`, default model `gemini-3.5-flash-lite` configured via
   `GEMINI_API_KEY` and `GEMINI_MODEL`). It grounds answers against the live
@@ -838,10 +843,15 @@ silently acting as a different profile. Missing sessions fail closed for
 protected routes. The health endpoint remains public.
 
 `GET /api/settings` returns shared project settings; `PUT /api/settings` is
-manager-only. `GET /api/inventory` exposes held project/unit pairs without buyer
-names or booking identifiers. Existing import transaction locks continue to
-reject duplicate occupied units atomically. Manager flags are stored on tasks;
-the recipient's desk derives notifications from those persisted tasks.
+manager-only. Settings carry `numbering`: `plain`, or `skip-four`, where a floor
+or unit number containing a 4 takes the number below with an A (3A, 13A, 23A,
+unit 03A); records saved before the field existed read as plain. Add Demo Data
+rewrites the stored settings to the demo layout its bookings sit in: Aster
+Heights, blocks A to C, floors 3 to 28, twelve units a floor, skip-four.
+`GET /api/inventory` exposes held project/unit pairs without buyer names or
+booking identifiers. Existing import transaction locks continue to reject
+duplicate occupied units atomically. Manager flags are stored on tasks; the
+recipient's desk derives notifications from those persisted tasks.
 
 `currentCaseAssignee` resolves bank/buyer-document responsibility to the named
 loan owner, solicitor responsibility to the internal legal desk, and general
