@@ -224,4 +224,72 @@ describe('bookingJourney', () => {
     expect(events).toEqual(frozen)
     expect(journeyOf(story.booking, [a], [...events].reverse())).toEqual(model)
   })
+
+  it('draws the road to a proven stop beyond the one being waited on', () => {
+    const a = app('APP-1', 'Apex Bank')
+    const events = [
+      ev('booked', '2026-09-01'),
+      ev('loan_submitted', '2026-09-03', { applicationId: a.id }),
+      ev('documents_requested', '2026-09-12', { applicationId: a.id, document: 'payslip' })
+    ]
+    const model = journeyOf(story.booking, [a], events)
+    expect(stop(model, 'documents').current).toBe(true)
+    expect(model.routeThrough).toBe('loan_submitted')
+  })
+
+  it('never reports a negative duration', () => {
+    const a = app('APP-1', 'Apex Bank')
+    const reopened = journeyOf(
+      story.booking,
+      [a],
+      [
+        ev('booked', '2026-09-01'),
+        ev('documents_received', '2026-09-02', { document: 'payslip' }),
+        ev('loan_submitted', '2026-09-03', { applicationId: a.id }),
+        ev('documents_requested', '2026-09-12', { applicationId: a.id, document: 'payslip' })
+      ]
+    )
+    expect(stop(reopened, 'documents').duration).toBeNull()
+    const early = journeyOf(
+      story.booking,
+      [a],
+      [
+        ev('booked', '2026-08-01'),
+        ev('loan_submitted', '2026-08-04', { applicationId: a.id }),
+        ev('spa_signed', '2026-09-05', { track: 'legal' }),
+        ev('loan_approved', '2026-09-08', { applicationId: a.id })
+      ]
+    )
+    expect(stop(early, 'spa_signed').duration).toBeNull()
+  })
+
+  it('says Resubmitted only when a rejection came before the submission shown', () => {
+    const a = app('APP-1', 'Apex Bank')
+    const b = app('APP-2', 'Bayu Bank')
+    const c = app('APP-3', 'Crestline Bank')
+    const model = journeyOf(
+      story.booking,
+      [a, b, c],
+      [
+        ev('booked', '2026-09-01'),
+        ev('loan_submitted', '2026-09-02', { applicationId: a.id }),
+        ev('loan_submitted', '2026-09-03', { applicationId: b.id }),
+        ev('loan_rejected', '2026-09-05', { applicationId: b.id }),
+        ev('loan_submitted', '2026-09-06', { applicationId: c.id }),
+        ev('loan_rejected', '2026-09-09', { applicationId: c.id })
+      ]
+    )
+    expect(stop(model, 'loan_submitted').caption).toBe('2 Sep 2026')
+  })
+
+  it('marks unproven stops behind the awaited one as missing records, not upcoming', () => {
+    const a = app('APP-1', 'Apex Bank')
+    const model = journeyOf(
+      story.booking,
+      [a],
+      [ev('booked', '2026-09-01'), ev('loan_approved', '2026-09-10', { applicationId: a.id, status: 'provisional' })]
+    )
+    const current = model.stops.findIndex((s) => s.current)
+    for (const s of model.stops.slice(1, current)) expect(s.state, s.id).not.toBe('upcoming')
+  })
 })

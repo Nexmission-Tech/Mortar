@@ -31,6 +31,7 @@ describe('journeyDetails', () => {
     expect(copy.lines).toContain('Approval Date: —')
     expect(copy.lines.some((l) => l.startsWith('Banker: ') && l.includes('Crestline Bank'))).toBe(true)
     expect(copy.lines.some((l) => l.startsWith('Desk: '))).toBe(false)
+    expect(copy.lines).toContain(`Follow-Up: ${story.booking.loanOwner}`)
     expect(copy.rule).toMatch(/^8 calendar days since submission\..*Approval has not been confirmed\.$/)
   })
 

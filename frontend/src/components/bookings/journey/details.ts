@@ -33,8 +33,10 @@ export function stopStatus(stop: JourneyStop): string {
 export function journeyDetails(stop: JourneyStop, model: BookingJourneyModel): JourneyDetailCopy {
   const settled = stop.state === 'done' && !stop.current
   const lines = stop.facts.map((f) => `${f.label}: ${f.value}`)
-  if (!settled && !stop.facts.some((f) => f.label === 'Banker'))
-    lines.push(`${stop.id === 'spa_signed' ? 'Panel Firm' : 'Desk'}: ${stop.responsible.join(', ')}`)
+  if (!settled && stop.facts.some((f) => f.label === 'Banker'))
+    // The banker decides; the loan desk follows up, and is the last name responsible.
+    lines.push(`Follow-Up: ${stop.responsible[stop.responsible.length - 1]}`)
+  else if (!settled) lines.push(`${stop.id === 'spa_signed' ? 'Panel Firm' : 'Desk'}: ${stop.responsible.join(', ')}`)
   if (stop.outstandingDocuments.length > 0)
     lines.push(`Outstanding: ${stop.outstandingDocuments.map((d) => DOCUMENT_LABELS[d]).join(', ')}`)
   if (stop.id === 'loan_submitted')

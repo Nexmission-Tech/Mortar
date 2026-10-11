@@ -90,16 +90,16 @@ export function BookingJourney({
         ? 'Booking journey. The SPA is signed.'
         : 'Booking journey.'
 
+  const detourBelow = (id: JourneyStopId) => model.detour !== null && (id === 'documents' || id === 'loan_submitted')
+
   const desktopStation = (stop: JourneyStop): ReactNode => (
     <Tooltip
       open={open === stop.id}
       onOpenChange={(next) => {
-        if (next) {
-          if (pinned.current !== stop.id) pinned.current = null
-          setOpen(stop.id)
-        } else if (pinned.current !== stop.id && pressing.current !== stop.id) {
-          setOpen((o) => (o === stop.id ? null : o))
-        }
+        if (next) setOpen(stop.id)
+        // Leaving a neighbour brings back the pinned station's details.
+        else if (pinned.current !== stop.id && pressing.current !== stop.id)
+          setOpen((o) => (o === stop.id ? pinned.current : o))
       }}
     >
       <TooltipTrigger asChild>
@@ -112,8 +112,8 @@ export function BookingJourney({
           className="journey-trigger"
           aria-label={stationName(stop)}
           aria-current={stop.current ? 'step' : undefined}
-          onPointerDown={() => {
-            pressing.current = stop.id
+          onPointerDown={(event) => {
+            if (event.button === 0) pressing.current = stop.id
           }}
           onPointerLeave={() => {
             pressing.current = null
@@ -129,11 +129,14 @@ export function BookingJourney({
       </TooltipTrigger>
       <TooltipContent
         side="bottom"
-        sideOffset={12}
+        // Under Documents and Loan Submitted the bank detour's flag sits below the
+        // labels; open past it, so the flag stays clickable.
+        sideOffset={detourBelow(stop.id) ? 60 : 12}
         collisionPadding={16}
         className="w-[280px] max-w-[calc(100vw-32px)] p-3"
         onEscapeKeyDown={() => {
           pinned.current = null
+          pressing.current = null
         }}
         onPointerDownOutside={(event) => {
           // A press on this station's own button is the second click of a pin
@@ -157,7 +160,10 @@ export function BookingJourney({
         aria-current={stop.current ? 'step' : undefined}
         aria-expanded={open === stop.id}
         aria-controls={`journey-${stop.id}-details`}
-        onClick={() => setOpen((o) => (o === stop.id ? null : stop.id))}
+        onClick={() => {
+          pinned.current = null
+          setOpen((o) => (o === stop.id ? null : stop.id))
+        }}
         onKeyDown={(event) => {
           if (event.key === 'Escape' && open === stop.id) {
             event.preventDefault()
@@ -188,9 +194,11 @@ export function BookingJourney({
       <section className="journey" aria-label="Booking Journey">
         <div className="journey-heading">
           <h2 className="text-xs font-medium text-muted-foreground">Booking Journey</h2>
-          <span className="text-[13px] leading-[18px] tabular-nums text-muted-foreground">
-            {model.ageDays} {model.ageDays === 1 ? 'Day' : 'Days'} Since Booking
-          </span>
+          {model.resolution === 'open' ? (
+            <span className="text-[13px] leading-[18px] tabular-nums text-muted-foreground">
+              {model.ageDays} {model.ageDays === 1 ? 'Day' : 'Days'} Since Booking
+            </span>
+          ) : null}
         </div>
         <div className="journey-map">
           <svg className="journey-road" viewBox="0 0 1168 240" preserveAspectRatio="none" aria-hidden="true">

@@ -127,12 +127,9 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 const dateOf = (t: IsoDateTime): IsoDate => t.slice(0, 10) as IsoDate
 const ordinal = (d: IsoDate) =>
   Date.UTC(Number(d.slice(0, 4)), Number(d.slice(5, 7)) - 1, Number(d.slice(8, 10))) / 86_400_000
-const span = (kind: JourneyDuration['kind'], from: IsoDate, through: IsoDate): JourneyDuration => ({
-  kind,
-  from,
-  through,
-  calendarDays: ordinal(through) - ordinal(from)
-})
+/** Calendar days from one date to a later one; null when the end comes first, since work can overlap. */
+const span = (kind: JourneyDuration['kind'], from: IsoDate, through: IsoDate): JourneyDuration | null =>
+  ordinal(through) < ordinal(from) ? null : { kind, from, through, calendarDays: ordinal(through) - ordinal(from) }
 const shortDate = (d: IsoDate) => `${Number(d.slice(8, 10))} ${MONTHS[Number(d.slice(5, 7)) - 1]}`
 const last = <T>(xs: readonly T[]): T | undefined => xs[xs.length - 1]
 const isLive = (s: ApplicationStatus | null) => s === 'submitted' || s === 'documents_pending'
@@ -256,7 +253,15 @@ export function bookingJourney({
   }
   const furthest = Math.max(-1, ...ORDER.map((id, i) => (proof[id] ? i : -1)))
   const currentId = resolution === 'open' && !releaseReview && ball.nextMove ? (CURRENT[ball.nextMove] ?? null) : null
-  const resubmitted = rejections.some((r) => r.nextSubmission)
+  const currentIndex = currentId ? ORDER.indexOf(currentId) : -1
+  /** How far the case has got: the furthest proven stop or the one being waited on, whichever is later. */
+  const reached = Math.max(furthest, currentIndex)
+  // Resubmitted only when another bank had already said no before the submission shown.
+  const resubmitted =
+    shownSubmission !== null &&
+    rejections.some(
+      (r) => r.applicationId !== shownSubmission.applicationId && r.rejection.occurredAt < shownSubmission.occurredAt
+    )
   const lastUpdate = last(log)
   const approvedAttempt = approvals[0] ? attempts.find((a) => a.decision?.id === approvals[0]!.id) : undefined
 
@@ -266,10 +271,13 @@ export function bookingJourney({
         return booked[0] && submissions[0]
           ? span('completed', dateOf(booked[0].occurredAt), dateOf(submissions[0].occurredAt))
           : null
-      case 'documents':
-        return requests[0] && last(receipts)
-          ? span('completed', dateOf(requests[0].occurredAt), dateOf(last(receipts)!.occurredAt))
+      case 'documents': {
+        // From the first request to the first receipt that answered it.
+        const answer = requests[0] ? receipts.find((r) => byOccurred(r, requests[0]!) >= 0) : undefined
+        return requests[0] && answer
+          ? span('completed', dateOf(requests[0].occurredAt), dateOf(answer.occurredAt))
           : null
+      }
       case 'loan_submitted':
         return null
       case 'loan_approved':
@@ -300,7 +308,7 @@ export function bookingJourney({
         ? 'done'
         : closure && i > furthest
           ? 'not_reached'
-          : i < furthest
+          : i < reached
             ? 'record_missing'
             : 'upcoming'
     const current = id === currentId
@@ -373,7 +381,7 @@ export function bookingJourney({
   return {
     bookingId: booking.id,
     referenceDate: ref,
-    ageDays: ordinal(ref) - ordinal(booking.bookingDate),
+    ageDays: Math.max(0, ordinal(ref) - ordinal(booking.bookingDate)),
     resolution,
     releaseReview,
     stops,
@@ -387,7 +395,12 @@ export function bookingJourney({
       duration: a.duration
     })),
     detour,
-    routeThrough: currentId ?? (resolution === 'signed' ? 'spa_signed' : furthest >= 0 ? ORDER[furthest]! : null),
+    routeThrough:
+      resolution === 'signed'
+        ? 'spa_signed'
+        : (closure ? furthest : reached) >= 0
+          ? ORDER[closure ? furthest : reached]!
+          : null,
     closure
   }
 }
