@@ -271,6 +271,11 @@ Release Review is advisory. A person decides whether to cancel and re-release
 the unit, and Mortar never cancels. Clicking a unit opens the shared side sheet
 for its booking.
 
+The chart has two views of the same units. The Building view stands the
+project's blocks up in 3D, every unit facing the viewer in its state's colour;
+the Grid lays them out flat, works by keyboard, and takes over where a browser
+cannot draw 3D.
+
 ### Ask MortarAI
 
 The top bar's sparkle button opens Ask MortarAI, an embedded assistant that

@@ -921,6 +921,9 @@ towards a signed SPA, on one page at `/sales-chart`.
   cells, and Enter to select.
 - **AC-25.7:** Every state must carry a word in the legend, the readout and each
   cell's accessible name.
+- **AC-25.8:** The Building view must load in its own chunk, render on demand,
+  open the same side sheet on click (never on a drag), and fall back to the
+  Grid, with the reason shown, where the browser cannot draw WebGL.
 
 ## Non-Functional Requirements
 
