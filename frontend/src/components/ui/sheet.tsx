@@ -54,7 +54,7 @@ function SheetContent({
       <SheetPrimitive.Content
         data-side={side}
         className={cn(
-          'fixed z-[71] flex flex-col gap-4 overflow-y-auto border-border bg-popover p-6 shadow-[var(--shadow-overlay)] duration-[var(--motion-slow)] data-[state=open]:animate-in data-[state=closed]:animate-out',
+          'fixed z-[71] flex flex-col gap-4 overflow-y-auto border-border bg-popover p-6 outline-none shadow-[var(--shadow-overlay)] duration-[var(--motion-slow)] data-[state=open]:animate-in data-[state=closed]:animate-out',
           SIDE_STYLES[side],
           className
         )}

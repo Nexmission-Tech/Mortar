@@ -23,11 +23,11 @@ function Aside({ children, className }: { children: string; className?: string }
   )
 }
 
-function Fact({ term, children }: { term: string; children: React.ReactNode }) {
+function Fact({ term, wide, children }: { term: string; wide?: boolean; children: React.ReactNode }) {
   return (
-    <div className="min-w-0">
+    <div className={cn('min-w-0', wide && 'max-sm:col-span-2')}>
       <dt className="text-xs text-muted-foreground">{term}</dt>
-      <dd className="truncate text-sm text-foreground">{children}</dd>
+      <dd className="text-sm text-pretty text-foreground">{children}</dd>
     </div>
   )
 }
@@ -44,7 +44,7 @@ export function UnitIsland({
   return (
     <section
       aria-label="Selected Unit"
-      className="fixed inset-x-4 bottom-4 z-40 mx-auto max-w-[560px] rounded-md border border-border bg-card/85 p-4 shadow-[var(--shadow-overlay)] backdrop-blur-md duration-[var(--motion-base)] animate-in fade-in-0 motion-safe:slide-in-from-bottom-4"
+      className="fixed inset-x-4 bottom-4 z-[55] mx-auto max-md:right-16 max-w-[560px] rounded-md border border-border bg-card/85 p-4 shadow-[var(--shadow-overlay)] backdrop-blur-md duration-[var(--motion-base)] animate-in fade-in-0 motion-safe:slide-in-from-bottom-4"
     >
       <div className="flex items-start gap-3 pr-8">
         <div className="min-w-0">
@@ -71,13 +71,17 @@ export function UnitIsland({
 
       {overview.kind === 'case' ? (
         <>
-          <dl className="mt-3 grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
+          <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2">
             <Fact term="Buyer">
               {overview.buyer} · {overview.bookingId}
             </Fact>
             <Fact term="Price">{overview.price}</Fact>
-            <Fact term="Loan And SPA">{overview.position}</Fact>
-            <Fact term="Next Step">{overview.nextStep ?? 'Nobody Owes A Move'}</Fact>
+            <Fact term="Loan And SPA" wide>
+              {overview.position}
+            </Fact>
+            <Fact term="Next Step" wide>
+              {overview.nextStep ?? 'Nobody Owes A Move'}
+            </Fact>
           </dl>
           <div className="mt-3 flex justify-end">
             <Button size="sm" onClick={onOpenCase}>

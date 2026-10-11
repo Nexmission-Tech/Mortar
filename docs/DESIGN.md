@@ -952,12 +952,14 @@ surface may use three.js or draw in 3D.
 #### Unit Island
 
 - **Purpose:** The selected unit's overview, while the chart stays live.
-- **Anatomy:** fixed 16px above the bottom edge, up to 560px wide and full width
-  less 32px on a phone; `--card` at 85% with a backdrop blur, 1px `--border`,
-  6px radius, `Elevation/Overlay`, 16px padding. The unit code in Geist Mono
-  semibold, its location in words below, a close button top right; the state's
-  swatch and word; for a case on the viewer's desk the Buyer, Price, Loan And
-  SPA and Next Step facts in two columns (one on a phone) and Open Case.
+- **Anatomy:** fixed 16px above the bottom edge, up to 560px wide and centred;
+  under 768px it stops 64px short of the right edge so the guided tour button
+  stays clear; `--card` at 85% with a backdrop blur, 1px `--border`, 6px radius,
+  `Elevation/Overlay`, 16px padding. The unit code in Geist Mono semibold, its
+  location in words below, a close button top right; the state's swatch and
+  word; for a case on the viewer's desk the Buyer, Price, Loan And SPA and Next
+  Step facts in two columns (on a phone, Loan And SPA and Next Step take a full
+  row each) and Open Case. Facts wrap; nothing truncates.
 - **States:** a case on the viewer's desk shows its facts and Open Case; a unit
   on another desk reads "Held By {name}'s Desk" with no Open Case; an available
   unit reads "Available · Not Booked".
