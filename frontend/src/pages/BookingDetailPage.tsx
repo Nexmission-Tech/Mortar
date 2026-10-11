@@ -11,13 +11,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { FileText } from 'lucide-react'
-import { PERSONA_STAFF, ballInCourt, type BuyerSignals, type EventKind } from '@mortar/core'
+import { PERSONA_STAFF, type BuyerSignals } from '@mortar/core'
 import { useCases, useSnapshot } from '@/lib/data'
 import { usePersona } from '@/lib/persona'
 import { fetchSignals } from '@/lib/api'
 import { PageContainer } from '@/components/layout/PageContainer'
 import { AddMessageForm } from '@/components/bookings/AddMessageForm'
 import { ApplicationsCard } from '@/components/bookings/ApplicationsCard'
+import { BookingJourney } from '@/components/bookings/BookingJourney'
+import { bookingJourney } from '@/components/bookings/bookingJourney'
 import { CaseHeader } from '@/components/bookings/CaseHeader'
 import { EvidenceLog } from '@/components/bookings/EvidenceLog'
 import { MessagesPanel } from '@/components/bookings/MessagesPanel'
@@ -26,7 +28,7 @@ import { RecordUpdateForm } from '@/components/bookings/RecordUpdateForm'
 import { SignalsPanel } from '@/components/bookings/SignalsPanel'
 import { TasksPanel } from '@/components/bookings/TasksPanel'
 import { TrackTimelines } from '@/components/bookings/TrackTimelines'
-import { CaseJourney, WaitingOnPanel } from '@/components/bookings/WaitingOn'
+import { WaitingOnPanel } from '@/components/bookings/WaitingOn'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { EmptyState } from '@/components/ui/EmptyState'
@@ -55,6 +57,11 @@ export function BookingDetailPage() {
     setRefreshKey((k) => k + 1)
   }, [refresh])
 
+  /** The journey's bank detour jumps to the loan track; plan 3 swaps this for the History view. */
+  const showLoanHistory = useCallback(() => {
+    document.getElementById('case-tracks')?.scrollIntoView?.({ behavior: 'smooth', block: 'start' })
+  }, [])
+
   useEffect(() => {
     if (!id || !snapshot || !snapshot.bookings.some((b) => b.id === id)) return
     // No buyer messages means there is nothing for Jev to read; the route
@@ -79,11 +86,20 @@ export function BookingDetailPage() {
     const booking = snapshot.bookings.find((b) => b.id === id)
     const summary = cases.find((c) => c.bookingId === id)
     if (!booking || !summary) return null
+    const applications = snapshot.applications.filter((a) => a.bookingId === id)
+    const events = snapshot.events.filter((e) => e.bookingId === id)
     return {
       booking,
       summary,
-      applications: snapshot.applications.filter((a) => a.bookingId === id),
-      events: snapshot.events.filter((e) => e.bookingId === id),
+      applications,
+      events,
+      journey: bookingJourney({
+        booking,
+        summary,
+        events,
+        applications,
+        referenceDate: snapshot.meta.referenceDate
+      }),
       messages: snapshot.messages.filter((m) => m.bookingId === id),
       tasks: snapshot.tasks.filter((t) => t.bookingId === id),
       extractions: new Map(snapshot.extractions.map((e) => [e.messageId, e])),
@@ -142,13 +158,6 @@ export function BookingDetailPage() {
           </div>
           <Card className="mt-4">
             <CardContent className="flex flex-col gap-4 p-4">
-              <CaseJourney
-                summary={data.summary}
-                confirmedKinds={
-                  new Set<EventKind>(data.events.filter((e) => e.status === 'confirmed').map((e) => e.kind))
-                }
-                stalled={ballInCourt(data.summary).stalled}
-              />
               <WaitingOnPanel
                 key={data.booking.id}
                 booking={data.booking}
@@ -160,6 +169,9 @@ export function BookingDetailPage() {
                 suggestion={data.suggestion}
                 wide
               />
+              <div className="border-t border-border pt-4">
+                <BookingJourney key={data.booking.id} model={data.journey} onShowHistory={showLoanHistory} />
+              </div>
               {/* A closed case takes no more updates. */}
               {data.summary.stage !== 'cancelled' && data.summary.stage !== 'lapsed' && (
                 <RecordUpdateForm
@@ -175,7 +187,7 @@ export function BookingDetailPage() {
               )}
             </CardContent>
           </Card>
-          <div className="mt-4">
+          <div id="case-tracks" className="mt-4 scroll-mt-20">
             <TrackTimelines events={data.events} />
           </div>
           <div className="mt-4 grid items-start gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
