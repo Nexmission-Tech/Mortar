@@ -3,7 +3,7 @@
  * the configured layout holds.
  */
 import type { ProjectSettings, UnitNumbering } from './projectSettings'
-import type { Booking } from './types'
+import type { ApplicationStatus, Booking, CaseSummary } from './types'
 
 /** Matches the import screen's cap: a layout above it is refused, not drawn. */
 export const MAX_PROJECT_UNITS = 10_000
@@ -110,5 +110,115 @@ export function uniqueUnits(
       }
     }
     return booking
+  })
+}
+
+export type UnitState = 'available' | 'signed' | 'release_review' | 'needs_action' | 'loan_approved' | 'booked'
+
+/** Release Review triggers, after the 48-Hour Clean Exit idea. */
+export const RELEASE_REVIEW_AGE_DAYS = 30
+export const RELEASE_REVIEW_REJECTIONS = 2
+
+const LIVE_APPLICATIONS: ReadonlySet<ApplicationStatus> = new Set(['submitted', 'documents_pending', 'approved'])
+
+const terminal = (s: CaseSummary) => s.stage === 'cancelled' || s.stage === 'lapsed'
+const liveUnsigned = (s: CaseSummary) => !terminal(s) && !s.spaSigned
+
+/**
+ * Advisory: a live, unsigned booking whose recovery paths look spent, so an
+ * authorised person should decide whether to cancel and re-release the unit.
+ * Mortar never cancels.
+ */
+export function releaseReview(summary: CaseSummary): boolean {
+  if (!liveUnsigned(summary)) return false
+  if (summary.buyerWithdrew) return true
+  if (summary.applications.some((a) => LIVE_APPLICATIONS.has(a.status))) return false
+  const rejections = summary.applications.filter((a) => a.status === 'rejected').length
+  return rejections >= RELEASE_REVIEW_REJECTIONS || summary.bookingAgeDays >= RELEASE_REVIEW_AGE_DAYS
+}
+
+/** A live, unsigned booking the stall rule flagged: the same rule that fills Today. */
+export function needsAction(summary: CaseSummary): boolean {
+  return liveUnsigned(summary) && summary.stallReasons.length > 0
+}
+
+const loanApproved = (s: CaseSummary) =>
+  liveUnsigned(s) && s.stage === 'lo_issued' && s.daysSinceLoIssued !== null && !s.buyerWithdrew
+
+/** Loan through, no SPA appointment on record: the Legal desk's No Appointment Yet rows. */
+export function awaitingSpaAppointment(summary: CaseSummary): boolean {
+  return loanApproved(summary) && summary.daysSinceSpaSet === null
+}
+
+/** The state of a unit a booking holds, first match wins. */
+export function unitState(summary: CaseSummary): Exclude<UnitState, 'available'> {
+  if (summary.spaSigned) return 'signed'
+  if (releaseReview(summary)) return 'release_review'
+  if (needsAction(summary)) return 'needs_action'
+  if (loanApproved(summary)) return 'loan_approved'
+  return 'booked'
+}
+
+/** A unit some booking holds. Every other unit in the layout is available. */
+export interface HeldUnit {
+  /** The layout's code for the unit, whichever numbering the booking used. */
+  code: string
+  state: Exclude<UnitState, 'available'>
+  /** `null` on a scoped snapshot when the viewer may not open the booking. */
+  bookingId: string | null
+  /** The holding booking's sales owner: whose desk to ask. */
+  heldBy: string
+}
+
+/** Case-blind position key: `parseUnitCode` upper-cases blocks, settings may not. */
+const slot = (p: UnitPosition) => `${p.block.toUpperCase()}|${p.floor}|${p.unit}`
+
+/**
+ * The units bookings hold in this project. A cancelled or lapsed booking frees
+ * its unit; when two live bookings share one, the later booking holds it.
+ * Bookings in other projects, on units outside the layout, or without a
+ * summary are not on the chart.
+ */
+export function heldUnits(settings: ProjectSettings, bookings: Booking[], summaries: CaseSummary[]): HeldUnit[] {
+  const byBooking = new Map(summaries.map((s) => [s.bookingId, s]))
+  const layout = new Map(projectUnits(settings).map((u) => [slot(u), u]))
+  const project = settings.projectName.trim().toUpperCase()
+  const holders = new Map<string, { booking: Booking; summary: CaseSummary }>()
+  for (const booking of bookings) {
+    if (booking.project.trim().toUpperCase() !== project) continue
+    const summary = byBooking.get(booking.id)
+    const position = parseUnitCode(booking.unit)
+    const key = position ? slot(position) : null
+    if (!summary || !key || !layout.has(key) || terminal(summary)) continue
+    const seen = holders.get(key)
+    const later =
+      !seen ||
+      booking.bookingDate > seen.booking.bookingDate ||
+      (booking.bookingDate === seen.booking.bookingDate && booking.id > seen.booking.id)
+    if (later) holders.set(key, { booking, summary })
+  }
+  return [...layout].flatMap(([key, unit]) => {
+    const held = holders.get(key)
+    if (!held) return []
+    return [
+      { code: unit.code, state: unitState(held.summary), bookingId: held.booking.id, heldBy: held.booking.salesOwner }
+    ]
+  })
+}
+
+export interface ChartUnit extends ProjectUnit {
+  state: UnitState
+  bookingId: string | null
+  heldBy: string | null
+}
+
+/** The whole layout in order, each unit with its state: held units as given, the rest available. */
+export function chartUnits(settings: ProjectSettings, held: HeldUnit[]): ChartUnit[] {
+  const byCode = new Map(held.map((h) => [h.code, h]))
+  return projectUnits(settings).map((unit) => {
+    const h = byCode.get(unit.code)
+    return h
+      ? { ...unit, state: h.state, bookingId: h.bookingId, heldBy: h.heldBy }
+      : { ...unit, state: 'available', bookingId: null, heldBy: null }
   })
 }

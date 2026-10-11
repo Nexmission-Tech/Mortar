@@ -1,7 +1,20 @@
 import { describe, expect, test } from 'vitest'
 import { DEFAULT_PROJECT_SETTINGS, normalizeProjectSettings } from './projectSettings'
-import type { Booking } from './types'
-import { labelNumber, numberLabel, parseUnitCode, projectUnits, uniqueUnits, unitCode } from './units'
+import type { Booking, CaseSummary } from './types'
+import {
+  awaitingSpaAppointment,
+  chartUnits,
+  heldUnits,
+  labelNumber,
+  needsAction,
+  numberLabel,
+  parseUnitCode,
+  projectUnits,
+  releaseReview,
+  uniqueUnits,
+  unitCode,
+  unitState
+} from './units'
 
 describe('numbering', () => {
   test('skip-four renames every number containing a 4', () => {
@@ -115,5 +128,148 @@ describe('uniqueUnits', () => {
   test('leaves the duplicate when the layout is full', () => {
     const full = [at('a', 'A-01-01'), at('b', 'A-01-02'), at('c', 'A-01-03'), at('d', 'A-01-01')]
     expect(uniqueUnits(full, tiny).map((b) => b.unit)).toEqual(['A-01-01', 'A-01-02', 'A-01-03', 'A-01-01'])
+  })
+})
+
+const summary = (patch: Partial<CaseSummary> = {}): CaseSummary => ({
+  bookingId: 'BK-1',
+  stage: 'loan_applied',
+  spaSigned: false,
+  unknown: false,
+  bookingAgeDays: 10,
+  daysSinceEvidence: 1,
+  daysSinceLoIssued: null,
+  daysSinceSpaSet: null,
+  applications: [{ id: 'LA-1', bank: 'Apex Bank', status: 'submitted' }],
+  outstandingDocuments: [],
+  buyerWithdrew: false,
+  risk: {
+    level: 'low',
+    loanRm: 432_000,
+    instalmentRm: 2_000,
+    debtServiceRatio: 0.3,
+    marginOfFinancing: 0.9,
+    reasons: []
+  },
+  stallReasons: [],
+  openTasks: 0,
+  ...patch
+})
+
+const rejected = (id: string) => ({ id, bank: 'X', status: 'rejected' as const })
+
+describe('releaseReview', () => {
+  test('flags a withdrawn buyer', () => {
+    expect(releaseReview(summary({ buyerWithdrew: true }))).toBe(true)
+  })
+
+  test('flags two rejections with nothing live', () => {
+    expect(releaseReview(summary({ applications: [rejected('a'), rejected('b')] }))).toBe(true)
+  })
+
+  test('flags 30 days with no live application', () => {
+    expect(releaseReview(summary({ bookingAgeDays: 30, applications: [] }))).toBe(true)
+    expect(releaseReview(summary({ bookingAgeDays: 29, applications: [] }))).toBe(false)
+  })
+
+  test('spares a booking with a live or approved application', () => {
+    expect(releaseReview(summary({ bookingAgeDays: 60 }))).toBe(false)
+    expect(
+      releaseReview(
+        summary({ applications: [rejected('a'), rejected('b'), { id: 'c', bank: 'Z', status: 'approved' }] })
+      )
+    ).toBe(false)
+  })
+
+  test('spares one rejection inside 30 days', () => {
+    expect(releaseReview(summary({ applications: [rejected('a')] }))).toBe(false)
+  })
+
+  test('never flags a signed, cancelled or lapsed booking', () => {
+    expect(releaseReview(summary({ buyerWithdrew: true, spaSigned: true, stage: 'spa_signed' }))).toBe(false)
+    expect(releaseReview(summary({ buyerWithdrew: true, stage: 'cancelled' }))).toBe(false)
+    expect(releaseReview(summary({ buyerWithdrew: true, stage: 'lapsed' }))).toBe(false)
+  })
+})
+
+describe('unitState', () => {
+  test('follows the spec order', () => {
+    expect(unitState(summary({ spaSigned: true, stage: 'spa_signed', stallReasons: ['x'] }))).toBe('signed')
+    expect(unitState(summary({ buyerWithdrew: true, stallReasons: ['x'] }))).toBe('release_review')
+    expect(unitState(summary({ stallReasons: ['No Update For 12 Days'] }))).toBe('needs_action')
+    expect(unitState(summary({ stage: 'lo_issued', daysSinceLoIssued: 3 }))).toBe('loan_approved')
+    expect(unitState(summary())).toBe('booked')
+  })
+
+  test('awaitingSpaAppointment matches the Legal desk split', () => {
+    expect(awaitingSpaAppointment(summary({ stage: 'lo_issued', daysSinceLoIssued: 3 }))).toBe(true)
+    expect(awaitingSpaAppointment(summary({ stage: 'lo_issued', daysSinceLoIssued: 3, daysSinceSpaSet: 1 }))).toBe(
+      false
+    )
+    expect(awaitingSpaAppointment(summary({ stage: 'lo_issued', daysSinceLoIssued: 3, buyerWithdrew: true }))).toBe(
+      false
+    )
+    expect(awaitingSpaAppointment(summary({ stage: 'lo_issued', daysSinceLoIssued: null }))).toBe(false)
+  })
+
+  test('needsAction is a live, unsigned booking with stall reasons', () => {
+    expect(needsAction(summary({ stallReasons: ['x'] }))).toBe(true)
+    expect(needsAction(summary({ stallReasons: ['x'], spaSigned: true }))).toBe(false)
+    expect(needsAction(summary({ stallReasons: ['x'], stage: 'cancelled' }))).toBe(false)
+  })
+})
+
+describe('heldUnits and chartUnits', () => {
+  const settings = { ...DEFAULT_PROJECT_SETTINGS, blocks: ['A'], minFloor: 24, maxFloor: 24, unitsPerFloor: 2 }
+  const booking = (id: string, unit: string, bookingDate = '2026-09-01', project = 'Aster Heights') =>
+    ({ id, unit, bookingDate, project, salesOwner: 'Nurul Aina' }) as Booking
+
+  test('a live booking holds its unit; a cancelled one frees it', () => {
+    const held = heldUnits(
+      settings,
+      [booking('BK-1', 'A-23A-01'), booking('BK-2', 'A-23A-02')],
+      [summary({ bookingId: 'BK-1' }), summary({ bookingId: 'BK-2', stage: 'cancelled' })]
+    )
+    expect(held).toEqual([{ code: 'A-23A-01', state: 'booked', bookingId: 'BK-1', heldBy: 'Nurul Aina' }])
+  })
+
+  test('plain-numbered codes land on their skip-four slot', () => {
+    const held = heldUnits(settings, [booking('BK-1', 'A-24-02')], [summary({ bookingId: 'BK-1' })])
+    expect(held[0]?.code).toBe('A-23A-02')
+  })
+
+  test('a lower-case block in settings still matches', () => {
+    const held = heldUnits(
+      { ...settings, blocks: ['a'] },
+      [booking('BK-1', 'A-23A-02')],
+      [summary({ bookingId: 'BK-1' })]
+    )
+    expect(held[0]?.code).toBe('a-23A-02')
+  })
+
+  test('the latest live booking wins a shared unit', () => {
+    const held = heldUnits(
+      settings,
+      [booking('BK-1', 'A-23A-01', '2026-08-01'), booking('BK-2', 'A-23A-01', '2026-09-01')],
+      [summary({ bookingId: 'BK-1' }), summary({ bookingId: 'BK-2' })]
+    )
+    expect(held.map((h) => h.bookingId)).toEqual(['BK-2'])
+  })
+
+  test('other projects, unknown units and unsummarised bookings are ignored', () => {
+    const held = heldUnits(
+      settings,
+      [booking('BK-1', 'A-23A-01', '2026-09-01', 'Elsewhere'), booking('BK-2', 'Z-99-99'), booking('BK-3', 'A-23A-02')],
+      [summary({ bookingId: 'BK-1' }), summary({ bookingId: 'BK-2' })]
+    )
+    expect(held).toEqual([])
+  })
+
+  test('chartUnits fills the rest of the layout as available', () => {
+    const units = chartUnits(settings, [{ code: 'A-23A-02', state: 'signed', bookingId: null, heldBy: 'Farah Izzati' }])
+    expect(units.map((u) => [u.code, u.state, u.heldBy])).toEqual([
+      ['A-23A-01', 'available', null],
+      ['A-23A-02', 'signed', 'Farah Izzati']
+    ])
   })
 })
