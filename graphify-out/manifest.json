@@ -1110,10 +1110,10 @@
     "semantic_hash": "6554f4a7bc6c9645c5c36ba30db04581"
   },
   "frontend/src/components/landing/HowItWorks.tsx": {
-    "mtime": 1791734177.6065938,
-    "seen": 1791748576.062542,
-    "ast_hash": "07e147c23fe782d2e752f911087bf6df",
-    "semantic_hash": "07e147c23fe782d2e752f911087bf6df"
+    "mtime": 1791750631.191664,
+    "seen": 1791750685.5525017,
+    "ast_hash": "40a67fd671de6cf55dc3152fb489448b",
+    "semantic_hash": ""
   },
   "frontend/src/components/landing/LandingFaq.tsx": {
     "mtime": 1791734177.6065938,
