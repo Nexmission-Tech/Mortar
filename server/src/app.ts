@@ -23,6 +23,7 @@ import {
   canAccessBooking,
   canManageTaskStatus,
   normalizeProjectSettings,
+  layoutUnit,
   DEFAULT_PROJECT_SETTINGS
 } from '@mortar/core'
 import { defaultPlaybookQuery } from '@mortar/jev'
@@ -819,6 +820,14 @@ export function createApp(options: AppOptions): App {
           // imports on behalf of the sales owner selected in the sheet.
           salesOwner: profile.persona === 'sales-admin' ? profile.name : draft.salesOwner
         }))
+        // Units in the layout are written its way, so the held-unit checks below
+        // compare like with like; a label the numbering would not write is refused.
+        const settings = normalizeProjectSettings(await db.getProjectSettings()) ?? DEFAULT_PROJECT_SETTINGS
+        for (const [i, draft] of drafts.entries()) {
+          const placed = layoutUnit(draft.unit, settings)
+          if ('problem' in placed) return error(400, `row ${i + 1}: ${placed.problem}`)
+          draft.unit = placed.code
+        }
 
         const inBatch = new Set<string>()
         for (const draft of drafts) {

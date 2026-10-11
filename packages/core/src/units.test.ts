@@ -6,6 +6,7 @@ import {
   chartUnits,
   heldUnits,
   labelNumber,
+  layoutUnit,
   needsAction,
   numberLabel,
   parseUnitCode,
@@ -271,5 +272,29 @@ describe('heldUnits and chartUnits', () => {
       ['A-23A-01', 'available', null],
       ['A-23A-02', 'signed', 'Farah Izzati']
     ])
+  })
+})
+
+describe('layoutUnit', () => {
+  const plain = { ...DEFAULT_PROJECT_SETTINGS, numbering: 'plain' as const }
+
+  test('pads and upper-cases a layout unit', () => {
+    expect(layoutUnit(' a-12-3 ', DEFAULT_PROJECT_SETTINGS)).toEqual({ code: 'A-12-03' })
+    expect(layoutUnit('b-21-03a', DEFAULT_PROJECT_SETTINGS)).toEqual({ code: 'B-21-03A' })
+  })
+
+  test('refuses a label the numbering would not write, naming the unit it may mean', () => {
+    expect(layoutUnit('A-24-02', DEFAULT_PROJECT_SETTINGS)).toEqual({
+      problem: "Unit A-24-02 Is Not In This Project's Numbering; Did You Mean A-23A-02?"
+    })
+    expect(layoutUnit('A-23A-02', plain)).toEqual({
+      problem: "Unit A-23A-02 Is Not In This Project's Numbering; Did You Mean A-24-02?"
+    })
+  })
+
+  test('leaves a unit outside the layout as written', () => {
+    expect(layoutUnit('Z-01-01', DEFAULT_PROJECT_SETTINGS)).toEqual({ code: 'Z-01-01' })
+    expect(layoutUnit('A-40-01', DEFAULT_PROJECT_SETTINGS)).toEqual({ code: 'A-40-01' })
+    expect(layoutUnit('Lot 7', DEFAULT_PROJECT_SETTINGS)).toEqual({ code: 'Lot 7' })
   })
 })

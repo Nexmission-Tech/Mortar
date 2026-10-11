@@ -83,6 +83,36 @@ export function projectUnits(settings: ProjectSettings): ProjectUnit[] {
 }
 
 /**
+ * A unit code as the layout writes it: ` a-12-3 ` → `A-12-03`. A code outside
+ * the layout's blocks, floors or units comes back as written. A label the
+ * numbering would not write (24 where skip-four writes 23A, or 23A under plain
+ * numbering) is refused rather than guessed, naming the unit it may mean.
+ */
+export function layoutUnit(code: string, settings: ProjectSettings): { code: string } | { problem: string } {
+  const written = code.trim()
+  const position = parseUnitCode(written)
+  const block = position ? projectBlocks(settings).find((b) => b.toUpperCase() === position.block) : undefined
+  if (
+    !position ||
+    block === undefined ||
+    position.floor < settings.minFloor ||
+    position.floor > settings.maxFloor ||
+    position.unit < 1 ||
+    position.unit > settings.unitsPerFloor
+  )
+    return { code: written }
+  const numbering = settings.numbering ?? 'plain'
+  const canonical = unitCode(block, position.floor, position.unit, numbering)
+  const bare = (label: string) => label.toUpperCase().replace(/^0+(?=\d)/, '')
+  const [floorLabel = '', unitLabel = ''] = written.split('-').slice(-2)
+  const sameFloor = bare(floorLabel) === bare(numberLabel(position.floor, numbering))
+  const sameUnit = bare(unitLabel) === bare(numberLabel(position.unit, numbering))
+  if (!sameFloor || !sameUnit)
+    return { problem: `Unit ${written.toUpperCase()} Is Not In This Project's Numbering; Did You Mean ${canonical}?` }
+  return { code: canonical }
+}
+
+/**
  * Gives every booking its own unit. A booking whose unit is already taken, by
  * an earlier booking or a reserved code, moves to the next free unit in layout
  * order, wrapping at the end. Nothing is mutated; untouched bookings keep

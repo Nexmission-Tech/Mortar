@@ -1809,6 +1809,27 @@ describe('createApp', () => {
       expect(db.imports).toEqual(originalImports)
     })
 
+    test('refuses a unit label the project numbering would not write', async () => {
+      const db = new FakeDb()
+      const res = await call(
+        makeApp(db),
+        '/api/bookings/import',
+        post({ ...valid, bookings: [{ ...draft, unit: 'A-24-02' }] })
+      )
+      expect(res?.status).toBe(400)
+      expect(await errorOf(res)).toContain('Did You Mean A-23A-02?')
+    })
+
+    test('writes units the layout’s way, so a held unit is refused however it was typed', async () => {
+      const db = new FakeDb()
+      const res = await call(
+        makeApp(db),
+        '/api/bookings/import',
+        post({ ...valid, bookings: [{ ...draft, unit: 'a-12-3' }] })
+      )
+      expect(res?.status).toBe(409)
+    })
+
     test('numbers the bookings and records a confirmed booked event for each', async () => {
       const db = new FakeDb()
       const res = await call(makeApp(db), '/api/bookings/import', post(valid))

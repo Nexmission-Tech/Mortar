@@ -183,11 +183,14 @@ clean recording seed.
   project/unit pairs across all owners without buyer names or booking ids.
   Manual entry opens first; all nonempty forms must be valid before submission.
   Both manual and sheet imports retain atomic duplicate-unit protection. Unit
-  codes follow the settings' `numbering`; under `skip-four`, `A-24-02` is
-  refused and `A-23A-02` is the unit. Demo units come from
-  `DEFAULT_PROJECT_SETTINGS`, and Add Demo Data rewrites the stored settings to
-  that layout, so a visitor's own settings return after a demo reset only if
-  they save them again.
+  codes follow the settings' `numbering`. Add Bookings, sheet imports and
+  `POST /api/bookings/import` pass units through `layoutUnit`: a unit in the
+  layout is written its way (`a-12-3` becomes `A-12-03`, so held-unit checks
+  compare like with like), and a label the numbering would not write is refused
+  with the unit it may mean (`A-24-02` under skip-four: "Did You Mean
+  A-23A-02?"). Demo units come from `DEFAULT_PROJECT_SETTINGS`, and Add Demo
+  Data rewrites the stored settings to that layout, so a visitor's own settings
+  return after a demo reset only if they save them again.
 - **One Next Step Per Case (`nextStep.ts`).**
   `frontend/src/components/case/nextStep.ts` makes the rule-based move from
   `ballInCourt` the default everywhere (Today, Bookings table, and

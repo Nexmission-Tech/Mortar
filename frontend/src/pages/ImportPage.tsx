@@ -128,9 +128,9 @@ export function ImportPage() {
   const sheet = useMemo(
     () =>
       cells && snapshot && defaults && inventory && !settingsLoading && !settingsError
-        ? readBookingSheet(cells, { referenceDate: snapshot.meta.referenceDate, defaults, held })
+        ? readBookingSheet(cells, { referenceDate: snapshot.meta.referenceDate, defaults, held, settings })
         : null,
-    [cells, snapshot, defaults, held, inventory, settingsLoading, settingsError]
+    [cells, snapshot, defaults, held, inventory, settings, settingsLoading, settingsError]
   )
 
   const ready = useMemo(() => (sheet ? sheet.rows.flatMap((r) => (r.draft ? [r.draft] : [])) : []), [sheet])
