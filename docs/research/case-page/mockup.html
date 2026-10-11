@@ -1,0 +1,3204 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BK-9002 · Mohd Hafiz bin Razak — Mortar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      // Preview controls are applied before first paint; the case date stays frozen.
+      const previewParams = new URLSearchParams(location.search)
+      document.documentElement.dataset.theme = previewParams.get('theme') === 'dark' ? 'dark' : 'light'
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        --background: #fff;
+        --card: #fff;
+        --popover: #fff;
+        --foreground: #0a0a0a;
+        --muted: #f5f5f5;
+        --muted-foreground: #6b6b6b;
+        --accent: #f0f0f0;
+        --selected: #f5f5f5;
+        --primary: #0a0a0a;
+        --primary-foreground: #fff;
+        --primary-hover: #262626;
+        --inverse: #0a0a0a;
+        --inverse-foreground: #fff;
+        --border: #d8d8d8;
+        --card-border: rgba(10, 10, 10, 0.06);
+        --input: #c9c9c9;
+        --ring: #0a0a0a;
+        --status-danger-fg: #7a2230;
+        --status-danger-bg: #faeef0;
+        --status-danger-solid: #a53d4c;
+        --status-positive-fg: #1f4d35;
+        --status-positive-bg: #eef4f0;
+        --status-positive-solid: #3e7d5a;
+        --status-info-fg: #1e3a5f;
+        --status-info-bg: #eef2f8;
+        --status-info-solid: #3b6395;
+        --status-warning-fg: #6b4e16;
+        --status-warning-bg: #f8f4e9;
+        --status-warning-solid: #a9852f;
+        --desk-loan-fg: #4b5316;
+        --desk-loan-bg: #f1f3e2;
+        --radius-sm: 4px;
+        --radius-md: 6px;
+        --shadow-card: 0 1px 2px rgba(10, 10, 10, 0.05), 0 6px 16px -4px rgba(10, 10, 10, 0.08);
+        --shadow-overlay: 0 1px 2px rgba(10, 10, 10, 0.06), 0 8px 24px -4px rgba(10, 10, 10, 0.12);
+        --scrim: rgba(10, 10, 10, 0.14);
+        --motion-fast: 120ms;
+        --motion-base: 200ms;
+        --motion-slow: 250ms;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html body {
+        margin: 0;
+        background: var(--background);
+        color: var(--foreground);
+        font-family: 'Geist', sans-serif;
+        font-size: 14px;
+        line-height: 20px;
+        -webkit-font-smoothing: antialiased;
+      }
+      button,
+      input,
+      textarea {
+        font: inherit;
+        color: inherit;
+      }
+      button,
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+      button {
+        cursor: pointer;
+      }
+      button {
+        background: none;
+        border: 0;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      h1,
+      h2,
+      h3,
+      p,
+      ol,
+      ul {
+        margin: 0;
+      }
+      ol,
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+      button:focus-visible,
+      a:focus-visible,
+      input:focus-visible,
+      textarea:focus-visible,
+      [tabindex]:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+      button:disabled {
+        cursor: default;
+        color: var(--muted-foreground);
+        background: var(--muted);
+      }
+      [hidden] {
+        display: none !important;
+      }
+      svg.icon {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex: none;
+      }
+      svg.defs {
+        position: absolute;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+      }
+      .muted {
+        color: var(--muted-foreground);
+      }
+      .small {
+        font-size: 13px;
+        line-height: 18px;
+      }
+      .label {
+        font-size: 12px;
+        line-height: 16px;
+        font-weight: 500;
+      }
+      .mono {
+        font-family: 'Geist Mono', monospace;
+        font-size: 13px;
+        line-height: 18px;
+        font-weight: 500;
+      }
+      .tabular {
+        font-variant-numeric: tabular-nums;
+      }
+      .section-title {
+        font-size: 16px;
+        line-height: 24px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .between {
+        justify-content: space-between;
+      }
+      .wrap {
+        flex-wrap: wrap;
+      }
+      .stack {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .btn {
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 0 16px;
+        border-radius: var(--radius-md);
+        font-weight: 500;
+        white-space: nowrap;
+        transition: background-color var(--motion-fast) ease-out;
+      }
+      .btn.secondary {
+        border: 1px solid var(--input);
+        background: var(--card);
+      }
+      .btn.secondary:hover,
+      .btn.ghost:hover,
+      .icon-btn:hover {
+        background: var(--accent);
+      }
+      .btn.primary {
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .btn.primary:hover {
+        background: var(--primary-hover);
+      }
+      .btn.ghost {
+        padding: 0 12px;
+      }
+      .icon-btn {
+        height: 36px;
+        width: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        color: var(--muted-foreground);
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 22px;
+        padding: 0 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        line-height: 16px;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+      .pill:before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        flex: none;
+        border-radius: 50%;
+        background: currentColor;
+      }
+      .danger {
+        color: var(--status-danger-fg);
+        background: var(--status-danger-bg);
+      }
+      .positive {
+        color: var(--status-positive-fg);
+        background: var(--status-positive-bg);
+      }
+      .info {
+        color: var(--status-info-fg);
+        background: var(--status-info-bg);
+      }
+      .warning {
+        color: var(--status-warning-fg);
+        background: var(--status-warning-bg);
+      }
+      .neutral {
+        color: var(--muted-foreground);
+        background: var(--muted);
+      }
+      .role-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: var(--desk-loan-bg);
+        color: var(--desk-loan-fg);
+        font-size: 12px;
+        line-height: 16px;
+        font-weight: 500;
+      }
+      .role-label svg.icon {
+        width: 12px;
+        height: 12px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-card);
+      }
+      .sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        width: 64px;
+        border-right: 1px solid var(--border);
+        background: var(--card);
+        z-index: 30;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .brand {
+        height: 56px;
+        display: grid;
+        place-items: center;
+        width: 100%;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 16px;
+      }
+      .brand svg {
+        width: 22px;
+        height: 22px;
+      }
+      .nav-item {
+        height: 44px;
+        width: 44px;
+        display: grid;
+        place-items: center;
+        border-radius: 6px;
+        color: var(--muted-foreground);
+      }
+      .nav-item.active {
+        background: var(--selected);
+        color: var(--foreground);
+      }
+      .nav-divider {
+        width: 32px;
+        border-top: 1px solid var(--border);
+        margin: 16px 0;
+      }
+      .nav-bottom {
+        margin-top: auto;
+        margin-bottom: 16px;
+      }
+      .topbar {
+        position: fixed;
+        top: 0;
+        left: 64px;
+        right: 0;
+        height: 56px;
+        z-index: 25;
+        background: var(--card);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+      }
+      .breadcrumbs {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--muted-foreground);
+      }
+      .breadcrumbs .current {
+        color: var(--foreground);
+      }
+      .breadcrumbs .icon {
+        width: 12px;
+        height: 12px;
+      }
+      .top-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .profile {
+        height: 32px;
+        width: 32px;
+        border-radius: 50%;
+        background: var(--desk-loan-bg);
+        color: var(--desk-loan-fg);
+        display: grid;
+        place-items: center;
+        margin-left: 4px;
+      }
+      .mobile-menu {
+        display: none;
+      }
+      .workspace {
+        margin-left: 64px;
+        padding-top: 56px;
+      }
+      .page {
+        max-width: 1280px;
+        margin: auto;
+        padding: 32px 32px 48px;
+      }
+      .case-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 24px;
+      }
+      .identity-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+      }
+      .identity-meta .separator {
+        height: 12px;
+        border-left: 1px solid var(--border);
+      }
+      .case-header h1 {
+        font-size: 24px;
+        line-height: 32px;
+        letter-spacing: -0.02em;
+        font-weight: 600;
+      }
+      .header-meta {
+        margin-top: 4px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        color: var(--muted-foreground);
+      }
+      .header-actions {
+        display: flex;
+        gap: 8px;
+        flex: none;
+      }
+      .focus-card {
+        position: relative;
+      }
+      .case-now {
+        padding: 24px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 32px;
+      }
+      .blocker {
+        display: flex;
+        gap: 16px;
+      }
+      .blocker-symbol {
+        height: 40px;
+        width: 40px;
+        flex: none;
+        display: grid;
+        place-items: center;
+        background: var(--muted);
+        border: 1px solid var(--card-border);
+        border-radius: 6px;
+      }
+      .blocker h2 {
+        margin: 8px 0 4px;
+      }
+      .blocker .label {
+        color: var(--muted-foreground);
+      }
+      .blocker-status {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-top: 12px;
+      }
+      .next-action {
+        border-left: 1px solid var(--border);
+        padding-left: 32px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px 24px;
+        align-items: start;
+      }
+      .next-action .section-title {
+        margin: 4px 0 8px;
+      }
+      .next-action .primary {
+        margin-top: 24px;
+      }
+      .guidance-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        line-height: 18px;
+        min-height: 36px;
+        padding: 0;
+        border-radius: 4px;
+      }
+      .guidance-link:hover {
+        text-decoration: underline;
+        text-underline-offset: 4px;
+      }
+      .next-actions-bottom {
+        grid-column: 1/-1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .journey {
+        border-top: 1px solid var(--border);
+        padding: 20px 24px 16px;
+      }
+      .journey-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+      .has-tip {
+        position: relative;
+      }
+      .tooltip {
+        position: absolute;
+        z-index: 60;
+        background: var(--inverse);
+        color: var(--inverse-foreground);
+        font-size: 13px;
+        line-height: 18px;
+        font-weight: 400;
+        text-align: left;
+        padding: 12px;
+        border-radius: 4px;
+        width: 280px;
+        max-width: calc(100vw - 48px);
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%);
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          opacity 120ms ease-out,
+          visibility 0s 120ms;
+      }
+      .tooltip:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        height: 12px;
+      }
+      .has-tip:hover > .tooltip,
+      .has-tip:focus-within > .tooltip {
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
+        transition-delay: 300ms, 300ms;
+      }
+      .has-tip:focus-within > .tooltip {
+        transition-delay: 0s;
+      }
+      .has-tip.tip-dismissed > .tooltip {
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+        transition: none;
+      }
+      .tooltip strong {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+      .tip-line {
+        display: block;
+        margin-top: 4px;
+      }
+      .tip-line:first-of-type {
+        margin-top: 0;
+      }
+      .tooltip .tip-rule {
+        display: block;
+        border-top: 1px solid var(--muted-foreground);
+        padding-top: 8px;
+        margin-top: 8px;
+      }
+      .journey-stop:first-child .tooltip {
+        left: 0;
+        transform: none;
+      }
+      .journey-stop:last-child .tooltip {
+        left: auto;
+        right: 0;
+        transform: none;
+      }
+      .mini-tip {
+        width: max-content;
+        max-width: 240px;
+        padding: 4px 8px;
+        white-space: normal;
+      }
+      .topbar .tooltip,
+      .sidebar .tooltip {
+        bottom: auto;
+        top: calc(100% + 8px);
+      }
+      .sidebar .tooltip {
+        left: 54px;
+        transform: none;
+        top: 0;
+      }
+      .top-actions .tooltip {
+        left: auto;
+        right: 0;
+        transform: none;
+      }
+      .case-tabs {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        height: 56px;
+        border-bottom: 1px solid var(--border);
+        margin-top: 16px;
+        margin-bottom: 24px;
+        position: sticky;
+        top: 56px;
+        background: var(--background);
+        z-index: 20;
+      }
+      .tab {
+        height: 56px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 4px;
+        font-weight: 500;
+        color: var(--muted-foreground);
+        border-radius: 4px 4px 0 0;
+      }
+      .tab[aria-selected='true'] {
+        color: var(--foreground);
+      }
+      .tab[aria-selected='true']:after {
+        position: absolute;
+        content: '';
+        height: 2px;
+        background: var(--foreground);
+        left: 0;
+        right: 0;
+        bottom: -1px;
+      }
+      .count {
+        font-size: 12px;
+        line-height: 16px;
+        min-width: 20px;
+        text-align: center;
+        background: var(--muted);
+        border-radius: 4px;
+        padding: 1px 4px;
+        font-variant-numeric: tabular-nums;
+      }
+      .view-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 344px;
+        gap: 24px;
+        align-items: start;
+      }
+      .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 20px 24px;
+      }
+      .bank-list {
+        padding: 0 24px;
+      }
+      .bank-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 180px auto;
+        gap: 16px;
+        align-items: center;
+        min-height: 80px;
+        border-top: 1px solid var(--border);
+      }
+      .bank-name {
+        font-weight: 500;
+      }
+      .bank-note {
+        font-size: 13px;
+        line-height: 18px;
+        color: var(--muted-foreground);
+        margin-top: 4px;
+      }
+      .bank-clock {
+        text-align: right;
+        color: var(--muted-foreground);
+        font-size: 13px;
+        line-height: 18px;
+        font-variant-numeric: tabular-nums;
+      }
+      .bank-foot {
+        padding: 12px 24px;
+        border-top: 1px solid var(--card-border);
+        color: var(--muted-foreground);
+        font-size: 13px;
+        line-height: 18px;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .bank-foot .icon {
+        margin-top: 1px;
+      }
+      .latest {
+        margin-top: 24px;
+        border-top: 1px solid var(--border);
+        padding-top: 20px;
+      }
+      .latest-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+      .latest-body {
+        display: flex;
+        gap: 12px;
+      }
+      .avatar {
+        width: 32px;
+        height: 32px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--border);
+        border-radius: 50%;
+        color: var(--muted-foreground);
+        font-size: 12px;
+        line-height: 16px;
+        flex: none;
+      }
+      .latest-message {
+        max-width: 70ch;
+        margin-top: 8px;
+        font-size: 14px;
+        line-height: 20px;
+      }
+      .text-link {
+        min-height: 32px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--muted-foreground);
+        font-size: 13px;
+        line-height: 18px;
+        border-radius: 4px;
+      }
+      .text-link:hover {
+        color: var(--foreground);
+        text-decoration: underline;
+        text-underline-offset: 4px;
+      }
+      .case-facts {
+        padding: 20px 24px;
+      }
+      .case-facts .tooltip {
+        left: 0;
+        transform: none;
+      }
+      .fact-block + .fact-block {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+      }
+      .fact-block h3 {
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 16px;
+        color: var(--muted-foreground);
+        margin-bottom: 12px;
+      }
+      .facts {
+        display: grid;
+        grid-template-columns: 92px 1fr;
+        gap: 12px 8px;
+        font-size: 13px;
+        line-height: 18px;
+      }
+      .facts dt {
+        color: var(--muted-foreground);
+      }
+      .facts dd {
+        margin: 0;
+        text-align: right;
+      }
+      .fact-title {
+        margin-bottom: 20px;
+      }
+      .risk-note {
+        margin-top: 8px;
+      }
+      .signal-row {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+      }
+      .note-copy {
+        margin-top: 8px;
+        color: var(--muted-foreground);
+        font-size: 13px;
+        line-height: 18px;
+      }
+      .empty-tasks {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 44px;
+        color: var(--muted-foreground);
+      }
+      .tab-content {
+        scroll-margin-top: 132px;
+      }
+      .messages-panel,
+      .history-panel,
+      .tasks-panel {
+        padding: 24px;
+      }
+      .message-item {
+        padding: 24px 0;
+        border-top: 1px solid var(--border);
+      }
+      .message-item:last-child {
+        padding-bottom: 0;
+      }
+      .message-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .message-date {
+        margin-left: auto;
+        font-size: 13px;
+        line-height: 18px;
+        color: var(--muted-foreground);
+      }
+      .message-body {
+        margin-top: 12px;
+        max-width: 80ch;
+      }
+      .sender-role {
+        font-size: 12px;
+        line-height: 16px;
+        color: var(--muted-foreground);
+      }
+      .proposal {
+        margin-top: 12px;
+        padding: 12px 0 0;
+        border-top: 1px solid var(--card-border);
+        font-size: 13px;
+        line-height: 18px;
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .proposal-copy {
+        display: flex;
+        gap: 8px;
+      }
+      .proposal .icon {
+        margin-top: 1px;
+        color: var(--muted-foreground);
+      }
+      .proposal-status {
+        margin-top: 6px;
+        color: var(--muted-foreground);
+      }
+      .message-tools {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+      }
+      .message-tools .btn {
+        font-size: 13px;
+        line-height: 18px;
+      }
+      .section-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      .track-switch {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+      }
+      .track-switch button {
+        height: 36px;
+        padding: 0 12px;
+        border-radius: 4px;
+        color: var(--muted-foreground);
+      }
+      .track-switch button[aria-pressed='true'] {
+        background: var(--selected);
+        color: var(--foreground);
+      }
+      .history-item {
+        padding: 20px 0;
+        border-top: 1px solid var(--border);
+      }
+      .history-meta {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 12px;
+      }
+      .history-meta span {
+        display: block;
+        font-size: 12px;
+        line-height: 16px;
+        color: var(--muted-foreground);
+        margin-bottom: 4px;
+      }
+      .history-note {
+        margin-top: 8px;
+      }
+      .history-item .mono {
+        color: var(--muted-foreground);
+      }
+      .track-empty {
+        padding: 24px 0;
+      }
+      .task-row {
+        padding: 20px 0;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        justify-content: space-between;
+      }
+      .sheet-backdrop {
+        position: fixed;
+        inset: 0;
+        background: var(--scrim);
+        backdrop-filter: blur(3px);
+        z-index: 90;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 16px;
+      }
+      .sheet {
+        width: 720px;
+        max-width: 100%;
+        max-height: calc(100dvh - 32px);
+        overflow: auto;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        box-shadow: var(--shadow-overlay);
+        animation: sheet-in 250ms ease-in-out;
+      }
+      .sheet-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        background: var(--card);
+        z-index: 2;
+      }
+      .sheet-body {
+        padding: 24px;
+      }
+      .sheet-footer {
+        border-top: 1px solid var(--border);
+        padding: 16px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .field-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .field label {
+        font-size: 12px;
+        line-height: 16px;
+        font-weight: 500;
+      }
+      .field input,
+      .field textarea {
+        background: var(--card);
+        border: 1px solid var(--input);
+        border-radius: 6px;
+        padding: 8px 12px;
+        width: 100%;
+      }
+      .field input {
+        height: 36px;
+      }
+      .field textarea {
+        resize: vertical;
+        min-height: 108px;
+      }
+      .search-row {
+        display: flex;
+        gap: 8px;
+      }
+      .search-row input {
+        flex: 1;
+        min-width: 0;
+      }
+      .guidance-result {
+        padding: 20px 0;
+        border-top: 1px solid var(--border);
+      }
+      .guidance-result p {
+        margin-top: 12px;
+      }
+      .guidance-result h3 {
+        font-size: 16px;
+        line-height: 24px;
+        font-weight: 600;
+      }
+      .guidance-result .pill {
+        margin-top: 12px;
+      }
+      .choice-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 12px 0 20px;
+      }
+      .choice-row button[aria-pressed='true'] {
+        border-color: var(--foreground);
+        background: var(--selected);
+      }
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: calc(100% - 32px);
+        background: var(--inverse);
+        color: var(--inverse-foreground);
+        border-radius: 6px;
+        padding: 12px 16px;
+        box-shadow: var(--shadow-overlay);
+        z-index: 110;
+        font-size: 13px;
+        line-height: 18px;
+      }
+      .skip-link {
+        position: fixed;
+        top: 8px;
+        left: 80px;
+        transform: translateY(-150%);
+        z-index: 120;
+        background: var(--card);
+        padding: 8px 16px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+      }
+      .skip-link:focus {
+        transform: none;
+      }
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+      }
+      @keyframes sheet-in {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @media (min-width: 720px) and (max-width: 1279px) {
+        .page {
+          padding: 24px;
+        }
+        .view-grid {
+          grid-template-columns: minmax(0, 1fr) 304px;
+          gap: 16px;
+        }
+        .next-action {
+          padding-left: 24px;
+          gap: 12px;
+        }
+        .case-now {
+          gap: 24px;
+        }
+        .bank-row {
+          grid-template-columns: minmax(0, 1fr) auto;
+        }
+        .bank-clock {
+          display: none;
+        }
+        .header-actions .btn {
+          padding: 0 12px;
+        }
+        .case-header {
+          align-items: flex-start;
+        }
+        .next-action .primary {
+          padding: 0 12px;
+        }
+      }
+      @media (max-width: 959px) and (min-width: 720px) {
+        .case-header {
+          flex-direction: column;
+          gap: 16px;
+        }
+        .view-grid {
+          grid-template-columns: 1fr;
+        }
+        .case-facts {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 24px;
+        }
+        .fact-title {
+          grid-column: 1/-1;
+          margin-bottom: 0;
+        }
+        .fact-block + .fact-block {
+          margin: 0;
+          padding: 0;
+          border: 0;
+        }
+        .case-now {
+          grid-template-columns: 1fr 1fr;
+        }
+        .next-action {
+          display: flex;
+          flex-direction: column;
+        }
+        .next-action .primary {
+          margin-top: 0;
+        }
+        .next-actions-bottom {
+          flex-direction: column;
+          align-items: start;
+          gap: 0;
+        }
+      }
+      @media (max-width: 719px) {
+        .sidebar {
+          display: none;
+        }
+        .topbar {
+          left: 0;
+          padding: 0 16px;
+        }
+        .topbar .desktop-only {
+          display: none;
+        }
+        .top-actions {
+          gap: 4px;
+        }
+        .mobile-menu {
+          display: inline-flex;
+          margin-left: -8px;
+        }
+        .breadcrumbs {
+          gap: 8px;
+        }
+        .workspace {
+          margin-left: 0;
+        }
+        .page {
+          padding: 24px 16px 32px;
+        }
+        .case-header {
+          display: block;
+          margin-bottom: 20px;
+        }
+        .identity-meta {
+          margin-bottom: 8px;
+          gap: 8px;
+        }
+        .case-header h1 {
+          max-width: 100%;
+          font-size: 24px;
+          line-height: 32px;
+        }
+        .header-meta {
+          gap: 8px;
+          font-size: 13px;
+          line-height: 18px;
+          flex-wrap: wrap;
+        }
+        .header-actions {
+          margin-top: 16px;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+        }
+        .header-actions .btn {
+          padding: 0 8px;
+          font-size: 13px;
+        }
+        .case-now {
+          display: block;
+          padding: 16px;
+        }
+        .blocker {
+          gap: 12px;
+        }
+        .blocker h2 {
+          margin-top: 4px;
+        }
+        .blocker-status {
+          margin-top: 8px;
+        }
+        .next-action {
+          margin-top: 20px;
+          border-left: 0;
+          border-top: 1px solid var(--border);
+          padding: 16px 0 0;
+          gap: 12px;
+          grid-template-columns: 1fr auto;
+        }
+        .next-action .primary {
+          margin-top: 24px;
+          padding: 0 12px;
+        }
+        .next-action .section-title {
+          margin-bottom: 8px;
+        }
+        .role-label .owner-name {
+          display: none;
+        }
+        .next-actions-bottom {
+          gap: 4px;
+        }
+        .journey {
+          padding: 16px;
+        }
+        .journey-heading {
+          margin-bottom: 16px;
+        }
+        .journey-heading .small {
+          font-size: 12px;
+          line-height: 16px;
+        }
+        .case-tabs {
+          gap: 0;
+          justify-content: space-between;
+          margin-top: 8px;
+          margin-bottom: 20px;
+          height: 48px;
+        }
+        .tab {
+          height: 48px;
+          font-size: 13px;
+          line-height: 18px;
+          gap: 6px;
+          padding: 0 2px;
+        }
+        .view-grid {
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+        }
+        .overview-main,
+        .case-facts {
+          width: 100%;
+        }
+        .panel-head {
+          padding: 16px;
+        }
+        .bank-list {
+          padding: 0 16px;
+        }
+        .bank-row {
+          grid-template-columns: minmax(0, 1fr) auto;
+          gap: 8px;
+          min-height: 80px;
+        }
+        .bank-clock {
+          grid-column: 1/-1;
+          text-align: left;
+          margin-top: -12px;
+          margin-bottom: 12px;
+          font-size: 12px;
+          line-height: 16px;
+        }
+        .bank-foot {
+          padding: 12px 16px;
+          font-size: 12px;
+          line-height: 16px;
+        }
+        .case-facts {
+          padding: 16px;
+        }
+        .latest {
+          margin-top: 20px;
+          padding-top: 16px;
+        }
+        .latest-head {
+          margin-bottom: 12px;
+        }
+        .latest-body {
+          gap: 8px;
+        }
+        .latest-body .avatar {
+          display: none;
+        }
+        .latest-message {
+          font-size: 14px;
+          line-height: 20px;
+        }
+        .facts {
+          grid-template-columns: 80px 1fr;
+        }
+        .messages-panel,
+        .history-panel,
+        .tasks-panel {
+          padding: 16px;
+        }
+        .section-toolbar {
+          align-items: flex-start;
+        }
+        .message-date {
+          margin-left: 0;
+          flex-basis: 100%;
+          margin-top: 4px;
+        }
+        .message-head {
+          gap: 4px 8px;
+        }
+        .proposal {
+          flex-direction: column;
+          gap: 8px;
+        }
+        .history-meta {
+          grid-template-columns: 1fr 1fr;
+        }
+        .history-meta .full-mobile {
+          grid-column: 1/-1;
+        }
+        .history-item .row.between {
+          align-items: flex-start;
+          gap: 12px;
+        }
+        .sheet-header {
+          padding: 16px;
+        }
+        .sheet-body {
+          padding: 16px;
+        }
+        .sheet-footer {
+          padding: 16px;
+          align-items: flex-start;
+          flex-direction: column;
+        }
+        .field-grid {
+          grid-template-columns: 1fr;
+          gap: 0;
+        }
+        .sheet {
+          max-height: calc(100dvh - 32px - env(safe-area-inset-bottom));
+        }
+        .sheet-backdrop {
+          padding-bottom: max(16px, env(safe-area-inset-bottom));
+        }
+        .field input,
+        .field textarea {
+          font-size: 16px;
+        }
+        .skip-link {
+          left: 16px;
+        }
+        .topbar .mini-tip {
+          max-width: 200px;
+        }
+        .toast {
+          bottom: 16px;
+        }
+        .topbar .profile {
+          margin-left: 4px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *:before,
+        *:after {
+          animation: none !important;
+          scroll-behavior: auto !important;
+          transition: opacity 120ms ease-out !important;
+        }
+      }
+
+      /* Full Case Journey: the only illustrated roadmap in the ledger. */
+      :root {
+        --art-ink: var(--foreground);
+        --art-paper: var(--card);
+        --art-shade: var(--muted);
+        --art-detail: var(--muted-foreground);
+        --sidebar-surface: #fff;
+      }
+      :root[data-theme='dark'] {
+        color-scheme: dark;
+        --background: #0a0a0a;
+        --card: #141414;
+        --popover: #1c1c1c;
+        --foreground: #fafafa;
+        --muted: #1c1c1c;
+        --muted-foreground: #a1a1a1;
+        --accent: #242424;
+        --selected: #1f1f1f;
+        --primary: #fafafa;
+        --primary-foreground: #0a0a0a;
+        --primary-hover: #e5e5e5;
+        --inverse: #fafafa;
+        --inverse-foreground: #0a0a0a;
+        --border: #262626;
+        --card-border: rgba(250, 250, 250, 0.08);
+        --input: #3a3a3a;
+        --ring: #fafafa;
+        --status-danger-fg: #e9a8b0;
+        --status-danger-bg: #2b141a;
+        --status-danger-solid: #c76a76;
+        --status-positive-fg: #a7d8bc;
+        --status-positive-bg: #12251b;
+        --status-positive-solid: #5fa57e;
+        --status-info-fg: #aec8e8;
+        --status-info-bg: #141e2b;
+        --status-info-solid: #6e9bd1;
+        --status-warning-fg: #e8ce8a;
+        --status-warning-bg: #2a2113;
+        --status-warning-solid: #c9a34a;
+        --desk-loan-fg: #cbd58c;
+        --desk-loan-bg: #1f2210;
+        --art-shade: #262626;
+        --sidebar-surface: #0f0f0f;
+        --scrim: rgba(0, 0, 0, 0.45);
+      }
+      :root[data-theme='dark'] .sidebar {
+        background: var(--sidebar-surface);
+      }
+
+      .journey-heading {
+        margin-bottom: 24px;
+      }
+      .journey-map {
+        position: relative;
+        height: 240px;
+        isolation: isolate;
+      }
+      .journey-map.has-preview-detail {
+        height: max(240px, var(--preview-map-height, 380px));
+      }
+      .route-drawing {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 240px;
+        overflow: visible;
+        pointer-events: none;
+      }
+      .route-drawing path {
+        fill: none;
+        vector-effect: non-scaling-stroke;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .road-bed {
+        stroke: var(--muted);
+        stroke-width: 8;
+      }
+      .road-travelled {
+        stroke: var(--foreground);
+        stroke-width: 1.75;
+        stroke-dasharray: 1;
+        animation: trace-route 560ms ease-out both;
+      }
+      .road-ahead {
+        stroke: var(--input);
+        stroke-width: 1.5;
+        stroke-dasharray: 3 6;
+      }
+      .road-detour,
+      .road-return {
+        stroke: var(--muted-foreground);
+        stroke-width: 1;
+      }
+      .road-detour-narrow {
+        display: none;
+      }
+      @keyframes trace-route {
+        from {
+          stroke-dashoffset: 1;
+        }
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+      .phone-rail,
+      .phone-detour {
+        display: none;
+      }
+      .journey-stops {
+        position: relative;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .journey-stop {
+        position: absolute;
+        top: 32px;
+        width: 20%;
+        text-align: center;
+        transform: translateX(-50%);
+      }
+      .journey-stop:nth-child(1) {
+        left: 8.9041%;
+      }
+      .journey-stop:nth-child(2) {
+        left: 27.3973%;
+      }
+      .journey-stop:nth-child(3) {
+        left: 47.774%;
+      }
+      .journey-stop:nth-child(4) {
+        left: 68.8356%;
+      }
+      .journey-stop:nth-child(5) {
+        left: 91.0959%;
+      }
+      .stop-trigger {
+        display: flex;
+        position: relative;
+        width: 100%;
+        padding: 0 4px 6px;
+        border-radius: 4px;
+        align-items: center;
+        flex-direction: column;
+      }
+      .station {
+        width: 64px;
+        height: 64px;
+        display: block;
+        position: relative;
+        flex: none;
+      }
+      .milestone-art {
+        width: 64px;
+        height: 64px;
+        display: block;
+        overflow: visible;
+      }
+      .milestone-art .journey-art-line {
+        fill: none;
+        stroke: var(--art-ink);
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .milestone-art .journey-art-paper {
+        fill: var(--art-paper);
+      }
+      .milestone-art .journey-art-shade {
+        fill: var(--art-shade);
+      }
+      .milestone-art .journey-art-ground {
+        fill: var(--art-ink);
+        opacity: 0.07;
+      }
+      [data-theme='dark'] .milestone-art .journey-art-ground {
+        opacity: 0.1;
+      }
+      .missing .station {
+        opacity: 0.68;
+      }
+      .missing .journey-art-line {
+        stroke-dasharray: 3.5 3;
+      }
+      .upcoming .station {
+        opacity: 0.4;
+      }
+      .route-node {
+        display: grid;
+        place-items: center;
+        width: 12px;
+        height: 12px;
+        border: 1.5px solid var(--foreground);
+        border-radius: 50%;
+        background: var(--card);
+        margin-top: -2px;
+        flex: none;
+      }
+      .route-node svg {
+        width: 8px;
+        height: 8px;
+        stroke: currentColor;
+        stroke-width: 1.5;
+        fill: none;
+      }
+      .done .route-node {
+        background: var(--foreground);
+        color: var(--card);
+      }
+      .missing .route-node {
+        border-style: dashed;
+        border-color: var(--muted-foreground);
+      }
+      .current-stop .route-node {
+        border-width: 3px;
+        outline: 1px solid var(--foreground);
+        outline-offset: 4px;
+      }
+      .upcoming .route-node {
+        border-color: var(--input);
+      }
+      .here-marker {
+        position: absolute;
+        top: -24px;
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+        font-size: 12px;
+        line-height: 16px;
+        font-weight: 500;
+        padding: 3px 8px;
+        border-radius: 4px;
+        background: var(--foreground);
+        color: var(--card);
+      }
+      .here-marker:after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: calc(50% - 3px);
+        border: 3px solid transparent;
+        border-top-color: var(--foreground);
+      }
+      .stop-name {
+        font-size: 14px;
+        line-height: 20px;
+        font-weight: 500;
+        margin-top: 18px;
+      }
+      .stop-meta {
+        font-size: 12px;
+        line-height: 16px;
+        margin-top: 4px;
+        color: var(--muted-foreground);
+      }
+      .current-stop .stop-meta {
+        color: var(--status-danger-fg);
+      }
+      .inline-dot {
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: currentColor;
+        vertical-align: middle;
+        margin-right: 4px;
+      }
+      .journey-detour {
+        position: absolute;
+        left: 97.9452%;
+        top: 148px;
+        transform: translateX(-50%);
+        width: max-content;
+        z-index: 1;
+      }
+      .detour-flag {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 8px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        font-size: 12px;
+        line-height: 16px;
+        text-align: left;
+      }
+      .detour-flag:hover {
+        border-color: var(--muted-foreground);
+      }
+      .detour-rejected {
+        color: var(--status-danger-fg);
+        white-space: nowrap;
+      }
+      .detour-flag .icon {
+        width: 12px;
+        height: 12px;
+      }
+      .journey-foot {
+        border-top: 1px solid var(--card-border);
+        padding-top: 12px;
+        display: flex;
+        align-items: center;
+      }
+      .journey-stop .tooltip,
+      .journey-stop:first-child .tooltip,
+      .journey-stop:last-child .tooltip {
+        top: calc(100% + 12px);
+        bottom: auto;
+        left: 50%;
+        right: auto;
+        transform: translateX(calc(-50% + var(--tip-shift, 0px)));
+      }
+      .journey-stop.tip-above .tooltip {
+        top: auto;
+        bottom: calc(100% + 12px);
+      }
+      .journey-stop .tooltip:after {
+        top: auto;
+        bottom: 100%;
+        height: 14px;
+      }
+      .journey-stop.tip-above .tooltip:after {
+        top: 100%;
+        bottom: auto;
+      }
+      .journey-stop.has-tip:hover > .tooltip,
+      .journey-stop.has-tip:focus-within > .tooltip {
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .journey-stop:has(> .stop-trigger:hover):not(.tip-dismissed) > .tooltip,
+      .journey-stop:has(> .stop-trigger:focus):not(.tip-dismissed) > .tooltip,
+      .journey-stop:has(> .tooltip:hover):not(.tip-dismissed) > .tooltip {
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .journey-stop:has(> .stop-trigger:hover) > .tooltip {
+        transition-delay: 300ms;
+      }
+      .journey-stop:has(> .stop-trigger:focus) > .tooltip {
+        transition-delay: 0s;
+      }
+      .journey-stop.has-tip.tip-pinned:not(.tip-dismissed) > .tooltip {
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
+        transition: none;
+      }
+      .journey-stop:hover,
+      .journey-stop:focus-within,
+      .journey-stop.tip-pinned {
+        z-index: 5;
+      }
+      .bank-row > .pill {
+        justify-self: end;
+        align-self: center;
+        width: max-content;
+        max-width: 100%;
+      }
+      @media (min-width: 720px) and (max-width: 959px) {
+        .stop-name {
+          font-size: 13px;
+          line-height: 18px;
+          min-height: 36px;
+          justify-content: center;
+          display: flex;
+          align-items: start;
+        }
+        .stop-meta {
+          max-width: 108px;
+        }
+        .journey-detour {
+          top: 170px;
+          left: 101.3699%;
+        }
+        .road-detour-wide {
+          display: none;
+        }
+        .road-detour-narrow {
+          display: block;
+        }
+        .journey-map {
+          height: 260px;
+        }
+      }
+      @media (max-width: 719px) {
+        .journey-heading {
+          margin-bottom: 12px;
+        }
+        .journey-map,
+        .journey-map.has-preview-detail {
+          height: auto;
+        }
+        .route-desktop {
+          display: none;
+        }
+        .journey-stops {
+          height: auto;
+          display: flex;
+          flex-direction: column;
+        }
+        .journey-stop:nth-child(n) {
+          position: relative;
+          left: auto;
+          top: auto;
+          width: 100%;
+          transform: none;
+          text-align: left;
+          min-height: 72px;
+          z-index: auto;
+        }
+        .phone-rail {
+          display: block;
+          position: absolute;
+          left: 0;
+          top: 34px;
+          height: 100%;
+          width: 36px;
+          pointer-events: none;
+          overflow: visible;
+          z-index: -1;
+        }
+        .phone-rail path {
+          fill: none;
+          vector-effect: non-scaling-stroke;
+          stroke-linecap: round;
+        }
+        .rail-bed {
+          stroke: var(--muted);
+          stroke-width: 8;
+        }
+        .rail-line {
+          stroke: var(--foreground);
+          stroke-width: 1.5;
+        }
+        .phone-rail.ahead .rail-line {
+          stroke: var(--input);
+          stroke-dasharray: 3 6;
+        }
+        .stop-trigger {
+          height: 72px;
+          display: grid;
+          grid-template-columns: 80px 1fr;
+          grid-template-rows: 34px 38px;
+          column-gap: 12px;
+          padding: 0;
+          text-align: left;
+        }
+        .station {
+          position: absolute;
+          left: 36px;
+          top: 14px;
+          width: 40px;
+          height: 40px;
+        }
+        .milestone-art {
+          width: 40px;
+          height: 40px;
+        }
+        .route-node {
+          position: absolute;
+          left: 6px;
+          top: 28px;
+          margin: 0;
+        }
+        .stop-name {
+          grid-column: 2;
+          grid-row: 1;
+          align-self: end;
+          margin: 0;
+        }
+        .stop-meta {
+          grid-column: 2;
+          grid-row: 2;
+          align-self: start;
+          margin-top: 4px;
+        }
+        .here-marker {
+          top: -4px;
+          left: 92px;
+          transform: none;
+          padding: 1px 6px;
+        }
+        .here-marker:after {
+          left: 8px;
+        }
+        .current-stop {
+          margin-top: 8px;
+        }
+        .journey-stop:has(+ .current-stop) > .phone-rail {
+          height: calc(100% + 8px);
+        }
+        .journey-detour {
+          position: relative;
+          left: auto;
+          top: auto;
+          transform: none;
+          width: 100%;
+          height: 64px;
+          display: flex;
+          align-items: center;
+          padding-left: 44px;
+        }
+        .phone-detour {
+          display: block;
+          position: absolute;
+          width: 104px;
+          height: 64px;
+          left: 0;
+          top: 0;
+          z-index: -1;
+          fill: none;
+          stroke: var(--muted-foreground);
+          stroke-width: 1;
+        }
+        .detour-flag {
+          width: 100%;
+          justify-content: space-between;
+          min-height: 32px;
+        }
+        .journey-foot {
+          margin-top: 12px;
+        }
+        .journey-foot > .small {
+          font-size: 12px;
+          line-height: 16px;
+        }
+        .journey-stop.has-tip > .tooltip,
+        .journey-stop:first-child > .tooltip,
+        .journey-stop:last-child > .tooltip {
+          display: none;
+          position: static;
+          transform: none;
+          width: auto;
+          max-width: none;
+          margin: 0 0 16px 44px;
+          visibility: visible;
+          opacity: 1;
+          pointer-events: auto;
+          transition: none;
+          border: 1px solid var(--border);
+          background: var(--muted);
+          color: var(--foreground);
+          padding: 12px;
+          border-radius: 4px;
+        }
+        .journey-stop.has-tip.is-expanded > .tooltip {
+          display: block;
+          visibility: visible;
+          opacity: 1;
+          pointer-events: auto;
+          transition: none;
+        }
+        .journey-stop .tooltip:after {
+          display: none;
+        }
+        .journey-stop .tooltip .tip-rule {
+          border-color: var(--border);
+        }
+        .bank-row {
+          padding: 12px 0;
+          gap: 4px 8px;
+          min-height: 96px;
+        }
+        .bank-row > div:first-child {
+          grid-column: 1;
+          grid-row: 1;
+          min-width: 0;
+        }
+        .bank-row > .pill {
+          grid-column: 2;
+          grid-row: 1;
+          align-self: start;
+        }
+        .bank-row > .bank-clock {
+          display: block;
+          grid-column: 1/-1;
+          grid-row: 2;
+          margin: 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .road-travelled {
+          animation: none;
+          stroke-dashoffset: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <svg class="defs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <symbol id="i-chevron" viewBox="0 0 24 24">
+          <path d="m9 18 6-6-6-6" />
+        </symbol>
+        <symbol id="i-down" viewBox="0 0 24 24">
+          <path d="m6 9 6 6 6-6" />
+        </symbol>
+        <symbol id="i-plus" viewBox="0 0 24 24">
+          <path d="M12 5v14M5 12h14" />
+        </symbol>
+        <symbol id="i-check" viewBox="0 0 24 24">
+          <path d="m20 6-11 11-5-5" />
+        </symbol>
+        <symbol id="i-x" viewBox="0 0 24 24">
+          <path d="m18 6-12 12M6 6l12 12" />
+        </symbol>
+        <symbol id="i-bank" viewBox="0 0 24 24">
+          <path d="m3 10 9-7 9 7H3ZM4 21h16M6 10v7M10 10v7M14 10v7M18 10v7" />
+        </symbol>
+        <symbol id="i-file" viewBox="0 0 24 24">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+          <path d="M14 2v6h6M8 13h8M8 17h6" />
+        </symbol>
+        <symbol id="i-clipboard" viewBox="0 0 24 24">
+          <rect x="8" y="2" width="8" height="4" rx="1" />
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 12h6M9 16h6" />
+        </symbol>
+        <symbol id="i-clock" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 6v6l4 2" />
+        </symbol>
+        <symbol id="i-calendar" viewBox="0 0 24 24">
+          <rect x="3" y="5" width="18" height="16" rx="2" />
+          <path d="M16 3v4M8 3v4M3 11h18m6 5 2 2 4-4" />
+        </symbol>
+        <symbol id="i-message" viewBox="0 0 24 24">
+          <path
+            d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"
+          />
+        </symbol>
+        <symbol id="i-sparkles" viewBox="0 0 24 24">
+          <path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3ZM20 2v4M18 4h4M4 17v4M2 19h4" />
+        </symbol>
+        <symbol id="i-bell" viewBox="0 0 24 24">
+          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" />
+        </symbol>
+        <symbol id="i-moon" viewBox="0 0 24 24">
+          <path d="M20.9 13a9 9 0 0 1-9.9-9.9A9 9 0 1 0 20.9 13Z" />
+        </symbol>
+        <symbol id="i-user" viewBox="0 0 24 24">
+          <circle cx="12" cy="8" r="4" />
+          <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
+        </symbol>
+        <symbol id="i-building" viewBox="0 0 24 24">
+          <rect x="6" y="3" width="12" height="18" rx="2" />
+          <path d="M9 7h1M14 7h1M9 11h1M14 11h1M9 15h1M14 15h1M10 21v-3h4v3M6 9H3v12h18V9h-3" />
+        </symbol>
+        <symbol id="i-trend" viewBox="0 0 24 24">
+          <path d="m3 17 6-6 4 4 8-10M15 5h6v6" />
+        </symbol>
+        <symbol id="i-menu" viewBox="0 0 24 24">
+          <path d="M4 6h16M4 12h16M4 18h16" />
+        </symbol>
+        <symbol id="i-info" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 11v6M12 7h.01" />
+        </symbol>
+        <symbol id="i-refresh" viewBox="0 0 24 24">
+          <path d="M3 11a9 9 0 0 1 15-6l3 3M21 3v5h-5M21 13a9 9 0 0 1-15 6l-3-3M3 21v-5h5" />
+        </symbol>
+      </defs>
+    </svg>
+    <a class="skip-link" href="#case-main">Skip To Case</a>
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#" aria-label="Mortar home" data-shell="Home"
+        ><svg viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="currentColor" d="M3 3h12v5H8v13H3zM10 10h5v11h-5z" />
+          <path fill="var(--muted-foreground)" d="M17 3h4v18h-4z" /></svg
+      ></a>
+      <div class="has-tip">
+        <a class="nav-item active" href="#" aria-label="Bookings" aria-current="page" data-shell="Bookings"
+          ><svg class="icon"><use href="#i-clipboard" /></svg></a
+        ><span class="tooltip mini-tip" role="tooltip">Bookings</span>
+      </div>
+      <div class="has-tip">
+        <a class="nav-item" href="#" aria-label="Today" data-shell="Today"
+          ><svg class="icon"><use href="#i-bell" /></svg></a
+        ><span class="tooltip mini-tip" role="tooltip">Today</span>
+      </div>
+      <div class="has-tip">
+        <a class="nav-item" href="#" aria-label="Sales Chart" data-shell="Sales Chart"
+          ><svg class="icon"><use href="#i-building" /></svg></a
+        ><span class="tooltip mini-tip" role="tooltip">Sales Chart</span>
+      </div>
+      <div class="nav-divider"></div>
+      <div class="has-tip">
+        <a class="nav-item" href="#" aria-label="Forecast" data-shell="Forecast"
+          ><svg class="icon"><use href="#i-trend" /></svg></a
+        ><span class="tooltip mini-tip" role="tooltip">Forecast</span>
+      </div>
+      <div class="nav-bottom has-tip">
+        <button class="nav-item" aria-label="Expand navigation" data-shell="Navigation">
+          <svg class="icon"><use href="#i-chevron" /></svg></button
+        ><span class="tooltip mini-tip" role="tooltip">Expand Navigation</span>
+      </div>
+    </aside>
+    <header class="topbar">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <button class="icon-btn mobile-menu" aria-label="Open navigation" data-shell="Navigation">
+          <svg class="icon"><use href="#i-menu" /></svg></button
+        ><a class="desktop-only" href="#" data-shell="Bookings">Bookings</a
+        ><svg class="icon desktop-only" aria-hidden="true">
+          <use href="#i-chevron" /></svg
+        ><span class="mono current" aria-current="page">BK-9002</span>
+      </nav>
+      <div class="top-actions">
+        <div class="has-tip">
+          <button class="icon-btn" aria-label="Ask Mortar AI" data-shell="Ask Mortar AI">
+            <svg class="icon"><use href="#i-sparkles" /></svg></button
+          ><span class="tooltip mini-tip" role="tooltip">Ask Mortar AI</span>
+        </div>
+        <div class="has-tip">
+          <button class="icon-btn" aria-label="Notifications" data-shell="Notifications">
+            <svg class="icon"><use href="#i-bell" /></svg></button
+          ><span class="tooltip mini-tip" role="tooltip">Notifications</span>
+        </div>
+        <div class="has-tip desktop-only">
+          <button class="icon-btn" aria-label="Switch theme" data-shell="Theme">
+            <svg class="icon"><use href="#i-moon" /></svg></button
+          ><span class="tooltip mini-tip" role="tooltip">Switch Theme</span>
+        </div>
+        <div class="has-tip">
+          <button class="profile" aria-label="Tan Mei Ling, Loan Admin. Open profile menu" data-shell="Profile">
+            <svg class="icon"><use href="#i-user" /></svg></button
+          ><span class="tooltip mini-tip" role="tooltip">Tan Mei Ling · Loan Admin</span>
+        </div>
+      </div>
+    </header>
+    <div class="workspace">
+      <main class="page" id="case-main">
+        <header class="case-header">
+          <div>
+            <div class="identity-meta">
+              <span class="mono">B-08-05</span><span class="separator" aria-hidden="true"></span
+              ><span class="small muted">Aster Heights</span><span class="pill info">With Bank</span>
+            </div>
+            <h1>Mohd Hafiz bin Razak</h1>
+            <p class="header-meta">
+              <span class="tabular">RM 620,000</span><span aria-hidden="true">·</span><span>Booked 1 Sep 2026</span>
+            </p>
+          </div>
+          <div class="header-actions">
+            <button class="btn secondary" data-open="update">
+              <svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg>Record An Update</button
+            ><button class="btn secondary" data-open="message">
+              <svg class="icon" aria-hidden="true">
+                <use href="#i-message" /></svg
+              >Paste A Message
+            </button>
+          </div>
+        </header>
+        <section class="card focus-card" aria-label="Current case and booking journey">
+          <div class="case-now">
+            <div class="blocker">
+              <div class="blocker-symbol" aria-hidden="true">
+                <svg class="icon"><use href="#i-bank" /></svg>
+              </div>
+              <div>
+                <p class="label">Waiting On</p>
+                <h2 class="section-title">Crestline Bank’s Decision</h2>
+                <p class="small muted">Bernard Lim · Panel Banker</p>
+                <div class="blocker-status">
+                  <span class="pill danger">Stalled</span
+                  ><span class="small muted">No update for <span class="tabular">8 days</span>.</span>
+                </div>
+              </div>
+            </div>
+            <div class="next-action">
+              <div>
+                <p class="label muted">Next Step</p>
+                <h2 class="section-title">Call The Banker</h2>
+                <span class="role-label"
+                  ><svg class="icon" aria-hidden="true">
+                    <use href="#i-bank" /></svg
+                  >Loan Admin<span class="owner-name"> · Tan Mei Ling</span></span
+                >
+                <p class="small muted mobile-owner" style="display: none">Tan Mei Ling</p>
+              </div>
+              <button class="btn primary" id="add-task">
+                <svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg>Add Task
+              </button>
+              <div class="next-actions-bottom">
+                <button class="guidance-link" data-open="guidance">
+                  What To Do<svg class="icon" aria-hidden="true">
+                    <use href="#i-chevron" />
+                  </svg></button
+                ><span class="small muted" id="next-task-note">No Open Tasks</span>
+              </div>
+            </div>
+          </div>
+          <div class="journey">
+            <div class="journey-heading">
+              <h2 class="label">Booking Journey</h2>
+              <span class="small muted tabular">17 Days Since Booking</span>
+            </div>
+            <div class="journey-map">
+              <svg
+                class="route-drawing route-desktop"
+                viewBox="0 0 1168 240"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <path
+                  class="road-bed"
+                  d="M54 100H104C176 100 248 88 320 100S486 100 558 100C640 100 722 88 804 100S972 100 1064 100H1114"
+                />
+                <path class="road-ahead" d="M804 100C886 112 972 100 1064 100H1114" />
+                <path
+                  class="road-travelled"
+                  pathLength="1"
+                  d="M54 100H104C176 100 248 88 320 100S486 100 558 100C640 100 722 88 804 100"
+                />
+                <path class="road-detour road-detour-wide" d="M410 104V204Q410 218 424 218H440Q454 218 454 204V103" />
+                <path class="road-return road-detour-wide" d="m450 110 4-7 4 7" />
+                <path class="road-detour road-detour-narrow" d="M440 104V214m-3-6 3 6 3-6" />
+              </svg>
+              <ol
+                class="journey-stops"
+                aria-label="Booking journey. Loan approval is the current milestone being waited on."
+              >
+                <li class="journey-stop done gap-track has-tip">
+                  <svg class="phone-rail travelled" viewBox="0 0 36 72" preserveAspectRatio="none" aria-hidden="true">
+                    <path class="rail-bed" d="M12 0C12 24 26 42 12 72" />
+                    <path class="rail-line" d="M12 0C12 24 26 42 12 72" />
+                  </svg>
+                  <button
+                    class="stop-trigger"
+                    aria-label="Booked. Done, 1 September 2026. Open details"
+                    aria-describedby="tip-booked"
+                    data-stop="0"
+                  >
+                    <span class="station" aria-hidden="true"
+                      ><svg class="milestone-art" viewBox="0 0 96 96">
+                        <ellipse class="journey-art-ground" cx="48" cy="89" rx="34" ry="3" />
+                        <path class="journey-art-paper journey-art-line" d="M21 12h34l11 11v56H21z" />
+                        <path class="journey-art-shade journey-art-line" d="M55 12v12h11" />
+                        <path class="journey-art-line" d="M30 31h22M30 43h26M30 51h19M30 65h13" />
+                        <path class="journey-art-shade journey-art-line" d="m60 63 12-7 14 18-12 9-14-15z" />
+                        <circle class="journey-art-line" cx="69" cy="65" r="2" />
+                        <circle class="journey-art-paper journey-art-line" cx="65" cy="49" r="9" />
+                        <path class="journey-art-line" d="m61 57-9 18m4-8 5 3m-8 3 5 3" /></svg></span
+                    ><span class="route-node" aria-hidden="true"
+                      ><svg viewBox="0 0 8 8">
+                        <path d="m1.5 4 1.5 1.5L6.5 2" /></svg></span
+                    ><span class="stop-name">Booked</span><span class="stop-meta">1 Sep 2026</span>
+                  </button>
+                  <div class="tooltip" id="tip-booked" role="tooltip">
+                    <strong>Booked · Done</strong><span class="tip-line">1 Sep 2026 · 11:00 MYT</span
+                    ><span class="tip-line">Reported and verified by Nurul Aina.</span
+                    ><span class="tip-line">Update: Booking confirmed.</span
+                    ><span class="tip-rule"
+                      >2 calendar days to the first bank submission. Linked buyer message: 1 Sep, 14:10.</span
+                    >
+                  </div>
+                </li>
+                <li class="journey-stop missing gap-track has-tip">
+                  <svg class="phone-rail travelled" viewBox="0 0 36 72" preserveAspectRatio="none" aria-hidden="true">
+                    <path class="rail-bed" d="M12 0C12 24 26 42 12 72" />
+                    <path class="rail-line" d="M12 0C12 24 26 42 12 72" />
+                  </svg>
+                  <button
+                    class="stop-trigger"
+                    aria-label="Documents. Receipt not recorded. Open details"
+                    aria-describedby="tip-docs"
+                    data-stop="1"
+                  >
+                    <span class="station" aria-hidden="true"
+                      ><svg class="milestone-art" viewBox="0 0 96 96">
+                        <ellipse class="journey-art-ground" cx="48" cy="89" rx="34" ry="3" />
+                        <path class="journey-art-shade journey-art-line" d="M13 31h24l6 6h39v43H13z" />
+                        <path class="journey-art-paper journey-art-line" d="M26 14h35l10 11v38H26z" />
+                        <path class="journey-art-shade journey-art-line" d="M61 14v11h10" />
+                        <path class="journey-art-line" d="M35 32h23M35 41h23" />
+                        <path class="journey-art-paper journey-art-line" d="M12 46h27l7 6h38l-7 29H18z" />
+                        <rect
+                          class="journey-art-shade journey-art-line"
+                          x="27"
+                          y="58"
+                          width="19"
+                          height="8"
+                          rx="1"
+                        /></svg></span
+                    ><span class="route-node" aria-hidden="true"></span><span class="stop-name">Documents</span
+                    ><span class="stop-meta">Receipt Not Recorded</span>
+                  </button>
+                  <div class="tooltip" id="tip-docs" role="tooltip">
+                    <strong>Documents · Receipt Not Recorded</strong><span class="tip-line">Date and time taken: —</span
+                    ><span class="tip-line">Desk: Tan Mei Ling · Loan Admin.</span
+                    ><span class="tip-line">No receipt has been confirmed.</span
+                    ><span class="tip-rule"
+                      >The buyer mentioned payslips and a bank statement on 1 Sep. Mortar AI’s reading has not recorded
+                      a receipt.</span
+                    >
+                  </div>
+                  <div class="journey-detour">
+                    <svg class="phone-detour" viewBox="0 0 104 64" aria-hidden="true">
+                      <path d="M12 2C12 17 24 20 44 20H82V44H44C24 44 12 49 12 62" />
+                      <path d="m8 56 4 6 4-6" />
+                    </svg>
+                    <button
+                      class="detour-flag"
+                      id="open-bank-history"
+                      aria-label="Malayan Trust rejected 8 September. Resubmitted to Crestline 10 September. View loan history"
+                    >
+                      <span>Malayan Trust <span class="detour-rejected">· Rejected 8 Sep</span></span
+                      ><svg class="icon" aria-hidden="true">
+                        <use href="#i-chevron" />
+                      </svg>
+                    </button>
+                  </div>
+                </li>
+                <li class="journey-stop done has-tip">
+                  <svg class="phone-rail travelled" viewBox="0 0 36 72" preserveAspectRatio="none" aria-hidden="true">
+                    <path class="rail-bed" d="M12 0C12 24 26 42 12 72" />
+                    <path class="rail-line" d="M12 0C12 24 26 42 12 72" />
+                  </svg>
+                  <button
+                    class="stop-trigger"
+                    aria-label="Loan submitted. Done, submitted again on 10 September 2026. Open details"
+                    aria-describedby="tip-submitted"
+                    data-stop="2"
+                  >
+                    <span class="station" aria-hidden="true"
+                      ><svg class="milestone-art" viewBox="0 0 96 96">
+                        <ellipse class="journey-art-ground" cx="48" cy="89" rx="34" ry="3" />
+                        <path class="journey-art-paper journey-art-line" d="m13 31 35-20 35 20z" />
+                        <path class="journey-art-shade journey-art-line" d="M16 31h64v8H16z" />
+                        <path class="journey-art-shade journey-art-line" d="M21 39h54v31H21z" />
+                        <path
+                          class="journey-art-paper journey-art-line"
+                          d="M22 39h10v31H22zM43 39h10v31H43zM64 39h10v31H64z"
+                        />
+                        <path class="journey-art-paper journey-art-line" d="M18 70h60v6H18zM12 76h72v7H12z" />
+                        <path class="journey-art-line" d="M41 26h14" /></svg></span
+                    ><span class="route-node" aria-hidden="true"
+                      ><svg viewBox="0 0 8 8">
+                        <path d="m1.5 4 1.5 1.5L6.5 2" /></svg></span
+                    ><span class="stop-name">Loan Submitted</span
+                    ><span class="stop-meta">10 Sep 2026 · Resubmitted</span>
+                  </button>
+                  <div class="tooltip" id="tip-submitted" role="tooltip">
+                    <strong>Loan Submitted · Done</strong
+                    ><span class="tip-line">Crestline Bank · 10 Sep 2026, 16:15 MYT.</span
+                    ><span class="tip-line">Reported and verified by Tan Mei Ling.</span
+                    ><span class="tip-line">Update: Bernard Lim’s message.</span
+                    ><span class="tip-rule"
+                      >Malayan Trust: 3 Sep → rejected 8 Sep (5 calendar days). Resubmitted 2 calendar days later.</span
+                    >
+                  </div>
+                </li>
+                <li class="journey-stop current-stop future-track has-tip">
+                  <svg class="phone-rail ahead" viewBox="0 0 36 72" preserveAspectRatio="none" aria-hidden="true">
+                    <path class="rail-bed" d="M12 0C12 24 26 42 12 72" />
+                    <path class="rail-line" d="M12 0C12 24 26 42 12 72" />
+                  </svg>
+                  <button
+                    class="stop-trigger"
+                    aria-current="step"
+                    aria-label="Loan approved. Current target, still awaiting approval. Stalled. Open details"
+                    aria-describedby="tip-approval"
+                    data-stop="3"
+                  >
+                    <span class="here-marker">You Are Here</span
+                    ><span class="station" aria-hidden="true"
+                      ><svg class="milestone-art" viewBox="0 0 96 96">
+                        <ellipse class="journey-art-ground" cx="48" cy="89" rx="34" ry="3" />
+                        <path class="journey-art-paper journey-art-line" d="M20 12h34l11 11v57H20z" />
+                        <path class="journey-art-shade journey-art-line" d="M54 12v12h11" />
+                        <path class="journey-art-line" d="M29 32h22M29 44h26M29 53h18M29 68h12" />
+                        <path class="journey-art-shade journey-art-line" d="M50 70h34v11H50z" />
+                        <path
+                          class="journey-art-paper journey-art-line"
+                          d="M61 70V59c0-6-5-7-5-13a11 11 0 0 1 22 0c0 6-5 7-5 13v11z"
+                        />
+                        <path class="journey-art-line" d="M61 62h12" /></svg></span
+                    ><span class="route-node" aria-hidden="true"></span><span class="stop-name">Loan Approved</span
+                    ><span class="stop-meta"><span class="inline-dot" aria-hidden="true"></span>Awaiting Decision</span>
+                  </button>
+                  <div class="tooltip" id="tip-approval" role="tooltip">
+                    <strong>Loan Approved · Awaiting Decision</strong><span class="tip-line">Approval date: —</span
+                    ><span class="tip-line">Banker: Bernard Lim · Crestline Bank.</span
+                    ><span class="tip-line">Last confirmed update: 10 Sep 2026.</span
+                    ><span class="tip-rule"
+                      >8 calendar days since submission. Stalled because no update was recorded. Approval has not been
+                      confirmed.</span
+                    >
+                  </div>
+                </li>
+                <li class="journey-stop upcoming has-tip">
+                  <button
+                    class="stop-trigger"
+                    aria-label="SPA signed. Upcoming, no appointment recorded. Open details"
+                    aria-describedby="tip-spa"
+                    data-stop="4"
+                  >
+                    <span class="station" aria-hidden="true"
+                      ><svg class="milestone-art" viewBox="0 0 96 96">
+                        <ellipse class="journey-art-ground" cx="48" cy="89" rx="34" ry="3" />
+                        <path class="journey-art-shade journey-art-line" d="M25 16h32l12 12v55H25z" />
+                        <path class="journey-art-paper journey-art-line" d="M19 12h33l11 11v56H19z" />
+                        <path class="journey-art-shade journey-art-line" d="M52 12v11h11" />
+                        <path
+                          class="journey-art-line"
+                          d="M28 32h23M28 44h25M28 53h18M28 68c9-11 12-11 8-3s8-4 9-1-2 5 8 0"
+                        />
+                        <g transform="rotate(23 75 47)">
+                          <path class="journey-art-paper journey-art-line" d="M71 16h8v47l-4 14-4-14z" />
+                          <path class="journey-art-shade journey-art-line" d="M71 16h8v29h-8z" />
+                          <path class="journey-art-line" d="M71 63h8M75 67v7" />
+                        </g></svg
+                    ></span>
+                    <span class="route-node" aria-hidden="true"></span><span class="stop-name">SPA Signed</span
+                    ><span class="stop-meta">Upcoming</span>
+                  </button>
+                  <div class="tooltip" id="tip-spa" role="tooltip">
+                    <strong>SPA Signed · Upcoming</strong><span class="tip-line">Signing date and time taken: —</span
+                    ><span class="tip-line">Panel firm: Zainal &amp; Co.</span
+                    ><span class="tip-line">No legal updates have been recorded.</span
+                    ><span class="tip-rule">An appointment and a signed agreement have not been confirmed.</span>
+                  </div>
+                </li>
+              </ol>
+            </div>
+            <div class="journey-foot">
+              <span class="small muted">Select A Milestone For Details</span>
+            </div>
+          </div>
+        </section>
+        <div class="case-tabs" role="tablist" aria-label="Case views">
+          <button
+            class="tab"
+            id="tab-overview"
+            role="tab"
+            aria-selected="true"
+            aria-controls="panel-overview"
+            tabindex="0"
+            data-tab="overview"
+          >
+            Overview
+          </button>
+          <button
+            class="tab"
+            id="tab-messages"
+            role="tab"
+            aria-selected="false"
+            aria-controls="panel-messages"
+            tabindex="-1"
+            data-tab="messages"
+          >
+            Messages<span class="count">4</span>
+          </button>
+          <button
+            class="tab"
+            id="tab-history"
+            role="tab"
+            aria-selected="false"
+            aria-controls="panel-history"
+            tabindex="-1"
+            data-tab="history"
+          >
+            History<span class="count">5</span>
+          </button>
+          <button
+            class="tab"
+            id="tab-tasks"
+            role="tab"
+            aria-selected="false"
+            aria-controls="panel-tasks"
+            tabindex="-1"
+            data-tab="tasks"
+          >
+            Tasks<span class="count" id="task-count">0</span>
+          </button>
+        </div>
+        <section class="tab-content" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" tabindex="0">
+          <div class="view-grid">
+            <div class="overview-main">
+              <section class="card" aria-labelledby="applications-heading">
+                <div class="panel-head">
+                  <h2 class="section-title" id="applications-heading">Bank Applications</h2>
+                  <span class="small muted">1 Active · 2 Total</span>
+                </div>
+                <div class="bank-list">
+                  <div class="bank-row">
+                    <div>
+                      <p class="bank-name">Crestline Bank</p>
+                      <p class="bank-note">Bernard Lim · Joint Application</p>
+                    </div>
+                    <div class="bank-clock">Submitted 10 Sep 2026<br />8 Days With Bank</div>
+                    <span class="pill info">Submitted</span>
+                  </div>
+                  <div class="bank-row">
+                    <div>
+                      <p class="bank-name">Malayan Trust Bank</p>
+                      <p class="bank-note">Faridah Osman</p>
+                    </div>
+                    <div class="bank-clock">Decision 8 Sep 2026<br />5 Days To Decision</div>
+                    <span class="pill danger">Rejected</span>
+                  </div>
+                </div>
+                <p class="bank-foot">
+                  <svg class="icon" aria-hidden="true">
+                    <use href="#i-info" /></svg
+                  ><span>The first application was rejected on income. The second is still under review.</span>
+                </p>
+              </section>
+              <section class="latest" aria-labelledby="latest-heading">
+                <div class="latest-head">
+                  <h2 class="section-title" id="latest-heading">Latest Message</h2>
+                  <button class="text-link" data-go="messages">
+                    View All<svg class="icon" aria-hidden="true">
+                      <use href="#i-chevron" />
+                    </svg>
+                  </button>
+                </div>
+                <div class="latest-body">
+                  <div class="avatar" aria-hidden="true">BL</div>
+                  <div>
+                    <div class="row wrap">
+                      <span style="font-weight: 500">Bernard Lim</span
+                      ><span class="small muted">Banker · 10 Sep 2026, 16:15</span>
+                    </div>
+                    <p class="latest-message">
+                      Hi Mei Ling, received Hafiz second submission for Crestline Bank with wife joint name. Credit
+                      underwriting in progress.
+                    </p>
+                    <button class="text-link" data-go="messages" style="margin-top: 8px">
+                      View Mortar AI’s Reading<svg class="icon" aria-hidden="true">
+                        <use href="#i-chevron" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </section>
+            </div>
+            <aside class="card case-facts" aria-labelledby="details-heading">
+              <h2 class="section-title fact-title" id="details-heading">Case Details</h2>
+              <section class="fact-block">
+                <h3>Assigned Team</h3>
+                <dl class="facts">
+                  <dt>Sales</dt>
+                  <dd>Nurul Aina</dd>
+                  <dt>Loan</dt>
+                  <dd>Tan Mei Ling</dd>
+                  <dt>Legal Firm</dt>
+                  <dd>Zainal &amp; Co</dd>
+                </dl>
+              </section>
+              <section class="fact-block">
+                <h3>Financing Risk</h3>
+                <div class="has-tip" style="display: inline-block">
+                  <button class="pill danger" aria-describedby="risk-tooltip" id="risk-trigger">
+                    High Risk<svg class="icon" style="width: 12px; height: 12px" aria-hidden="true">
+                      <use href="#i-info" />
+                    </svg>
+                  </button>
+                  <div class="tooltip" id="risk-tooltip" role="tooltip">
+                    <strong>High Financing Risk</strong><span class="tip-line">Monthly repayments: 58% of income.</span
+                    ><span class="tip-line">Loan against property value: 90%.</span
+                    ><span class="tip-line">Estimated monthly repayment: RM 2,571.</span
+                    ><span class="tip-rule"
+                      >The case uses a 40% income guideline and a 34-year tenure. This screening flag is separate from
+                      the bank’s decision.</span
+                    >
+                  </div>
+                </div>
+                <p class="small muted risk-note">First application rejected on income.</p>
+              </section>
+              <section class="fact-block">
+                <h3>Buyer Response</h3>
+                <div class="signal-row">
+                  <span class="pill positive">Prompt Replies</span><span class="pill positive">Committed</span>
+                </div>
+                <p class="note-copy">Mortar AI’s reading of the buyer’s messages.</p>
+              </section>
+            </aside>
+          </div>
+        </section>
+        <section
+          class="tab-content card messages-panel"
+          id="panel-messages"
+          role="tabpanel"
+          aria-labelledby="tab-messages"
+          tabindex="0"
+          hidden
+        >
+          <div class="section-toolbar">
+            <div>
+              <h2 class="section-title">Messages</h2>
+              <p class="small muted" style="margin-top: 4px">Newest First · Original Messages</p>
+            </div>
+            <button class="btn secondary" data-open="message">Paste A Message</button>
+          </div>
+          <ol id="messages-list"></ol>
+        </section>
+        <section
+          class="tab-content card history-panel"
+          id="panel-history"
+          role="tabpanel"
+          aria-labelledby="tab-history"
+          tabindex="0"
+          hidden
+        >
+          <div class="section-toolbar">
+            <div>
+              <h2 class="section-title">Case History</h2>
+              <p class="small muted" style="margin-top: 4px">Every Recorded Update · Newest First</p>
+            </div>
+            <span class="small muted">All Times MYT</span>
+          </div>
+          <div class="track-switch" role="group" aria-label="Filter case history by track">
+            <button aria-pressed="true" data-track="all">All Tracks</button
+            ><button aria-pressed="false" data-track="loan">Loan · 3</button
+            ><button aria-pressed="false" data-track="legal">Legal · 0</button
+            ><button aria-pressed="false" data-track="sales">Sales · 2</button>
+          </div>
+          <div id="history-list" style="margin-top: 16px"></div>
+        </section>
+        <section
+          class="tab-content card tasks-panel"
+          id="panel-tasks"
+          role="tabpanel"
+          aria-labelledby="tab-tasks"
+          tabindex="0"
+          hidden
+        >
+          <div class="section-toolbar">
+            <h2 class="section-title">Tasks</h2>
+            <button class="btn secondary" id="tasks-add">Add Task</button>
+          </div>
+          <div id="tasks-content">
+            <div class="empty-tasks">
+              <svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>No Tasks Yet
+            </div>
+            <p class="small muted" style="margin-top: 8px">Add the next step to Tan Mei Ling’s task list.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div class="sheet-backdrop" id="sheet-backdrop" hidden>
+      <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" tabindex="-1">
+        <header class="sheet-header">
+          <div>
+            <p class="mono muted small" style="margin-bottom: 4px">B-08-05 · BK-9002</p>
+            <h2 class="section-title" id="sheet-title"></h2>
+          </div>
+          <button class="icon-btn" id="sheet-close" aria-label="Close panel">
+            <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
+          </button>
+        </header>
+        <div class="sheet-body" id="sheet-body"></div>
+      </section>
+    </div>
+    <div class="toast" id="toast" role="status" hidden></div>
+    <script type="application/json" id="guidance-data">
+      [
+        {
+          "id": "PB-021",
+          "title": "Slow Panel Banker Escalation: Inactivity Exceeding Nine Working Days",
+          "situation": "Loan application remains in submitted state with no credit decision or document request after 9 working days.",
+          "action": "Loan Admin issues formal escalation notice to panel bank Team Leader and Branch Mortgage Manager, requesting status update within 24 hours.",
+          "limits": "Escalation only applies if full document checklist was acknowledged as complete; if pending buyer documents, clock pauses.",
+          "reviewer": "Nurul Aina",
+          "reviewedOn": "2026-07-01",
+          "status": "approved",
+          "fit": 1
+        },
+        {
+          "id": "PB-015",
+          "title": "Post-SPA Loan Rejection: Statutory Schedule H Clause 5(3) 1% Deduction",
+          "situation": "Buyer has executed statutory Schedule H Sale and Purchase Agreement, paid 10% deposit, but end-financing is subsequently declined by all financiers.",
+          "action": "Panel solicitor issues formal notice of termination under Clause 5(3); developer retains statutory 1% of purchase price and refunds 9% balance within 21 days.",
+          "limits": "Only applies if buyer produces written proof of loan ineligibility; does not apply if buyer refuses loan offer that meets minimum approved terms.",
+          "reviewer": "Arvind Raj",
+          "reviewedOn": "2026-07-15",
+          "status": "approved",
+          "fit": 0
+        },
+        {
+          "id": "PB-010",
+          "title": "Pre-SPA Cooling-Off Management: 7-Day Engagement Rhythm",
+          "situation": "Booking confirmed and loan approved, but buyer delays confirming SPA signing date with panel solicitors for more than 5 days.",
+          "action": "Sales agent initiates empathetic check-in call, answering legal fee questions, confirming panel lawyer appointment location, and offering flexible signing hours.",
+          "limits": "If buyer remains unresponsive after 3 calls and 2 WhatsApp messages over 7 business days, issue formal 14-day notice of booking lapse per sales terms.",
+          "reviewer": "Tan Mei Ling",
+          "reviewedOn": "2026-06-01",
+          "status": "approved",
+          "fit": 0
+        },
+        {
+          "id": "PB-005",
+          "title": "Joint Applicant Restructuring: Adding Spouse or Immediate Family Member",
+          "situation": "Single applicant fails bank DSR threshold by 5 to 15 percentage points, but household income is sufficient to service instalment.",
+          "action": "Restructure application to include spouse, parent, or sibling as joint borrower; collect IC, 3 months payslips, EPF statement, and CCRIS consent form within 3 days.",
+          "limits": "Joint applicants must be immediate family members under Malaysian banking rules; friends or non-family partners are not accepted by panel banks without developer indemnities.",
+          "reviewer": "Tan Mei Ling",
+          "reviewedOn": "2026-07-01",
+          "status": "approved",
+          "fit": 0
+        },
+        {
+          "id": "PB-024",
+          "title": "Outstation and Overseas Buyer SPA Execution Protocol",
+          "situation": "Buyer resides outstation or overseas and cannot attend physical signing in Klang Valley panel legal office.",
+          "action": "Arrange execution via panel law firm branch office, notary public, or Malaysian High Commission; coordinate tracked courier dispatch of triplicate SPA copies.",
+          "limits": "Must be witnessed by Advocate & Solicitor, Notary Public, or Consular Officer; informal witnessing invalidates land registry memorandum of transfer (Form 14A).",
+          "reviewer": "Arvind Raj",
+          "reviewedOn": "2026-08-15",
+          "status": "approved",
+          "fit": 0
+        },
+        {
+          "id": "PB-006",
+          "title": "Pre-Emptive Dual Bank Submission for Borderline Income Profiles",
+          "situation": "Booking taken for unit above RM600,000 where buyer's initial DSR falls between 35% and 40%, leaving zero buffer for interest rate stress-testing.",
+          "action": "Obtain signed application forms and two sets of certified documents at sales gallery, submitting concurrently to two panel banks with contrasting underwriting criteria.",
+          "limits": "Only permissible with buyer prior written consent; excessive simultaneous CCRIS inquiries within 30 days can depress automated bank credit scores.",
+          "reviewer": "Nurul Aina",
+          "reviewedOn": "2026-05-15",
+          "status": "approved",
+          "fit": 0
+        },
+        {
+          "id": "PB-014",
+          "title": "Voluntary Buyer Cancellation: Forfeiture and Administrative Cost Deduction",
+          "situation": "Buyer cancels booking unilaterally without loan rejection or valid contractual justification prior to SPA signing.",
+          "action": "Provide buyer with written explanation of administrative deduction policy, obtain signed cancellation form, and process release of unit to sales inventory.",
+          "limits": "Cannot enforce total deposit forfeiture if developer has collected booking fee in technical contravention of Housing Development Regulation 11(2) without signed purchase contract.",
+          "reviewer": "Arvind Raj",
+          "reviewedOn": "2026-05-10",
+          "status": "approved",
+          "fit": 0
+        },
+        {
+          "id": "PB-012",
+          "title": "Buyer Withdrawal Handling: Unforeseen Job Relocation or Retrenchment",
+          "situation": "Buyer requests cancellation of booking citing sudden employment relocation out of state or retrenchment prior to SPA execution.",
+          "action": "Verify genuine employer documentation, pause active bank processing immediately to prevent unnecessary credit checks, and submit case to Head of Sales for compassionate review.",
+          "limits": "Voluntary resignation without proof of outstation relocation does not qualify for compassionate administrative fee waiver.",
+          "reviewer": "Arvind Raj",
+          "reviewedOn": "2026-08-20",
+          "status": "approved",
+          "fit": 0
+        },
+        {
+          "id": "PB-018",
+          "title": "Pre-Submission DSR Assessment Exceeding 40% Guideline Threshold",
+          "situation": "Initial financial calculation shows applicant's monthly commitments plus prospective mortgage instalment exceeds 40% of gross monthly income.",
+          "action": "Review net income calculation, assess non-fixed commitments, and identify opportunities to extend loan tenure up to maximum 35 years or age 70 limit.",
+          "limits": "Cannot artificially lower commitments; debt obligations disclosed in CCRIS are automatically matched by bank algorithmic underwriting.",
+          "reviewer": "Arvind Raj",
+          "reviewedOn": "2026-08-01",
+          "status": "approved",
+          "fit": 0
+        },
+        {
+          "id": "PB-023",
+          "title": "SPA Execution Scheduling: Standard 14-Day Window Post-Letter of Offer",
+          "situation": "Bank issues approved Letter of Offer (LO), accepted by buyer; legal firm requires coordinated scheduling of SPA signing appointment.",
+          "action": "Sales Admin contacts panel solicitor to verify SPA drafting, coordinates execution appointment within 14 calendar days, and provides buyer location briefing.",
+          "limits": "If buyer requires differential sum financing or state authority consent (foreign buyer or bumiputera quota), signing window must be extended by written approval.",
+          "reviewer": "Tan Mei Ling",
+          "reviewedOn": "2026-08-22",
+          "status": "approved",
+          "fit": 0
+        }
+      ]
+    </script>
+    <script>
+      const phoneJourney = matchMedia('(max-width: 719px)')
+      const journeyMap = document.querySelector('.journey-map')
+      const journeyStops = [...document.querySelectorAll('.journey-stop')]
+      let expandedJourneyId = previewParams.get('tip') === 'approved' ? 'tip-approval' : null
+      function placeJourneyTip(stop) {
+        if (phoneJourney.matches) return
+        const tip = stop.querySelector('.tooltip')
+        const trigger = stop.querySelector('.stop-trigger')
+        stop.classList.remove('tip-above')
+        tip.style.setProperty('--tip-shift', '0px')
+        const anchor = trigger.getBoundingClientRect()
+        const height = tip.offsetHeight
+        const roomBelow = innerHeight - anchor.bottom - 28
+        const roomAbove = anchor.top - 28
+        if (roomBelow < height && roomAbove >= height) stop.classList.add('tip-above')
+        const bounds = tip.getBoundingClientRect()
+        const shift =
+          bounds.left < 16 ? 16 - bounds.left : bounds.right > innerWidth - 16 ? innerWidth - 16 - bounds.right : 0
+        tip.style.setProperty('--tip-shift', `${shift}px`)
+        if (stop.classList.contains('tip-pinned') && !stop.classList.contains('tip-above')) {
+          journeyMap.style.setProperty(
+            '--preview-map-height',
+            `${Math.max(240, tip.getBoundingClientRect().bottom - journeyMap.getBoundingClientRect().top + 16)}px`
+          )
+        }
+      }
+      function syncJourneyDetails() {
+        journeyMap.classList.toggle('has-preview-detail', !phoneJourney.matches && expandedJourneyId !== null)
+        journeyStops.forEach((stop) => {
+          const trigger = stop.querySelector('.stop-trigger')
+          const tip = stop.querySelector('.tooltip')
+          trigger.id ||= `journey-${trigger.dataset.stop}`
+          trigger.setAttribute('aria-label', trigger.getAttribute('aria-label').replace(/\. Open details$/i, ''))
+          const open = tip.id === expandedJourneyId
+          stop.classList.toggle('is-expanded', phoneJourney.matches && open)
+          stop.classList.toggle('tip-pinned', !phoneJourney.matches && open)
+          stop.classList.remove('tip-dismissed')
+          if (phoneJourney.matches) {
+            trigger.removeAttribute('aria-describedby')
+            trigger.setAttribute('aria-controls', tip.id)
+            trigger.setAttribute('aria-expanded', String(open))
+            tip.setAttribute('role', 'region')
+            tip.setAttribute('aria-labelledby', trigger.id)
+          } else {
+            trigger.removeAttribute('aria-controls')
+            trigger.removeAttribute('aria-expanded')
+            trigger.setAttribute('aria-describedby', tip.id)
+            tip.setAttribute('role', 'tooltip')
+            tip.removeAttribute('aria-labelledby')
+            if (open) placeJourneyTip(stop)
+          }
+        })
+      }
+      journeyStops.forEach((stop) => {
+        const trigger = stop.querySelector('.stop-trigger')
+        const tip = stop.querySelector('.tooltip')
+        trigger.addEventListener('click', () => {
+          expandedJourneyId = expandedJourneyId === tip.id ? null : tip.id
+          syncJourneyDetails()
+        })
+        stop.addEventListener('mouseenter', () => placeJourneyTip(stop))
+        trigger.addEventListener('focus', () => {
+          if (!phoneJourney.matches && expandedJourneyId && expandedJourneyId !== tip.id) {
+            expandedJourneyId = null
+            syncJourneyDetails()
+          }
+          placeJourneyTip(stop)
+        })
+      })
+      phoneJourney.addEventListener('change', syncJourneyDetails)
+      addEventListener('resize', () => journeyStops.forEach(placeJourneyTip))
+      addEventListener(
+        'scroll',
+        () => {
+          if (!phoneJourney.matches)
+            journeyStops.filter((s) => s.matches(':hover,:focus-within,.tip-pinned')).forEach(placeJourneyTip)
+        },
+        { passive: true }
+      )
+      document.addEventListener('pointerdown', (event) => {
+        if (!phoneJourney.matches && !event.target.closest('.journey-stop')) {
+          expandedJourneyId = null
+          syncJourneyDetails()
+        }
+      })
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          expandedJourneyId = null
+          syncJourneyDetails()
+        }
+      })
+      syncJourneyDetails()
+      document.fonts?.ready.then(() => journeyStops.forEach(placeJourneyTip))
+      // Static review artifact. All records below come from BK-9002's story fixture.
+      // No network calls, writes to Mortar, persisted state, or live AI analysis.
+      const icon = (name) => `<svg class="icon" aria-hidden="true"><use href="#i-${name}"/></svg>`
+      const messages = [
+        {
+          id: 4,
+          name: 'Bernard Lim',
+          role: 'Banker',
+          date: '10 Sep 2026 · 16:15',
+          body: 'Hi Mei Ling, received Hafiz second submission for Crestline Bank with wife joint name. Credit underwriting in progress.',
+          reading: 'Documents Received · Loan Admin',
+          certainty: 'Mortar AI Is Sure',
+          recorded: false
+        },
+        {
+          id: 3,
+          name: 'Tan Mei Ling',
+          role: 'Sales Agent',
+          date: '9 Sep 2026 · 09:40',
+          body: 'Hafiz, Malayan Trust rejected due to DSR. We are submitting your file to Crestline Bank now with joint applicant documents.',
+          reading: 'Loan Rejected · Loan Admin',
+          certainty: 'Mortar AI Is Fairly Sure',
+          recorded: false
+        },
+        {
+          id: 2,
+          name: 'Faridah Osman',
+          role: 'Banker',
+          date: '8 Sep 2026 · 11:20',
+          body: 'Hi Mei Ling, Malayan Trust credit committee has declined Hafiz application due to DSR exceeding threshold and insufficient net disposable income.',
+          reading: 'Loan Rejected · Sales',
+          certainty: 'Mortar AI Is Sure',
+          recorded: true
+        },
+        {
+          id: 1,
+          name: 'Mohd Hafiz bin Razak',
+          role: 'Buyer',
+          date: '1 Sep 2026 · 14:10',
+          body: 'Hi Nurul, booking form signed for B-08-05. Passing my payslips and bank statement to Mei Ling.',
+          reading: 'Documents Received · Payslip · Loan Admin',
+          certainty: 'Mortar AI Is Sure',
+          recorded: false
+        }
+      ]
+      const events = [
+        {
+          id: 'EV-9002-4',
+          track: 'loan',
+          label: 'Loan Submitted',
+          occurred: '10 Sep 2026 · 16:15',
+          recorded: '10 Sep 2026 · 16:30',
+          reporter: 'Tan Mei Ling',
+          verifier: 'Tan Mei Ling',
+          note: 'Second application submitted to Crestline Bank pending review',
+          message: 'MSG-9002-4',
+          application: 'APP-9002-2'
+        },
+        {
+          id: 'EV-9002-5',
+          track: 'sales',
+          label: 'Buyer Contacted',
+          occurred: '9 Sep 2026 · 09:40',
+          recorded: '9 Sep 2026 · 09:40',
+          reporter: 'Tan Mei Ling',
+          verifier: 'Nurul Aina',
+          note: '—',
+          message: 'MSG-9002-3',
+          application: '—'
+        },
+        {
+          id: 'EV-9002-3',
+          track: 'loan',
+          label: 'Loan Rejected',
+          occurred: '8 Sep 2026 · 11:20',
+          recorded: '8 Sep 2026 · 11:30',
+          reporter: 'Tan Mei Ling',
+          verifier: 'Tan Mei Ling',
+          note: 'First bank rejected on income DSR',
+          message: 'MSG-9002-2',
+          application: 'APP-9002-1'
+        },
+        {
+          id: 'EV-9002-2',
+          track: 'loan',
+          label: 'Loan Submitted',
+          occurred: '3 Sep 2026 · 10:00',
+          recorded: '3 Sep 2026 · 10:05',
+          reporter: 'Tan Mei Ling',
+          verifier: 'Tan Mei Ling',
+          note: 'Submitted to Malayan Trust Bank',
+          message: '—',
+          application: 'APP-9002-1'
+        },
+        {
+          id: 'EV-9002-1',
+          track: 'sales',
+          label: 'Booked',
+          occurred: '1 Sep 2026 · 11:00',
+          recorded: '1 Sep 2026 · 11:05',
+          reporter: 'Nurul Aina',
+          verifier: 'Nurul Aina',
+          note: 'Booking confirmed',
+          message: 'MSG-9002-1',
+          application: '—'
+        }
+      ]
+      document.getElementById('messages-list').innerHTML = messages
+        .map(
+          (m) =>
+            `<li class="message-item" id="message-${m.id}"><div class="message-head"><strong style="font-weight:500">${m.name}</strong><span class="sender-role">${m.role}</span><span class="message-date">${m.date}</span></div><p class="message-body">${m.body}</p><div class="proposal"><div class="proposal-copy">${icon('sparkles')}<div><span class="muted">Mortar AI Suggests</span><p style="margin-top:4px;font-weight:500">${m.reading}</p><p class="proposal-status">${m.certainty}</p></div></div>${m.recorded ? '<span class="pill positive">Confirmed</span>' : '<span class="small muted">Not Recorded</span>'}</div><div class="message-tools"><button class="btn ghost" data-reread>${icon('refresh')}Ask Mortar AI Again</button>${!m.recorded ? '<button class="text-link" data-open="update">Record An Update</button>' : '<span class="small muted">Verified By Tan Mei Ling</span>'}</div></li>`
+        )
+        .join('')
+      function renderHistory(track = 'all') {
+        const shown = events.filter((e) => track === 'all' || e.track === track)
+        document.getElementById('history-list').innerHTML = shown.length
+          ? shown
+              .map(
+                (e) =>
+                  `<article class="history-item"><div class="row between"><div><p class="small muted">${e.occurred} · ${e.track[0].toUpperCase() + e.track.slice(1)}</p><h3 style="font-weight:500;margin-top:4px">${e.label}</h3></div><span class="pill positive">Confirmed</span></div><p class="history-note">${e.note}</p><div class="history-meta"><div><span>Reported By</span>${e.reporter}</div><div><span>Verified By</span>${e.verifier}</div><div><span>Recorded At</span>${e.recorded}</div><div><span>Source</span>Demo</div><div><span>Bank Application</span><code class="mono">${e.application}</code></div><div><span>Message</span>${e.message === '—' ? '—' : `<button class="text-link mono" data-message="${e.message.slice(-1)}">${e.message}${icon('chevron')}</button>`}</div><div class="full-mobile"><span>Update Reference</span><code class="mono">${e.id}</code></div></div></article>`
+              )
+              .join('')
+          : '<div class="track-empty"><h3 class="section-title">No Legal Updates Yet</h3><p class="small muted" style="margin-top:8px">Zainal &amp; Co is the assigned firm.</p><button class="btn secondary" data-open="update" style="margin-top:16px">Record An Update</button></div>'
+        document
+          .querySelectorAll('[data-track]')
+          .forEach((b) => b.setAttribute('aria-pressed', b.dataset.track === track))
+      }
+      renderHistory()
+      function showTab(name, focus = false) {
+        document.querySelectorAll('[data-tab]').forEach((b) => {
+          const active = b.dataset.tab === name
+          b.setAttribute('aria-selected', active)
+          b.tabIndex = active ? 0 : -1
+        })
+        document.querySelectorAll('[role=tabpanel]').forEach((p) => (p.hidden = p.id !== `panel-${name}`))
+        if (focus) {
+          document.getElementById(`tab-${name}`).focus()
+          document.getElementById(`panel-${name}`).scrollIntoView({ block: 'nearest' })
+        }
+      }
+      document.querySelectorAll('[data-tab]').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.tab)))
+      document.querySelector('[role=tablist]').addEventListener('keydown', (e) => {
+        const tabs = [...document.querySelectorAll('[data-tab]')]
+        const i = tabs.indexOf(document.activeElement)
+        let next
+        if (e.key === 'ArrowRight') next = (i + 1) % tabs.length
+        else if (e.key === 'ArrowLeft') next = (i + tabs.length - 1) % tabs.length
+        else if (e.key === 'Home') next = 0
+        else if (e.key === 'End') next = tabs.length - 1
+        if (next !== undefined) {
+          e.preventDefault()
+          showTab(tabs[next].dataset.tab)
+          tabs[next].focus()
+        }
+      })
+      let lastFocus = null
+      const backdrop = document.getElementById('sheet-backdrop'),
+        sheet = backdrop.querySelector('.sheet')
+      let toastTimer
+      function toast(text) {
+        const el = document.getElementById('toast')
+        clearTimeout(toastTimer)
+        el.textContent = text
+        el.hidden = false
+        toastTimer = setTimeout(() => (el.hidden = true), 4500)
+      }
+      const guidanceRows = JSON.parse(document.getElementById('guidance-data').textContent)
+      const escapeHtml = (s) =>
+        String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;')
+      const guidanceEntry = (p) =>
+        `<article class="guidance-result"><h3>${escapeHtml(p.title)}</h3><span class="pill ${p.fit === 1 ? 'warning' : 'neutral'}">${p.fit === 1 ? 'May Apply' : 'Does Not Apply'}</span><p><strong>Situation</strong><br>${escapeHtml(p.situation)}</p><p><strong>Action</strong><br>${escapeHtml(p.action)}</p><p><strong>Limits</strong><br>${escapeHtml(p.limits)}</p></article>`
+      const guidance = `<p class="small muted" style="margin-bottom:20px">Reviewed staff guidance for this case.</p><form id="guidance-search"><div class="field"><label for="search-guidance">Search Guidance</label><div class="search-row"><input id="search-guidance" value="No Update For 8 Days"><button class="btn secondary" type="submit">Search</button></div></div></form><div class="guidance-result" id="guidance-result"><h3>Slow Panel Banker Escalation: Inactivity Exceeding Nine Working Days</h3><span class="pill warning">May Apply</span><p class="small muted">Mortar AI’s suggested guidance. Check the conditions before escalating.</p><p><strong>Situation</strong><br>Loan application remains in submitted state with no credit decision or document request after 9 working days.</p><p><strong>Action</strong><br>Loan Admin issues formal escalation notice to panel bank Team Leader and Branch Mortgage Manager, requesting status update within 24 hours.</p><p><strong>Limits</strong><br>Escalation only applies if full document checklist was acknowledged as complete; if pending buyer documents, clock pauses.</p><p class="small muted">Reviewed by Nurul Aina · 1 Jul 2026</p><p class="small muted">This case has no update for 8 calendar days. That alone does not establish that these conditions are met.</p></div><button class="text-link" id="more-guidance">Show 9 More</button><div id="guidance-more" hidden></div>`
+      function openSheet(kind) {
+        lastFocus = document.activeElement
+        let title = '',
+          body = ''
+        if (kind === 'guidance') {
+          title = 'What To Do'
+          body = guidance
+        }
+        if (kind === 'update') {
+          title = 'Record An Update'
+          body = `<p class="small muted" style="margin-bottom:20px">Record what happened. Saved updates are confirmed by the person recording them.</p><form id="update-form"><div class="field"><label>What Happened</label><div class="choice-row" role="group" aria-label="What happened"><button type="button" class="btn secondary" aria-pressed="true" data-update-kind>Buyer Contacted</button><button type="button" class="btn secondary" aria-pressed="false" data-update-kind>Loan Approved</button><button type="button" class="btn secondary" aria-pressed="false" data-update-kind>Loan Rejected</button><button type="button" class="btn secondary" aria-pressed="false" data-update-kind>Submitted To A Bank</button><button type="button" class="btn secondary" aria-pressed="false" data-update-kind>Documents Received</button><button type="button" class="btn secondary" aria-pressed="false" data-update-kind>SPA Appointment Set</button><button type="button" class="btn secondary" aria-pressed="false" data-update-kind>SPA Signed</button></div></div><div class="field-grid"><div class="field"><label for="update-date">When It Happened</label><input id="update-date" value="18 Sep 2026" readonly></div><div class="field"><label for="update-bank">Bank</label><input id="update-bank" value="Crestline Bank" readonly></div></div><div class="field"><label for="update-note">Note</label><textarea id="update-note" placeholder="What the bank, buyer or solicitor said"></textarea></div><p class="small muted" style="margin-bottom:16px">Recorded As Tan Mei Ling</p><button type="submit" class="btn primary">Record Update</button></form>`
+        }
+        if (kind === 'message') {
+          title = 'Paste A Message'
+          body = `<form id="message-form"><div class="field-grid"><div class="field"><label for="sender-name">Sender Name</label><input id="sender-name" value="Bernard Lim"></div><div class="field"><label for="sender-role">Sender Role</label><input id="sender-role" value="Banker"></div></div><div class="field-grid"><div class="field"><label for="sent-date">Sent At</label><input id="sent-date" value="18 Sep 2026" readonly></div><div class="field"><label for="sent-time">Time (MYT)</label><input id="sent-time" value="09:30"></div></div><div class="field"><label for="message-body">Message</label><textarea id="message-body" placeholder="Paste the buyer, banker or solicitor message here." required></textarea></div><p class="small muted" style="margin-bottom:16px">Mortar AI suggests the update. You review it before the case changes.</p><button type="submit" class="btn primary">Add Message</button></form>`
+        }
+        document.getElementById('sheet-title').textContent = title
+        document.getElementById('sheet-body').innerHTML = body
+        backdrop.hidden = false
+        document.body.style.overflow = 'hidden'
+        document.querySelectorAll('.workspace,.sidebar,.topbar,.skip-link').forEach((el) => {
+          el.inert = true
+          el.setAttribute('aria-hidden', 'true')
+        })
+        sheet.focus()
+        document.getElementById('guidance-search')?.addEventListener('submit', (e) => {
+          e.preventDefault()
+          const q = document.getElementById('search-guidance').value.toLowerCase().trim()
+          const result = document.getElementById('guidance-result')
+          const terms = q.split(/\s+/).filter((w) => w.length > 2 && !['the', 'for', 'and'].includes(w))
+          const matches = guidanceRows.filter(
+            (p) =>
+              !terms.length ||
+              terms.some((w) => [p.title, p.situation, p.action, p.limits].join(' ').toLowerCase().includes(w))
+          )
+          result.hidden = false
+          result.innerHTML = matches.length ? matches.map(guidanceEntry).join('') : '<p>No Guidance Found</p>'
+          document.getElementById('guidance-more').hidden = true
+          document.getElementById('more-guidance').hidden = true
+        })
+        document
+          .querySelectorAll('[data-update-kind]')
+          .forEach((b) =>
+            b.addEventListener('click', () =>
+              document.querySelectorAll('[data-update-kind]').forEach((x) => x.setAttribute('aria-pressed', x === b))
+            )
+          )
+        ;['update-form', 'message-form'].forEach((id) =>
+          document.getElementById(id)?.addEventListener('submit', (e) => {
+            e.preventDefault()
+            toast('Preview only. No update or message was sent to Mortar.')
+          })
+        )
+        document.getElementById('more-guidance')?.addEventListener('click', () => {
+          const more = document.getElementById('guidance-more')
+          more.hidden = !more.hidden
+          more.innerHTML = guidanceRows.slice(1).map(guidanceEntry).join('')
+          document.getElementById('more-guidance').textContent = more.hidden ? 'Show 9 More' : 'Show Fewer'
+        })
+      }
+      function closeSheet() {
+        backdrop.hidden = true
+        document.body.style.overflow = ''
+        document.querySelectorAll('.workspace,.sidebar,.topbar,.skip-link').forEach((el) => {
+          el.inert = false
+          el.removeAttribute('aria-hidden')
+        })
+        lastFocus?.focus()
+      }
+      document.getElementById('sheet-close').addEventListener('click', closeSheet)
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) closeSheet()
+      })
+      let taskAdded = false,
+        taskDone = false
+      function addTask() {
+        if (taskAdded) {
+          showTab('tasks', true)
+          return
+        }
+        taskAdded = true
+        document.getElementById('add-task').innerHTML = icon('check') + 'Task Added'
+        document.getElementById('next-task-note').textContent = '1 Open Task'
+        document.getElementById('task-count').textContent = '1'
+        document.getElementById('tasks-add').textContent = 'View Next Step'
+        document.getElementById('tasks-content').innerHTML =
+          `<div class="task-row"><div><p style="font-weight:500">Call The Banker</p><p class="small muted" style="margin-top:8px">Tan Mei Ling · Loan Admin · Due 18 Sep 2026</p><p class="small muted" style="margin-top:4px">Added By Staff</p></div><button class="btn secondary" id="complete-task">Complete</button></div>`
+        document.getElementById('complete-task').addEventListener('click', () => {
+          taskDone = true
+          document.getElementById('complete-task').disabled = true
+          document.getElementById('complete-task').textContent = 'Completed'
+          document.getElementById('next-task-note').textContent = 'No Open Tasks'
+          toast('Task completed in this preview.')
+        })
+        toast('Task added for Tan Mei Ling in this preview.')
+      }
+      document.getElementById('add-task').addEventListener('click', addTask)
+      document.getElementById('tasks-add').addEventListener('click', addTask)
+      document.getElementById('open-bank-history').addEventListener('click', () => {
+        showTab('history', true)
+        renderHistory('loan')
+      })
+      document.addEventListener('click', (e) => {
+        const open = e.target.closest('[data-open]')
+        if (open) openSheet(open.dataset.open)
+        const go = e.target.closest('[data-go]')
+        if (go) showTab(go.dataset.go, true)
+        const track = e.target.closest('[data-track]')
+        if (track) renderHistory(track.dataset.track)
+        const msg = e.target.closest('[data-message]')
+        if (msg) {
+          showTab('messages')
+          document.getElementById(`message-${msg.dataset.message}`).scrollIntoView({ block: 'center' })
+          document.getElementById('panel-messages').focus({ preventScroll: true })
+        }
+        if (e.target.closest('[data-reread]')) toast('Preview only. No new Mortar AI analysis was requested.')
+        const shell = e.target.closest('[data-shell]')
+        if (shell) {
+          e.preventDefault()
+          toast(`${shell.dataset.shell} is part of the app shell. This preview focuses on the case page.`)
+        }
+      })
+      document.querySelectorAll('.has-tip').forEach((el) => {
+        el.addEventListener('mouseleave', () => el.classList.remove('tip-dismissed'))
+        el.addEventListener('focusout', () => el.classList.remove('tip-dismissed'))
+        el.addEventListener('pointerdown', () => el.classList.remove('tip-dismissed'))
+      })
+      document.addEventListener('pointerdown', (e) => {
+        if (!e.target.closest('.has-tip'))
+          document.querySelectorAll('.has-tip:focus-within').forEach((el) => {
+            el.classList.add('tip-dismissed')
+          })
+      })
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (!backdrop.hidden) closeSheet()
+          document.querySelectorAll('.has-tip').forEach((el) => el.classList.add('tip-dismissed'))
+          document.getElementById('toast').hidden = true
+        }
+        if (e.key === 'Tab' && !backdrop.hidden) {
+          const all = [...sheet.querySelectorAll('button:not([disabled]),input,textarea,[tabindex="0"]')].filter(
+            (el) => el.getClientRects().length
+          )
+          const first = all[0],
+            last = all[all.length - 1]
+          if (e.shiftKey && (document.activeElement === first || document.activeElement === sheet)) {
+            e.preventDefault()
+            last.focus()
+          } else if (!e.shiftKey && (document.activeElement === last || document.activeElement === sheet)) {
+            e.preventDefault()
+            first.focus()
+          }
+        }
+      })
+      // Make the desktop-only owner suffix explicit on phones without adding a new colour.
+      const mobileOwnerStyle = document.createElement('style')
+      mobileOwnerStyle.textContent = '@media(max-width:719px){.mobile-owner{display:block!important;margin-top:4px}}'
+      document.head.append(mobileOwnerStyle)
+    </script>
+  </body>
+</html>

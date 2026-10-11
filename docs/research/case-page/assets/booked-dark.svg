@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="64" height="64"><title>Booked — Mortar Case Journey</title><style>.journey-art-line{fill:none;stroke:#FAFAFA;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.journey-art-paper{fill:#141414}.journey-art-shade{fill:#262626}.journey-art-ground{fill:#FAFAFA;opacity:.10}</style><ellipse class="journey-art-ground" cx="48" cy="89" rx="34" ry="3"/><path class="journey-art-paper journey-art-line" d="M21 12h34l11 11v56H21z"/>
+<path class="journey-art-shade journey-art-line" d="M55 12v12h11"/>
+<path class="journey-art-line" d="M30 31h22M30 43h26M30 51h19M30 65h13"/>
+<path class="journey-art-shade journey-art-line" d="m60 63 12-7 14 18-12 9-14-15z"/>
+<circle class="journey-art-line" cx="69" cy="65" r="2"/>
+<circle class="journey-art-paper journey-art-line" cx="65" cy="49" r="9"/>
+<path class="journey-art-line" d="m61 57-9 18m4-8 5 3m-8 3 5 3"/></svg>

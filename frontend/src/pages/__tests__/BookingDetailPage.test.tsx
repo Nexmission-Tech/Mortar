@@ -89,6 +89,13 @@ describe('BookingDetailPage', () => {
     vi.clearAllMocks()
   })
 
+  it('draws the illustrated journey with You Are Here on the awaited stop', async () => {
+    renderDetail('BK-9002')
+    const list = await screen.findByRole('list', { name: /Booking journey/ })
+    expect(within(list).getAllByRole('listitem')).toHaveLength(5)
+    expect(list.querySelector('[aria-current="step"]')?.getAttribute('aria-label')).toMatch(/^Loan Approved/)
+    expect(screen.getByText('You Are Here')).toBeTruthy()
+  })
   it('says the case state in one sentence, and never "Up To Date" beside a stall', async () => {
     renderDetail('BK-9002')
 

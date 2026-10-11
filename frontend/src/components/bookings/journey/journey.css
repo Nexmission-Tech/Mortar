@@ -1,0 +1,506 @@
+/*
+ * The illustrated booking journey (docs/research/case-page/README.md §5):
+ * road, stations, details and the bank detour. Geometry follows the 1168 × 240
+ * map; every colour is a theme token.
+ */
+.journey {
+  --art-ink: var(--foreground);
+  --art-paper: var(--card);
+  --art-shade: var(--muted);
+  --art-ground: 0.07;
+}
+.dark .journey {
+  --art-shade: var(--color-ink-800);
+  --art-ground: 0.1;
+}
+.journey-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.journey-map {
+  position: relative;
+  height: 240px;
+  isolation: isolate;
+}
+
+/* Road */
+.journey-road {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 240px;
+  overflow: visible;
+  pointer-events: none;
+}
+.journey-road path {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.journey-road-bed {
+  stroke: var(--muted);
+  stroke-width: 8;
+}
+.journey-road-ahead {
+  stroke: var(--input);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 6;
+}
+/* The dash exists only during the entrance, so the resting line is always solid,
+   whatever a resize or zoom does to dash lengths on a non-scaling stroke. */
+.journey-road-travelled {
+  stroke: var(--foreground);
+  stroke-width: 1.75;
+  animation: journey-trace 560ms ease-out;
+}
+.journey-road-cap {
+  stroke: var(--foreground);
+  stroke-width: 2;
+}
+.journey-road-detour {
+  stroke: var(--muted-foreground);
+  stroke-width: 1;
+}
+.journey-road-detour-narrow {
+  display: none;
+}
+@keyframes journey-trace {
+  from {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Stations */
+.journey-stops {
+  position: relative;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.journey-stop {
+  position: absolute;
+  top: 32px;
+  width: 20%;
+  text-align: center;
+  transform: translateX(-50%);
+}
+.journey-stop:nth-child(1) {
+  left: 8.9041%;
+}
+.journey-stop:nth-child(2) {
+  left: 27.3973%;
+}
+.journey-stop:nth-child(3) {
+  left: 47.774%;
+}
+.journey-stop:nth-child(4) {
+  left: 68.8356%;
+}
+.journey-stop:nth-child(5) {
+  left: 91.0959%;
+}
+.journey-trigger {
+  position: relative;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 4px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.journey-trigger:focus-visible,
+.journey-detour-flag:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.journey-station {
+  position: relative;
+  display: block;
+  width: 64px;
+  height: 64px;
+  flex: none;
+  transition: opacity 120ms ease-out;
+}
+.journey-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.journey-art .journey-art-line {
+  fill: none;
+  stroke: var(--art-ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.journey-art .journey-art-paper {
+  fill: var(--art-paper);
+}
+.journey-art .journey-art-shade {
+  fill: var(--art-shade);
+}
+.journey-art .journey-art-ground {
+  fill: var(--art-ink);
+  opacity: var(--art-ground);
+}
+.journey-stop[data-state='record_missing'] .journey-station {
+  opacity: 0.68;
+}
+.journey-stop[data-state='record_missing'] .journey-art-line {
+  stroke-dasharray: 3.5 3;
+}
+.journey-stop[data-state='upcoming'] .journey-station,
+.journey-stop[data-state='not_reached'] .journey-station {
+  opacity: 0.4;
+}
+.journey-stop[data-current='true'] .journey-station {
+  opacity: 1;
+}
+
+/* Route nodes: only a filled, checked node means confirmed */
+.journey-node {
+  display: grid;
+  place-items: center;
+  width: 12px;
+  height: 12px;
+  margin-top: -2px;
+  flex: none;
+  border: 1.5px solid var(--foreground);
+  border-radius: 50%;
+  background: var(--card);
+}
+.journey-node svg {
+  width: 8px;
+  height: 8px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+.journey-stop[data-checked='true'] .journey-node {
+  background: var(--foreground);
+  color: var(--card);
+}
+.journey-stop[data-state='record_missing'] .journey-node {
+  border-style: dashed;
+  border-color: var(--muted-foreground);
+}
+.journey-stop[data-state='upcoming'] .journey-node,
+.journey-stop[data-state='not_reached'] .journey-node {
+  border-color: var(--input);
+}
+.journey-stop[data-current='true'] .journey-node {
+  border-width: 3px;
+  border-color: var(--foreground);
+  outline: 1px solid var(--foreground);
+  outline-offset: 4px;
+}
+.journey-here {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--foreground);
+  color: var(--card);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.journey-here::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: calc(50% - 3px);
+  border: 3px solid transparent;
+  border-top-color: var(--foreground);
+}
+
+/* Labels: both rows share baselines across stations */
+.journey-name {
+  margin-top: 18px;
+  color: var(--foreground);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+.journey-meta {
+  margin-top: 4px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 16px;
+}
+.journey-stop[data-stalled='true'] .journey-meta {
+  color: var(--status-danger-fg);
+}
+.journey-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  vertical-align: middle;
+}
+
+/* The bank detour, under Documents */
+.journey-detour {
+  position: absolute;
+  top: 148px;
+  left: 97.9452%;
+  z-index: 1;
+  width: max-content;
+  transform: translateX(-50%);
+}
+.journey-detour-flag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--card);
+  font-size: 12px;
+  line-height: 16px;
+  text-align: left;
+  cursor: pointer;
+}
+.journey-detour-flag:hover {
+  border-color: var(--muted-foreground);
+}
+.journey-detour-flag svg {
+  width: 12px;
+  height: 12px;
+  flex: none;
+}
+.journey-rejected {
+  color: var(--status-danger-fg);
+  white-space: nowrap;
+}
+.journey-phone-rail,
+.journey-phone-detour {
+  display: none;
+}
+
+/* Details: the desktop tooltip and the phone panel share this body */
+.journey-tip-title {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.journey-tip-line {
+  display: block;
+  margin-top: 4px;
+}
+.journey-tip-title + .journey-tip-line {
+  margin-top: 0;
+}
+.journey-tip-rule {
+  display: block;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--muted-foreground);
+}
+.journey-panel {
+  margin: 0 0 16px 44px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--muted);
+  color: var(--foreground);
+  font-size: 13px;
+  line-height: 18px;
+  text-align: left;
+}
+.journey-panel .journey-tip-rule {
+  border-color: var(--border);
+}
+.journey-foot {
+  display: flex;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--card-border);
+}
+
+@media (min-width: 720px) and (max-width: 959px) {
+  .journey-map {
+    height: 260px;
+  }
+  .journey-name {
+    display: flex;
+    min-height: 36px;
+    align-items: flex-start;
+    justify-content: center;
+    font-size: 13px;
+    line-height: 18px;
+  }
+  .journey-meta {
+    max-width: 108px;
+  }
+  .journey-detour {
+    top: 170px;
+    left: 101.3699%;
+  }
+  .journey-road-detour-wide {
+    display: none;
+  }
+  .journey-road-detour-narrow {
+    display: block;
+  }
+}
+
+@media (max-width: 719px) {
+  .journey-heading {
+    margin-bottom: 12px;
+  }
+  .journey-map {
+    height: auto;
+  }
+  .journey-road {
+    display: none;
+  }
+  .journey-stops {
+    display: flex;
+    height: auto;
+    flex-direction: column;
+  }
+  .journey-stop:nth-child(n) {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 100%;
+    min-height: 72px;
+    transform: none;
+    text-align: left;
+  }
+  .journey-phone-rail {
+    position: absolute;
+    top: 34px;
+    left: 0;
+    z-index: -1;
+    display: block;
+    width: 36px;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .journey-phone-rail path {
+    fill: none;
+    vector-effect: non-scaling-stroke;
+    stroke-linecap: round;
+  }
+  .journey-rail-bed {
+    stroke: var(--muted);
+    stroke-width: 8;
+  }
+  .journey-rail-line {
+    stroke: var(--foreground);
+    stroke-width: 1.5;
+  }
+  .journey-phone-rail[data-ahead='true'] .journey-rail-line {
+    stroke: var(--input);
+    stroke-dasharray: 3 6;
+  }
+  .journey-trigger {
+    display: grid;
+    height: 72px;
+    grid-template-columns: 80px 1fr;
+    grid-template-rows: 34px 38px;
+    column-gap: 12px;
+    padding: 0;
+    text-align: left;
+  }
+  .journey-station {
+    position: absolute;
+    top: 14px;
+    left: 36px;
+    width: 40px;
+    height: 40px;
+  }
+  .journey-node {
+    position: absolute;
+    top: 28px;
+    left: 6px;
+    margin: 0;
+  }
+  .journey-name {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: end;
+    margin: 0;
+  }
+  .journey-meta {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: start;
+    margin-top: 4px;
+  }
+  .journey-here {
+    top: -4px;
+    left: 92px;
+    transform: none;
+    padding: 1px 6px;
+  }
+  .journey-here::after {
+    left: 8px;
+  }
+  .journey-stop[data-current='true'] {
+    margin-top: 8px;
+  }
+  .journey-stop:has(+ .journey-stop[data-current='true']) > .journey-phone-rail {
+    height: calc(100% + 8px);
+  }
+  .journey-detour {
+    position: relative;
+    top: auto;
+    left: auto;
+    display: flex;
+    width: 100%;
+    height: 64px;
+    align-items: center;
+    padding-left: 44px;
+    transform: none;
+  }
+  .journey-phone-detour {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    display: block;
+    width: 104px;
+    height: 64px;
+    fill: none;
+    stroke: var(--muted-foreground);
+    stroke-width: 1;
+  }
+  .journey-detour-flag {
+    width: 100%;
+    min-height: 32px;
+    justify-content: space-between;
+  }
+  .journey-foot {
+    margin-top: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journey-road-travelled {
+    animation: none;
+  }
+  .journey-station {
+    transition: none;
+  }
+}
