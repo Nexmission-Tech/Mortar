@@ -61,7 +61,9 @@ export const SalesChartGrid = memo(function SalesChartGrid({
   const blocks = useMemo(() => toBlocks(units), [units])
   const [focus, setFocus] = useState<string | null>(null)
   const refs = useRef(new Map<string, HTMLButtonElement>())
-  const focusCode = focus ?? blocks[0]?.rows[0]?.cells[0]?.code ?? null
+  // A focused unit that left the layout (settings changed) falls back to the first cell.
+  const known = focus !== null && units.some((u) => u.code === focus)
+  const focusCode = (known ? focus : null) ?? blocks[0]?.rows[0]?.cells[0]?.code ?? null
 
   const move = (b: number, r: number, c: number, event: KeyboardEvent) => {
     const delta = STEPS[event.key]
@@ -125,7 +127,7 @@ export const SalesChartGrid = memo(function SalesChartGrid({
                         type="button"
                         tabIndex={unit.code === focusCode ? 0 : -1}
                         aria-label={`${unit.code}, ${STATE_LABELS[unit.state]}`}
-                        aria-pressed={unit.code === selected}
+                        aria-current={unit.code === selected ? 'true' : undefined}
                         data-lit={lit === null ? undefined : String(!ghost)}
                         onClick={() => onSelect(unit)}
                         onFocus={() => {
@@ -152,6 +154,11 @@ export const SalesChartGrid = memo(function SalesChartGrid({
           </tbody>
         </table>
       ))}
+      {blocks.length > 1 ? (
+        <p className="sticky left-0 self-end text-xs text-muted-foreground sm:hidden">
+          Swipe Sideways For More Blocks.
+        </p>
+      ) : null}
     </div>
   )
 })
