@@ -18,8 +18,8 @@
     "semantic_hash": "1cbd123b0cebcb933e050b156ff6ecd2"
   },
   "frontend/package.json": {
-    "mtime": 1791695588.4126103,
-    "seen": 1791698273.737254,
+    "mtime": 1791712683.9246113,
+    "seen": 1791712946.1736472,
     "ast_hash": "4bab84b1cc01a297e19fbb1d609a07dc",
     "semantic_hash": "4bab84b1cc01a297e19fbb1d609a07dc"
   },
@@ -450,9 +450,9 @@
     "semantic_hash": "b4cb549cf57764261f02df585c6a7e8d"
   },
   "docs/DESIGN.md": {
-    "mtime": 1791699080.5096862,
-    "seen": 1791699239.4153957,
-    "ast_hash": "365e229e876ebec3c4cc8eda537b6594",
+    "mtime": 1791712786.36943,
+    "seen": 1791712946.1739144,
+    "ast_hash": "5d0edfc858086ec2567da76415c9814b",
     "semantic_hash": ""
   },
   "docs/README.md": {
@@ -1902,15 +1902,15 @@
     "semantic_hash": "d7b6c7d49e6a06179f664732811cb47f"
   },
   "docs/PRD.md": {
-    "mtime": 1791699066.6825023,
-    "seen": 1791699239.4153965,
-    "ast_hash": "3011ff2c1f9b1896a74ccf0e39a0b3ee",
+    "mtime": 1791712786.733148,
+    "seen": 1791712946.173915,
+    "ast_hash": "e617f5604cde75ad44e3b35bb682eea8",
     "semantic_hash": ""
   },
   "docs/PRODUCT.md": {
-    "mtime": 1791699080.6866887,
-    "seen": 1791699239.4153967,
-    "ast_hash": "f44cf68f7bb14c25ce53a5bb35f0eedd",
+    "mtime": 1791712786.3684256,
+    "seen": 1791712946.1739156,
+    "ast_hash": "6e7e56fff0d2108fe96794bcf79dfaae",
     "semantic_hash": ""
   },
   "docs/TRD.md": {
@@ -2304,9 +2304,9 @@
     "semantic_hash": ""
   },
   "docs/research/sales-chart/README.md": {
-    "mtime": 1791696986.057896,
-    "seen": 1791698273.7375424,
-    "ast_hash": "9bc4b3ccebc4d99eda209ff01ad393ee",
+    "mtime": 1791712786.8291497,
+    "seen": 1791712946.173936,
+    "ast_hash": "7d76c9bbbbc98f6b24dc2b21a0dc3e09",
     "semantic_hash": ""
   },
   "docs/research/sales-chart/plan-1-core.md": {
@@ -2322,15 +2322,15 @@
     "semantic_hash": ""
   },
   "frontend/src/components/bookings/quickViewRow.ts": {
-    "mtime": 1791698517.5401998,
-    "seen": 1791699239.4152143,
-    "ast_hash": "aa25238b72e19983e9501428cbb3a349",
+    "mtime": 1791712786.3695464,
+    "seen": 1791712946.1736815,
+    "ast_hash": "352d8fa408f538c718b221533702d5d9",
     "semantic_hash": ""
   },
   "frontend/src/components/sales-chart/SalesChartGrid.tsx": {
-    "mtime": 1791698881.6340587,
-    "seen": 1791699239.4152615,
-    "ast_hash": "8287f998027c22373497b9ab516dc47d",
+    "mtime": 1791712742.7128983,
+    "seen": 1791712946.1737425,
+    "ast_hash": "46aa5504c312eef87e4cd1160c1a0d18",
     "semantic_hash": ""
   },
   "frontend/src/components/sales-chart/__tests__/SalesChartGrid.test.tsx": {
@@ -2340,15 +2340,15 @@
     "semantic_hash": ""
   },
   "frontend/src/components/sales-chart/__tests__/salesChart.test.ts": {
-    "mtime": 1791698695.745823,
-    "seen": 1791699239.4152625,
-    "ast_hash": "7f23b2fb14b3ba952c7612a4663591b9",
+    "mtime": 1791712704.1959035,
+    "seen": 1791712946.1737444,
+    "ast_hash": "f1d45d9d4d6c6067e0feadea0efb6e6b",
     "semantic_hash": ""
   },
   "frontend/src/components/sales-chart/salesChart.ts": {
-    "mtime": 1791698695.7457013,
-    "seen": 1791699239.415263,
-    "ast_hash": "bf6935fb9d6af445cb07f13d891cee00",
+    "mtime": 1791712742.712591,
+    "seen": 1791712946.173745,
+    "ast_hash": "53aec9a2e1bb262e9751227a83e19ecc",
     "semantic_hash": ""
   },
   "frontend/src/components/sales-chart/unitTone.tsx": {
@@ -2358,15 +2358,15 @@
     "semantic_hash": ""
   },
   "frontend/src/pages/SalesChartPage.tsx": {
-    "mtime": 1791698695.7459958,
-    "seen": 1791699239.415317,
-    "ast_hash": "4770a722801d959fe799d64639a5da3c",
+    "mtime": 1791712742.7127738,
+    "seen": 1791712946.173809,
+    "ast_hash": "25fe4a406e3f596db237bce2f35bf4e2",
     "semantic_hash": ""
   },
   "frontend/src/pages/__tests__/SalesChartPage.test.tsx": {
-    "mtime": 1791698940.9528303,
-    "seen": 1791699239.415325,
-    "ast_hash": "1863e75865d969227810f77a07485607",
+    "mtime": 1791712847.052923,
+    "seen": 1791712946.1738195,
+    "ast_hash": "f8f39d660a1f4bc0e3d3e1c4c46d2534",
     "semantic_hash": ""
   },
   "docs/research/sales-chart/plan-3-building.md": {
