@@ -15,9 +15,7 @@ export function LatestMessage({ messages, onViewAll }: { messages: Message[]; on
     <Card>
       <CardContent className="flex flex-col gap-3 p-4 md:p-6">
         <div className="flex items-center justify-between gap-2">
-          <h2 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-            Latest Message
-          </h2>
+          <h2 className="text-base font-semibold leading-6 tracking-[-0.01em]">Latest Message</h2>
           {messages.length > 0 ? (
             <Button type="button" variant="ghost" size="sm" className="h-7 px-2 text-[13px]" onClick={onViewAll}>
               View All {messages.length}

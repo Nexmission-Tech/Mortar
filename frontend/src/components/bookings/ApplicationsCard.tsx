@@ -18,17 +18,18 @@ const STATUS_TONES: Record<ApplicationStatus, StatusPillTone> = {
 
 export function ApplicationsCard({ applications, summary }: { applications: LoanApplication[]; summary: CaseSummary }) {
   const statusById = new Map(summary.applications.map((a) => [a.id, a.status]))
+  // Live attempts first: the bank still deciding is the one to chase.
+  const closed = (id: string) => ['rejected', 'withdrawn'].includes(statusById.get(id) ?? '')
+  const ordered = [...applications.filter((a) => !closed(a.id)), ...applications.filter((a) => closed(a.id))]
   return (
     <Card>
       <CardContent className="flex flex-col gap-3 p-4 md:p-6">
-        <h2 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-          Bank Applications
-        </h2>
+        <h2 className="text-base font-semibold leading-6 tracking-[-0.01em]">Bank Applications</h2>
         {applications.length === 0 ? (
           <p className="text-sm text-muted-foreground">No Applications Yet.</p>
         ) : (
           <ul className="flex flex-col gap-2.5">
-            {applications.map((app) => {
+            {ordered.map((app) => {
               const status = statusById.get(app.id) ?? 'submitted'
               return (
                 <li key={app.id} className="flex items-center justify-between gap-3">

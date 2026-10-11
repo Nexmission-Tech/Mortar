@@ -1207,11 +1207,12 @@ personas:
   (Display/Page title + one descriptive line), followed by up to four stat
   tiles, followed by the active working list or table. Today puts its figures in
   the [Today Rail](#today-rail) instead.
-- **Canvas dot grid:** Behind the cards on every signed-in page, the page ground
-  carries 1px dots every 20px (`.app-canvas`, `--canvas-dot`: ink at 12% in
-  light mode, white at 8% in dark), like a sketchbook page. It is the one
-  sanctioned pattern in the application. Cards, the sidebar, the top bar,
-  popovers and dialogs stay solid over it, and the public pages never use it.
+- **Canvas dot grid:** Behind the cards on every signed-in page except the full
+  case page (`/bookings/:id`, `.app-canvas-solid`), the page ground carries 1px
+  dots every 20px (`.app-canvas`, `--canvas-dot`: ink at 12% in light mode,
+  white at 8% in dark), like a sketchbook page. It is the one sanctioned pattern
+  in the application. Cards, the sidebar, the top bar, popovers and dialogs stay
+  solid over it, and the public pages never use it.
 
 ### Navigation
 
@@ -1233,11 +1234,11 @@ preserve closed-case restrictions.
 Below 720px, use 16px page gutters, a stacked summary, 48px tab row with 13/18
 medium labels, and the vertical roadmap/disclosures. Keep Record An Update and
 Paste A Message visible when permitted. Bank rows place identity in column 1,
-status in column 2 with intrinsic width, and dates beneath; status pills never
-stretch across a row. Every daily capability is at most one action away. Verify
-390px and 320px without page-level horizontal scroll. Phone form fields may use
-the existing 16/24 step at regular weight to avoid input zoom; this introduces
-no new type size.
+status in column 2 with intrinsic width, live applications before rejected or
+withdrawn ones; status pills never stretch across a row. Every daily capability
+is at most one action away. Verify 390px and 320px without page-level horizontal
+scroll. Phone form fields may use the existing 16/24 step at regular weight to
+avoid input zoom; this introduces no new type size.
 
 ## Screen Density
 

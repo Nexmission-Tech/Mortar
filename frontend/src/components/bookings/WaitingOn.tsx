@@ -150,6 +150,7 @@ export function WaitingOnPanel({
   suggestion,
   wide = false,
   onWhatToDo,
+  holderDetail,
   className
 }: {
   booking: Booking
@@ -163,6 +164,8 @@ export function WaitingOnPanel({
   wide?: boolean
   /** Opens the reviewed guidance for this case's blocker, where the page offers it. */
   onWhatToDo?: () => void
+  /** Names the party more exactly than the holder's role, e.g. "Crestline Bank’s Decision" and its banker. */
+  holderDetail?: { title: string; detail: string }
   className?: string
 }) {
   const ball = ballInCourt(summary)
@@ -180,6 +183,19 @@ export function WaitingOnPanel({
       <div className={cn('flex flex-col gap-1', className)}>
         <h2 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Waiting On</h2>
         <p className="text-sm text-muted-foreground">{ball.waitingFor}.</p>
+        {/* A closed case still has guidance: refunds, forfeiture, a post-SPA rejection. */}
+        {onWhatToDo ? (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="h-8 self-start px-2 text-[13px]"
+            onClick={onWhatToDo}
+          >
+            <BookOpen aria-hidden="true" />
+            What To Do
+          </Button>
+        ) : null}
       </div>
     )
   }
@@ -221,9 +237,11 @@ export function WaitingOnPanel({
           <h2 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Waiting On</h2>
           <p className="flex items-center gap-2 text-base font-semibold">
             <HolderIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
-            {BALL_HOLDER_LABELS[ball.holder]}
+            {holderDetail?.title ?? BALL_HOLDER_LABELS[ball.holder]}
           </p>
-          <p className="text-sm text-muted-foreground">Waiting For {ball.waitingFor}.</p>
+          <p className="text-sm text-muted-foreground">
+            {holderDetail ? holderDetail.detail : `Waiting For ${ball.waitingFor}.`}
+          </p>
         </div>
         {ball.stalled ? (
           <div className="flex flex-wrap gap-1.5">

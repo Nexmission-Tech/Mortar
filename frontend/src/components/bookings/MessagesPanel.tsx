@@ -82,6 +82,18 @@ function currentProposal(events: CaseEvent[], messageId: string, extraction: Ext
   return linked.find((e) => e.status !== 'superseded') ?? linked[0] ?? null
 }
 
+/** How many messages carry a Mortar AI reading still waiting for Confirm, Dispute or Dismiss. */
+export function readingsToReview(
+  messages: readonly Message[],
+  extractions: ReadonlyMap<string, Extraction>,
+  events: CaseEvent[]
+): number {
+  return messages.filter((m) => {
+    const proposal = currentProposal(events, m.id, extractions.get(m.id) ?? null)
+    return proposal?.status === 'provisional' || proposal?.status === 'disputed'
+  }).length
+}
+
 function ProposalBlock({
   extraction,
   proposal,

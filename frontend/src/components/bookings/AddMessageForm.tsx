@@ -53,7 +53,8 @@ export function AddMessageForm({
   referenceDate,
   onAdded,
   collapsible = false,
-  bare = false
+  bare = false,
+  onReview
 }: {
   booking: Booking
   /** The latest application's banker, used to prefill the sender name. */
@@ -69,6 +70,8 @@ export function AddMessageForm({
   collapsible?: boolean
   /** Inside the case panel, whose title already names the form: no heading or divider of its own. */
   bare?: boolean
+  /** Inside the case panel, where the proposal is not on screen: opens it in Messages. */
+  onReview?: () => void
 }) {
   const [role, setRole] = useState<SenderRole>('buyer')
   const [open, setOpen] = useState(false)
@@ -231,8 +234,13 @@ export function AddMessageForm({
               {result.extraction.document.value !== 'none'
                 ? ` · ${DOCUMENT_LABELS[result.extraction.document.value]}`
                 : ''}
-              {result.event ? ' — Review The Proposal Above.' : ''}
+              {result.event && !onReview ? ' — Review The Proposal Above.' : ''}
             </span>
+            {result.event && onReview ? (
+              <Button type="button" size="sm" variant="ghost" className="h-7 px-2 text-[13px]" onClick={onReview}>
+                Review It In Messages
+              </Button>
+            ) : null}
           </p>
         )}
       </div>

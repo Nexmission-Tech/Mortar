@@ -541,6 +541,10 @@ select:focus-visible,
   background-size: 20px 20px;
   background-position: 10px 10px;
 }
+/* The full case page: the same ground without the dots behind its journey drawing. */
+.app-canvas.app-canvas-solid {
+  background-image: none;
+}
 
 /* SIDEBAR TRANSITION — defined in CSS so it's never re-set by React renders */
 [data-sidebar] {

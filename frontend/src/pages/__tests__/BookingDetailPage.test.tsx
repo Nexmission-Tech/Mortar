@@ -228,6 +228,55 @@ describe('BookingDetailPage', () => {
     expect(within(record).getByRole('button', { name: 'Record Update' })).toBeTruthy()
   })
 
+  it('names the bank and banker the case is waiting on, with the live bank first', async () => {
+    renderDetail('BK-9002')
+    const summary = await screen.findByText('Crestline Bank’s Decision')
+    expect(summary.closest('[data-tour="case-status"]')?.textContent).toContain('Bernard Lim · Banker')
+    const banks = screen.getByText('Bank Applications').closest('div.shadow-card, .shadow-card')!.textContent!
+    expect(banks.indexOf('Crestline Bank')).toBeLessThan(banks.indexOf('Malayan Trust Bank'))
+  })
+
+  it('says how many Mortar AI readings wait for review, and opens them', async () => {
+    renderDetail()
+    fireEvent.click(await screen.findByRole('button', { name: /^1 Mortar AI Reading To Review/ }))
+    expect(screen.getByRole('tab', { name: /^Messages/ }).getAttribute('aria-selected')).toBe('true')
+  })
+
+  it('returns focus to the button that opened the case panel', async () => {
+    renderDetail()
+    const paste = await screen.findByRole('button', { name: 'Paste A Message' })
+    paste.focus()
+    fireEvent.click(paste)
+    fireEvent.keyDown(screen.getByRole('dialog', { name: 'Paste A Message' }), { key: 'Escape' })
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+    await waitFor(() => expect(document.activeElement).toBe(paste))
+  })
+
+  it('sends a pasted message’s reading to Messages for review', async () => {
+    vi.mocked(postMessage).mockResolvedValueOnce({
+      message: {},
+      extraction: (await import('@/components/bookings/__tests__/snapshotFixture')).EXTRACTION_9001,
+      event: { id: 'EV-NEW' }
+    } as never)
+    renderDetail()
+    fireEvent.click(await screen.findByRole('button', { name: 'Paste A Message' }))
+    const dialog = screen.getByRole('dialog', { name: 'Paste A Message' })
+    fireEvent.change(within(dialog).getByLabelText('Message'), { target: { value: 'Need the payslip please' } })
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Add Message' }))
+    fireEvent.click(await within(dialog).findByRole('button', { name: 'Review It In Messages' }))
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+    expect(screen.getByRole('tab', { name: /^Messages/ }).getAttribute('aria-selected')).toBe('true')
+  })
+
+  it('keeps What To Do on a closed case', async () => {
+    const snapshot = buildSnapshot()
+    const closed = summarizeCases(snapshot, snapshot.meta.referenceDate).find(
+      (c) => c.stage === 'cancelled' || c.stage === 'lapsed'
+    )!
+    renderDetail(closed.bookingId)
+    expect(await screen.findByRole('button', { name: 'What To Do' })).toBeTruthy()
+  })
+
   it('opens on the view a link names', async () => {
     renderDetail('BK-9001?view=messages')
     expect((await screen.findByRole('tab', { name: /^Messages/ })).getAttribute('aria-selected')).toBe('true')

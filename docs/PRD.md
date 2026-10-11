@@ -1022,16 +1022,16 @@ following six-step pitch video script without error or manual intervention:
       unit code opens the `CaseQuickView` case panel.
 2.  **Opens Case `BK-9001`:**
     - The user navigates to `/bookings/BK-9001`.
-    - The header displays one status sentence.
-    - Loan and legal tracks are displayed side by side.
-    - A Manglish banker message regarding the missing payslip displays Jev's
-      extraction proposal in words: "Jev Suggests: Documents Requested · Payslip
-      · Jev Is Sure" with Confirm, Dispute, and Dismiss buttons. No percentages
-      or probabilities appear.
+    - The summary names who holds the case and the next step, with the booking
+      journey beneath and "1 Mortar AI Reading To Review".
+    - In Messages, a Manglish banker message regarding the missing payslip
+      displays Mortar AI's extraction proposal in words: "Mortar AI Suggests:
+      Documents Requested · Payslip · Mortar AI Is Sure" with Confirm, Dispute,
+      and Dismiss buttons. No percentages or probabilities appear.
     - The Sales Admin clicks Confirm. The evidence log updates immediately,
       displaying who reported and who verified the event.
 3.  **Playbook Guidance:**
-    - The user opens the playbooks section on `BK-9001`.
+    - The user opens What To Do on `BK-9001`.
     - The top fitting playbook ("Missing income documents") is shown as
       "Applies", with remaining playbooks folded behind "Show N More".
 4.  **The Live AI Moment:**

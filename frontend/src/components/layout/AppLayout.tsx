@@ -5,6 +5,8 @@
  */
 
 import { useEffect, useState, type ReactNode } from 'react'
+import { matchPath, useLocation } from 'react-router-dom'
+import { cn } from '@/lib/utils'
 import { useSnapshot } from '@/lib/data'
 import { usePersona } from '@/lib/persona'
 import { notificationStore } from '@/lib/notificationStore'
@@ -26,6 +28,7 @@ type AppLayoutProps = {
 export function AppLayout({ children, minimalNav }: AppLayoutProps) {
   const { snapshot, refresh } = useSnapshot()
   const { profile, persona } = usePersona()
+  const solidGround = matchPath('/bookings/:id', useLocation().pathname) !== null
   useEffect(() => {
     for (const task of snapshot?.tasks ?? []) {
       const relevant =
@@ -52,7 +55,8 @@ export function AppLayout({ children, minimalNav }: AppLayoutProps) {
       <AppSidebar mobileOpen={mobileSidebarOpen} onMobileClose={() => setMobileSidebarOpen(false)} />
       <AppNav minimal={minimalNav} onMenuClick={() => setMobileSidebarOpen(true)} />
       <TourProvider>
-        <main className="app-canvas flex-1 pt-14 lg:ml-16">{children}</main>
+        {/* The full case page reads on a solid ground: its journey drawing needs no texture behind it. */}
+        <main className={cn('app-canvas flex-1 pt-14 lg:ml-16', solidGround && 'app-canvas-solid')}>{children}</main>
         <TourButton />
       </TourProvider>
     </div>

@@ -9,10 +9,10 @@
  * case panel.
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { FileText } from 'lucide-react'
-import { PERSONA_STAFF, type BuyerSignals } from '@mortar/core'
+import { PERSONA_STAFF, ballInCourt, type BuyerSignals, type CaseSummary, type LoanApplication } from '@mortar/core'
 import { useCases, useSnapshot } from '@/lib/data'
 import { usePersona } from '@/lib/persona'
 import { fetchSignals } from '@/lib/api'
@@ -27,7 +27,7 @@ import { CaseHeader } from '@/components/bookings/CaseHeader'
 import { CaseHistory, type HistoryTrack } from '@/components/bookings/CaseHistory'
 import { CASE_VIEWS, CaseViews, type CaseView } from '@/components/bookings/CaseViews'
 import { LatestMessage } from '@/components/bookings/LatestMessage'
-import { MessagesPanel } from '@/components/bookings/MessagesPanel'
+import { MessagesPanel, readingsToReview } from '@/components/bookings/MessagesPanel'
 import { PlaybooksPanel } from '@/components/bookings/PlaybooksPanel'
 import { RecordUpdateForm } from '@/components/bookings/RecordUpdateForm'
 import { TasksPanel } from '@/components/bookings/TasksPanel'
@@ -85,12 +85,47 @@ export function BookingDetailPage() {
       ),
     [setParams]
   )
+  /** Brings the views' top into sight when it has scrolled away, so a new view starts at its beginning. */
+  const revealViews = useCallback(() => {
+    const views = document.getElementById('case-views')
+    if (!views || views.getBoundingClientRect().top >= 0) return
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
+    views.scrollIntoView?.({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+  }, [])
   /** The journey's bank detour opens the loan history and brings the views into sight. */
   const showLoanHistory = useCallback(() => {
     show('history', 'loan')
-    document.getElementById('case-views')?.scrollIntoView?.({ behavior: 'smooth', block: 'start' })
+    const views = document.getElementById('case-views')
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
+    views?.scrollIntoView?.({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
   }, [show])
-  const [action, setAction] = useState<CaseAction | null>(null)
+  /** The open case panel, tied to the booking it was opened on, so moving to another booking closes it. */
+  const [panel, setPanel] = useState<{ bookingId: string; action: CaseAction } | null>(null)
+  const action = panel && panel.bookingId === id ? panel.action : null
+  const opener = useRef<HTMLElement | null>(null)
+  const openPanel = useCallback(
+    (next: CaseAction) => {
+      opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+      if (id) setPanel({ bookingId: id, action: next })
+    },
+    [id]
+  )
+  const closePanel = useCallback(() => setPanel(null), [])
+  /** Focus goes back to the button that opened the panel, or to Paste A Message when that one is gone. */
+  const panelOpener = useCallback(
+    () =>
+      opener.current?.isConnected ? opener.current : document.querySelector<HTMLElement>('[data-tour="case-message"]'),
+    []
+  )
+
+  // The fixed app bar and the sticky view tabs cover 113px; keep focused controls clear of them.
+  useEffect(() => {
+    const root = document.documentElement
+    root.style.scrollPaddingTop = '120px'
+    return () => {
+      root.style.scrollPaddingTop = ''
+    }
+  }, [])
 
   useEffect(() => {
     if (!id || !snapshot || !snapshot.bookings.some((b) => b.id === id)) return
@@ -123,6 +158,11 @@ export function BookingDetailPage() {
       summary,
       applications,
       events,
+      toReview: readingsToReview(
+        snapshot.messages.filter((m) => m.bookingId === id),
+        new Map(snapshot.extractions.map((e) => [e.messageId, e])),
+        events
+      ),
       journey: bookingJourney({
         booking,
         summary,
@@ -147,7 +187,7 @@ export function BookingDetailPage() {
   }, [snapshot, cases, id, fetchedSignals])
 
   return (
-    <PageContainer>
+    <PageContainer className="max-[719px]:px-4">
       {loading && !snapshot ? (
         <div className="flex flex-col gap-3">
           <Skeleton className="h-24 rounded-md" />
@@ -186,8 +226,8 @@ export function BookingDetailPage() {
           <CaseHeader
             booking={data.booking}
             summary={data.summary}
-            onRecordUpdate={() => setAction('record')}
-            onPasteMessage={() => setAction('message')}
+            onRecordUpdate={() => openPanel('record')}
+            onPasteMessage={() => openPanel('message')}
           />
           <Card className="mt-6" data-tour="case-status">
             <CardContent className="flex flex-col gap-5 p-4 md:p-6">
@@ -200,11 +240,17 @@ export function BookingDetailPage() {
                 // Mortar AI's cached answer for this case, so its alternative
                 // appears here as it does on Today and in the case panel.
                 suggestion={data.suggestion}
-                onWhatToDo={() => setAction('guidance')}
+                onWhatToDo={() => openPanel('guidance')}
+                holderDetail={holderDetail(data.summary, data.applications)}
                 wide
               />
-              {data.summary.outstandingDocuments.length > 0 ? (
+              {data.summary.outstandingDocuments.length > 0 || data.toReview > 0 ? (
                 <div className="flex flex-wrap items-center gap-1.5">
+                  {data.toReview > 0 ? (
+                    <Button type="button" variant="secondary" size="sm" onClick={() => show('messages')}>
+                      {data.toReview} Mortar AI {data.toReview === 1 ? 'Reading' : 'Readings'} To Review
+                    </Button>
+                  ) : null}
                   {data.summary.outstandingDocuments.map((doc) => (
                     <StatusPill key={doc} tone="warning">
                       {DOCUMENT_LABELS[doc]} Outstanding
@@ -220,7 +266,10 @@ export function BookingDetailPage() {
           <div className="mt-4">
             <CaseViews
               value={view}
-              onValueChange={(next) => show(next)}
+              onValueChange={(next) => {
+                show(next)
+                revealViews()
+              }}
               counts={{ messages: data.messages.length, history: data.events.length, tasks: data.tasks.length }}
               panels={{
                 overview: (
@@ -252,8 +301,9 @@ export function BookingDetailPage() {
               }}
             />
           </div>
-          <CaseActionSheet action={action} booking={data.booking} onClose={() => setAction(null)}>
-            {action === 'record' ? (
+          <CaseActionSheet action={action} booking={data.booking} onClose={closePanel} opener={panelOpener}>
+            {/* A refresh can close the case while the panel is open; a closed case takes no update. */}
+            {action === 'record' && data.summary.stage !== 'cancelled' && data.summary.stage !== 'lapsed' ? (
               <RecordUpdateForm
                 key={`record-${data.booking.id}`}
                 booking={data.booking}
@@ -264,7 +314,7 @@ export function BookingDetailPage() {
                 bare
                 onRecorded={async () => {
                   await onChanged()
-                  setAction(null)
+                  closePanel()
                 }}
               />
             ) : action === 'message' ? (
@@ -276,6 +326,10 @@ export function BookingDetailPage() {
                 referenceDate={referenceDate}
                 bare
                 onAdded={onChanged}
+                onReview={() => {
+                  closePanel()
+                  show('messages')
+                }}
               />
             ) : action === 'guidance' ? (
               <PlaybooksPanel
@@ -291,4 +345,16 @@ export function BookingDetailPage() {
       )}
     </PageContainer>
   )
+}
+
+/** "Crestline Bank’s Decision" and its banker when one bank holds the case; the banks when several do. */
+function holderDetail(summary: CaseSummary, applications: LoanApplication[]) {
+  if (ballInCourt(summary).holder !== 'bank') return undefined
+  const live = summary.applications.filter((a) => a.status === 'submitted' || a.status === 'documents_pending')
+  if (live.length === 1) {
+    const banker = applications.find((a) => a.id === live[0]!.id)?.banker
+    return { title: `${live[0]!.bank}’s Decision`, detail: banker ? `${banker} · Banker` : live[0]!.bank }
+  }
+  if (live.length > 1) return { title: `${live.length} Banks’ Decisions`, detail: live.map((a) => a.bank).join(' · ') }
+  return undefined
 }

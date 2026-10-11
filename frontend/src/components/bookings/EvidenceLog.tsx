@@ -3,8 +3,9 @@
  * reported it, who verified it and where it stands. Provisional Jev proposals
  * become confirmed here when a reviewer accepts them. A note that is only Jev's
  * own confidence reads as the words a person uses for it, never as a
- * percentage. The full table waits behind "Show Full History (N)"; the loan and
- * legal track timelines above carry the story the desk reads.
+ * percentage. On the case page it is embedded in the History view, every entry
+ * shown with notes in full; elsewhere the table waits behind "Show Full
+ * History (N)".
  */
 
 import { useState } from 'react'

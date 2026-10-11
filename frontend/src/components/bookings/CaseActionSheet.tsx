@@ -21,17 +21,29 @@ export function CaseActionSheet({
   action,
   booking,
   onClose,
+  opener,
   children
 }: {
   action: CaseAction | null
   booking: Booking
   onClose: () => void
+  /** The button that opened the panel; focus returns there on close (there is no Sheet trigger). */
+  opener?: () => HTMLElement | null
   children: ReactNode
 }) {
   return (
     <Sheet open={action !== null} onOpenChange={(open) => (open ? undefined : onClose())}>
       {action ? (
-        <SheetContent side="floating" className="gap-5 p-4 md:p-6">
+        <SheetContent
+          side="floating"
+          className="gap-5 p-4 md:p-6"
+          onCloseAutoFocus={(event) => {
+            const target = opener?.()
+            if (!target) return
+            event.preventDefault()
+            target.focus()
+          }}
+        >
           <SheetHeader>
             <SheetTitle className="text-base leading-6">{TITLES[action]}</SheetTitle>
             <SheetDescription className="text-[13px] leading-[18px]">
