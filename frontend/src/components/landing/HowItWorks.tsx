@@ -54,8 +54,8 @@ const MOMENTS: Moment[] = [
     height: 1376,
     title: 'A Number Finance Can Sign Off',
     body: 'The forecast counts expected signings inside 30 days — each live booking weighted by how cases at its stage actually resolved, with the range, the sample sizes and the backtest in the open.',
-    alt: 'The Forecast desk: expected SPA signings within 30 days, the range, and the stack of forecast documents.',
-    caption: 'Expected signings within 30 days, with the detail as documents. Simulated data.'
+    alt: 'The Forecast desk: expected SPA signings within 30 days of booking, the range, and the stack of forecast documents.',
+    caption: 'Expected signings within 30 days of booking, with the detail as documents. Simulated data.'
   }
 ]
 

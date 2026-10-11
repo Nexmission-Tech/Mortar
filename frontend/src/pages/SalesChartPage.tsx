@@ -204,14 +204,14 @@ export function SalesChartPage() {
             />
             {outlook && outlook.support !== 'insufficient-history' ? (
               <StatCard
-                label="Expected SPAs In 30 Days"
+                label="Expected To Sign By Day 30"
                 value={String(Math.round(outlook.expectedSignings))}
                 exact={outlook.expectedSignings.toFixed(1)}
-                caption={`Range ${outlook.rangeLow}–${outlook.rangeHigh} · From ${outlook.liveBookings} Bookings Under 30 Days Old`}
-                info="The Forecast's Expected Signings From Your Unsigned Bookings Under 30 Days Old."
+                caption={`Range ${outlook.rangeLow}–${outlook.rangeHigh} · Of ${outlook.liveBookings} Bookings Under 30 Days Old`}
+                info="How Many Of Your Unsigned Bookings Under 30 Days Old Are Expected To Sign Within 30 Days Of Booking, Not Within The Next 30 Calendar Days."
               />
             ) : (
-              <StatCard label="Expected SPAs In 30 Days" value="—" caption="Not Enough History Yet" />
+              <StatCard label="Expected To Sign By Day 30" value="—" caption="Not Enough History Yet" />
             )}
             <StatCard
               label="Needs Action"
