@@ -39,15 +39,15 @@ Contents:
 Seven core decisions were settled during design system research. All seven are
 binding, and nothing below reopens them.
 
-| Question        | Decision                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Look            | Flat ledger: white ground, white cards lifted off it by `Elevation/Card`, 6px radius. The glass surfaces are the two floating islands: the Bookings bulk-action island while rows are selected, and the Sales Chart's unit island while a unit is selected. Both float at the bottom centre with a translucent card fill and a backdrop blur. Shared modal overlays and the sidebar scrim use the scrim blur token. No gradient or glow blob in the application; the landing's chromatic panel is the one sanctioned gradient. The Sales Chart's Building view is the one 3D surface (see [Building View](#building-view)). A card is separated from the page by its shadow, never by a coloured edge strip and never by a grey page band. |
-| Status colour   | Ink is the action colour everywhere, the landing included; the application carries no chromatic accent. The landing panel is the one chromatic surface, scoped to public pages. Six status tones carry every state, each always with a word. The four desk colours, on the role label and the profile avatar only, say whose work it is.                                                                                                                                                                                                                                                                                                                                                                                                   |
-| Type            | Geist for UI, Geist Mono for unit codes and IDs. Nine text styles. No third family.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| Density         | Controls 36px, table rows 44px, body 14px. Built for a working day in lists.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| Native controls | None. Select, date picker, menu, tooltip, file drop, checkbox and scrollbar are Mortar components (Radix/shadcn restyled). No alert/confirm/prompt.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| Modes           | Light and dark from one token set (Color collection has Light and Dark modes).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| Icons           | Lucide (lucide-react), 16px, stroke 2, coloured like adjacent text. 20px in empty states.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Question        | Decision                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Look            | Flat ledger: white ground, white cards lifted off it by `Elevation/Card`, 6px radius. The glass surfaces are the two floating islands: the Bookings bulk-action island while rows are selected, and the Sales Chart's unit island while a unit is selected. Both float at the bottom centre with a translucent card fill and a backdrop blur. Shared modal overlays and the sidebar scrim use the scrim blur token. No gradient or glow blob in the application; the landing's chromatic panel is the one sanctioned gradient. The Sales Chart's Building view is the one 3D surface (see [Building View](#building-view)). A card is separated from the page by its shadow, never by a coloured edge strip and never by a grey page band. The full Booking Journey on `/bookings/:id` is the one scoped ink-illustration surface; see Full Case Journey Illustration Exception. |
+| Status colour   | Ink is the action colour everywhere, the landing included; the application carries no chromatic accent. The landing panel is the one chromatic surface, scoped to public pages. Six status tones carry every state, each always with a word. The four desk colours, on the role label and the profile avatar only, say whose work it is.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Type            | Geist for UI, Geist Mono for unit codes and IDs. Nine text styles. No third family.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Density         | Controls 36px, table rows 44px, body 14px. Built for a working day in lists.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Native controls | None. Select, date picker, menu, tooltip, file drop, checkbox and scrollbar are Mortar components (Radix/shadcn restyled). No alert/confirm/prompt.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Modes           | Light and dark from one token set (Color collection has Light and Dark modes).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Icons           | Lucide (lucide-react), 16px, stroke 2, coloured like adjacent text. 20px in empty states. Except the five subject drawings in that named component.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 
 Mortar is an internal operations tool for developer staff tracking property unit
 bookings from initial deposit through loan submission, loan approval, and final
@@ -350,13 +350,14 @@ still restricted to 4px and 6px, and `--radius-lg` and `--radius-xl` resolve to
 
 ## Icons
 
-Iconography is provided exclusively by Lucide (`lucide-react`).
+Controls and general-purpose icons use Lucide (`lucide-react`). The approved
+glyph list applies to controls and chrome. The five subject drawings below
+belong only to Full Case Journey and are not a general-purpose icon set.
 
 - **Size and stroke:** 16px × 16px with stroke width 2 by default. Sized to
   match adjacent text height, rendered with `currentColor`.
 - **Exceptions:** 20px in empty state displays and the drop zone upload target.
-- **Approved components:** Lucide is the only source and every glyph in the
-  interface is listed here. Controls and chrome:
+- **Approved components:** Controls and chrome:
   1.  `ChevronDown`: Select triggers and expandable section headers.
   2.  `ChevronLeft`: Calendar month navigation.
   3.  `ChevronRight`: Calendar month navigation and table pagination.
@@ -370,7 +371,7 @@ Iconography is provided exclusively by Lucide (`lucide-react`).
   11. `SlidersHorizontal`: Filter select prefix.
   12. `Users`: Owner select prefix.
   13. `Plus`: Create Task and other create actions.
-  14. `RefreshCw`: Re-Run Mortar AI and other re-run actions.
+  14. `RefreshCw`: Ask Mortar AI Again and other re-run actions.
   15. `UserRound`: The profile avatar's silhouette.
   16. `ChevronsUpDown`: The persona card's switch affordance.
   17. `LogOut`: Sign Out.
@@ -396,10 +397,29 @@ Iconography is provided exclusively by Lucide (`lucide-react`).
   Tooltip. No emoji, and no second icon library. Adding a glyph means adding it
   to this list in the same change.
 
+### Full Case Journey Illustration Exception
+
+Only the full Booking Journey on `/bookings/:id` may use bespoke ink drawings:
+booking form with unit key tag, document folder, bank, letter of offer with
+stamp, and signed agreement with pen. Use one 2-unit stroke in a 96×96 viewBox,
+flat paper planes, clean silhouettes and sparse interior lines. Render at
+64×64px desktop and 40×40px below 720px. Use inline SVG with foreground, card,
+muted and existing neutral tokens; provide both themes.
+
+One unblurred ground ellipse per drawing is permitted: cx48 cy89 rx34 ry3,
+foreground at 7% in light mode and 10% in dark mode. No other illustration
+shadow, glow, gradient, lighting effect, hatch texture or raster asset is
+permitted. Use component-scoped class names; generic utility names such as
+`outline` must not be applied to drawing paths.
+
+This exception does not apply to navigation, tables, compact trackers, quick
+view, forms, empty states or other cards. It does not widen the Sales Chart's
+separate Building View 3D exception. All other icons remain Lucide.
+
 ## Motion
 
-Motion is rapid, functional, and purely informative. There are no decorative
-entrance flourishes.
+Motion is rapid, functional, and purely informative. The sole exception is Full
+Case Journey's one-time route entrance.
 
 ### Motion Tokens
 
@@ -420,6 +440,14 @@ Under `prefers-reduced-motion: reduce`:
 - The public pages need no handling. There is no video, no autoplay and no
   looping animation anywhere in the product, so the landing has nothing to
   reduce.
+
+Full Case Journey may draw its already-travelled line once on initial case
+entry, over 560ms ease-out, never more than 600ms. Do not replay on hover, tab
+changes, panel opening, saved updates or snapshot refresh. Future route,
+drawings, detour and current marker stay still. No pulsing or looping. Under
+prefers-reduced-motion: reduce, render the final line immediately; disable the
+entrance entirely. Phone detail expansion uses normal flow without height
+animation.
 
 ## Status Language
 
@@ -455,10 +483,13 @@ Industry terms stay, because the audience uses them daily: SPA, LO, RM, booking,
 unit, stage, panel bank, disbursement, developer, solicitor. Terms from
 software, statistics or the data pipeline do not.
 
-Mortar AI also stays. Mortar AI is Mortar's assistant and staff refer to it by
-name, so it is a subject in a sentence, not a status code: "Mortar AI checked 2
-h ago", "Ask Mortar AI again", "Mortar AI suggests". What goes is the machine
-state attached to it.
+Mortar AI is the only user-facing assistant name. Write “Mortar AI Suggests,”
+“Ask Mortar AI Again,” and “Mortar AI could not check. Try again.” Provider and
+model names never appear in visible copy, tooltips, accessible names, alt text
+or toasts. Internal service identifiers and stored origins do not change. Use
+“Ask Mortar AI,” with a space, throughout the shell, help and tours. The
+assistant names its sources and never changes a case without an explicit
+supported staff action.
 
 | Do not write              | Write instead                                     |
 | ------------------------- | ------------------------------------------------- |
@@ -504,9 +535,7 @@ Rules that are not obvious from the table:
   not.
 - **Internal names stay internal.** Component names, token names, table names,
   model names and pipeline stages never appear in a visible string, a tooltip, a
-  toast or an `aria-label`. The AI is always called Mortar AI in user-facing
-  text. "Jev" and "Gemini" are internal engine names that never appear in the
-  UI.
+  toast or an `aria-label`.
 
 ## Data Formats
 
@@ -629,6 +658,23 @@ control, and none appears. Do not "fix" this by removing the input.
 - **Rules:** Replaces HTML `title` attributes. Never holds interactive buttons,
   links, or essential workflow status.
 
+### Journey Details
+
+Full Case Journey may use factual multi-row tooltips: maximum width 280px,
+padding 12px, Body/Small, inverse fill, radius 4px, no caret or controls. Place
+them below the full station label block with a 12px gap and 16px viewport
+clearance; flip above only when below cannot fit. Hover opens after 300ms, focus
+immediately. Details stay open under the pointer; Escape dismisses without
+moving focus. A detour flag does not open station details.
+
+Below 720px, use a disclosure instead of a tooltip. Each 72px station button has
+aria-expanded and aria-controls. Its factual region follows it in normal flow
+with 44px left indent, 12px padding, muted fill, default border and 4px radius.
+One region may be open. Enter/Space or tap toggles; Escape closes. Later
+stations move down, and route connectors grow with their rows. Keep the selected
+station when switching between desktop and phone presentations. All essential
+blockers, dates and required actions stay visible outside supplementary details.
+
 ### Status Pill
 
 - **Purpose:** Displays booking pipeline stage and risk level with text and
@@ -713,17 +759,43 @@ control, and none appears. Do not "fix" this by removing the input.
 
 - **Purpose:** Visual progress indicator for a unit booking across five pipeline
   milestones.
-- **Anatomy:** Five equal segments: Booked, Documents, Loan submitted, Loan
-  approved, SPA signed.
-  - Full tracker: 4px bar per segment (completed and current use `--inverse`
-    `#0A0A0A` / `#FAFAFA`; upcoming use `--input` `#C9C9C9` / `#3A3A3A`). Stage
-    name in Label/Small (current in `--foreground`, others muted). Current stage
-    appends elapsed time in Body/Small muted (e.g. "21 days").
+- **Anatomy:** Five milestones. Compact trackers use equal segments; the full
+  case uses the roadmap below.
+  - Full tracker: use Full Case Journey.
   - Compact tracker: five 10px × 4px bars, gap 2px, placed beside the stage name
     in table rows.
 - **Rules:** No status tone colours a stage bar; the tracker is ink and hairline
   only. Lapsed or cancelled bookings freeze bars at the last reached stage and
   display the cancellation status pill.
+
+### Full Case Journey
+
+- **Purpose:** Show confirmed, awaited and missing case milestones, including
+  repeated bank attempts, without treating the journey as percent complete.
+- **Anatomy:** Five illustrated stations on a gently curved neutral road. All
+  desktop station nodes share one ground line; names share one baseline and
+  dates/states share a second baseline. Curves remain between stations, with no
+  more than 6px visible displacement. Use an 8px muted road bed, a 1.75px
+  foreground travelled centerline and a 1.5px dashed input future line. A static
+  You Are Here flag marks the awaited outcome, not a completed one.
+- **States:** Confirmed achievements get a checked route node. Current waits get
+  a hollow ring and explicit awaited wording. Missing records have a dashed
+  illustration/node and literal missing-record text. Upcoming drawings use 40%
+  opacity; missing drawings use 68%; labels remain fully readable. Reopened
+  documents retain prior receipt evidence and show the outstanding obligation.
+  Stalled uses the existing summary reason and status tone.
+- **Attempts:** Rejected applications form one compact return branch before Loan
+  Submitted, with a bank/outcome/date flag opening Loan history. Keep every
+  branch stroke clear of label bounds. On phones, place the indented branch
+  between Documents and Loan Submitted, after any open document detail. Parallel
+  submissions are attempts, never additional stages.
+- **Rules:** Each node requires its own confirmed evidence. Later progress
+  cannot fill an earlier receipt or date. Paths and drawings stay neutral;
+  status words carry status color. Closure freezes achievements, removes the
+  current marker and wait clock, caps the reached route and labels remaining
+  stops Not Reached. A signed SPA uses its own evidence, not an appointment or a
+  later loan-agreement label. Do not calculate overdue working days from
+  calendar silence.
 
 ### Stat Tile
 
@@ -1059,6 +1131,14 @@ surface may use three.js or draw in 3D.
 - **Built on:** the Sheet primitive's `floating` side, so the focus trap and
   scrim are the Dialog's.
 
+Case actions reuse the floating Sheet: inset 16px, maximum width 720px, 6px
+radius, solid card fill, Overlay elevation and existing scrim/blur. It hosts
+full record-update, message-intake and What To Do interfaces. Retain every form
+field, permission and error state. Keep long content scrollable inside; trap
+focus and return it to the opening trigger. Use motion/slow entry; remove
+translation under reduced motion. No new glass treatment or separate case-modal
+primitive is introduced.
+
 ### Ask Panel
 
 - **Purpose:** Answering a set list of questions about the current bookings,
@@ -1077,8 +1157,7 @@ surface may use three.js or draw in 3D.
   changes once given. When nothing matches, the panel says so and re-offers the
   suggestions rather than guessing. The panel carries Mortar AI's name because
   Mortar AI is the assistant staff ask by name, but it never implies the model
-  wrote the answer: the Status Pill says the answer was counted, and the lead
-  line says plainly that it does not write new ones — see Plain Language.
+  wrote the answer: the Status Pill says the answer was counted.
 
 ## App Shell
 
@@ -1139,6 +1218,26 @@ personas:
 Every route change, back and forward included, lands at the top of the page (a
 `ScrollToTop` component, `history.scrollRestoration` set to `manual`, an instant
 jump rather than smooth).
+
+### Full Case Page
+
+`/bookings/:id` uses a solid page ground. Keep unit/project/stage above a
+Display/Page buyer h1 (Geist 600, 24/32, -2%); price and booking date follow.
+The current wait and next action lead the summary, followed by the roadmap. The
+four work views are Overview, Messages, History and Tasks. All loan, legal and
+sales events remain in one filterable History view; do not place empty track
+cards before operational detail. Group team, financing risk and buyer response
+in Case Details. Keep required document obligations visible in the summary and
+preserve closed-case restrictions.
+
+Below 720px, use 16px page gutters, a stacked summary, 48px tab row with 13/18
+medium labels, and the vertical roadmap/disclosures. Keep Record An Update and
+Paste A Message visible when permitted. Bank rows place identity in column 1,
+status in column 2 with intrinsic width, and dates beneath; status pills never
+stretch across a row. Every daily capability is at most one action away. Verify
+390px and 320px without page-level horizontal scroll. Phone form fields may use
+the existing 16/24 step at regular weight to avoid input zoom; this introduces
+no new type size.
 
 ## Screen Density
 
@@ -1476,6 +1575,8 @@ and dark modes:
   in the product. The Building view renders on demand and moves only on input.
 - **Do not** apply colored background washes or zebra striping to table rows.
 - **Do not** use emoji as icons, or import a secondary icon set beyond Lucide.
+  The five subject drawings and faint ground ellipses in Full Case Journey are
+  governed only by their named exception.
 - **Do not** load a third typeface family, or style text outside the nine
   approved styles.
 - **Do not** invoke native `window.alert()`, `window.confirm()`, or
