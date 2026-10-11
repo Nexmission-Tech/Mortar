@@ -140,8 +140,8 @@ consult, not a real building's plans.
 - **Selection:** the card ring inside the ink ring, as today, and the unit
   island.
 - **Block labels:** a pill above each roof reading "Block A".
-- **Floor labels:** every fifth floor and the top floor up the left end of the
-  focused block, or of the leftmost block in the All framing.
+- **Floor labels:** with a block framed, every fifth floor and the top floor up
+  the corner that sits leftmost on screen.
 
 ## The Unit Island
 

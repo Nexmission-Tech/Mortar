@@ -115,8 +115,9 @@ export function siteModel(towers: TowerModel, projectName: string): SiteModel {
   for (const post of [-1, 1]) add('structure', [ex + post * 7, 2.2, pz1 + 7.5], [0.4, 4.4, 0.4])
   add('stone', [ex - 15, 0.25, pz1 + 6], [9, 0.3, 4])
   add('water', [ex - 15, 0.45, pz1 + 6], [8, 0.2, 3])
-  label('facility', 'Guardhouse', [ex, 4.5, sz1 - 5])
-  label('facility', 'Drop-Off', [ex, 6, pz1 + 4])
+  // Set apart, so the two labels never sit on each other from the front left.
+  label('facility', 'Guardhouse', [ex + 16, 2, sz1 - 5])
+  label('facility', 'Drop-Off', [ex - 16, 6, pz1 + 4])
 
   // The car park ramp up the podium's right side, low end to the front.
   const rampLength = 30
@@ -144,6 +145,9 @@ export function siteModel(towers: TowerModel, projectName: string): SiteModel {
   const dcx = (dx0 + dx1) / 2
   const dcz = (dz0 + dz1) / 2
   const top = DECK + 0.1
+
+  // A lawn across the front deck, under everything else on it.
+  add('lawn', [dcx, top + 0.02, dcz], [dx1 - dx0 - 4, 0.04, dz1 - dz0 - 4])
 
   // Lap pool on its terrace, the children's pool beside it.
   add('stone', [dcx, top + 0.08, dcz], [33, 0.15, 16])
@@ -243,6 +247,9 @@ export function siteModel(towers: TowerModel, projectName: string): SiteModel {
     if (z < pz1 - 40 || z > pz1) shade(sx1 - 4, z)
   }
   for (let x = x0 + 8; x <= x1 - 8; x += 12) shade(x, sz1 + MAIN_ROAD + 2.5)
+  // A row of trees along the deck's front, clear of the BBQ pavilions.
+  for (let x = dx0 + 6; x <= dx1 - 6; x += 12)
+    if (Math.abs(x - (dx0 + 9)) > 6 && Math.abs(x - (dx1 - 9)) > 6) shade(x, dz1 - 4.5, top)
   for (const [dx, dz] of [
     [-18, -9],
     [18, -9],

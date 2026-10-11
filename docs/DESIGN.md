@@ -950,26 +950,41 @@ surface may use three.js or draw in 3D.
   tanks and a crown frame on the roof. The towers stand 30m apart on a podium,
   the middle of three set back. A perspective camera with a 30° field of view
   starts from the front left, about 30° above the deck, framed to fit.
+- **Site:** the towers stand on a timber plinth with a main road and a side
+  road, lane markings and street trees; an arrival with a guardhouse between two
+  barrier lanes, a drop-off canopy, a water feature and palms; a car park ramp
+  up the podium's side; ventilation bands and a planted edge on the podium; a
+  lawned facility deck with a lap pool and a children's pool on a stone terrace,
+  a lawn and a playground between the towers, two BBQ pavilions, a glass gym, a
+  hall, a jogging loop, a covered walkway and a row of trees; shade trees round
+  the boundary; and quiet neighbours across the road. Facility labels, the name
+  plate and a north mark show in the All framing only, which fits the whole
+  plinth. No cars or people.
 - **Shading:** a hemisphere light and one sun from the upper left front cast one
   soft shadow. Tone mapping is off, so a lit top face shows its token's own
   colour. No tinted light, reflections, glow or bloom.
 - **Colour:** units and their balconies read the status tokens, so a held unit
   reads at a distance; available units read `--model-glass`, a pale cool
   glazing; the frame (slab edges, fins, parapets, core) reads
-  `--model-structure` and the podium `--model-podium`. In dark mode the model
-  turns to a night model with dark structure, so white SPA Signed units stand
-  out. With a filter on, the units it does not light and all structure turn
-  see-through and take no clicks, and the lit units draw over them, so every lit
-  unit shows and clicks from any side. Hover outlines in `--muted-foreground`;
-  selection is a `--card` ring inside a `--foreground` ring, as the Grid's ring
-  offset, so it shows on SPA Signed units too.
+  `--model-structure` and the podium `--model-podium`; the site reads the
+  landscape tokens (`--model-plinth`, `-ground`, `-paving`, `-stone`, `-road`,
+  `-lane`, `-lawn`, `-water`, `-foliage`, `-track`, `-neighbour`, `-band`,
+  `-trunk`), all muted below the status tones, and the light reads `--model-sky`
+  and `--model-sky-ground`. In dark mode the model turns to a night model with
+  dark structure, so white SPA Signed units stand out. With a filter on, the
+  units it does not light and all structure turn see-through and take no clicks,
+  and the lit units draw over them, so every lit unit shows and clicks from any
+  side. Hover outlines in `--muted-foreground`; selection is a `--card` ring
+  inside a `--foreground` ring, as the Grid's ring offset, so it shows on SPA
+  Signed units too.
 - **Motion:** none unless the viewer moves it. The scene renders on demand,
   never in a loop, and redraws after a lost GPU context returns. Dragging turns
   the building all the way round, between 15° and 75° above the deck; zoom needs
   Ctrl or ⌘ with the wheel (or a trackpad pinch), so a plain scroll still
-  scrolls the page; panning is off. The All and Block presets reframe from the
-  starting angle over `motion/base` (200ms), or at once under reduced motion,
-  every time they are clicked. A data refresh never moves the camera.
+  scrolls the page; panning is off. The All and Block presets and the Front and
+  Back switch reframe from the starting angle over `motion/base` (200ms), or at
+  once under reduced motion, every time they are clicked. A data refresh never
+  moves the camera.
 - **Labels:** a pill above each roof names its block. With a block framed, every
   fifth floor and the top floor are numbered up the corner that sits leftmost on
   screen, in Geist Mono. All labels are drawn in the DOM over the canvas, never

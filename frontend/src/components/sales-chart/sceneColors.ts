@@ -6,7 +6,28 @@
 import type { UnitState } from '@mortar/core'
 
 export type SceneColors = Record<
-  UnitState | 'ghost' | 'podium' | 'structure' | 'sky' | 'skyGround' | 'selected' | 'selectedInner' | 'hovered',
+  | UnitState
+  | 'ghost'
+  | 'podium'
+  | 'structure'
+  | 'sky'
+  | 'skyGround'
+  | 'plinth'
+  | 'ground'
+  | 'paving'
+  | 'stone'
+  | 'road'
+  | 'lane'
+  | 'lawn'
+  | 'water'
+  | 'foliage'
+  | 'track'
+  | 'neighbour'
+  | 'band'
+  | 'trunk'
+  | 'selected'
+  | 'selectedInner'
+  | 'hovered',
   string
 >
 
@@ -23,6 +44,19 @@ const TOKENS: Record<keyof SceneColors, string> = {
   structure: '--model-structure',
   sky: '--model-sky',
   skyGround: '--model-sky-ground',
+  plinth: '--model-plinth',
+  ground: '--model-ground',
+  paving: '--model-paving',
+  stone: '--model-stone',
+  road: '--model-road',
+  lane: '--model-lane',
+  lawn: '--model-lawn',
+  water: '--model-water',
+  foliage: '--model-foliage',
+  track: '--model-track',
+  neighbour: '--model-neighbour',
+  band: '--model-band',
+  trunk: '--model-trunk',
   selected: '--foreground',
   // The gap between the ink ring and the unit, as the Grid's ring offset: it shows on signed units too.
   selectedInner: '--card',
