@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { Booking, CaseSummary, RiskLevel } from '@mortar/core'
 import { CaseHeader } from '@/components/bookings/CaseHeader'
@@ -61,31 +61,50 @@ function summary(risk: RiskLevel): CaseSummary {
   }
 }
 
-const riskLabel = (level: RiskLevel) => `${level[0].toUpperCase()}${level.slice(1)} Risk`
-
 describe('CaseHeader', () => {
-  it.each(['low', 'medium', 'high'] as const)('states the financing risk at %s, never nothing at all', (level) => {
-    render(<CaseHeader booking={booking} summary={summary(level)} />)
-
-    // Practitioners rank financing the most useful signal on a case, so a
-    // Low case says so rather than showing no risk at all.
-    const label = screen.getByText(riskLabel(level))
-    expect(label).toBeTruthy()
-  })
-
-  it('carries the explanation on a risk that is not Low, as the table’s chip does', () => {
-    render(<CaseHeader booking={booking} summary={summary('high')} />)
-
-    // The pill is a tooltip trigger, so keyboard focus reaches the figures
-    // behind the word: repayments against income, the margin, the instalment.
-    expect(screen.getByText('High Risk').closest('button')).toBeTruthy()
-  })
-
-  it('states a Low risk as the muted word the Bookings table uses, with no chip', () => {
+  it('names the unit, project, stage, buyer, price and booking date', () => {
     render(<CaseHeader booking={booking} summary={summary('low')} />)
+    expect(screen.getByText('A-12-03')).toBeTruthy()
+    expect(screen.getByText('Residensi Ujian')).toBeTruthy()
+    expect(screen.getByText('With Bank')).toBeTruthy()
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Raymond Tan Wei Hong')
+    expect(screen.getByText('RM 550,000 · Booked 2 Sep 2026')).toBeTruthy()
+  })
 
-    const label = screen.getByText('Low Risk')
-    expect(label.className).toContain('text-muted-foreground')
-    expect(label.closest('button')).toBeNull()
+  it('offers both ways to add to the case', () => {
+    const onRecordUpdate = vi.fn()
+    const onPasteMessage = vi.fn()
+    render(
+      <CaseHeader
+        booking={booking}
+        summary={summary('low')}
+        onRecordUpdate={onRecordUpdate}
+        onPasteMessage={onPasteMessage}
+      />
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Record An Update' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Paste A Message' }))
+    expect(onRecordUpdate).toHaveBeenCalledOnce()
+    expect(onPasteMessage).toHaveBeenCalledOnce()
+  })
+
+  it('takes no more updates once the case is closed', () => {
+    render(
+      <CaseHeader
+        booking={booking}
+        summary={{ ...summary('low'), stage: 'cancelled' }}
+        onRecordUpdate={() => {}}
+        onPasteMessage={() => {}}
+      />
+    )
+    expect(screen.queryByRole('button', { name: 'Record An Update' })).toBeNull()
+    expect(screen.getByRole('button', { name: 'Paste A Message' })).toBeTruthy()
+  })
+
+  it('leaves the wait, owners and risk to the summary below', () => {
+    render(<CaseHeader booking={booking} summary={summary('high')} />)
+    expect(screen.queryByText(/Stalled/)).toBeNull()
+    expect(screen.queryByText(/Nurul Aina/)).toBeNull()
+    expect(screen.queryByText('High Risk')).toBeNull()
   })
 })

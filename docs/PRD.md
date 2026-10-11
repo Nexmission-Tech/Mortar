@@ -175,21 +175,30 @@ row.
 
 ### Case Page (`/bookings/:id`)
 
-- **US-7 (Single-Sentence Status Header):** As a staff member, I want the case
-  header to be one concise status sentence so that "Up To Date" never sits
-  beside a stall.
+- **US-7 (Decision First):** As a staff member, I want the case page to open on
+  who holds the case, why it is waiting, the next step and its owner, so the
+  first five seconds answer what to do. The header names the booking only; the
+  wait is said once, in the summary.
+- **US-7a (Illustrated Booking Journey):** As a staff member, I want the five
+  milestones (Booked, Documents, Loan Submitted, Loan Approved, SPA Signed)
+  drawn as a road with You Are Here at the milestone the case is waiting on, a
+  detour when a bank rejected the loan, and each milestone's facts on hover,
+  focus or tap. Only confirmed evidence checks a milestone; a missing record
+  says so instead of inventing a date.
 - **US-8 (Multi-Bank Application Tracker):** As a Loan Admin, I want to inspect
   one to three bank applications per booking with independent status indicators.
-- **US-9 (Audit Evidence Log And Folded History):** As an administrator, I want
-  a chronological log of all case events, with full history folded behind "Show
-  Full History".
+- **US-9 (Four Views And The Whole History):** As an administrator, I want the
+  record in four views (Overview, Messages, History, Tasks), with the open view
+  in the link, and History showing every entry with no extra click, narrowed to
+  the Loan, Legal or Sales track when asked.
 - **US-10 (Review Proposed Updates Without Percentages):** As a staff member, I
-  want incoming message readings presented in one line in words ("Jev Suggests:
-  Documents Received · Payslip · Jev Is Sure") with Confirm, Dispute, and
-  Dismiss buttons, with no probabilities or percentages.
+  want incoming message readings presented in one line in words ("Mortar AI
+  Suggests: Documents Received · Payslip · Mortar AI Is Sure") with Confirm,
+  Dispute, and Dismiss buttons, with no probabilities or percentages.
 - **US-11 (Action Buttons And Message Intake):** As a staff member, I want
-  Record An Update and Paste A Message to open from explicit action buttons,
-  with Jev freshness displayed only when it matters.
+  Record An Update, Paste A Message and What To Do to open in the floating case
+  panel from explicit buttons, with Mortar AI freshness displayed only when it
+  matters.
 - **US-12 (Playbook Knowledge Retrieval):** As a staff member, I want playbooks
   to show the top fit ("Applies" or "May Apply") and the rest behind "Show N
   More".
@@ -1013,16 +1022,16 @@ following six-step pitch video script without error or manual intervention:
       unit code opens the `CaseQuickView` case panel.
 2.  **Opens Case `BK-9001`:**
     - The user navigates to `/bookings/BK-9001`.
-    - The header displays one status sentence.
-    - Loan and legal tracks are displayed side by side.
-    - A Manglish banker message regarding the missing payslip displays Jev's
-      extraction proposal in words: "Jev Suggests: Documents Requested · Payslip
-      · Jev Is Sure" with Confirm, Dispute, and Dismiss buttons. No percentages
-      or probabilities appear.
+    - The summary names who holds the case and the next step, with the booking
+      journey beneath and "1 Mortar AI Reading To Review".
+    - In Messages, a Manglish banker message regarding the missing payslip
+      displays Mortar AI's extraction proposal in words: "Mortar AI Suggests:
+      Documents Requested · Payslip · Mortar AI Is Sure" with Confirm, Dispute,
+      and Dismiss buttons. No percentages or probabilities appear.
     - The Sales Admin clicks Confirm. The evidence log updates immediately,
       displaying who reported and who verified the event.
 3.  **Playbook Guidance:**
-    - The user opens the playbooks section on `BK-9001`.
+    - The user opens What To Do on `BK-9001`.
     - The top fitting playbook ("Missing income documents") is shown as
       "Applies", with remaining playbooks folded behind "Show N More".
 4.  **The Live AI Moment:**

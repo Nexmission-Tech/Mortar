@@ -193,7 +193,9 @@ export function BookingJourney({
     <TooltipProvider delayDuration={300}>
       <section className="journey" aria-label="Booking Journey">
         <div className="journey-heading">
-          <h2 className="text-xs font-medium text-muted-foreground">Booking Journey</h2>
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+            Booking Journey
+          </h2>
           {model.resolution === 'open' ? (
             <span className="text-[13px] leading-[18px] tabular-nums text-muted-foreground">
               {model.ageDays} {model.ageDays === 1 ? 'Day' : 'Days'} Since Booking

@@ -1,73 +1,66 @@
 /**
- * Case header — the booking's identity and current state at a glance:
- * unit and buyer as the title, project, price and booking date beneath, then
- * one status sentence in words (stage, who holds it, how long, and whether it
- * has stalled). Outstanding documents stay as pills, because a reader acts on
- * them; the stage, freshness and stall reasons do not, so they live in the
- * sentence instead of three more pills. Financing risk is shown at every
- * level, because a case that reads as carrying no risk signal at all is a
- * worse reading than one that reads Low. Owners are one muted line.
+ * Case header — which booking this is and the two ways staff add to it: the
+ * unit, project and stage on one line, the buyer as the title, price and
+ * booking date beneath, and Record An Update and Paste A Message at the right.
+ * The wait, owners, risk and outstanding documents are said once, in the
+ * summary and Case Details below.
  */
 
 import type { Booking, CaseSummary } from '@mortar/core'
-import { ballInCourt } from '@mortar/core'
-import { RiskChip } from '@/components/case/RiskChip'
-import { STAGE_LABELS } from '@/components/case/StagePill'
+import { MessageSquarePlus, Plus } from 'lucide-react'
+import { StagePill } from '@/components/case/StagePill'
 import { formatDate, formatRm } from '@/components/case/format'
-import { DOCUMENT_LABELS } from './labels'
-import { StatusPill } from '@/components/ui/status-pill'
+import { Button } from '@/components/ui/button'
 
-export function CaseHeader({ booking, summary }: { booking: Booking; summary: CaseSummary }) {
-  const { waitingFor, stalled } = ballInCourt(summary)
-  // The case is closed: a signed SPA or a booking that lapsed. There is no
-  // party to wait on and no clock running against anybody.
-  const closed = summary.stage === 'spa_signed' || summary.stage === 'cancelled' || summary.stage === 'lapsed'
-
-  // The status sentence is one Title Case line, so the age reads "16 Days
-  // Old" beside "With Bank" rather than the sentence case a clause would take.
-  const age = `${summary.bookingAgeDays} ${summary.bookingAgeDays === 1 ? 'Day' : 'Days'} Old`
-  const party = closed ? null : `Waiting On ${waitingFor.charAt(0).toUpperCase()}${waitingFor.slice(1)}`
-  const clauses = [STAGE_LABELS[summary.stage], party, age].filter(Boolean)
-  if (stalled) clauses.push('Stalled')
-
+export function CaseHeader({
+  booking,
+  summary,
+  onRecordUpdate,
+  onPasteMessage
+}: {
+  booking: Booking
+  summary: CaseSummary
+  onRecordUpdate?: () => void
+  onPasteMessage?: () => void
+}) {
+  // A closed case takes no more updates; its messages can still be added and read.
+  const closed = summary.stage === 'cancelled' || summary.stage === 'lapsed'
   return (
-    <header className="flex flex-col gap-3">
-      <div>
-        <h1 className="text-[32px] font-semibold leading-[1.16] tracking-[-0.02em]">
-          <span className="font-mono font-medium">{booking.unit}</span>
-          <span className="text-muted-foreground"> · </span>
-          {booking.buyer.name}
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {booking.project} · {formatRm(booking.priceRm)} · Booked {formatDate(booking.bookingDate)}
+    <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div className="min-w-0">
+        <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] leading-[18px] text-muted-foreground">
+          <span className="font-mono font-medium text-foreground">{booking.unit}</span>
+          <span aria-hidden="true">·</span>
+          <span>{booking.project}</span>
+          <StagePill stage={summary.stage} />
         </p>
-        <p className="mt-1 text-sm">
-          {clauses.map((clause, i) => (
-            <span key={clause}>
-              {i > 0 && <span className="text-muted-foreground"> · </span>}
-              <span className={clause === 'Stalled' ? 'text-status-danger-fg' : undefined}>{clause}</span>
-            </span>
-          ))}
-        </p>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {booking.salesOwner} (Sales) · {booking.loanOwner} (Loan) · {booking.legalFirm} (Legal)
+        <h1 className="mt-1 text-2xl font-semibold leading-8 tracking-[-0.02em]">{booking.buyer.name}</h1>
+        <p className="mt-1 text-[13px] leading-[18px] tabular-nums text-muted-foreground">
+          {formatRm(booking.priceRm)} · Booked {formatDate(booking.bookingDate)}
         </p>
       </div>
-      {/* Financing risk is the signal staff rank above every other, so it is
-          here at every level: Low as the muted word the Bookings table uses,
-          Medium and High as the chip with its explanation. */}
-      <div className="flex flex-wrap items-center gap-1.5">
-        {summary.risk.level === 'low' ? (
-          <span className="text-[13px] text-muted-foreground">Low Risk</span>
-        ) : (
-          <RiskChip risk={summary.risk} />
-        )}
-        {summary.outstandingDocuments.map((doc) => (
-          <StatusPill key={doc} tone="warning">
-            {DOCUMENT_LABELS[doc]} Outstanding
-          </StatusPill>
-        ))}
-      </div>
+      {onRecordUpdate || onPasteMessage ? (
+        <div className="grid shrink-0 grid-cols-2 gap-2 md:flex">
+          {!closed && onRecordUpdate ? (
+            <Button type="button" variant="secondary" onClick={onRecordUpdate} aria-haspopup="dialog">
+              <Plus aria-hidden="true" />
+              Record An Update
+            </Button>
+          ) : null}
+          {onPasteMessage ? (
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={onPasteMessage}
+              aria-haspopup="dialog"
+              data-tour="case-message"
+            >
+              <MessageSquarePlus aria-hidden="true" />
+              Paste A Message
+            </Button>
+          ) : null}
+        </div>
+      ) : null}
     </header>
   )
 }

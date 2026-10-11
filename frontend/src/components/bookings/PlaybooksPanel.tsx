@@ -55,12 +55,15 @@ export function PlaybooksPanel({
   summary,
   playbooks,
   /** Bumped by the page after every refresh so rankings follow case state. */
-  refreshKey
+  refreshKey,
+  bare = false
 }: {
   bookingId: string
   summary: CaseSummary
   playbooks: Playbook[]
   refreshKey: number
+  /** Inside the case panel, whose title already says What To Do: no card or heading of its own. */
+  bare?: boolean
 }) {
   const defaultQuery = blockerQuery(summary)
   const [result, setResult] = useState<{ ranking: PlaybookRanking | null; requested: string } | null>(null)
@@ -122,104 +125,111 @@ export function PlaybooksPanel({
   const showRest = restOpen !== null && restOpen === result
   const visible = top === null ? [] : folded && !showRest ? [top] : shown.items
 
-  return (
-    <Card>
-      <CardContent className="flex flex-col gap-3 p-4">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+  const body = (
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+        {bare ? null : (
           <h2 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">What To Do</h2>
-          {result?.ranking && <JevTag meta={result.ranking.meta} />}
+        )}
+        {result?.ranking && <JevTag meta={result.ranking.meta} />}
+      </div>
+      <form
+        className="flex gap-2"
+        onSubmit={(e) => {
+          e.preventDefault()
+          void search()
+        }}
+      >
+        <div className="relative flex-1">
+          <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={shown.query || 'Search Guidance'}
+            className="pl-9"
+            aria-label="Search guidance"
+          />
         </div>
-        <form
-          className="flex gap-2"
-          onSubmit={(e) => {
-            e.preventDefault()
-            void search()
-          }}
-        >
-          <div className="relative flex-1">
-            <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={shown.query || 'Search Guidance'}
-              className="pl-9"
-              aria-label="Search guidance"
-            />
-          </div>
-          <Button type="submit" size="sm" variant="secondary" disabled={loading}>
-            Search
-          </Button>
-        </form>
-        {stale ? (
-          <p className="text-[13px] text-muted-foreground">
-            Mortar AI’s suggestions may be out of date. Showing matches for ‘{shown.query}’.
-          </p>
-        ) : (
-          shown.query && <p className="text-[13px] text-muted-foreground">Ranked For “{shown.query}”</p>
-        )}
-        {visible.length === 0 ? (
-          <p className="text-sm text-muted-foreground">{loading ? 'Ranking Playbooks…' : 'No Playbooks Found.'}</p>
-        ) : (
-          <ul className="flex flex-col gap-2">
-            {visible.map(({ playbook, fit }) => {
-              const fitView = fit
-                ? FIT_PRESENTATION[Math.round(fit.score)]
-                : { tone: 'neutral' as const, label: 'Unscored' }
-              const expanded = expandedId === playbook.id
-              const statusBadge = STATUS_BADGES[playbook.status]
-              return (
-                <li key={playbook.id} className="rounded-md border border-border p-3">
-                  <button
-                    type="button"
-                    className="flex w-full items-start justify-between gap-2 text-left"
-                    onClick={() => setExpandedId(expanded ? null : playbook.id)}
-                    aria-expanded={expanded}
-                  >
-                    <span className="text-sm font-medium">{playbook.title}</span>
-                    <ChevronDown
-                      className={cn(
-                        'mt-0.5 size-4 shrink-0 text-muted-foreground transition-transform',
-                        expanded && 'rotate-180'
-                      )}
-                    />
-                  </button>
-                  <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
-                    <StatusPill tone={fitView.tone}>{fitView.label}</StatusPill>
-                    {statusBadge && <Badge variant="secondary">{statusBadge}</Badge>}
+        <Button type="submit" size="sm" variant="secondary" disabled={loading}>
+          Search
+        </Button>
+      </form>
+      {stale ? (
+        <p className="text-[13px] text-muted-foreground">
+          Mortar AI’s suggestions may be out of date. Showing matches for ‘{shown.query}’.
+        </p>
+      ) : (
+        shown.query && <p className="text-[13px] text-muted-foreground">Ranked For “{shown.query}”</p>
+      )}
+      {visible.length === 0 ? (
+        <p className="text-sm text-muted-foreground">{loading ? 'Ranking Playbooks…' : 'No Playbooks Found.'}</p>
+      ) : (
+        <ul className="flex flex-col gap-2">
+          {visible.map(({ playbook, fit }) => {
+            const fitView = fit
+              ? FIT_PRESENTATION[Math.round(fit.score)]
+              : { tone: 'neutral' as const, label: 'Unscored' }
+            const expanded = expandedId === playbook.id
+            const statusBadge = STATUS_BADGES[playbook.status]
+            return (
+              <li key={playbook.id} className="rounded-md border border-border p-3">
+                <button
+                  type="button"
+                  className="flex w-full items-start justify-between gap-2 text-left"
+                  onClick={() => setExpandedId(expanded ? null : playbook.id)}
+                  aria-expanded={expanded}
+                >
+                  <span className="text-sm font-medium">{playbook.title}</span>
+                  <ChevronDown
+                    className={cn(
+                      'mt-0.5 size-4 shrink-0 text-muted-foreground transition-transform',
+                      expanded && 'rotate-180'
+                    )}
+                  />
+                </button>
+                <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <StatusPill tone={fitView.tone}>{fitView.label}</StatusPill>
+                  {statusBadge && <Badge variant="secondary">{statusBadge}</Badge>}
+                </div>
+                {expanded && (
+                  <div className="mt-2 flex flex-col gap-2 text-[13px] text-muted-foreground">
+                    <p>
+                      <span className="font-medium text-foreground">Situation: </span>
+                      {playbook.situation}
+                    </p>
+                    <p>
+                      <span className="font-medium text-foreground">Action: </span>
+                      {playbook.action}
+                    </p>
+                    <p>
+                      <span className="font-medium text-foreground">Limits: </span>
+                      {playbook.limits}
+                    </p>
                   </div>
-                  {expanded && (
-                    <div className="mt-2 flex flex-col gap-2 text-[13px] text-muted-foreground">
-                      <p>
-                        <span className="font-medium text-foreground">Situation: </span>
-                        {playbook.situation}
-                      </p>
-                      <p>
-                        <span className="font-medium text-foreground">Action: </span>
-                        {playbook.action}
-                      </p>
-                      <p>
-                        <span className="font-medium text-foreground">Limits: </span>
-                        {playbook.limits}
-                      </p>
-                    </div>
-                  )}
-                </li>
-              )
-            })}
-          </ul>
-        )}
-        {folded && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="self-start text-muted-foreground"
-            aria-expanded={showRest}
-            onClick={() => setRestOpen(showRest ? null : result)}
-          >
-            {showRest ? 'Show Fewer' : `Show ${rest.length} More`}
-          </Button>
-        )}
-      </CardContent>
+                )}
+              </li>
+            )
+          })}
+        </ul>
+      )}
+      {folded && (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="self-start text-muted-foreground"
+          aria-expanded={showRest}
+          onClick={() => setRestOpen(showRest ? null : result)}
+        >
+          {showRest ? 'Show Fewer' : `Show ${rest.length} More`}
+        </Button>
+      )}
+    </div>
+  )
+  return bare ? (
+    body
+  ) : (
+    <Card>
+      <CardContent className="p-4">{body}</CardContent>
     </Card>
   )
 }

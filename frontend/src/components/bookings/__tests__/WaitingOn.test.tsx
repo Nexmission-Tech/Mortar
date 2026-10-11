@@ -205,3 +205,25 @@ describe('WaitingOnPanel next step', () => {
     expect(screen.getByText('Ask For The Missing Document')).toBeTruthy()
   })
 })
+
+describe('WaitingOnPanel guidance', () => {
+  it('opens What To Do beside the next step when the page offers it', () => {
+    const onWhatToDo = vi.fn()
+    render(
+      <WaitingOnPanel
+        booking={BOOKING}
+        summary={WITH_BANK}
+        referenceDate="2026-09-18"
+        onChanged={noop}
+        onWhatToDo={onWhatToDo}
+      />
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'What To Do' }))
+    expect(onWhatToDo).toHaveBeenCalledOnce()
+  })
+
+  it('shows no What To Do where nothing handles it', () => {
+    render(<WaitingOnPanel booking={BOOKING} summary={WITH_BANK} referenceDate="2026-09-18" onChanged={noop} />)
+    expect(screen.queryByRole('button', { name: 'What To Do' })).toBeNull()
+  })
+})

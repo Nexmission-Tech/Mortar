@@ -63,10 +63,9 @@ async function pickDay(label: string, day: string) {
   fireEvent.click(await screen.findByLabelText(day, { selector: 'button' }))
 }
 
-/** Opens Record An Update, which the case page keeps closed until asked. */
+/** Opens Record An Update in the case panel, which the page keeps closed until asked. */
 async function openRecordUpdate() {
-  const button = await screen.findByRole('button', { name: 'Record An Update' })
-  if (button.getAttribute('aria-expanded') === 'false') fireEvent.click(button)
+  fireEvent.click(await screen.findByRole('button', { name: 'Record An Update' }))
 }
 
 function renderDetail(id = 'BK-9001') {
@@ -96,42 +95,40 @@ describe('BookingDetailPage', () => {
     expect(list.querySelector('[aria-current="step"]')?.getAttribute('aria-label')).toMatch(/^Loan Approved/)
     expect(screen.getByText('You Are Here')).toBeTruthy()
   })
-  it('says the case state in one sentence, and never "Up To Date" beside a stall', async () => {
+  it('says who holds the case once, in the summary, with the team in Case Details', async () => {
     renderDetail('BK-9002')
 
     await screen.findByText('B-08-05')
-    expect(document.querySelector('[data-tour="case-status"]')).toBeTruthy()
-    expect(document.querySelector('[data-tour="case-message"]')).toBeTruthy()
-    const sentence = [...document.body.querySelectorAll('p')].map((p) => p.textContent)
-    // Stage, who holds it, how long, and stalled: one sentence, no four pills.
-    // The age in it is Title Case like everything beside it.
-    expect(sentence.some((t) => t?.includes('Waiting On') && t.includes('17 Days Old') && t.includes('Stalled'))).toBe(
-      true
-    )
-    expect(document.body.textContent).not.toContain('17 days')
-    // The freshness pill's own 10-day rule used to sit beside a 7-day stall.
+    expect(document.querySelector('[data-tour="case-status"]')?.textContent).toContain('No Update For 8 Days')
+    expect(document.querySelector('[data-tour="case-message"]')?.textContent).toBe('Paste A Message')
+    // The header no longer repeats the wait as a sentence or the owners as a line.
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Mohd Hafiz bin Razak')
+    expect(screen.queryByText(/Waiting On Bank · 17 Days Old/)).toBeNull()
+    expect(screen.queryByText(/Nurul Aina \(Sales\)/)).toBeNull()
+    const team = screen.getByText('Assigned Team').closest('section')!
+    expect(team.textContent).toContain('Nurul Aina')
     expect(screen.queryByText('Up To Date')).toBeNull()
-    // Owners are one muted line, with no "(Your Desk)" ring on any of them.
-    expect(screen.getByText(/Nurul Aina \(Sales\) · Tan Mei Ling \(Loan\)/)).toBeTruthy()
     expect(screen.queryByText(/Your Desk/)).toBeNull()
   })
 
-  it('renders the case header, tracks and applications', async () => {
+  it('renders the case header, the four views and the applications', async () => {
     renderDetail()
 
     expect(await screen.findByText('A-12-03')).toBeTruthy()
     expect(screen.getAllByText('Raymond Tan Wei Hong').length).toBeGreaterThan(0)
     expect(screen.getByText(/RM 550,000/)).toBeTruthy()
-    expect(screen.getByText('Loan Track')).toBeTruthy()
-    expect(screen.getByText('Legal Track')).toBeTruthy()
+    for (const view of [/^Overview/, /^Messages/, /^History/, /^Tasks/])
+      expect(screen.getByRole('tab', { name: view })).toBeTruthy()
+    expect(screen.getByRole('tab', { name: /^Overview/ }).getAttribute('aria-selected')).toBe('true')
+    expect(screen.getByRole('button', { name: /^Legal/ })).toBeTruthy()
     expect(screen.getByText('Apex Bank')).toBeTruthy()
-    expect(screen.getByText('Case History')).toBeTruthy()
   })
 
   it("shows the banker's message with Jev's proposal and confirms it", async () => {
     renderDetail()
 
-    expect(await screen.findByText(/Still need latest 3 months slip gaji/)).toBeTruthy()
+    // Shown twice: as the latest message on Overview, and in full on Messages.
+    expect((await screen.findAllByText(/Still need latest 3 months slip gaji/)).length).toBeGreaterThan(0)
     // One line, built from three spans, so match the block that holds them.
     const line = [...document.body.querySelectorAll('p')]
       .map((p) => p.textContent)
@@ -155,6 +152,7 @@ describe('BookingDetailPage', () => {
   it('ranks the missing-documents playbook first by Jev fit', async () => {
     renderDetail()
 
+    fireEvent.click(await screen.findByRole('button', { name: 'What To Do' }))
     expect(await screen.findByText(/Missing Income Documents/)).toBeTruthy()
     expect(screen.getAllByText('Applies').length).toBeGreaterThan(0)
   })
@@ -179,7 +177,7 @@ describe('BookingDetailPage', () => {
     expect(await screen.findByText('Could Not Refresh. Showing The Last Loaded Data.')).toBeTruthy()
     // The case stays on screen — it does not vanish behind a blocking error.
     expect(screen.getByText('A-12-03')).toBeTruthy()
-    expect(screen.getByText('Case History')).toBeTruthy()
+    expect(screen.getByRole('tab', { name: /^History/ })).toBeTruthy()
 
     fireEvent.click(screen.getByRole('button', { name: 'Try Again' }))
     await waitFor(() => expect(screen.queryByText('Could Not Refresh. Showing The Last Loaded Data.')).toBeNull())
@@ -210,24 +208,86 @@ describe('BookingDetailPage', () => {
     expect(screen.getByText('Mortar AI Suggests: Call The Buyer')).toBeTruthy()
   })
 
-  it('keeps Record An Update and Paste A Message closed on load and opens them in place', async () => {
+  it('keeps Record An Update and Paste A Message closed on load and opens each in the case panel', async () => {
     renderDetail()
 
-    // Three forms open on load was the 2,635 px wall; two now sit behind buttons.
     expect(await screen.findByRole('button', { name: 'Paste A Message' })).toBeTruthy()
     expect(screen.queryByLabelText('Sender Role')).toBeNull()
     expect(screen.queryByLabelText('What Happened')).toBeNull()
 
     fireEvent.click(screen.getByRole('button', { name: 'Paste A Message' }))
-    expect(screen.getByLabelText('Sender Role')).toBeTruthy()
-    expect(screen.getByLabelText('Sender Name')).toBeTruthy()
-    expect(screen.getByRole('button', { name: 'Add Message' })).toBeTruthy()
+    const paste = screen.getByRole('dialog', { name: 'Paste A Message' })
+    expect(within(paste).getByLabelText('Sender Role')).toBeTruthy()
+    expect(within(paste).getByRole('button', { name: 'Add Message' })).toBeTruthy()
+    fireEvent.keyDown(paste, { key: 'Escape' })
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
 
-    const record = screen.getByRole('button', { name: 'Record An Update' })
-    expect(record.getAttribute('aria-expanded')).toBe('false')
-    fireEvent.click(record)
-    expect(screen.getByLabelText('What Happened')).toBeTruthy()
-    expect(screen.getByRole('button', { name: 'Record Update' })).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: 'Record An Update' }))
+    const record = screen.getByRole('dialog', { name: 'Record An Update' })
+    expect(within(record).getByLabelText('What Happened')).toBeTruthy()
+    expect(within(record).getByRole('button', { name: 'Record Update' })).toBeTruthy()
+  })
+
+  it('names the bank and banker the case is waiting on, with the live bank first', async () => {
+    renderDetail('BK-9002')
+    const summary = await screen.findByText('Crestline Bank’s Decision')
+    expect(summary.closest('[data-tour="case-status"]')?.textContent).toContain('Bernard Lim · Banker')
+    const banks = screen.getByText('Bank Applications').closest('div.shadow-card, .shadow-card')!.textContent!
+    expect(banks.indexOf('Crestline Bank')).toBeLessThan(banks.indexOf('Malayan Trust Bank'))
+  })
+
+  it('says how many Mortar AI readings wait for review, and opens them', async () => {
+    renderDetail()
+    fireEvent.click(await screen.findByRole('button', { name: /^1 Mortar AI Reading To Review/ }))
+    expect(screen.getByRole('tab', { name: /^Messages/ }).getAttribute('aria-selected')).toBe('true')
+  })
+
+  it('returns focus to the button that opened the case panel', async () => {
+    renderDetail()
+    const paste = await screen.findByRole('button', { name: 'Paste A Message' })
+    paste.focus()
+    fireEvent.click(paste)
+    fireEvent.keyDown(screen.getByRole('dialog', { name: 'Paste A Message' }), { key: 'Escape' })
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+    await waitFor(() => expect(document.activeElement).toBe(paste))
+  })
+
+  it('sends a pasted message’s reading to Messages for review', async () => {
+    vi.mocked(postMessage).mockResolvedValueOnce({
+      message: {},
+      extraction: (await import('@/components/bookings/__tests__/snapshotFixture')).EXTRACTION_9001,
+      event: { id: 'EV-NEW' }
+    } as never)
+    renderDetail()
+    fireEvent.click(await screen.findByRole('button', { name: 'Paste A Message' }))
+    const dialog = screen.getByRole('dialog', { name: 'Paste A Message' })
+    fireEvent.change(within(dialog).getByLabelText('Message'), { target: { value: 'Need the payslip please' } })
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Add Message' }))
+    fireEvent.click(await within(dialog).findByRole('button', { name: 'Review It In Messages' }))
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+    expect(screen.getByRole('tab', { name: /^Messages/ }).getAttribute('aria-selected')).toBe('true')
+  })
+
+  it('keeps What To Do on a closed case', async () => {
+    const snapshot = buildSnapshot()
+    const closed = summarizeCases(snapshot, snapshot.meta.referenceDate).find(
+      (c) => c.stage === 'cancelled' || c.stage === 'lapsed'
+    )!
+    renderDetail(closed.bookingId)
+    expect(await screen.findByRole('button', { name: 'What To Do' })).toBeTruthy()
+  })
+
+  it('opens on the view a link names', async () => {
+    renderDetail('BK-9001?view=messages')
+    expect((await screen.findByRole('tab', { name: /^Messages/ })).getAttribute('aria-selected')).toBe('true')
+  })
+
+  it('opens the loan history from the journey’s bank detour', async () => {
+    renderDetail('BK-9002')
+
+    fireEvent.click(await screen.findByRole('button', { name: /View loan history/ }))
+    expect(screen.getByRole('tab', { name: /^History/ }).getAttribute('aria-selected')).toBe('true')
+    expect(screen.getByRole('button', { name: /^Loan \d+$/ }).getAttribute('aria-pressed')).toBe('true')
   })
 
   it('does not dress an extraction in the status of an event recording a different claim', async () => {
@@ -361,7 +421,9 @@ describe('BookingDetailPage', () => {
 
       // Backing out records nothing.
       fireEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
-      await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+      await waitFor(() => expect(screen.queryByText('Record This Booking As Cancelled?')).toBeNull())
+      // The case panel stays open under it, with the form as it was.
+      expect(screen.getByRole('dialog', { name: 'Record An Update' })).toBeTruthy()
       expect(vi.mocked(postEvent)).not.toHaveBeenCalled()
 
       fireEvent.click(screen.getByRole('button', { name: 'Record Update' }))
@@ -386,7 +448,7 @@ describe('BookingDetailPage', () => {
       expect(closed).toBeTruthy()
       renderDetail(closed!.bookingId)
 
-      expect(await screen.findByText('Case History')).toBeTruthy()
+      expect(await screen.findByRole('tab', { name: /^History/ })).toBeTruthy()
       // Messages can still be logged; only updates stop.
       expect(screen.getByRole('button', { name: 'Paste A Message' })).toBeTruthy()
       expect(screen.queryByRole('button', { name: 'Record An Update' })).toBeNull()

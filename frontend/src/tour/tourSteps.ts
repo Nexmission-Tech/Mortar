@@ -107,7 +107,7 @@ export const TOUR_STEPS: Record<Persona, TourStep[]> = {
       route: '/bookings/:id',
       target: '[data-tour="case-status"]',
       caption:
-        'The case file gives a plain status sentence and the next step, including Mortar AI’s alternative when it differs.'
+        'The case file opens on who holds the case and the next step, including Mortar AI’s alternative when it differs, with the booking journey beneath.'
     },
     {
       label: 'Read A Banker’s Message',
