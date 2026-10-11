@@ -18,6 +18,8 @@ import { managerSuggestions } from './manager'
 import { currentCaseAssignee } from './profiles'
 import { STORIES } from './fixtures/stories'
 import { wilsonInterval } from './sim/forecast'
+import { DEFAULT_PROJECT_SETTINGS } from './projectSettings'
+import { projectUnits } from './units'
 import { monthlyInstalment } from './sim/risk'
 import { addDays, dateOf, diffDays } from './sim/dates'
 import { teamSummary } from './team'
@@ -563,5 +565,20 @@ describe('performance', () => {
     expect(s).toHaveLength(150)
     expect(f.liveBookings).toBeGreaterThan(0)
     expect(elapsed).toBeLessThan(200)
+  })
+})
+
+describe('the canonical demo units', () => {
+  const data = generate({ seed: DEFAULT_SEED, referenceDate: REFERENCE_DATE, bookings: 140 })
+  const layout = new Set(projectUnits(DEFAULT_PROJECT_SETTINGS).map((u) => u.code))
+  const all = [...data.bookings, ...STORIES.map((s) => s.booking)]
+
+  it('gives every booking its own unit, story fixtures included', () => {
+    expect(new Set(all.map((b) => b.unit)).size).toBe(all.length)
+  })
+
+  it('puts every booking in the Aster Heights layout', () => {
+    for (const b of all) expect(layout.has(b.unit)).toBe(true)
+    for (const b of all) expect(b.project).toBe('Aster Heights')
   })
 })

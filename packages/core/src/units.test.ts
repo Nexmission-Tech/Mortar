@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest'
 import { DEFAULT_PROJECT_SETTINGS, normalizeProjectSettings } from './projectSettings'
-import { labelNumber, numberLabel, parseUnitCode, projectUnits, unitCode } from './units'
+import type { Booking } from './types'
+import { labelNumber, numberLabel, parseUnitCode, projectUnits, uniqueUnits, unitCode } from './units'
 
 describe('numbering', () => {
   test('skip-four renames every number containing a 4', () => {
@@ -80,5 +81,39 @@ describe('normalizeProjectSettings', () => {
     delete legacy.numbering
     expect(normalizeProjectSettings(legacy)?.numbering).toBe('plain')
     expect(normalizeProjectSettings({ ...legacy, numbering: 'roman' })?.numbering).toBe('plain')
+  })
+})
+
+const tiny = {
+  ...DEFAULT_PROJECT_SETTINGS,
+  blocks: ['A'],
+  minFloor: 1,
+  maxFloor: 1,
+  unitsPerFloor: 3,
+  numbering: 'plain' as const
+}
+const at = (id: string, unit: string) => ({ id, unit }) as Booking
+
+describe('uniqueUnits', () => {
+  test('moves a duplicate to the next free unit, leaving the first in place', () => {
+    const out = uniqueUnits([at('x', 'A-01-01'), at('y', 'A-01-01')], tiny)
+    expect(out.map((b) => b.unit)).toEqual(['A-01-01', 'A-01-02'])
+  })
+
+  test('skips reserved units and wraps at the end of the layout', () => {
+    const out = uniqueUnits([at('x', 'A-01-03'), at('y', 'A-01-03')], tiny, ['A-01-01'])
+    expect(out.map((b) => b.unit)).toEqual(['A-01-03', 'A-01-02'])
+  })
+
+  test('returns unique input untouched, by reference', () => {
+    const input = [at('x', 'A-01-01'), at('y', 'A-01-02')]
+    const out = uniqueUnits(input, tiny)
+    expect(out[0]).toBe(input[0])
+    expect(out[1]).toBe(input[1])
+  })
+
+  test('leaves the duplicate when the layout is full', () => {
+    const full = [at('a', 'A-01-01'), at('b', 'A-01-02'), at('c', 'A-01-03'), at('d', 'A-01-01')]
+    expect(uniqueUnits(full, tiny).map((b) => b.unit)).toEqual(['A-01-01', 'A-01-02', 'A-01-03', 'A-01-01'])
   })
 })

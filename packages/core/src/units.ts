@@ -3,6 +3,7 @@
  * the configured layout holds.
  */
 import type { ProjectSettings, UnitNumbering } from './projectSettings'
+import type { Booking } from './types'
 
 /** Matches the import screen's cap: a layout above it is refused, not drawn. */
 export const MAX_PROJECT_UNITS = 10_000
@@ -79,4 +80,35 @@ export function projectUnits(settings: ProjectSettings): ProjectUnit[] {
           unitLabel: numberLabel(unit, numbering)
         })
   return units
+}
+
+/**
+ * Gives every booking its own unit. A booking whose unit is already taken, by
+ * an earlier booking or a reserved code, moves to the next free unit in layout
+ * order, wrapping at the end. Nothing is mutated; untouched bookings keep
+ * their reference. A full layout leaves the duplicate rather than invent one.
+ */
+export function uniqueUnits(
+  bookings: Booking[],
+  settings: ProjectSettings,
+  reserved: Iterable<string> = []
+): Booking[] {
+  const codes = projectUnits(settings).map((u) => u.code)
+  const index = new Map(codes.map((code, i) => [code, i]))
+  const taken = new Set(reserved)
+  return bookings.map((booking) => {
+    if (!taken.has(booking.unit)) {
+      taken.add(booking.unit)
+      return booking
+    }
+    const start = (index.get(booking.unit) ?? -1) + 1
+    for (let step = 0; step < codes.length; step += 1) {
+      const code = codes[(start + step) % codes.length]!
+      if (!taken.has(code)) {
+        taken.add(code)
+        return { ...booking, unit: code }
+      }
+    }
+    return booking
+  })
 }
