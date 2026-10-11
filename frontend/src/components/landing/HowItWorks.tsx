@@ -32,8 +32,8 @@ const MOMENTS: Moment[] = [
   },
   {
     base: 'message',
-    width: 1596,
-    height: 444,
+    width: 1848,
+    height: 412,
     title: 'A Message Becomes A Proposal',
     body: 'A banker’s message — English, Malay, Chinese or Manglish — is read by Mortar AI into a typed proposal: the event, the document, the owner, with a probability and a confidence. Nothing moves the case until a person confirms it.',
     alt: "A banker's message on a booking's evidence log, with Mortar AI's proposed reading beside it.",
@@ -41,8 +41,8 @@ const MOMENTS: Moment[] = [
   },
   {
     base: 'tasks',
-    width: 1868,
-    height: 1210,
+    width: 1948,
+    height: 1148,
     title: 'The Task Has An Owner',
     body: 'One click turns the suggestion into a task with an owner and a due date. It lands in that person’s Your Tasks beside the queue, so who chases what is never ambiguous.',
     alt: 'Your Tasks on Today: each open task with its booking, due date and owner.',
@@ -53,7 +53,7 @@ const MOMENTS: Moment[] = [
     width: 2200,
     height: 1376,
     title: 'A Number Finance Can Sign Off',
-    body: 'The forecast counts expected signings inside 30 days — each live booking weighted by how cases at its stage actually resolved, with the range, the sample sizes and the backtest in the open.',
+    body: 'The forecast estimates how many live bookings will sign their SPA by day 30 of booking, each weighted by how past cases at its stage resolved, with the range and the cases behind it laid out as documents.',
     alt: 'The Forecast desk: expected SPA signings within 30 days of booking, the range, and the stack of forecast documents.',
     caption: 'Expected signings within 30 days of booking, with the detail as documents. Simulated data.'
   }
