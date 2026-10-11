@@ -875,8 +875,9 @@ control, and none appears. Do not "fix" this by removing the input.
   towards a signed SPA, as a floor-by-unit chart the sales gallery can read.
 - **Anatomy:**
   1. Figures: a row of four [Stat Tile](#stat-tile)s: Units Booked, SPA Signed,
-     Expected SPAs In 30 Days (caption: the range and the bookings it counts)
-     and Needs Action.
+     Expected To Sign By Day 30 (each booking's own day 30, not the next 30
+     calendar days; caption: the range and the bookings it counts) and Needs
+     Action.
   2. Card: `--card` fill, 16px padding, 6px radius (`--radius-md`),
      `Elevation/Card`. It holds the rest of the chart.
      - Filter bar: three Buttons, each reading its label and count. The active

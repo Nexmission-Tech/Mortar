@@ -83,7 +83,7 @@ describe('SalesChartPage', () => {
   it('shows the figures, lights a filter, and opens a case from its unit', async () => {
     renderPage('manager')
     expect(await screen.findByRole('heading', { name: 'Sales Chart' })).toBeTruthy()
-    for (const label of ['Units Booked', 'SPA Signed', 'Expected SPAs In 30 Days', 'Needs Action'])
+    for (const label of ['Units Booked', 'SPA Signed', 'Expected To Sign By Day 30', 'Needs Action'])
       expect(screen.getAllByText(label).length).toBeGreaterThan(0)
     expect(screen.getByText(/Bookings Under 30 Days Old/)).toBeTruthy()
 
