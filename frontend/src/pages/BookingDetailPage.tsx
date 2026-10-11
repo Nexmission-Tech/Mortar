@@ -1,15 +1,16 @@
 /**
- * Booking detail route — the case page for one unit booking.
- * Header with the case's identity and one status sentence; the journey strip
- * and the block naming who the case is waiting on, with Record An Update
- * behind a button while the case is open; loan and legal timelines
- * plus sales events; applications with derived status; the message log with
- * Jev proposals and review actions; the Add Message form; playbooks ranked by
- * Jev fit; buyer signals; tasks; and the full evidence log.
+ * Booking detail route — the case page for one unit booking, read as a
+ * decision, then the record. The header names the booking and offers Record An
+ * Update and Paste A Message. One summary card says who holds the case, the
+ * next step and its owner, with the illustrated booking journey beneath. Four
+ * views hold the record: Overview (bank applications, the latest message, Case
+ * Details), Messages (with Mortar AI's readings to review), History (the whole
+ * evidence log by track) and Tasks. Forms and guidance open in the floating
+ * case panel.
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { FileText } from 'lucide-react'
 import { PERSONA_STAFF, type BuyerSignals } from '@mortar/core'
 import { useCases, useSnapshot } from '@/lib/data'
@@ -20,20 +21,24 @@ import { AddMessageForm } from '@/components/bookings/AddMessageForm'
 import { ApplicationsCard } from '@/components/bookings/ApplicationsCard'
 import { BookingJourney } from '@/components/bookings/BookingJourney'
 import { bookingJourney } from '@/components/bookings/bookingJourney'
+import { CaseActionSheet, type CaseAction } from '@/components/bookings/CaseActionSheet'
+import { CaseDetails } from '@/components/bookings/CaseDetails'
 import { CaseHeader } from '@/components/bookings/CaseHeader'
-import { EvidenceLog } from '@/components/bookings/EvidenceLog'
+import { CaseHistory, type HistoryTrack } from '@/components/bookings/CaseHistory'
+import { CASE_VIEWS, CaseViews, type CaseView } from '@/components/bookings/CaseViews'
+import { LatestMessage } from '@/components/bookings/LatestMessage'
 import { MessagesPanel } from '@/components/bookings/MessagesPanel'
 import { PlaybooksPanel } from '@/components/bookings/PlaybooksPanel'
 import { RecordUpdateForm } from '@/components/bookings/RecordUpdateForm'
-import { SignalsPanel } from '@/components/bookings/SignalsPanel'
 import { TasksPanel } from '@/components/bookings/TasksPanel'
-import { TrackTimelines } from '@/components/bookings/TrackTimelines'
 import { WaitingOnPanel } from '@/components/bookings/WaitingOn'
+import { DOCUMENT_LABELS } from '@/components/bookings/labels'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { RefreshErrorBanner } from '@/components/ui/RefreshErrorBanner'
 import { Skeleton } from '@/components/ui/skeleton'
+import { StatusPill } from '@/components/ui/status-pill'
 
 export function BookingDetailPage() {
   const { id } = useParams()
@@ -57,10 +62,35 @@ export function BookingDetailPage() {
     setRefreshKey((k) => k + 1)
   }, [refresh])
 
-  /** The journey's bank detour jumps to the loan track; plan 3 swaps this for the History view. */
+  /** The open view and history track live in the URL, so a link can open a case on Messages or on its loan history. */
+  const [params, setParams] = useSearchParams()
+  const viewParam = params.get('view')
+  const view: CaseView = CASE_VIEWS.includes(viewParam as CaseView) ? (viewParam as CaseView) : 'overview'
+  const trackParam = params.get('track')
+  const track: HistoryTrack = ['loan', 'legal', 'sales'].includes(trackParam ?? '')
+    ? (trackParam as HistoryTrack)
+    : 'all'
+  const show = useCallback(
+    (next: CaseView, nextTrack?: HistoryTrack) =>
+      setParams(
+        (current) => {
+          const out = new URLSearchParams(current)
+          if (next === 'overview') out.delete('view')
+          else out.set('view', next)
+          if (next === 'history' && nextTrack && nextTrack !== 'all') out.set('track', nextTrack)
+          else out.delete('track')
+          return out
+        },
+        { replace: true }
+      ),
+    [setParams]
+  )
+  /** The journey's bank detour opens the loan history and brings the views into sight. */
   const showLoanHistory = useCallback(() => {
-    document.getElementById('case-tracks')?.scrollIntoView?.({ behavior: 'smooth', block: 'start' })
-  }, [])
+    show('history', 'loan')
+    document.getElementById('case-views')?.scrollIntoView?.({ behavior: 'smooth', block: 'start' })
+  }, [show])
+  const [action, setAction] = useState<CaseAction | null>(null)
 
   useEffect(() => {
     if (!id || !snapshot || !snapshot.bookings.some((b) => b.id === id)) return
@@ -153,84 +183,107 @@ export function BookingDetailPage() {
           {/* The save that just landed is real; only the follow-up read failed, so the
               case stays on screen with a way to retry rather than vanishing behind it. */}
           {error ? <RefreshErrorBanner onRetry={() => void refresh()} /> : null}
-          <div data-tour="case-status">
-            <CaseHeader booking={data.booking} summary={data.summary} />
-          </div>
-          <Card className="mt-4">
-            <CardContent className="flex flex-col gap-4 p-4">
+          <CaseHeader
+            booking={data.booking}
+            summary={data.summary}
+            onRecordUpdate={() => setAction('record')}
+            onPasteMessage={() => setAction('message')}
+          />
+          <Card className="mt-6" data-tour="case-status">
+            <CardContent className="flex flex-col gap-5 p-4 md:p-6">
               <WaitingOnPanel
                 key={data.booking.id}
                 booking={data.booking}
                 summary={data.summary}
                 referenceDate={referenceDate}
                 onChanged={onChanged}
-                // Jev's cached answer for this case, so the "Jev Suggests" line
+                // Mortar AI's cached answer for this case, so its alternative
                 // appears here as it does on Today and in the case panel.
                 suggestion={data.suggestion}
+                onWhatToDo={() => setAction('guidance')}
                 wide
               />
-              <div className="border-t border-border pt-4">
+              {data.summary.outstandingDocuments.length > 0 ? (
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {data.summary.outstandingDocuments.map((doc) => (
+                    <StatusPill key={doc} tone="warning">
+                      {DOCUMENT_LABELS[doc]} Outstanding
+                    </StatusPill>
+                  ))}
+                </div>
+              ) : null}
+              <div className="border-t border-border pt-5">
                 <BookingJourney key={data.booking.id} model={data.journey} onShowHistory={showLoanHistory} />
               </div>
-              {/* A closed case takes no more updates. */}
-              {data.summary.stage !== 'cancelled' && data.summary.stage !== 'lapsed' && (
-                <RecordUpdateForm
-                  key={`record-${data.booking.id}`}
-                  booking={data.booking}
-                  applications={data.applications}
-                  summary={data.summary}
-                  referenceDate={referenceDate}
-                  reportedBy={reviewer}
-                  onRecorded={onChanged}
-                  collapsible
-                />
-              )}
             </CardContent>
           </Card>
-          <div id="case-tracks" className="mt-4 scroll-mt-20">
-            <TrackTimelines events={data.events} />
-          </div>
-          <div className="mt-4 grid items-start gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-            <div className="flex min-w-0 flex-col gap-4">
-              <div data-tour="case-message">
-                <MessagesPanel
-                  messages={data.messages}
-                  extractions={data.extractions}
-                  events={data.events}
-                  reviewer={reviewer}
-                  onChanged={onChanged}
-                  footer={
-                    <AddMessageForm
-                      key={data.booking.id}
+          <div className="mt-4">
+            <CaseViews
+              value={view}
+              onValueChange={(next) => show(next)}
+              counts={{ messages: data.messages.length, history: data.events.length, tasks: data.tasks.length }}
+              panels={{
+                overview: (
+                  <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_344px]">
+                    <div className="flex min-w-0 flex-col gap-6">
+                      <ApplicationsCard applications={data.applications} summary={data.summary} />
+                      <LatestMessage messages={data.messages} onViewAll={() => show('messages')} />
+                    </div>
+                    <CaseDetails
                       booking={data.booking}
-                      banker={data.applications[data.applications.length - 1]?.banker}
-                      referenceDate={referenceDate}
-                      onAdded={onChanged}
-                      collapsible
+                      summary={data.summary}
+                      signals={data.signals}
+                      hasBuyerMessages={data.messages.some((m) => m.senderRole === 'buyer')}
+                      signalsLoading={signalsLoadedFor !== data.booking.id}
                     />
-                  }
-                />
-              </div>
-            </div>
-            <div className="flex min-w-0 flex-col gap-4">
-              <ApplicationsCard applications={data.applications} summary={data.summary} />
+                  </div>
+                ),
+                messages: (
+                  <MessagesPanel
+                    messages={data.messages}
+                    extractions={data.extractions}
+                    events={data.events}
+                    reviewer={reviewer}
+                    onChanged={onChanged}
+                  />
+                ),
+                history: <CaseHistory events={data.events} track={track} onTrackChange={(t) => show('history', t)} />,
+                tasks: <TasksPanel tasks={data.tasks} onChanged={onChanged} />
+              }}
+            />
+          </div>
+          <CaseActionSheet action={action} booking={data.booking} onClose={() => setAction(null)}>
+            {action === 'record' ? (
+              <RecordUpdateForm
+                key={`record-${data.booking.id}`}
+                booking={data.booking}
+                applications={data.applications}
+                summary={data.summary}
+                referenceDate={referenceDate}
+                reportedBy={reviewer}
+                onRecorded={async () => {
+                  await onChanged()
+                  setAction(null)
+                }}
+              />
+            ) : action === 'message' ? (
+              // A pasted message stays open, so Mortar AI's reading of it shows here.
+              <AddMessageForm
+                key={data.booking.id}
+                booking={data.booking}
+                banker={data.applications[data.applications.length - 1]?.banker}
+                referenceDate={referenceDate}
+                onAdded={onChanged}
+              />
+            ) : action === 'guidance' ? (
               <PlaybooksPanel
                 bookingId={data.booking.id}
                 summary={data.summary}
                 playbooks={data.playbooks}
                 refreshKey={refreshKey}
               />
-              <SignalsPanel
-                signals={data.signals}
-                hasBuyerMessages={data.messages.some((m) => m.senderRole === 'buyer')}
-                loading={signalsLoadedFor !== data.booking.id}
-              />
-              <TasksPanel tasks={data.tasks} onChanged={onChanged} />
-            </div>
-          </div>
-          <div className="mt-4">
-            <EvidenceLog events={data.events} />
-          </div>
+            ) : null}
+          </CaseActionSheet>
         </>
       )}
     </PageContainer>

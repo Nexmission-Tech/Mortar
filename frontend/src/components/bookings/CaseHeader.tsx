@@ -42,13 +42,19 @@ export function CaseHeader({
       {onRecordUpdate || onPasteMessage ? (
         <div className="grid shrink-0 grid-cols-2 gap-2 md:flex">
           {!closed && onRecordUpdate ? (
-            <Button type="button" variant="secondary" onClick={onRecordUpdate}>
+            <Button type="button" variant="secondary" onClick={onRecordUpdate} aria-haspopup="dialog">
               <Plus aria-hidden="true" />
               Record An Update
             </Button>
           ) : null}
           {onPasteMessage ? (
-            <Button type="button" variant="secondary" onClick={onPasteMessage} data-tour="case-message">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={onPasteMessage}
+              aria-haspopup="dialog"
+              data-tour="case-message"
+            >
               <MessageSquarePlus aria-hidden="true" />
               Paste A Message
             </Button>
