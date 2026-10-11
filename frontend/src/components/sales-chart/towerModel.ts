@@ -13,6 +13,8 @@ export type Vec3 = [number, number, number]
 export interface Box {
   center: Vec3
   size: Vec3
+  /** Radians about the x axis; positive tips the +z end down. */
+  tilt?: number
 }
 export interface UnitBox extends Box {
   code: string
