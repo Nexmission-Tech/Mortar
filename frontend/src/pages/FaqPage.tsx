@@ -82,7 +82,7 @@ const FAQS: { question: string; answer: string[] }[] = [
 /** Renders the FAQ page: title block and the question list. */
 export function FaqPage() {
   return (
-    <main className="min-h-dvh bg-background">
+    <main className="app-canvas min-h-dvh">
       <div className="mx-auto flex w-full max-w-[720px] flex-col px-6 pt-[calc(var(--site-bar-h)+56px)] pb-16 min-[900px]:pt-[calc(var(--site-bar-h)+80px)]">
         <div className="flex flex-col gap-4 text-center">
           <p className="text-[11px] leading-[14px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
