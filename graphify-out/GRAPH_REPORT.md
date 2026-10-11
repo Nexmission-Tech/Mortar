@@ -1,7 +1,7 @@
 # Graph Report - Mortar  (2026-10-11)
 
 ## Corpus Check
-- 396 files · ~339,220 words
+- 396 files · ~340,121 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 14 file(s) not represented in the graph (top: (none) 8, .css 3, .example 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c4bae850`
+- Built from commit: `1cd82044`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -955,14 +955,14 @@ Cohesion: 0.05
 Nodes (91): Global Constraints, Unit States, appointment(), listOf(), managerSuggestions(), assumptionValue(), DEFAULT_ASSUMPTIONS, backtest() (+83 more)
 
 ## Ambiguous Edges - Review These
-- `Claim: 7 Of 8 Name Loan Rejection The Biggest Cause` → `Do Not Say: IFCA Is Chin Hin's System`  [AMBIGUOUS]
-  docs/demo/pitch-script.md · relation: conceptually_related_to
-- `Kabel DXP Weekly Check-In, 29 September 2026` → `Chin Hin Group Property Berhad (CHGP)`  [AMBIGUOUS]
-  docs/demo/pitch-script.md · relation: conceptually_related_to
-- `PUT /api/settings (Manager Only)` → `meta Key-Value Table`  [AMBIGUOUS]
-  docs/TRD.md · relation: references
 - `GET /api/settings` → `meta Key-Value Table`  [AMBIGUOUS]
   docs/TRD.md · relation: references
+- `meta Key-Value Table` → `PUT /api/settings (Manager Only)`  [AMBIGUOUS]
+  docs/TRD.md · relation: references
+- `Kabel DXP Weekly Check-In, 29 September 2026` → `Chin Hin Group Property Berhad (CHGP)`  [AMBIGUOUS]
+  docs/demo/pitch-script.md · relation: conceptually_related_to
+- `Do Not Say: IFCA Is Chin Hin's System` → `Claim: 7 Of 8 Name Loan Rejection The Biggest Cause`  [AMBIGUOUS]
+  docs/demo/pitch-script.md · relation: conceptually_related_to
 
 ## Knowledge Gaps
 - **941 isolated node(s):** `$schema`, `printWidth`, `singleQuote`, `semi`, `trailingComma` (+936 more)
@@ -972,17 +972,17 @@ Nodes (91): Global Constraints, Unit States, appointment(), listOf(), managerSug
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **What is the exact relationship between `Claim: 7 Of 8 Name Loan Rejection The Biggest Cause` and `Do Not Say: IFCA Is Chin Hin's System`?**
-  _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **What is the exact relationship between `Kabel DXP Weekly Check-In, 29 September 2026` and `Chin Hin Group Property Berhad (CHGP)`?**
-  _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **What is the exact relationship between `PUT /api/settings (Manager Only)` and `meta Key-Value Table`?**
-  _Edge tagged AMBIGUOUS (relation: references) - confidence is low._
 - **What is the exact relationship between `GET /api/settings` and `meta Key-Value Table`?**
   _Edge tagged AMBIGUOUS (relation: references) - confidence is low._
+- **What is the exact relationship between `meta Key-Value Table` and `PUT /api/settings (Manager Only)`?**
+  _Edge tagged AMBIGUOUS (relation: references) - confidence is low._
+- **What is the exact relationship between `Kabel DXP Weekly Check-In, 29 September 2026` and `Chin Hin Group Property Berhad (CHGP)`?**
+  _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
+- **What is the exact relationship between `Do Not Say: IFCA Is Chin Hin's System` and `Claim: 7 Of 8 Name Loan Rejection The Biggest Cause`?**
+  _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **Why does `AGENTS.md` connect `Personas` to `Project Structure tree`, `About The Project section`, `Documents Index`, `Agent Rules`?**
-  _High betweenness centrality (0.071) - this node is a cross-community bridge._
+  _High betweenness centrality (0.078) - this node is a cross-community bridge._
 - **Why does `Mortar (Product Requirements)` connect `Mortar (Product Requirements)` to `Industry Practitioner Survey Findings, n = 8`, `Functional Requirements`, `User Stories Per Screen`, `Sources`, `Non-Functional Requirements`, `Documents Index`, `FR-2 Case Summarization And Stall Detection`?**
-  _High betweenness centrality (0.056) - this node is a cross-community bridge._
-- **Why does `Documents Index` connect `Documents Index` to `Andrej Karpathy Skills`, `Mortar Notes For Agents`, `Agent Rules`, `Personas`, `Technical Requirements Document: Mortar`?**
-  _High betweenness centrality (0.053) - this node is a cross-community bridge._
+  _High betweenness centrality (0.068) - this node is a cross-community bridge._
+- **Why does `Manager (persona)` connect `Functional Requirements` to `This Week. What We Need.`?**
+  _High betweenness centrality (0.055) - this node is a cross-community bridge._
