@@ -929,26 +929,37 @@ surface may use three.js or draw in 3D.
   720px wide; the choice is remembered under `mortar.salesChart.view`. Without
   WebGL the Building button is disabled and an InfoTooltip says the Grid shows
   the same units.
-- **Scene:** each block a slab one unit deep, its units in a row, so every unit
-  faces the viewer; blocks stand side by side on a `--muted` podium. An
-  orthographic camera starts a little left of square on and about 22° above.
-- **Shading:** flat. Lambert boxes under one ambient and one directional light
-  give three fixed face steps; the top face shows the token's own colour. No
-  gradient, glow, glass, texture, shadow or transparency.
-- **Colour:** read at runtime from the status tokens, so the scene follows dark
-  mode. Available draws in `--input`, because a white top face vanishes against
-  the card in either theme; filtered-out units draw in `--muted`. Hover outlines
-  in `--muted-foreground`; selection is a `--card` ring inside a `--foreground`
-  ring, as the Grid's ring offset, so it shows on SPA Signed units too.
+- **Scene:** a sales-gallery scale model. Each block is a real tower: a
+  double-loaded plate, units 01 onwards left to right along the front and back
+  right to left along the rear, end units projecting 1.2m; a white slab edge at
+  every floor, fins between bays and a balcony on every unit; a core, water
+  tanks and a crown frame on the roof. The towers stand 30m apart on a podium,
+  the middle of three set back. A perspective camera with a 30° field of view
+  starts from the front left, about 30° above the deck, framed to fit.
+- **Shading:** a hemisphere light and one sun from the upper left front cast one
+  soft shadow. Tone mapping is off, so a lit top face shows its token's own
+  colour. No tinted light, reflections, glow or bloom.
+- **Colour:** units and their balconies read the status tokens, so a held unit
+  reads at a distance; available units read `--model-glass`, a pale cool
+  glazing; the frame (slab edges, fins, parapets, core) reads
+  `--model-structure` and the podium `--model-podium`. In dark mode the model
+  turns to a night model with dark structure, so white SPA Signed units stand
+  out. With a filter on, the units it does not light and all structure turn
+  see-through and take no clicks, and the lit units draw over them, so every lit
+  unit shows and clicks from any side. Hover outlines in `--muted-foreground`;
+  selection is a `--card` ring inside a `--foreground` ring, as the Grid's ring
+  offset, so it shows on SPA Signed units too.
 - **Motion:** none unless the viewer moves it. The scene renders on demand,
   never in a loop, and redraws after a lost GPU context returns. Dragging turns
-  the building within limits; zoom needs Ctrl or ⌘ with the wheel (or a trackpad
-  pinch), so a plain scroll still scrolls the page; panning is off. The All and
-  Block presets reframe from the starting angle over `motion/base` (200ms), or
-  at once under reduced motion, every time they are clicked. A data refresh
-  never moves the camera.
-- **Labels:** block names in Geist and every fifth floor plus the top floor in
-  Geist Mono, drawn in the DOM over the canvas, never as canvas text.
+  the building all the way round, between 15° and 75° above the deck; zoom needs
+  Ctrl or ⌘ with the wheel (or a trackpad pinch), so a plain scroll still
+  scrolls the page; panning is off. The All and Block presets reframe from the
+  starting angle over `motion/base` (200ms), or at once under reduced motion,
+  every time they are clicked. A data refresh never moves the camera.
+- **Labels:** a pill above each roof names its block. With a block framed, every
+  fifth floor and the top floor are numbered up the corner that sits leftmost on
+  screen, in Geist Mono. All labels are drawn in the DOM over the canvas, never
+  as canvas text.
 - **Access:** the canvas is hidden from assistive technology, with a line that
   points to the Grid, which stays the chart's accessible form. A click that ends
   a drag never selects.

@@ -58,11 +58,12 @@ consult, not a real building's plans.
   project 1.2 m, which gives the shallow H the consult recommends. Stacks stay
   vertically aligned.
 - **Facade:** each unit's outward faces are one coloured panel in its state's
-  tone, recessed 0.4 m behind a white frame. The frame is a continuous slab edge
-  at every floor (0.3 m thick, 0.3 m proud) and a thin vertical fin between
-  bays, so the panel fills about 70% of its bay. Each unit has a 1.5 m balcony
-  slab across 70% of its frontage. End units show a panel on their end face as
-  well, and every face of a unit selects the same unit.
+  tone, recessed 0.25 m behind a white frame. The frame is a continuous slab
+  edge at every floor (0.3 m thick, 0.3 m proud) and a thin vertical fin between
+  bays, so the panel fills about 70% of its bay. Each unit has a 1 m balcony
+  slab across 70% of its frontage, in the unit's own colour, so a held unit
+  reads at a distance. End units show a panel on their end face as well, and
+  every face of a unit selects the same unit.
 - **Core:** a white lift and stair core in the middle of the corridor, rising 6
   m above the roof as the lift overrun.
 - **Roof:** a 1.2 m parapet round the plate, two water tank boxes on the core,
