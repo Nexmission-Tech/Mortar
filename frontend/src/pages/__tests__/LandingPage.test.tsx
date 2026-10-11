@@ -98,7 +98,7 @@ describe('landing page', () => {
 
   it('expands a question on click and collapses it again', () => {
     renderLanding()
-    const question = screen.getByRole('button', { name: 'What Does Jev Do?' })
+    const question = screen.getByRole('button', { name: 'What Does Mortar AI Do?' })
 
     expect(question.getAttribute('aria-expanded')).toBe('false')
     fireEvent.click(question)

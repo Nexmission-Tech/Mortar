@@ -24,10 +24,10 @@ export const TOUR_STEPS: Record<Persona, TourStep[]> = {
       caption: 'Team shows who each booking is waiting on, desk by desk, and where it is stuck.'
     },
     {
-      label: 'Ask MortarAI',
+      label: 'Ask Mortar AI',
       route: '/chase',
       target: '[data-tour="ask-mortar"]',
-      caption: 'Ask MortarAI about any department. Manager access covers every booking.'
+      caption: 'Ask Mortar AI about any department. Manager access covers every booking.'
     }
   ],
   'sales-admin': [
@@ -83,10 +83,10 @@ export const TOUR_STEPS: Record<Persona, TourStep[]> = {
       caption: 'Add bookings by uploading a sheet or entering them directly.'
     },
     {
-      label: 'Ask MortarAI',
+      label: 'Ask Mortar AI',
       route: '/chase',
       target: '[data-tour="ask-mortar"]',
-      caption: 'Ask MortarAI about the bookings your profile can access.'
+      caption: 'Ask Mortar AI about the bookings your profile can access.'
     }
   ],
   'loan-admin': [
@@ -107,13 +107,13 @@ export const TOUR_STEPS: Record<Persona, TourStep[]> = {
       route: '/bookings/:id',
       target: '[data-tour="case-status"]',
       caption:
-        'The case file gives a plain status sentence and the next step, including Jev’s alternative when it differs.'
+        'The case file gives a plain status sentence and the next step, including Mortar AI’s alternative when it differs.'
     },
     {
       label: 'Read A Banker’s Message',
       route: '/bookings/:id',
       target: '[data-tour="case-message"]',
-      caption: 'Paste a banker’s message here for Jev to read. Nothing is recorded until you confirm it.'
+      caption: 'Paste a banker’s message here for Mortar AI to read. Nothing is recorded until you confirm it.'
     }
   ],
   'legal-admin': [
@@ -143,10 +143,10 @@ export const TOUR_STEPS: Record<Persona, TourStep[]> = {
       caption: 'See how many awaiting cases each panel firm is handling.'
     },
     {
-      label: 'Ask MortarAI',
+      label: 'Ask Mortar AI',
       route: '/legal',
       target: '[data-tour="ask-mortar"]',
-      caption: 'Ask MortarAI about the bookings your profile can access.'
+      caption: 'Ask Mortar AI about the bookings your profile can access.'
     }
   ]
 }

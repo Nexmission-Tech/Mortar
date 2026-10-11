@@ -63,14 +63,14 @@ export function AskTrigger() {
               <button
                 data-tour="ask-mortar"
                 type="button"
-                aria-label="Ask MortarAI"
+                aria-label="Ask Mortar AI"
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
               >
                 <Sparkles className="h-5 w-5" />
               </button>
             </DialogTrigger>
           </TooltipTrigger>
-          <TooltipContent>Ask MortarAI</TooltipContent>
+          <TooltipContent>Ask Mortar AI</TooltipContent>
         </Tooltip>
       </TooltipProvider>
       <DialogContent className="flex h-[80vh] w-[80vw] max-w-none flex-col overflow-hidden max-sm:h-[92vh] max-sm:w-[calc(100vw-1rem)]">

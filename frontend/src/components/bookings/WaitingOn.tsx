@@ -254,7 +254,7 @@ export function WaitingOnPanel({
         </div>
         {alternative && alternativeTask ? (
           <p className="text-[13px] text-muted-foreground">
-            Jev Suggests: {documentStepLabel(alternative.label, alternative.document)} Instead
+            Mortar AI Suggests: {documentStepLabel(alternative.label, alternative.document)}
           </p>
         ) : null}
         <div className="flex flex-wrap items-center gap-3">
@@ -276,7 +276,7 @@ export function WaitingOnPanel({
               onClick={() => void addTask(alternativeTask, 'alternative')}
               disabled={adding !== null}
             >
-              {addingAlternative ? 'Adding…' : 'Do That Instead'}
+              {addingAlternative ? 'Adding…' : 'Use This Action'}
             </Button>
           ) : null}
           {summary.openTasks > 0 && !added ? (

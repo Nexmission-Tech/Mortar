@@ -152,7 +152,7 @@ export function PlaybooksPanel({
         </form>
         {stale ? (
           <p className="text-[13px] text-muted-foreground">
-            Jev's Ranking May Be Out Of Date — Keyword Matches For “{shown.query}”
+            Mortar AI’s suggestions may be out of date. Showing matches for ‘{shown.query}’.
           </p>
         ) : (
           shown.query && <p className="text-[13px] text-muted-foreground">Ranked For “{shown.query}”</p>

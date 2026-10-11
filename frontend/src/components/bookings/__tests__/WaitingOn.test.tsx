@@ -138,7 +138,7 @@ describe('WaitingOnPanel next step', () => {
     )
 
     expect(screen.getByText('Call The Banker')).toBeTruthy()
-    expect(screen.getByText('Jev Suggests: Call The Buyer Instead')).toBeTruthy()
+    expect(screen.getByText('Mortar AI Suggests: Call The Buyer')).toBeTruthy()
   })
 
   it('offers no alternative when Jev names the same move as the rule', () => {
@@ -152,7 +152,7 @@ describe('WaitingOnPanel next step', () => {
       />
     )
 
-    expect(screen.queryByText(/Jev Suggests/)).toBeNull()
+    expect(screen.queryByText(/Mortar AI Suggests/)).toBeNull()
   })
 
   it('raises the step the person picked, not always the default', async () => {
@@ -166,7 +166,7 @@ describe('WaitingOnPanel next step', () => {
       />
     )
 
-    fireEvent.click(screen.getByRole('button', { name: 'Do That Instead' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Use This Action' }))
 
     await waitFor(() => expect(vi.mocked(postTask)).toHaveBeenCalledTimes(1))
     expect(vi.mocked(postTask)).toHaveBeenCalledWith(

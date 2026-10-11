@@ -39,7 +39,7 @@ const FAQS: { question: string; answer: string[] }[] = [
     question: 'When Does A Booking Land On Today?',
     answer: [
       'When it stalls. Mortar states the reason in plain words: no confirmed evidence for seven days, a requested document outstanding for five, an application undecided past the industry’s two-to-nine-working-day decision window (Association of Banks in Malaysia, 2017), or a disputed event still awaiting review.',
-      'The limits are defaults listed on the forecast page’s assumptions panel — placeholders to calibrate on company data. Jev suggests the next action and owner for each stalled booking.'
+      'The limits are defaults listed on the forecast page’s assumptions panel — placeholders to calibrate on company data. Mortar AI suggests the next action and owner for each stalled booking.'
     ]
   },
   {
@@ -50,11 +50,11 @@ const FAQS: { question: string; answer: string[] }[] = [
     ]
   },
   {
-    question: 'What Does Jev Do?',
+    question: 'What Does Mortar AI Do?',
     answer: [
-      'Jev is Mortar’s AI reader. Paste a buyer’s or banker’s message — English, Malay, Chinese or Manglish — and it proposes what happened, such as Documents Requested for a payslip, with a probability and a confidence. It also suggests next actions on Today and ranks the staff playbooks by fit.',
-      'Ask MortarAI, the sparkle button in the top bar, answers questions about your bookings from Mortar’s own data, can read a photo of a letter, never changes anything, and says when the data does not hold the answer.',
-      'Jev only proposes. A person confirms, disputes or dismisses every suggestion before it moves a booking, and anything under 60% confidence is flagged Needs Review. The forecast is statistics, not Jev — the practitioners we surveyed wanted AI on document checks and next actions, not on conversion.'
+      'Mortar AI reads your messages for you. Paste a buyer’s or banker’s message — English, Malay, Chinese or Manglish — and it proposes what happened, such as Documents Requested for a payslip, with a probability and a confidence. It also suggests next actions on Today and ranks the staff playbooks by fit.',
+      'Ask Mortar AI, the sparkle button in the top bar, answers questions about your bookings from Mortar’s own data, can read a photo of a letter, never changes anything, and says when the data does not hold the answer.',
+      'Mortar AI only proposes. A person confirms, disputes or dismisses every suggestion before it moves a booking, and anything under 60% confidence is flagged Needs Review. The forecast is calculated from recorded case outcomes — the practitioners we surveyed wanted AI on document checks and next actions, not on conversion.'
     ]
   },
   {

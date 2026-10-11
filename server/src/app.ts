@@ -227,7 +227,7 @@ function confirmProblem(summary: CaseSummary, event: CaseEvent): string | null {
   const problem = caseRuleProblem(summary, event.kind, event.applicationId)
   if (problem) return problem
   if (event.applicationId === null && NEEDS_APPLICATION.has(event.kind)) {
-    return 'Jev could not tell which bank this is for. Dismiss it and record the update by hand.'
+    return 'Mortar AI could not tell which bank this is for. Dismiss it and record the update by hand.'
   }
   return null
 }
@@ -237,7 +237,7 @@ function settledMessage(event: CaseEvent): string {
   if (event.source !== 'jev') return 'This update is already on record, so there is nothing to review.'
   if (event.status === 'confirmed') return 'This update was already reviewed and confirmed.'
   if (event.status === 'superseded') {
-    return 'This update was already dismissed, or replaced when Jev read the message again.'
+    return 'This update was already dismissed, or replaced when Mortar AI read the message again.'
   }
   return 'This update was already disputed.'
 }

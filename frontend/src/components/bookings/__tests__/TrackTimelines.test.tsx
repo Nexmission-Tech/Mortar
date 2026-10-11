@@ -23,11 +23,11 @@ const event = (over: Partial<CaseEvent>): CaseEvent => ({
 
 describe('TrackTimelines', () => {
   it.each([
-    ['100% Probability', 'Jev Is Sure'],
-    ['94% Probability', 'Jev Is Sure'],
-    ['84% Probability', 'Jev Is Fairly Sure'],
-    ['70% Probability', 'Jev Is Fairly Sure'],
-    ['62% Probability', 'Jev Is Not Sure']
+    ['100% Probability', 'Mortar AI Is Sure'],
+    ['94% Probability', 'Mortar AI Is Sure'],
+    ['84% Probability', 'Mortar AI Is Fairly Sure'],
+    ['70% Probability', 'Mortar AI Is Fairly Sure'],
+    ['62% Probability', 'Mortar AI Is Not Sure']
   ])('reads the stored note %s as the words a person uses for it', (note, certainty) => {
     // The loan track is where a legal or loan admin reads what Jev proposed, so
     // the percentage cannot surface here (DESIGN.md Plain Language).

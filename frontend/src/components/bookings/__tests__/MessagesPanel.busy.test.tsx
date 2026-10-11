@@ -71,13 +71,13 @@ describe('MessagesPanel', () => {
       />
     )
 
-    const button = screen.getByRole('button', { name: 'Ask Jev' })
+    const button = screen.getByRole('button', { name: 'Ask Mortar AI' })
     fireEvent.click(button)
 
-    expect(await screen.findByRole('button', { name: 'Asking Jev…' })).toBeTruthy()
+    expect(await screen.findByRole('button', { name: 'Asking Mortar AI…' })).toBeTruthy()
 
     gate.resolve({ extraction: EXTRACTION, event: null })
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Ask Jev' })).toBeTruthy())
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Ask Mortar AI' })).toBeTruthy())
     expect(vi.mocked(extractMessage)).toHaveBeenCalledWith(MESSAGE.id)
   })
 
@@ -95,13 +95,13 @@ describe('MessagesPanel', () => {
       />
     )
 
-    const button = screen.getByRole('button', { name: 'Ask Jev Again' })
+    const button = screen.getByRole('button', { name: 'Ask Mortar AI Again' })
     fireEvent.click(button)
 
-    expect(await screen.findByRole('button', { name: 'Asking Jev…' })).toBeTruthy()
+    expect(await screen.findByRole('button', { name: 'Asking Mortar AI…' })).toBeTruthy()
 
     gate.resolve({ extraction: EXTRACTION, event: null })
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Ask Jev Again' })).toBeTruthy())
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Ask Mortar AI Again' })).toBeTruthy())
   })
 
   it('does not mislabel Ask Jev Again as busy while a Confirm on the same message is running', async () => {
@@ -122,10 +122,14 @@ describe('MessagesPanel', () => {
 
     // Confirm disables the Ask Jev button (only one action per message at a
     // time) but must not borrow its "Asking Jev…" label for a review action.
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Ask Jev Again' })).toHaveProperty('disabled', true))
-    expect(screen.queryByRole('button', { name: 'Asking Jev…' })).toBeNull()
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Ask Mortar AI Again' })).toHaveProperty('disabled', true)
+    )
+    expect(screen.queryByRole('button', { name: 'Asking Mortar AI…' })).toBeNull()
 
     gate.resolve(PROPOSAL)
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Ask Jev Again' })).toHaveProperty('disabled', false))
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Ask Mortar AI Again' })).toHaveProperty('disabled', false)
+    )
   })
 })

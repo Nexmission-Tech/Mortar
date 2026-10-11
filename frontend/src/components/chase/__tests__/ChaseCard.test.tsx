@@ -171,11 +171,11 @@ describe('ChaseCard', () => {
   it('offers Jev’s differing move as one muted line with its own button', () => {
     const onCreateTask = renderCard(null)
 
-    const line = screen.getByText('Jev Suggests: Call The Buyer Instead')
+    const line = screen.getByText('Mortar AI Suggests: Call The Buyer')
     // One muted line, not a second block of equal weight.
     expect(line.parentElement!.className).toContain('text-muted-foreground')
 
-    fireEvent.click(within(line.parentElement!).getByRole('button', { name: 'Do That Instead' }))
+    fireEvent.click(within(line.parentElement!).getByRole('button', { name: 'Use This Action' }))
     expect(onCreateTask).toHaveBeenCalledWith(expect.objectContaining({ action: 'call_buyer' }))
   })
 
@@ -213,7 +213,7 @@ describe('ChaseCard', () => {
 
     // An icon-only button needs its own label; the "checked earlier" note is
     // the tooltip's job rather than a pill on every card.
-    const button = screen.getByRole('button', { name: 'Ask Jev Again' })
+    const button = screen.getByRole('button', { name: 'Ask Mortar AI Again' })
     expect(button.textContent).toBe('')
     expect(button.className).toContain('size-8')
   })

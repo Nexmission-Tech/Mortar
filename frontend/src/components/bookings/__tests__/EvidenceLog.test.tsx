@@ -74,15 +74,15 @@ describe('EvidenceLog', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Show Full History (3)' }))
 
     const sources = [...container.querySelectorAll('tbody tr')].map((row) => row.children[6]?.textContent)
-    expect(sources).toEqual(['Jev', 'Demo', 'Demo'])
+    expect(sources).toEqual(['Mortar AI', 'Demo', 'Demo'])
   })
 
   it.each([
-    ['100% Probability', 'Jev Is Sure'],
-    ['90% Probability', 'Jev Is Sure'],
-    ['84% Probability', 'Jev Is Fairly Sure'],
-    ['70% Probability', 'Jev Is Fairly Sure'],
-    ['62% Probability', 'Jev Is Not Sure']
+    ['100% Probability', 'Mortar AI Is Sure'],
+    ['90% Probability', 'Mortar AI Is Sure'],
+    ['84% Probability', 'Mortar AI Is Fairly Sure'],
+    ['70% Probability', 'Mortar AI Is Fairly Sure'],
+    ['62% Probability', 'Mortar AI Is Not Sure']
   ])('reads the stored note %s as the words a person uses for it', (note, certainty) => {
     // DESIGN.md Plain Language bans a probability on screen; the same words the
     // messages panel uses carry it instead.
@@ -102,5 +102,11 @@ describe('EvidenceLog', () => {
     expect(container.querySelector('tbody tr')!.children[3]?.textContent).toBe(
       'Firm Confirmed 29 Jul, Awaiting Signature'
     )
+  })
+  it('names Mortar AI as the reporter of an event the AI proposed, whatever name is stored', () => {
+    render(<EvidenceLog events={[event({ id: 'EV-AI', reportedBy: 'Jev', source: 'jev' })]} />)
+    fireEvent.click(screen.getByRole('button', { name: /Show Full History/ }))
+    expect(screen.getAllByText('Mortar AI').length).toBeGreaterThan(0)
+    expect(screen.queryByText('Jev')).toBeNull()
   })
 })

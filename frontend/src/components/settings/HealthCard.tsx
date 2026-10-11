@@ -37,21 +37,31 @@ export function HealthCard({ health, failed }: { health: Health | null; failed: 
           <CardTitle className="text-base">System Status</CardTitle>
           <InfoTooltip
             label="About System Status"
-            text="What The Server Reports Right Now. Jev Falls Back To Cached Answers When Unavailable."
+            text="What The Server Reports Right Now. Mortar AI Falls Back To Cached Answers When Unavailable."
           />
         </div>
       </CardHeader>
       <CardContent>
         {row('API', failed ? false : health ? health.ok : null, 'The Bun Server And Its Routes')}
         {row('Database', failed ? false : health ? health.db : null, 'Where Your Bookings Are Stored')}
-        {row('Jev', failed ? false : health ? health.jev : null, 'Whether A TypeSafe API Key Is Configured', {
-          up: 'Configured',
-          down: 'Missing'
-        })}
-        {row('Ask MortarAI', failed ? false : health ? health.assistant : null, 'Whether A Gemini Key Is Configured', {
-          up: 'Configured',
-          down: 'Missing'
-        })}
+        {row(
+          'Mortar AI Readings',
+          failed ? false : health ? health.jev : null,
+          'Whether message readings are configured.',
+          {
+            up: 'Configured',
+            down: 'Missing'
+          }
+        )}
+        {row(
+          'Ask Mortar AI',
+          failed ? false : health ? health.assistant : null,
+          'Whether assistant answers are configured.',
+          {
+            up: 'Configured',
+            down: 'Missing'
+          }
+        )}
       </CardContent>
     </Card>
   )

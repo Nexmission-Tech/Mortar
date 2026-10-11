@@ -47,7 +47,7 @@ describe('SignalChips', () => {
     const tooltip = screen.getByRole('tooltip')
     expect(
       within(tooltip).getByText(
-        "Jev's Read Of This Buyer's Messages: Reply Speed And Any Doubts. Log Messages On The Case Page To Update It."
+        'Mortar AI’s reading of this buyer’s messages: reply speed and any doubts. Add messages to update it.'
       )
     ).not.toBeNull()
   })

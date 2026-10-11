@@ -26,7 +26,7 @@ const MOMENTS: Moment[] = [
     width: 920,
     height: 620,
     title: 'The Stall Is Named',
-    body: 'Every morning the Today list holds the stalled bookings — the blocker in plain words, the financing risk, and Jev’s suggested next action with its owner. Nothing waits to be noticed.',
+    body: 'Every morning the Today list holds the stalled bookings — the blocker in plain words, the financing risk, and Mortar AI’s suggested next action with its owner. Nothing waits to be noticed.',
     alt: 'A stalled booking on Today: unit, buyer, blocker and the suggested next action.',
     caption: 'One stalled booking on Today. Simulated data.'
   },
@@ -35,9 +35,9 @@ const MOMENTS: Moment[] = [
     width: 1596,
     height: 444,
     title: 'A Message Becomes A Proposal',
-    body: 'A banker’s message — English, Malay, Chinese or Manglish — is read by Jev into a typed proposal: the event, the document, the owner, with a probability and a confidence. Nothing moves the case until a person confirms it.',
-    alt: "A banker's message on a booking's evidence log, with Jev's proposed reading beside it.",
-    caption: 'A banker’s message, read by Jev, awaiting confirmation. Simulated data.'
+    body: 'A banker’s message — English, Malay, Chinese or Manglish — is read by Mortar AI into a typed proposal: the event, the document, the owner, with a probability and a confidence. Nothing moves the case until a person confirms it.',
+    alt: "A banker's message on a booking's evidence log, with Mortar AI's proposed reading beside it.",
+    caption: 'A banker’s message, read by Mortar AI, awaiting confirmation. Simulated data.'
   },
   {
     base: 'tasks',

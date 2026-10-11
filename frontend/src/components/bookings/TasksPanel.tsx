@@ -61,7 +61,7 @@ export function TasksPanel({ tasks, onChanged }: { tasks: Task[]; onChanged: () 
                   <div className="mt-1 flex flex-wrap items-center gap-1.5">
                     <OwnerBadge role={task.ownerRole} name={task.ownerName} />
                     <Badge variant="secondary">{NEXT_ACTION_LABELS[task.action]}</Badge>
-                    <Badge variant="outline">{task.origin === 'jev' ? 'Jev' : 'Staff'}</Badge>
+                    <Badge variant="outline">{task.origin === 'jev' ? 'Mortar AI' : 'Staff'}</Badge>
                     {task.managerFlaggedBy && (
                       <span className="text-xs font-medium">Manager Flag ? {task.managerFlaggedBy}</span>
                     )}

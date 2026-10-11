@@ -370,13 +370,13 @@ Iconography is provided exclusively by Lucide (`lucide-react`).
   11. `SlidersHorizontal`: Filter select prefix.
   12. `Users`: Owner select prefix.
   13. `Plus`: Create Task and other create actions.
-  14. `RefreshCw`: Re-Run Jev and other re-run actions.
+  14. `RefreshCw`: Re-Run Mortar AI and other re-run actions.
   15. `UserRound`: The profile avatar's silhouette.
   16. `ChevronsUpDown`: The persona card's switch affordance.
   17. `LogOut`: Sign Out.
   18. `Send`: Request Follow-Up on the Manager card.
   19. `UsersRound`: The Team page in the sidebar.
-  20. `ArrowUpRight`, `Sparkles`: Open Document and Ask MortarAI on a forecast
+  20. `ArrowUpRight`, `Sparkles`: Open Document and Ask Mortar AI on a forecast
       document.
 - **Desk glyphs:** One per desk, set in the desk colour inside the
   [Role Label](#role-label): `Handshake` (Sales Admin), `Landmark` (Loan Admin),
@@ -455,55 +455,58 @@ Industry terms stay, because the audience uses them daily: SPA, LO, RM, booking,
 unit, stage, panel bank, disbursement, developer, solicitor. Terms from
 software, statistics or the data pipeline do not.
 
-Jev also stays. Jev is Mortar's assistant and staff refer to it by name, so it
-is a subject in a sentence, not a status code: "Jev checked 2 h ago", "Ask Jev
-again", "Jev suggests". What goes is the machine state attached to it.
+Mortar AI also stays. Mortar AI is Mortar's assistant and staff refer to it by
+name, so it is a subject in a sentence, not a status code: "Mortar AI checked 2
+h ago", "Ask Mortar AI again", "Mortar AI suggests". What goes is the machine
+state attached to it.
 
-| Do not write        | Write instead                                     |
-| ------------------- | ------------------------------------------------- |
-| Jev · Cached        | Jev checked 2 h ago                               |
-| Jev · Live 420 ms   | Jev checked just now                              |
-| Jev · Stale         | Jev's answer may be out of date                   |
-| Jev · Unavailable   | Jev could not check                               |
-| Re-Run Jev          | Ask Jev again                                     |
-| Jev Proposal        | Jev suggests                                      |
-| Not Analysed By Jev | Jev has not looked at this yet                    |
-| Snapshot            | (drop it) "Could not load bookings"               |
-| Evidence            | Update, or the document's own name                |
-| No evidence for 8 d | No update for 8 days                              |
-| Fresh               | Up to date                                        |
-| Unknown             | No recent update                                  |
-| Provisional         | Unconfirmed                                       |
-| Superseded          | Replaced                                          |
-| Signals             | Buyer response                                    |
-| Playbooks           | What to do                                        |
-| Confidence 0.84     | How sure: high / medium / low                     |
-| Probability         | Chance                                            |
-| Backtest            | Accuracy check                                    |
-| Brier score         | (drop it) state accuracy in a sentence            |
-| 95% interval        | Likely range                                      |
-| Conversion rate     | How often this stage reaches signing              |
-| Seed / canonical    | (drop it) simulation plumbing, not a desk concern |
+| Do not write              | Write instead                                     |
+| ------------------------- | ------------------------------------------------- |
+| Mortar AI · Cached        | Mortar AI checked 2 h ago                         |
+| Mortar AI · Live 420 ms   | Mortar AI checked just now                        |
+| Mortar AI · Stale         | Mortar AI's answer may be out of date             |
+| Mortar AI · Unavailable   | Mortar AI could not check                         |
+| Re-Run Mortar AI          | Ask Mortar AI again                               |
+| Mortar AI Proposal        | Mortar AI suggests                                |
+| Not Analysed By Mortar AI | Mortar AI has not checked this message yet        |
+| Snapshot                  | (drop it) "Could not load bookings"               |
+| Evidence                  | Update, or the document's own name                |
+| No evidence for 8 d       | No update for 8 days                              |
+| Fresh                     | Up to date                                        |
+| Unknown                   | No recent update                                  |
+| Provisional               | Unconfirmed                                       |
+| Superseded                | Replaced                                          |
+| Signals                   | Buyer response                                    |
+| Playbooks                 | What to do                                        |
+| Confidence 0.84           | How sure: high / medium / low                     |
+| Probability               | Chance                                            |
+| Backtest                  | Accuracy check                                    |
+| Brier score               | (drop it) state accuracy in a sentence            |
+| 95% interval              | Likely range                                      |
+| Conversion rate           | How often this stage reaches signing              |
+| Seed / canonical          | (drop it) simulation plumbing, not a desk concern |
 
 Rules that are not obvious from the table:
 
 - **Name the thing, not the mechanism.** "Ask buyer for payslip" beats "Request
   document · Payslip". The user acts on the thing; the record type is ours.
-- **Say when, not what state.** Freshness reads as a time ("Jev checked 2 h
-  ago"), never as a cache state. A person can act on a time.
-- **Jev acts, it does not report status.** Jev is named because attribution
-  builds trust: someone reading a suggested action should know who suggested it.
-  So Jev takes a verb a person understands ("checked", "suggests", "could not
-  check"), never a system state ("cached", "stale", "unavailable"), and never a
-  latency figure. `Jev · Live 420 ms` tells a sales officer nothing.
+- **Say when, not what state.** Freshness reads as a time ("Mortar AI checked 2
+  h ago"), never as a cache state. A person can act on a time.
+- **Mortar AI acts, it does not report status.** Mortar AI is named because
+  attribution builds trust: someone reading a suggested action should know who
+  suggested it. So Mortar AI takes a verb a person understands ("checked",
+  "suggests", "could not check"), never a system state ("cached", "stale",
+  "unavailable"), and never a latency figure. `Mortar AI · Live 420 ms` tells a
+  sales officer nothing.
 - **Errors say what to do.** "Could not load bookings. Try again." Never a raw
   error string, a status code, or the word snapshot.
 - **No abbreviations we invented.** Industry abbreviations are fine; ours are
   not.
 - **Internal names stay internal.** Component names, token names, table names,
   model names and pipeline stages never appear in a visible string, a tooltip, a
-  toast or an `aria-label`. Jev is the one exception, because it is a product
-  name the staff already use.
+  toast or an `aria-label`. The AI is always called Mortar AI in user-facing
+  text. "Jev" and "Gemini" are internal engine names that never appear in the
+  UI.
 
 ## Data Formats
 
@@ -797,9 +800,9 @@ control, and none appears. Do not "fix" this by removing the input.
   sentence, a meta line (stage, last update, price), "Waiting On" with the
   person's [Role Label](#role-label) and name, then a footer with a ghost Open
   Case link on the left and a primary Request Follow-Up button on the right.
-- **Rules:** No percentages and no Jev scores: the blocker sentence says why the
-  case is here. A case with a standing follow-up leaves the queue for the rail's
-  Follow-Ups You Sent, so no case shows twice.
+- **Rules:** No percentages and no Mortar AI scores: the blocker sentence says
+  why the case is here. A case with a standing follow-up leaves the queue for
+  the rail's Follow-Ups You Sent, so no case shows twice.
 
 ### Role Label
 
@@ -856,15 +859,15 @@ control, and none appears. Do not "fix" this by removing the input.
 - **Anatomy:** Chips above the stack pick a document. The front card is 2:1 (up
   to 768px wide), 32px padding: "Document N Of M" eyebrow, the title in 24/32, a
   two-line summary, then two text actions (Open Document with `ArrowUpRight`,
-  Ask MortarAI with `Sparkles`). A square monochrome motif fills the card's
+  Ask Mortar AI with `Sparkles`). A square monochrome motif fills the card's
   right side, inverted in dark mode. Two cards peek out beneath. Round outline
   previous and next buttons sit either side (below it on phones).
 - **Rules:** Click, swipe and the arrow keys move the stack. Open Document reads
   the document in a centred Dialog, with long content scrolling inside it;
   Escape and the close button dismiss it, returning focus to Open Document. Ask
-  MortarAI opens the assistant with a question about that document already sent.
-  Below 640px the motif is hidden, the card sizes to its text, and the controls
-  stay below it as before.
+  Mortar AI opens the assistant with a question about that document already
+  sent. Below 640px the motif is hidden, the card sizes to its text, and the
+  controls stay below it as before.
 
 ### Sales Chart
 
@@ -1029,10 +1032,10 @@ surface may use three.js or draw in 3D.
 - **Rules:** Answers are sentences, so they take sentence case and a full stop;
   the suggested questions and every label stay Title Case. An answer never
   changes once given. When nothing matches, the panel says so and re-offers the
-  suggestions rather than guessing. The panel carries Jev's name because Jev is
-  the assistant staff ask by name, but it never implies the model wrote the
-  answer: the Status Pill says the answer was counted, and the lead line says
-  plainly that it does not write new ones — see Plain Language.
+  suggestions rather than guessing. The panel carries Mortar AI's name because
+  Mortar AI is the assistant staff ask by name, but it never implies the model
+  wrote the answer: the Status Pill says the answer was counted, and the lead
+  line says plainly that it does not write new ones — see Plain Language.
 
 ## App Shell
 
@@ -1074,8 +1077,8 @@ personas:
   the drawer when tapped. Shared Dialog and Sheet overlays use this same dimming
   and blur treatment.
 - **Top bar:** Fixed 56px height, containing breadcrumbs, with a right-hand
-  cluster running, left to right, Ask MortarAI, notification bell, theme switch,
-  then the [Profile Menu](#profile-menu) avatar at the far right. Solid
+  cluster running, left to right, Ask Mortar AI, notification bell, theme
+  switch, then the [Profile Menu](#profile-menu) avatar at the far right. Solid
   `--sidebar` ground with a 1px bottom border in `--border`.
 - **Content canvas:** Centered layout capped at a maximum width of 1280px with
   32px horizontal gutters (24px below 1280px). Pages open with a page header
@@ -1410,8 +1413,8 @@ and dark modes:
   string, tooltip, toast or `aria-label`: cache states, snapshots, seeds,
   probabilities, scores, intervals, model names or component names. Write what a
   sales, loan or legal officer would say, per [Plain Language](#plain-language).
-  Industry terms (SPA, LO, RM, panel bank) stay, and so does Jev, which is a
-  named assistant the staff refer to; what goes is the machine state bolted to
+  Industry terms (SPA, LO, RM, panel bank) stay, and so does Mortar AI, which is
+  a named assistant the staff refer to; what goes is the machine state bolted to
   it.
 - **Do not** put a grey band or tinted ground behind cards to separate them from
   the page. The page ground is `--background` and the shadow does the

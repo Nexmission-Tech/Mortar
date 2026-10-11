@@ -292,7 +292,7 @@ export function AskPanel({
         <div className="flex items-center gap-3">
           <Mascot />
           <div className="min-w-0">
-            <DialogTitle>Ask MortarAI</DialogTitle>
+            <DialogTitle>Ask Mortar AI</DialogTitle>
             <p className="text-xs text-muted-foreground">
               {profile?.name} &middot; {persona === 'manager' ? 'All Departments' : 'Your Permitted Bookings'}
             </p>

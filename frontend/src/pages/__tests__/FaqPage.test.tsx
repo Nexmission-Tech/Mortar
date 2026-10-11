@@ -48,7 +48,7 @@ describe('FaqPage', () => {
       'What Do The Stage And Risk Labels Mean?',
       'When Does A Booking Land On Today?',
       'What Is The Sales Chart?',
-      'What Does Jev Do?',
+      'What Does Mortar AI Do?',
       'Where Does The Data Come From, And How Is It Refreshed?',
       'How Does The Forecast Work?',
       'Why Is There No Real Sign-In?'
@@ -110,7 +110,7 @@ describe('FaqPage', () => {
     expect(
       screen.getByText(/Who Holds Each Booking, filters the table by Buyer, Bank, Solicitor, Signed or Us/i)
     ).toBeTruthy()
-    expect(screen.getByText(/Ask MortarAI, the sparkle button in the top bar/i)).toBeTruthy()
+    expect(screen.getByText(/Ask Mortar AI, the sparkle button in the top bar/i)).toBeTruthy()
     expect(
       screen.getByText(
         /Stage labels read Booked, With Bank, Loan Approved, Loan Agreement, Disbursed, SPA Signed, Cancelled, Lapsed/i

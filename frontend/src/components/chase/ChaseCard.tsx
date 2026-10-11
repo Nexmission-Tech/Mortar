@@ -141,7 +141,7 @@ export function ChaseCard({
         </div>
         {alternativeStep ? (
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground">
-            <span>Jev Suggests: {documentStepLabel(alternativeStep.label, alternativeStep.document)} Instead</span>
+            <span>Mortar AI Suggests: {documentStepLabel(alternativeStep.label, alternativeStep.document)}</span>
             <Button
               type="button"
               variant="secondary"
@@ -150,7 +150,7 @@ export function ChaseCard({
               disabled={creating}
               onClick={() => onCreateTask(alternativeStep)}
             >
-              {creating ? 'Creating…' : 'Do That Instead'}
+              {creating ? 'Creating…' : 'Use This Action'}
             </Button>
           </div>
         ) : null}
@@ -195,14 +195,16 @@ function JevRefresh({ suggesting, onSuggest }: { suggesting?: boolean; onSuggest
             variant="ghost"
             size="icon"
             className="size-8"
-            aria-label="Ask Jev Again"
+            aria-label="Ask Mortar AI Again"
             disabled={suggesting}
             onClick={onSuggest}
           >
             <RefreshCw aria-hidden="true" />
           </Button>
         </TooltipTrigger>
-        <TooltipContent side="top">{suggesting ? 'Asking Jev…' : 'Ask Jev Again. Jev Checked Earlier.'}</TooltipContent>
+        <TooltipContent side="top">
+          {suggesting ? 'Asking Mortar AI…' : 'Ask Mortar AI again. Mortar AI checked earlier.'}
+        </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   )
