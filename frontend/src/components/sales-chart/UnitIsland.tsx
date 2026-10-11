@@ -4,6 +4,7 @@
  * dims, focus stays where it was, and clicking another unit swaps it. Glass,
  * like the Bookings bulk-action island.
  */
+import { createPortal } from 'react-dom'
 import { useEffect, useRef, type Ref } from 'react'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -38,6 +39,7 @@ export function UnitIsland({
   onOpenCase,
   onClose,
   onHeight,
+  elevated = false,
   ref
 }: {
   overview: UnitOverview
@@ -45,6 +47,8 @@ export function UnitIsland({
   onClose: () => void
   /** Called with the island's height whenever it changes, so the page can leave room for it. */
   onHeight?: (height: number) => void
+  /** Above the expanded Building view's modal (z 62–63), still under the case panel (70–71). */
+  elevated?: boolean
   ref?: Ref<HTMLElement>
 }) {
   const own = useRef<HTMLElement | null>(null)
@@ -58,7 +62,8 @@ export function UnitIsland({
     observer.observe(node)
     return () => observer.disconnect()
   }, [onHeight])
-  return (
+  // Portalled to the body, so it can rise above the expanded Building view's modal.
+  return createPortal(
     <section
       ref={(node) => {
         own.current = node
@@ -67,7 +72,11 @@ export function UnitIsland({
       }}
       aria-label="Selected Unit"
       // Under the app shell's scrims and popovers; clear of the tour button by its offset, not its layer.
-      className="fixed inset-x-4 bottom-4 z-40 mx-auto max-md:right-16 max-w-[560px] rounded-md border border-border bg-card/85 p-4 shadow-[var(--shadow-overlay)] backdrop-blur-md duration-[var(--motion-base)] animate-in fade-in-0 motion-safe:slide-in-from-bottom-4"
+      className={cn(
+        'fixed inset-x-4 bottom-4 mx-auto max-md:right-16 max-w-[560px] rounded-md border border-border bg-card/85 p-4 shadow-[var(--shadow-overlay)] backdrop-blur-md duration-[var(--motion-base)] animate-in fade-in-0 motion-safe:slide-in-from-bottom-4',
+        // Raised over the expanded view, it stays left of that view's zoom and collapse column.
+        elevated ? 'z-[64] md:right-[calc(10%+5rem)] max-md:right-[5.5rem]' : 'z-40'
+      )}
     >
       <div className="flex items-start gap-3 pr-8">
         <div className="min-w-0">
@@ -113,6 +122,7 @@ export function UnitIsland({
           </div>
         </>
       ) : null}
-    </section>
+    </section>,
+    document.body
   )
 }

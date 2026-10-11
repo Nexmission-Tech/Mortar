@@ -599,6 +599,13 @@ select:focus-visible,
   transition: width var(--motion-base) var(--ease-out);
 }
 
+/* An expanded view makes the app inert; the guided-tour button and the tour's
+   own chrome then hide rather than float, dead, over the view. */
+#root[inert] [data-tour-button],
+#root[inert] [data-tour-overlay] {
+  visibility: hidden;
+}
+
 /* SIDEBAR SCRIM — dims and blurs every layer under the expanded desktop sidebar
    (top bar z-50, content, footer). Sits one step under the sidebar (z-[60]).
    Never interactive: it only marks the layer the eye should ignore. */

@@ -26,6 +26,7 @@ export function TourButton() {
         variant="secondary"
         size="icon"
         aria-label="Take a guided tour"
+        data-tour-button=""
         onClick={() => {
           setSelected(persona)
           setOpen(true)
