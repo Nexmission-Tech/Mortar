@@ -69,6 +69,16 @@ describe('loanPosition', () => {
     )
   })
 
+  it('names every bank still deciding, whatever order they are stored in', () => {
+    const apps = [
+      { id: 'A2', bank: 'Crestline Bank', status: 'submitted' as const },
+      { id: 'A1', bank: 'Apex Bank', status: 'submitted' as const }
+    ]
+    expect(loanPosition(summary({ spaSigned: false, applications: apps }))).toBe(
+      'Waiting On Crestline Bank And Apex Bank To Decide'
+    )
+  })
+
   it('says when no loan is live or none was submitted', () => {
     const declined = [{ id: 'A1', bank: 'Malayan Trust Bank', status: 'rejected' as const }]
     expect(loanPosition(summary({ spaSigned: false, applications: declined }))).toBe('No Live Loan Application')

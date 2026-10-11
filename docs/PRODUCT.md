@@ -268,8 +268,8 @@ Three filters light the units that need a decision:
 - **Release Review:** units whose recovery paths look spent.
 
 Release Review is advisory. A person decides whether to cancel and re-release
-the unit, and Mortar never cancels. Clicking a unit opens the shared case panel
-for its booking.
+the unit, and Mortar never cancels. Clicking a unit raises its overview in the
+unit island, and Open Case opens the shared case panel for its booking.
 
 The chart has two views of the same units. The Building view stands the
 project's blocks up in 3D, every unit facing the viewer in its state's colour;

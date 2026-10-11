@@ -4,6 +4,7 @@
  * dims, focus stays where it was, and clicking another unit swaps it. Glass,
  * like the Bookings bulk-action island.
  */
+import { useEffect, useRef, type Ref } from 'react'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -35,16 +36,38 @@ function Fact({ term, wide, children }: { term: string; wide?: boolean; children
 export function UnitIsland({
   overview,
   onOpenCase,
-  onClose
+  onClose,
+  onHeight,
+  ref
 }: {
   overview: UnitOverview
   onOpenCase: () => void
   onClose: () => void
+  /** Called with the island's height whenever it changes, so the page can leave room for it. */
+  onHeight?: (height: number) => void
+  ref?: Ref<HTMLElement>
 }) {
+  const own = useRef<HTMLElement | null>(null)
+  useEffect(() => {
+    const node = own.current
+    if (!node || !onHeight || typeof ResizeObserver === 'undefined') return
+    const observer = new ResizeObserver(([entry]) => {
+      const height = entry?.borderBoxSize?.[0]?.blockSize ?? node.getBoundingClientRect().height
+      onHeight(height)
+    })
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [onHeight])
   return (
     <section
+      ref={(node) => {
+        own.current = node
+        if (typeof ref === 'function') ref(node)
+        else if (ref) ref.current = node
+      }}
       aria-label="Selected Unit"
-      className="fixed inset-x-4 bottom-4 z-[55] mx-auto max-md:right-16 max-w-[560px] rounded-md border border-border bg-card/85 p-4 shadow-[var(--shadow-overlay)] backdrop-blur-md duration-[var(--motion-base)] animate-in fade-in-0 motion-safe:slide-in-from-bottom-4"
+      // Under the app shell's scrims and popovers; clear of the tour button by its offset, not its layer.
+      className="fixed inset-x-4 bottom-4 z-40 mx-auto max-md:right-16 max-w-[560px] rounded-md border border-border bg-card/85 p-4 shadow-[var(--shadow-overlay)] backdrop-blur-md duration-[var(--motion-base)] animate-in fade-in-0 motion-safe:slide-in-from-bottom-4"
     >
       <div className="flex items-start gap-3 pr-8">
         <div className="min-w-0">

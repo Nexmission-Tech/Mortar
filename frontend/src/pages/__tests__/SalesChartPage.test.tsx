@@ -256,4 +256,52 @@ describe('SalesChartPage', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'A-03-01, Available' }))
     expect(document.querySelector('[data-island-spacer]')).toBeTruthy()
   })
+  it('keeps the island when another layer has already handled Esc', async () => {
+    renderPage('manager', { units: [] })
+    fireEvent.click(await screen.findByRole('button', { name: 'A-03-01, Available' }))
+    const handled = new KeyboardEvent('keydown', { key: 'Escape', cancelable: true, bubbles: true })
+    handled.preventDefault()
+    act(() => void window.dispatchEvent(handled))
+    expect(screen.getByRole('region', { name: 'Selected Unit' })).toBeTruthy()
+  })
+
+  it('sizes the room below the chart to the island, and keeps the island under the app shell', async () => {
+    class Measured {
+      constructor(private callback: ResizeObserverCallback) {}
+      observe(target: Element) {
+        this.callback(
+          [{ target, borderBoxSize: [{ blockSize: 300, inlineSize: 500 }] } as unknown as ResizeObserverEntry],
+          this as unknown as ResizeObserver
+        )
+      }
+      unobserve() {}
+      disconnect() {}
+    }
+    vi.stubGlobal('ResizeObserver', Measured)
+    try {
+      renderPage('manager', { units: [] })
+      fireEvent.click(await screen.findByRole('button', { name: 'A-03-01, Available' }))
+      const spacer = document.querySelector<HTMLElement>('[data-island-spacer]')!
+      expect(spacer.style.height).toBe('332px')
+      expect(screen.getByRole('region', { name: 'Selected Unit' }).className).toContain('z-40')
+    } finally {
+      vi.stubGlobal(
+        'ResizeObserver',
+        class {
+          observe() {}
+          unobserve() {}
+          disconnect() {}
+        }
+      )
+    }
+  })
+
+  it('returns focus to the unit when the island closes from inside', async () => {
+    renderPage('manager', { units: [] })
+    fireEvent.click(await screen.findByRole('button', { name: 'A-03-02, Available' }))
+    const close = within(screen.getByRole('region', { name: 'Selected Unit' })).getByRole('button', { name: 'Close' })
+    close.focus()
+    fireEvent.click(close)
+    expect(document.activeElement?.getAttribute('aria-label')).toBe('A-03-02, Available')
+  })
 })

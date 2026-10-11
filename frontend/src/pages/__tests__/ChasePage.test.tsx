@@ -87,7 +87,7 @@ vi.mock('@/lib/api', () => ({
   postTask: mocks.postTask,
   updateTask: mocks.updateTask,
   fetchNextAction: mocks.fetchNextAction,
-  // The side sheet's Record An Update posts through these.
+  // The case panel's Record An Update posts through these.
   postEvent: mocks.postEvent,
   postApplication: mocks.postApplication
 }))
@@ -359,7 +359,7 @@ describe('ChasePage', () => {
     expect(grid.className).toContain('grid-cols-1')
   })
 
-  describe('the side sheet', () => {
+  describe('the case panel', () => {
     it('opens the same quick view a ledger row opens, from a card, without leaving Today', () => {
       renderPage()
       fireEvent.click(screen.getByRole('button', { name: /^Quick View A-12-03: BK-9001/ }))

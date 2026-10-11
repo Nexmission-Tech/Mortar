@@ -48,13 +48,11 @@ export function loanPosition(summary: CaseSummary): string {
   const approved = summary.applications.find((a) => a.status === 'approved')
   if (approved)
     return `Loan Approved By ${approved.bank} · ${summary.daysSinceSpaSet === null ? 'No SPA Appointment Yet' : 'SPA Appointment Set'}`
-  const live = [...summary.applications]
-    .reverse()
-    .find((a) => a.status === 'submitted' || a.status === 'documents_pending')
-  if (live)
-    return live.status === 'documents_pending'
-      ? `${live.bank} Waiting On Documents`
-      : `Waiting On ${live.bank} To Decide`
+  // Every bank still deciding, so the line never depends on the order applications are stored in.
+  const deciding = [...new Set(summary.applications.filter((a) => a.status === 'submitted').map((a) => a.bank))]
+  if (deciding.length) return `Waiting On ${deciding.join(' And ')} To Decide`
+  const waiting = summary.applications.find((a) => a.status === 'documents_pending')
+  if (waiting) return `${waiting.bank} Waiting On Documents`
   return summary.applications.length > 0 ? 'No Live Loan Application' : 'No Loan Submitted Yet'
 }
 

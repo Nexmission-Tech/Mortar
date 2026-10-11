@@ -140,14 +140,29 @@ export function SalesChartPage() {
   useEffect(() => () => void (clearHover.current && clearTimeout(clearHover.current)), [])
   // Esc clears the selection, but only while the case panel is shut: Esc on the
   // panel closes the panel alone.
+  const islandRef = useRef<HTMLElement | null>(null)
+  const chartRef = useRef<HTMLElement | null>(null)
+  const [islandHeight, setIslandHeight] = useState(0)
+  /** Clears the selection; when focus was on the island, hands it back to the unit's cell. */
+  const closeIsland = useCallback(() => {
+    if (selected && islandRef.current?.contains(document.activeElement)) {
+      const chart = chartRef.current
+      const cell =
+        chart?.querySelector<HTMLElement>(`[aria-label^="${selected},"]`) ??
+        chart?.querySelector<HTMLElement>('[tabindex="0"]')
+      ;(cell ?? chart)?.focus()
+    }
+    setSelected(null)
+  }, [selected])
   useEffect(() => {
     if (!selected || inspecting) return
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setSelected(null)
+      // A dialog, tooltip or menu that handled this Esc has called preventDefault.
+      if (event.key === 'Escape' && !event.defaultPrevented) closeIsland()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [selected, inspecting])
+  }, [selected, inspecting, closeIsland])
 
   return (
     <PageContainer>
@@ -206,7 +221,12 @@ export function SalesChartPage() {
             />
           </section>
 
-          <section className="mt-4 rounded-md bg-card p-4 shadow-card" aria-label="Units">
+          <section
+            ref={chartRef}
+            tabIndex={-1}
+            className="mt-4 rounded-md bg-card p-4 shadow-card outline-none"
+            aria-label="Units"
+          >
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-2">
                 <div role="group" aria-label="Chart view" className="flex rounded-md bg-muted p-0.5">
@@ -305,13 +325,20 @@ export function SalesChartPage() {
       {overview ? (
         <>
           {/* Room below the chart, so the island never covers its last rows. */}
-          <div data-island-spacer aria-hidden="true" className="h-48" />
+          <div
+            data-island-spacer
+            aria-hidden="true"
+            className="h-48"
+            style={islandHeight ? { height: islandHeight + 32 } : undefined}
+          />
           <UnitIsland
+            ref={islandRef}
             overview={overview}
+            onHeight={setIslandHeight}
             onOpenCase={() => {
               if (selectedUnit?.bookingId) setInspecting(selectedUnit.bookingId)
             }}
-            onClose={() => setSelected(null)}
+            onClose={closeIsland}
           />
         </>
       ) : null}

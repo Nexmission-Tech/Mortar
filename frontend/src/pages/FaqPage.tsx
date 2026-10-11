@@ -46,7 +46,7 @@ const FAQS: { question: string; answer: string[] }[] = [
     question: 'What Is The Sales Chart?',
     answer: [
       'Every unit of the project on one page, coloured by how far its booking has got: Available, In Progress, Loan Approved, Needs Action, Release Review or SPA Signed. It is the floor-by-unit chart a sales gallery keeps, joined to the loan and legal evidence Mortar holds. The figures above it read Units Booked beside SPA Signed, because booked is not sold.',
-      'The Building view stands the blocks up in 3D; the Grid lays them out flat and works by keyboard. Loan Approved, No SPA Appointment lights the buyers who only need a signing date. Clicking a unit on your own desk opens its case; a unit on another desk names whose desk to ask. Release Review is a flag for a person: Mortar never cancels a booking.'
+      'The Building view stands the blocks up in 3D; the Grid lays them out flat and works by keyboard. Loan Approved, No SPA Appointment lights the buyers who only need a signing date. Clicking a unit shows its overview, and Open Case opens a unit on your own desk; a unit on another desk names whose desk to ask. Release Review is a flag for a person: Mortar never cancels a booking.'
     ]
   },
   {
