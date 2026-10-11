@@ -36,10 +36,12 @@ const SIDE_STYLES = {
   left: 'inset-y-0 left-0 h-full w-[calc(100vw-2rem)] max-w-md border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left',
   bottom:
     'inset-x-0 bottom-0 max-h-[85vh] rounded-t-md border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom',
-  // The case panel: a card floating 16px in from the bottom and sides, centred.
-  // It rises where motion is welcome and only fades under reduced motion.
+  // The case panel: a card centred in the middle of the screen, as tall as its
+  // content and at most 16px in from every edge (auto margins, no transform, so
+  // the rise animation cannot fight the centring). It rises from below where
+  // motion is welcome and only fades under reduced motion.
   floating:
-    'inset-x-4 bottom-4 mx-auto max-h-[85vh] max-w-[720px] rounded-md border data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 motion-safe:data-[state=closed]:slide-out-to-bottom motion-safe:data-[state=open]:slide-in-from-bottom'
+    'inset-4 m-auto h-fit max-h-[calc(100dvh-2rem)] max-w-[720px] rounded-md border data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 motion-safe:data-[state=closed]:slide-out-to-bottom motion-safe:data-[state=open]:slide-in-from-bottom'
 } as const
 
 function SheetContent({

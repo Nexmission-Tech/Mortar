@@ -450,14 +450,14 @@
     "semantic_hash": "b4cb549cf57764261f02df585c6a7e8d"
   },
   "docs/DESIGN.md": {
-    "mtime": 1791752910.270372,
-    "seen": 1791753990.089107,
-    "ast_hash": "ff181035213d46e89ae0d0f9e295f2c6",
+    "mtime": 1791754631.5029097,
+    "seen": 1791754664.1331222,
+    "ast_hash": "0ac95df53db045fad8af1c20d5541f09",
     "semantic_hash": ""
   },
   "docs/README.md": {
-    "mtime": 1791753970.7183068,
-    "seen": 1791753990.0891085,
+    "mtime": 1791754234.053959,
+    "seen": 1791754664.1331236,
     "ast_hash": "37a53b4e08b57d4b8a6aba5f85b9c900",
     "semantic_hash": ""
   },
@@ -1266,10 +1266,10 @@
     "semantic_hash": "0fa5947deb04a86ccf36c2917b484c40"
   },
   "frontend/src/components/ui/sheet.tsx": {
-    "mtime": 1791732063.0324306,
-    "seen": 1791753990.0889874,
-    "ast_hash": "a0bbc11a0813124bfa97f8067cc897e0",
-    "semantic_hash": "a0bbc11a0813124bfa97f8067cc897e0"
+    "mtime": 1791754552.5624928,
+    "seen": 1791754664.1330187,
+    "ast_hash": "54bea463ac2c50e0adcc1c0f6267f7c5",
+    "semantic_hash": ""
   },
   "frontend/src/lib/__tests__/api.test.ts": {
     "mtime": 1791695588.4231162,
@@ -1992,10 +1992,10 @@
     "semantic_hash": "efc28029478439ee57f098da74ba3b67"
   },
   "frontend/src/components/ui/__tests__/modal-scrim.test.tsx": {
-    "mtime": 1791732063.0324306,
-    "seen": 1791753990.0889776,
-    "ast_hash": "4650fb9434bb1759fcc169ac14bcf25b",
-    "semantic_hash": "4650fb9434bb1759fcc169ac14bcf25b"
+    "mtime": 1791754543.545303,
+    "seen": 1791754664.1330101,
+    "ast_hash": "5573ca603a96cc0d6e8b5769d8860365",
+    "semantic_hash": ""
   },
   "frontend/src/tour/Spotlight.tsx": {
     "mtime": 1791695588.425116,
