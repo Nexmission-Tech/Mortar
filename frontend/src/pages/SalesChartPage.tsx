@@ -4,11 +4,12 @@
  * and a readout of the unit under the pointer. Clicking a unit the viewer may
  * open brings up the same side sheet Today and Bookings use.
  */
-import { useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { SearchX } from 'lucide-react'
 import { DEFAULT_PROJECT_SETTINGS, forecast, type ChartUnit } from '@mortar/core'
 import { useCases, useSnapshot } from '@/lib/data'
+import { usePersona } from '@/lib/persona'
 import { cn } from '@/lib/utils'
 import { PageContainer } from '@/components/layout/PageContainer'
 import { PageHeaderCard } from '@/components/layout/PageHeaderCard'
@@ -23,7 +24,7 @@ import { quickViewRow } from '@/components/bookings/quickViewRow'
 import { datasetFor } from '@/components/forecast/forecast'
 import { SalesChartGrid } from '@/components/sales-chart/SalesChartGrid'
 import {
-  activeUnsigned,
+  bookedAndSigned,
   CHART_FILTERS,
   legendCounts,
   litUnits,
@@ -39,7 +40,9 @@ export function SalesChartPage() {
   const cases = useCases()
   const [params, setParams] = useSearchParams()
   const filter = CHART_FILTERS.find((f) => f.id === params.get('filter'))?.id ?? null
-  const [hovered, setHovered] = useState<ChartUnit | null>(null)
+  const { persona } = usePersona()
+  const [hoveredCode, setHoveredCode] = useState<string | null>(null)
+  const clearHover = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [selected, setSelected] = useState<string | null>(null)
   const [inspecting, setInspecting] = useState<string | null>(null)
 
@@ -78,12 +81,21 @@ export function SalesChartPage() {
   )
   const settings = snapshot?.projectSettings ?? DEFAULT_PROJECT_SETTINGS
   const row = snapshot && inspecting ? quickViewRow(snapshot, cases, inspecting) : null
-  const shown = hovered ?? units.find((u) => u.code === selected) ?? null
+  const shown = units.find((u) => u.code === (hoveredCode ?? selected)) ?? null
+  const totals = useMemo(() => bookedAndSigned(cases), [cases])
 
-  const select = (unit: ChartUnit) => {
+  const select = useCallback((unit: ChartUnit) => {
     setSelected(unit.code)
     if (unit.bookingId) setInspecting(unit.bookingId)
-  }
+  }, [])
+  // Leaving one cell for the next crosses a 2px gap; wait a beat before
+  // clearing so the readout does not blink between them.
+  const hover = useCallback((unit: ChartUnit | null) => {
+    if (clearHover.current) clearTimeout(clearHover.current)
+    if (unit) setHoveredCode(unit.code)
+    else clearHover.current = setTimeout(() => setHoveredCode(null), 150)
+  }, [])
+  useEffect(() => () => void (clearHover.current && clearTimeout(clearHover.current)), [])
 
   return (
     <PageContainer>
@@ -114,17 +126,22 @@ export function SalesChartPage() {
           {error ? <RefreshErrorBanner onRetry={() => void refresh()} /> : null}
           <section className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Sales figures">
             <StatCard
-              label="Active Unsigned"
-              value={String(activeUnsigned(cases))}
-              info="Your Live Bookings Without A Signed SPA."
+              label="Units Booked"
+              value={String(totals.booked)}
+              info="Your Bookings Still Standing, Signed Or Not. Cancelled And Lapsed Ones Are Back On Sale."
+            />
+            <StatCard
+              label="SPA Signed"
+              value={String(totals.signed)}
+              info="Your Bookings With A Confirmed SPA Signing On The Evidence Log."
             />
             {outlook && outlook.support !== 'insufficient-history' ? (
               <StatCard
                 label="Expected SPAs In 30 Days"
                 value={String(Math.round(outlook.expectedSignings))}
                 exact={outlook.expectedSignings.toFixed(1)}
-                caption={`Range ${outlook.rangeLow}–${outlook.rangeHigh}`}
-                info="The Forecast's Expected Signings From Your Live Bookings."
+                caption={`Range ${outlook.rangeLow}–${outlook.rangeHigh} · From ${outlook.liveBookings} Bookings Under 30 Days Old`}
+                info="The Forecast's Expected Signings From Your Unsigned Bookings Under 30 Days Old."
               />
             ) : (
               <StatCard label="Expected SPAs In 30 Days" value="—" caption="Not Enough History Yet" />
@@ -132,14 +149,8 @@ export function SalesChartPage() {
             <StatCard
               label="Needs Action"
               value={String(counts.needs_action)}
-              info="Units Whose Booking The Stall Rule Flagged, Release Reviews Aside. Click To Show Them."
+              info="Your Units Whose Booking The Stall Rule Flagged, Release Reviews Aside. Click To Show Them."
               onClick={() => toggle('needs_action')}
-            />
-            <StatCard
-              label="Release Reviews"
-              value={String(counts.release_review)}
-              info="Units Whose Recovery Paths Look Spent. A Person Decides; Mortar Never Cancels."
-              onClick={() => toggle('release_review')}
             />
           </section>
 
@@ -155,7 +166,9 @@ export function SalesChartPage() {
                       aria-pressed={filter === f.id}
                       onClick={() => toggle(f.id)}
                     >
-                      {f.label} · <span className="tabular-nums">{counts[f.id]}</span>
+                      <span>
+                        {f.label} · <span className="tabular-nums">{counts[f.id]}</span>
+                      </span>
                     </Button>
                     <InfoTooltip text={f.info} />
                   </span>
@@ -174,14 +187,16 @@ export function SalesChartPage() {
 
             {lit && lit.size === 0 ? (
               <p role="status" className="mt-3 text-sm text-muted-foreground">
-                No Units Match This Filter.
+                {persona === 'manager'
+                  ? 'No Units Match This Filter.'
+                  : 'None Of Your Bookings Match This Filter. Other Desks’ Units Stay Grey.'}
               </p>
             ) : null}
 
             <Readout unit={shown} />
 
             <div className="mt-3">
-              <SalesChartGrid units={units} lit={lit} selected={selected} onSelect={select} onHover={setHovered} />
+              <SalesChartGrid units={units} lit={lit} selected={selected} onSelect={select} onHover={hover} />
             </div>
           </section>
         </>
@@ -213,10 +228,10 @@ function Readout({ unit }: { unit: ChartUnit | null }) {
           </span>
           <span className="text-muted-foreground">
             {unit.state === 'available'
-              ? 'Available To Sell'
+              ? 'No Booking Holds This Unit'
               : unit.bookingId
-                ? `Held By ${unit.heldBy} · Click To Open The Case`
-                : `Held By ${unit.heldBy}’s Desk · Ask Them To Open It`}
+                ? `${unit.heldBy}’s Desk · Click To Open The Case`
+                : `${unit.heldBy}’s Desk · Ask Them To Open It`}
           </span>
         </>
       ) : (

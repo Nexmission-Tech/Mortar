@@ -4,7 +4,7 @@
  * between cells and across blocks, Enter selects. It is the chart's accessible
  * form and the fallback when the Building view cannot draw.
  */
-import { useMemo, useRef, useState, type KeyboardEvent } from 'react'
+import { memo, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import type { ChartUnit } from '@mortar/core'
 import { cn } from '@/lib/utils'
 import { STATE_LABELS } from './salesChart'
@@ -50,7 +50,14 @@ function toBlocks(units: ChartUnit[]): BlockGrid[] {
   })
 }
 
-export function SalesChartGrid({ units, lit, selected, onSelect, onHover }: SalesChartGridProps) {
+/** Memoised: hovering re-renders the page, and 936 cells need not follow when their props hold still. */
+export const SalesChartGrid = memo(function SalesChartGrid({
+  units,
+  lit,
+  selected,
+  onSelect,
+  onHover
+}: SalesChartGridProps) {
   const blocks = useMemo(() => toBlocks(units), [units])
   const [focus, setFocus] = useState<string | null>(null)
   const refs = useRef(new Map<string, HTMLButtonElement>())
@@ -147,4 +154,4 @@ export function SalesChartGrid({ units, lit, selected, onSelect, onHover }: Sale
       ))}
     </div>
   )
-}
+})

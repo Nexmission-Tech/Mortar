@@ -26,7 +26,8 @@ export const UNIT_STATES: readonly UnitState[] = [
 
 export const STATE_LABELS: Record<UnitState, string> = {
   available: 'Available',
-  booked: 'Booked',
+  // Not "Booked": every held unit is booked; this is the stretch before the loan comes through.
+  booked: 'In Progress',
   loan_approved: 'Loan Approved',
   needs_action: 'Needs Action',
   release_review: 'Release Review',
@@ -93,4 +94,10 @@ export function legendCounts(units: ChartUnit[]): Record<UnitState, number> {
 /** Live bookings without a signed SPA, among the viewer's own. */
 export function activeUnsigned(cases: CaseSummary[]): number {
   return cases.filter((c) => c.stage !== 'cancelled' && c.stage !== 'lapsed' && !c.spaSigned).length
+}
+
+/** Standing bookings (not cancelled or lapsed) among the viewer's own, and how many of them are signed. */
+export function bookedAndSigned(cases: CaseSummary[]): { booked: number; signed: number } {
+  const standing = cases.filter((c) => c.stage !== 'cancelled' && c.stage !== 'lapsed')
+  return { booked: standing.length, signed: standing.filter((c) => c.spaSigned).length }
 }

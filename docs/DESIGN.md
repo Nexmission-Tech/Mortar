@@ -871,8 +871,9 @@ control, and none appears. Do not "fix" this by removing the input.
 - **Purpose:** Shows every unit in the project by how far its booking has got
   towards a signed SPA, as a floor-by-unit chart the sales gallery can read.
 - **Anatomy:**
-  1. Figures: a row of four [Stat Tile](#stat-tile)s: Active Unsigned, Expected
-     SPAs In 30 Days, Needs Action and Release Reviews.
+  1. Figures: a row of four [Stat Tile](#stat-tile)s: Units Booked, SPA Signed,
+     Expected SPAs In 30 Days (caption: the range and the bookings it counts)
+     and Needs Action.
   2. Card: `--card` fill, 16px padding, 6px radius (`--radius-md`),
      `Elevation/Card`. It holds the rest of the chart.
      - Filter bar: three Buttons, each reading its label and count. The active
@@ -888,7 +889,7 @@ control, and none appears. Do not "fix" this by removing the input.
      Floor and unit labels are in Geist Mono.
 - **States and tokens:**
   - `Available`: `--card` fill with a 1px `--border`.
-  - `Booked`: `info` solid.
+  - `In Progress` (the early booking state): `info` solid.
   - `Loan Approved`: `positive` solid.
   - `Needs Action`: `warning` solid with a 6px dot in `--status-warning-fg`.
   - `Release Review`: `danger` solid with a short dash (8px by 2px) in `--card`.
@@ -905,8 +906,9 @@ control, and none appears. Do not "fix" this by removing the input.
   - The Needs Action and Release Review filters follow unit state, so the chip,
     the figure and the legend agree. The Loan Approved, No SPA Appointment
     filter reads the case instead, because it cuts across states.
-  - Booked uses `info` rather than neutral grey. At cell size, grey sits too
-    close to the white of Available.
+  - In Progress uses `info` rather than neutral grey. At cell size, grey sits
+    too close to the white of Available. It is not called Booked, because every
+    held unit is booked and the Units Booked figure counts them all.
   - The header carries no "Simulated data" label.
 
 ### Drop Zone

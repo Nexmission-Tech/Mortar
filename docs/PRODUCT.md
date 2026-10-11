@@ -254,13 +254,14 @@ leaving their queue.
 
 The Sales Chart shows every unit in the project on one page, laid out by floor
 and unit as the sales gallery already keeps it. Each unit takes one of six
-states, and each state is named in words: Available, Booked, Loan Approved,
+states, and each state is named in words: Available, In Progress, Loan Approved,
 Needs Action, Release Review and SPA Signed. A unit shows as signed only when
 its booking has a confirmed SPA signing on the evidence log.
 
 Three filters light the units that need a decision:
 
-- **Needs Action:** units whose booking the stall rule flagged.
+- **Needs Action:** units whose booking the stall rule flagged, release reviews
+  aside.
 - **Loan Approved, No SPA Appointment:** the closing list. The loan is through
   and no signing date is on record. It uses the same split as the Legal desk's
   No Appointment Yet section.

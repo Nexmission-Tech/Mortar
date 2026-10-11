@@ -2,7 +2,16 @@ import { describe, expect, test } from 'vitest'
 import type { CaseSummary, ChartUnit } from '@mortar/core'
 import { DEFAULT_PROJECT_SETTINGS, summarizeCases } from '@mortar/core'
 import { buildSnapshot } from '@/components/bookings/__tests__/snapshotFixture'
-import { activeUnsigned, legendCounts, litUnits, matchesFilter, unitsForSnapshot, UNIT_STATES } from '../salesChart'
+import {
+  activeUnsigned,
+  bookedAndSigned,
+  legendCounts,
+  litUnits,
+  matchesFilter,
+  STATE_LABELS,
+  unitsForSnapshot,
+  UNIT_STATES
+} from '../salesChart'
 
 const snapshot = buildSnapshot()
 const cases = summarizeCases(snapshot, snapshot.meta.referenceDate)
@@ -69,5 +78,18 @@ describe('filters and counts', () => {
     const live = cases.filter((c) => c.stage !== 'cancelled' && c.stage !== 'lapsed' && !c.spaSigned).length
     expect(activeUnsigned(cases)).toBe(live)
     expect(activeUnsigned([] as CaseSummary[])).toBe(0)
+  })
+
+  test('units booked counts every standing booking, signed or not; signed counts the signed ones', () => {
+    const standing = cases.filter((c) => c.stage !== 'cancelled' && c.stage !== 'lapsed')
+    expect(bookedAndSigned(cases)).toEqual({
+      booked: standing.length,
+      signed: standing.filter((c) => c.spaSigned).length
+    })
+    expect(bookedAndSigned(cases).booked).toBe(activeUnsigned(cases) + bookedAndSigned(cases).signed)
+  })
+
+  test('the early booking state reads In Progress, so it never clashes with Units Booked', () => {
+    expect(STATE_LABELS.booked).toBe('In Progress')
   })
 })

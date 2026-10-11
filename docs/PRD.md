@@ -907,8 +907,8 @@ towards a signed SPA, on one page at `/sales-chart`.
   duplicate unit codes, and every story fixture must keep its unit code.
 - **AC-25.2:** A unit with no live or signed booking must read Available. Any
   other unit must take the first matching state in the order SPA Signed, Release
-  Review, Needs Action, Loan Approved, Booked. Core tests must cover every state
-  and every Release Review trigger.
+  Review, Needs Action, Loan Approved, In Progress. Core tests must cover every
+  state and every Release Review trigger.
 - **AC-25.3:** A Sales Admin must see the whole tower. A booking ID must appear
   only for her own bookings, and her figures must count only her own bookings.
 - **AC-25.4:** Each filter's count must equal the number of units it lights. The

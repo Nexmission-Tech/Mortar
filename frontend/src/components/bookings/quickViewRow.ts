@@ -1,7 +1,7 @@
 import type { CaseSummary, EventKind, Snapshot, Task } from '@mortar/core'
 import type { BookingRow } from './BookingsTable'
 
-/** The row `CaseQuickView` shows for one booking, built the way `/bookings` builds it. */
+/** The row `CaseQuickView` shows for one booking. Signals stay `null`: the sheet never reads them. */
 export function quickViewRow(snapshot: Snapshot, cases: CaseSummary[], bookingId: string): BookingRow | null {
   const booking = snapshot.bookings.find((b) => b.id === bookingId)
   const summary = cases.find((c) => c.bookingId === bookingId)
