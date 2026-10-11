@@ -61,6 +61,12 @@ export const PERSONA_PAGES: readonly PersonaPage[] = [
   },
   { to: '/team', label: 'Team', group: 'primary', personas: ['manager'] },
   {
+    to: '/sales-chart',
+    label: 'Sales Chart',
+    group: 'primary',
+    personas: ['sales-admin', 'loan-admin', 'legal-admin', 'manager']
+  },
+  {
     to: '/bookings',
     label: 'Bookings',
     group: 'primary',

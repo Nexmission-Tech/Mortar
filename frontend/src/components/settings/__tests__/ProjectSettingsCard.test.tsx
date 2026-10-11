@@ -10,6 +10,10 @@ vi.mock('@/lib/api', () => ({
   saveProjectSettings: vi.fn(async (settings) => ({ settings }))
 }))
 
+Element.prototype.scrollIntoView = () => {}
+Element.prototype.hasPointerCapture = () => false
+Element.prototype.releasePointerCapture = () => {}
+
 function renderCard(persona: 'manager' | 'sales-admin' = 'manager') {
   return render(
     <PersonaProvider initialPersona={persona}>
@@ -50,6 +54,18 @@ describe('ProjectSettingsCard', () => {
     fireEvent.click(screen.getByRole('button', { name: /Save Settings/ }))
     await waitFor(() => expect(saveProjectSettings).toHaveBeenCalledOnce())
     expect(vi.mocked(saveProjectSettings).mock.calls[0][0].blocks).toEqual(['A', 'B'])
+  })
+
+  it('saves the chosen floor and unit numbering', async () => {
+    renderCard()
+    await waitFor(() => expect(screen.queryByText('Loading Project Settings…')).toBeNull())
+    const numbering = screen.getByRole('combobox', { name: 'Floor And Unit Numbering' })
+    expect(numbering.textContent).toContain('Skip Four (3A, 13A, 23A)')
+    fireEvent.click(numbering)
+    fireEvent.click(await screen.findByRole('option', { name: 'Plain (04, 14, 24)' }))
+    fireEvent.click(screen.getByRole('button', { name: /Save Settings/ }))
+    await waitFor(() => expect(saveProjectSettings).toHaveBeenCalledOnce())
+    expect(vi.mocked(saveProjectSettings).mock.calls[0][0]).toMatchObject({ numbering: 'plain' })
   })
 
   it('prevents a configured inventory from exceeding 10,000 units', async () => {

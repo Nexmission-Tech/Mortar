@@ -52,7 +52,7 @@ describe('AppSidebar', () => {
     const { container } = renderSidebar(true)
     const hrefs = [...desktopNav(container).querySelectorAll('a')].map((a) => a.getAttribute('href'))
 
-    expect(hrefs).toEqual(['/chase', '/bookings', '/import', '/forecast', '/settings'])
+    expect(hrefs).toEqual(['/chase', '/sales-chart', '/bookings', '/import', '/forecast', '/settings'])
     expect(hrefs).not.toContain('/legal')
     window.localStorage.clear()
   })
@@ -64,8 +64,8 @@ describe('AppSidebar', () => {
 
     expect(headings).toEqual(['Primary', 'More'])
     const more = [...nav.querySelectorAll('a')].map((a) => a.getAttribute('href'))
-    expect(more.slice(0, 3)).toEqual(['/chase', '/bookings', '/import'])
-    expect(more.slice(3)).toEqual(['/forecast', '/settings'])
+    expect(more.slice(0, 4)).toEqual(['/chase', '/sales-chart', '/bookings', '/import'])
+    expect(more.slice(4)).toEqual(['/forecast', '/settings'])
   })
 
   it('drops Add Bookings for Loan Admin, whose desks are Bookings and Today', () => {
@@ -73,7 +73,7 @@ describe('AppSidebar', () => {
     const { container } = renderSidebar(true)
     const labels = [...desktopNav(container).querySelectorAll('a')].map((a) => a.textContent)
 
-    expect(labels).toEqual(['Bookings', 'Today', 'Forecast', 'Settings'])
+    expect(labels).toEqual(['Bookings', 'Today', 'Sales Chart', 'Forecast', 'Settings'])
     window.localStorage.clear()
   })
 })

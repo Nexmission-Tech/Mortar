@@ -51,8 +51,9 @@ One page, **Sales Chart** at `/sales-chart`:
 
 1.  A header: "Sales Chart", then "Aster Heights · 936 units · Simulated data ·
     as of <reference date>".
-1.  Four figures: Active Unsigned, Expected SPAs In 30 Days (with its range),
-    Needs Action, Release Reviews. A note says they overlap.
+1.  Four figures that read as the pitch's line: Units Booked, SPA Signed,
+    Expected SPAs In 30 Days (with its range and the bookings it counts), and
+    Needs Action.
 1.  A toolbar: the view switch (Building, Grid), three filter chips, and in the
     Building view the tower presets (All, A, B, C).
 1.  The chart, with a legend rail on the right that names each state and its
@@ -107,7 +108,7 @@ six status tones, and every rendering shows the word.
 | 3     | Release Review | Live, unsigned, and a release trigger holds (below)          | `danger`   |
 | 4     | Needs Action   | Live, unsigned, and the stall rule gives at least one reason | `warning`  |
 | 5     | Loan Approved  | Live, unsigned, a confirmed `loan_approved` is on the log    | `positive` |
-| 6     | Booked         | Any other live booking                                       | `info`     |
+| 6     | In Progress    | Any other live booking                                       | `info`     |
 
 - **The holding booking** is the live booking on the unit, or else the latest
   signed one. A cancelled or lapsed booking frees its unit, which reads
@@ -129,10 +130,15 @@ The four figures, computed over the bookings the viewer may see:
 
 | Figure                   | Definition                                                 |
 | ------------------------ | ---------------------------------------------------------- |
-| Active Unsigned          | Live bookings without a signed SPA                         |
+| Units Booked             | Standing bookings (not cancelled or lapsed), signed or not |
+| SPA Signed               | Standing bookings with a confirmed SPA signing             |
 | Expected SPAs In 30 Days | The forecast page's 30-day expected signings and its range |
 | Needs Action             | The Needs Action filter's count                            |
-| Release Reviews          | The Release Review filter's count                          |
+
+Units Booked and SPA Signed carry the pitch's line, "booked is not sold", as two
+numbers side by side. Release Review keeps its chip and legend entry. The early
+booking state reads "In Progress" on the chart, so it never clashes with Units
+Booked.
 
 The three filters. One is active at a time; selecting it again clears it. A
 filter lights only units the viewer may open, so its count is always the number

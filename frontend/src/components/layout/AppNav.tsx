@@ -16,6 +16,7 @@ type Crumb = { label: string; to?: string; icon?: React.ReactNode; short?: strin
 
 const ROUTE_LABELS: Record<string, string> = {
   '/team': 'Team',
+  '/sales-chart': 'Sales Chart',
   '/bookings': 'Bookings',
   '/chase': 'Today',
   '/legal': 'Legal',

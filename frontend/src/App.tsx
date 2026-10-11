@@ -25,6 +25,7 @@ import { NotFoundPage } from './pages/NotFoundPage'
 import { SettingsPage } from './pages/SettingsPage'
 import { SignInPage } from './pages/SignInPage'
 import { TeamPage } from './pages/TeamPage'
+import { SalesChartPage } from '@/pages/SalesChartPage'
 
 /** Sends `/app` to the current persona's home route. */
 function HomeRedirect() {
@@ -54,6 +55,7 @@ export function App() {
             <PersonaRoute>
               <Routes>
                 <Route path="/team" element={<TeamPage />} />
+                <Route path="/sales-chart" element={<SalesChartPage />} />
                 {/* The old Manager page became Team; keep its links working. */}
                 <Route path="/manager" element={<Navigate to="/team" replace />} />
                 <Route path="/bookings" element={<BookingsPage />} />

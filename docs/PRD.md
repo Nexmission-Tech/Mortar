@@ -570,15 +570,18 @@ The system must enforce persona routing and adhere to visual design standards.
 - **AC-14.2:** Page access must be defined centrally by `PERSONA_PAGES` in
   `frontend/src/lib/persona.tsx` and guarded by `PersonaRoute.tsx`. Each persona
   sees only its permitted pages in navigation:
-  - Sales Admin: Today (`/chase`, home), Bookings (`/bookings`), Add Bookings
-    (`/import`), Forecast (`/forecast`), Settings (`/settings`).
-  - Loan Admin: Bookings (`/bookings`, home), Today (`/chase`), Forecast
-    (`/forecast`), Settings (`/settings`).
-  - Legal Admin: Legal (`/legal`, home), Today (`/chase`), Bookings
-    (`/bookings`), Forecast (`/forecast`), Settings (`/settings`).
-  - Manager: Today (`/chase`, home), Team (`/team`), Bookings (`/bookings`),
-    Legal (`/legal`), Add Bookings (`/import`), Forecast (`/forecast`), Settings
-    (`/settings`). `/manager` redirects to `/team`.
+  - Sales Admin: Today (`/chase`, home), Sales Chart (`/sales-chart`), Bookings
+    (`/bookings`), Add Bookings (`/import`), Forecast (`/forecast`), Settings
+    (`/settings`).
+  - Loan Admin: Bookings (`/bookings`, home), Today (`/chase`), Sales Chart
+    (`/sales-chart`), Forecast (`/forecast`), Settings (`/settings`).
+  - Legal Admin: Legal (`/legal`, home), Today (`/chase`), Sales Chart
+    (`/sales-chart`), Bookings (`/bookings`), Forecast (`/forecast`), Settings
+    (`/settings`).
+  - Manager: Today (`/chase`, home), Team (`/team`), Sales Chart
+    (`/sales-chart`), Bookings (`/bookings`), Legal (`/legal`), Add Bookings
+    (`/import`), Forecast (`/forecast`), Settings (`/settings`). `/manager`
+    redirects to `/team`.
 - **AC-14.3:** Navigating to an unpermitted route redirects to the persona's
   home route with a brief notice. Case detail (`/bookings/:id`), `/app`, `/faq`,
   and public routes (`/`, `/sign-in`) are never guarded.
@@ -894,6 +897,30 @@ Every signed-in page offers a help button that starts a persona-specific tour.
 - **AC-24.5:** Other page navigation ends the tour; switching persona restarts
   it. Finish returns home, while End leaves the current page. Progress is not
   persisted.
+
+### FR-25: Sales Chart
+
+The system must show every unit of the project by how far its booking has got
+towards a signed SPA, on one page at `/sales-chart`.
+
+- **AC-25.1:** The canonical demo project must render 936 units with no
+  duplicate unit codes, and every story fixture must keep its unit code.
+- **AC-25.2:** A unit with no live or signed booking must read Available. Any
+  other unit must take the first matching state in the order SPA Signed, Release
+  Review, Needs Action, Loan Approved, In Progress. Core tests must cover every
+  state and every Release Review trigger.
+- **AC-25.3:** A Sales Admin must see the whole tower. A booking ID must appear
+  only for her own bookings, and her figures must count only her own bookings.
+- **AC-25.4:** Each filter's count must equal the number of units it lights. The
+  Loan Approved, No SPA Appointment count must equal the Legal desk's No
+  Appointment Yet count for the same viewer.
+- **AC-25.5:** Clicking an openable unit must open `CaseQuickView` for its
+  booking. Recording an update there must change the unit's state without a page
+  reload.
+- **AC-25.6:** The grid must work by keyboard: one tab stop, arrow keys between
+  cells, and Enter to select.
+- **AC-25.7:** Every state must carry a word in the legend, the readout and each
+  cell's accessible name.
 
 ## Non-Functional Requirements
 

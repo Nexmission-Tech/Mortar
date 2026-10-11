@@ -866,6 +866,51 @@ control, and none appears. Do not "fix" this by removing the input.
   Below 640px the motif is hidden, the card sizes to its text, and the controls
   stay below it as before.
 
+### Sales Chart
+
+- **Purpose:** Shows every unit in the project by how far its booking has got
+  towards a signed SPA, as a floor-by-unit chart the sales gallery can read.
+- **Anatomy:**
+  1. Figures: a row of four [Stat Tile](#stat-tile)s: Units Booked, SPA Signed,
+     Expected SPAs In 30 Days (caption: the range and the bookings it counts)
+     and Needs Action.
+  2. Card: `--card` fill, 16px padding, 6px radius (`--radius-md`),
+     `Elevation/Card`. It holds the rest of the chart.
+     - Filter bar: three Buttons, each reading its label and count. The active
+       filter uses the default variant and the others the outline variant, and
+       each sets `aria-pressed`. Each filter has an [InfoTooltip](#tooltip).
+     - Legend: beside the filter bar, one item per state: a 10px swatch, the
+       state's word and its count.
+  3. Readout strip: a single line above the grid on `--muted` with a 6px radius,
+     `aria-live="polite"`. It names the unit under the pointer, or the last one
+     selected: its code, its state and who holds it.
+  4. Grid: one table per block, side by side in a horizontal scroll area, top
+     floor first. Cells are 18px squares with 2px spacing and a 3px radius.
+     Floor and unit labels are in Geist Mono.
+- **States and tokens:**
+  - `Available`: `--card` fill with a 1px `--border`.
+  - `In Progress` (the early booking state): `info` solid.
+  - `Loan Approved`: `positive` solid.
+  - `Needs Action`: `warning` solid with a 6px dot in `--status-warning-fg`.
+  - `Release Review`: `danger` solid with a short dash (8px by 2px) in `--card`.
+  - `SPA Signed`: `signed` solid.
+  - `Filtered out`: `--muted` fill with no mark.
+  - `Selected`: 2px `--foreground` ring with a 1px offset on `--card`.
+- **Rules:**
+  - Every state has a word: in the legend, in the readout and in each cell's
+    accessible name, such as `B-12-03, Needs Action`.
+  - The grid is one tab stop. Arrow keys move between cells and across blocks.
+    Enter selects the unit.
+  - A filter lights only the units the viewer may open, so its count is the
+    number of units it lights. Other units fade to `--muted` with no mark.
+  - The Needs Action and Release Review filters follow unit state, so the chip,
+    the figure and the legend agree. The Loan Approved, No SPA Appointment
+    filter reads the case instead, because it cuts across states.
+  - In Progress uses `info` rather than neutral grey. At cell size, grey sits
+    too close to the white of Available. It is not called Booked, because every
+    held unit is booked and the Units Booked figure counts them all.
+  - The header carries no "Simulated data" label.
+
 ### Drop Zone
 
 - **Purpose:** File upload target for importing booking sheets.
