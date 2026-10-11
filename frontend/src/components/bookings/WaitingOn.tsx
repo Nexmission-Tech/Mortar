@@ -15,7 +15,7 @@
 
 import { useState } from 'react'
 import type { KeyboardEvent, MouseEvent } from 'react'
-import { Plus } from 'lucide-react'
+import { BookOpen, Plus } from 'lucide-react'
 import { ballInCourt, type BallInCourt, type Booking, type CaseSummary, type EventKind } from '@mortar/core'
 import type { NextActionSuggestion } from '@mortar/core'
 import { BALL_HOLDER_ICONS, BALL_HOLDER_LABELS } from '@/components/case/ball'
@@ -149,6 +149,7 @@ export function WaitingOnPanel({
   onChanged,
   suggestion,
   wide = false,
+  onWhatToDo,
   className
 }: {
   booking: Booking
@@ -160,6 +161,8 @@ export function WaitingOnPanel({
   suggestion?: NextActionSuggestion
   /** Sets the next move beside the holder on large screens, for the case page banner. */
   wide?: boolean
+  /** Opens the reviewed guidance for this case's blocker, where the page offers it. */
+  onWhatToDo?: () => void
   className?: string
 }) {
   const ball = ballInCourt(summary)
@@ -277,6 +280,12 @@ export function WaitingOnPanel({
               disabled={adding !== null}
             >
               {addingAlternative ? 'Adding…' : 'Use This Action'}
+            </Button>
+          ) : null}
+          {onWhatToDo ? (
+            <Button type="button" variant="ghost" size="sm" className="h-8 px-2 text-[13px]" onClick={onWhatToDo}>
+              <BookOpen aria-hidden="true" />
+              What To Do
             </Button>
           ) : null}
           {summary.openTasks > 0 && !added ? (
