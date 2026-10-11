@@ -933,11 +933,14 @@ surface may use three.js or draw in 3D.
   the white card; filtered-out units draw in `--muted`. Hover outlines in
   `--muted-foreground`, selection in `--foreground`.
 - **Motion:** none unless the viewer moves it. The scene renders on demand,
-  never in a loop. Dragging rotates within limits and scrolling zooms; panning
-  is off. The All and Block presets reframe over `motion/base` (200ms), or at
-  once under reduced motion.
-- **Labels:** block names and every fifth floor in Geist, drawn in the DOM over
-  the canvas, never as canvas text.
+  never in a loop, and redraws after a lost GPU context returns. Dragging turns
+  the building within limits; zoom needs Ctrl or ⌘ with the wheel (or a trackpad
+  pinch), so a plain scroll still scrolls the page; panning is off. The All and
+  Block presets reframe from the starting angle over `motion/base` (200ms), or
+  at once under reduced motion, every time they are clicked. A data refresh
+  never moves the camera.
+- **Labels:** block names in Geist and every fifth floor plus the top floor in
+  Geist Mono, drawn in the DOM over the canvas, never as canvas text.
 - **Access:** the canvas is hidden from assistive technology, with a line that
   points to the Grid, which stays the chart's accessible form. A click that ends
   a drag never selects.

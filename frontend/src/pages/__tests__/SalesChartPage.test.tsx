@@ -9,12 +9,15 @@ import { buildSnapshot } from '@/components/bookings/__tests__/snapshotFixture'
 import { STATE_LABELS, unitsForSnapshot } from '@/components/sales-chart/salesChart'
 import { SalesChartPage } from '@/pages/SalesChartPage'
 
-const state = vi.hoisted(() => ({ snapshot: null as Snapshot | null, webgl: false }))
+const state = vi.hoisted(() => ({ snapshot: null as Snapshot | null, webgl: false, sceneFails: false }))
 
 vi.mock('@/components/sales-chart/webgl', () => ({ canUseWebGL: () => state.webgl }))
 // jsdom has no WebGL; the scene is checked in a real browser.
 vi.mock('@/components/sales-chart/SalesChartBuilding', () => ({
-  default: () => <div data-testid="building" />
+  default: () => {
+    if (state.sceneFails) throw new Error('Error creating WebGL context.')
+    return <div data-testid="building" />
+  }
 }))
 
 vi.mock('@/lib/api', async () => ({
@@ -74,6 +77,7 @@ describe('SalesChartPage', () => {
   beforeEach(() => {
     window.localStorage.clear()
     state.webgl = false
+    state.sceneFails = false
   })
 
   it('shows the figures, lights a filter, and opens a case from its unit', async () => {
@@ -182,5 +186,20 @@ describe('SalesChartPage', () => {
     expect((within(views).getByRole('button', { name: 'Building' }) as HTMLButtonElement).disabled).toBe(true)
     expect(screen.queryByTestId('building')).toBeNull()
     expect(screen.getAllByRole('table').length).toBeGreaterThan(0)
+  })
+
+  it('falls back to the Grid, and says why, when the 3D scene cannot start', async () => {
+    state.webgl = true
+    state.sceneFails = true
+    const quiet = vi.spyOn(console, 'error').mockImplementation(() => {})
+    renderPage('manager')
+    expect(
+      await screen.findByText('This Browser Could Not Draw The Building View. The Grid Shows The Same Units.')
+    ).toBeTruthy()
+    expect(screen.getAllByRole('table').length).toBeGreaterThan(0)
+    const views = screen.getByRole('group', { name: 'Chart view' })
+    expect((within(views).getByRole('button', { name: 'Building' }) as HTMLButtonElement).disabled).toBe(true)
+    expect(window.localStorage.getItem('mortar.salesChart.view')).toBe('grid')
+    quiet.mockRestore()
   })
 })

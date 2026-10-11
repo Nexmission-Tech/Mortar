@@ -1,8 +1,14 @@
-/** Whether this browser can draw the Building view. Never throws. */
+/**
+ * Whether this browser can draw the Building view. three.js asks for WebGL 2
+ * only, so WebGL 1 is not enough. The probe context is released straight away.
+ * Never throws.
+ */
 export function canUseWebGL(): boolean {
   try {
-    const canvas = document.createElement('canvas')
-    return Boolean(canvas.getContext('webgl2') ?? canvas.getContext('webgl'))
+    const gl = document.createElement('canvas').getContext('webgl2')
+    if (!gl) return false
+    gl.getExtension('WEBGL_lose_context')?.loseContext()
+    return true
   } catch {
     return false
   }

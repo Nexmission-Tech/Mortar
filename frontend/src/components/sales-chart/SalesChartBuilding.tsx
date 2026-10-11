@@ -14,7 +14,7 @@ import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import type { ChartUnit } from '@mortar/core'
 import { cn } from '@/lib/utils'
-import { buildingLayout, PODIUM_HEIGHT, UNIT_SIZE, type BuildingLayout, type Vec3 } from './buildingLayout'
+import { buildingLayout, layoutKey, PODIUM_HEIGHT, UNIT_SIZE, type BuildingLayout, type Vec3 } from './buildingLayout'
 import { sceneColors, type SceneColors } from './sceneColors'
 
 type SalesChartBuildingProps = {
@@ -72,8 +72,18 @@ function fitZoom(size: Vec3, width: number, height: number): number {
 
 type OrbitLike = { target: THREE.Vector3; update: () => void }
 
-/** Frames the building, or one tower, when the layout, the canvas or the focus changes. */
-function Framing({ layout, focus }: { layout: BuildingLayout; focus: string | null }) {
+/**
+ * Frames the building, or one tower, from the starting angle: on mount, when the
+ * canvas or the building's shape changes, and on every preset click. A data
+ * refresh that only recolours units leaves the camera where the viewer put it.
+ */
+function Framing({ layout, focus, nonce }: { layout: BuildingLayout; focus: string | null; nonce: number }) {
+  const shape = layoutKey(layout)
+  const latest = useRef(layout)
+  // Declared before the framing effect, so it runs first in the same commit.
+  useEffect(() => {
+    latest.current = layout
+  }, [layout])
   const width = useThree((s) => s.size.width)
   const height = useThree((s) => s.size.height)
   const get = useThree((s) => s.get)
@@ -83,19 +93,20 @@ function Framing({ layout, focus }: { layout: BuildingLayout; focus: string | nu
     // three.js objects are mutable by design; read them from the store, not from render.
     const { camera, invalidate } = get()
     const controls = get().controls as unknown as OrbitLike | null
-    const tower = focus ? layout.towers.find((t) => t.block === focus) : undefined
-    const frame = tower ?? { center: [0, layout.size[1] / 2, 0] as Vec3, size: layout.size }
+    const current = latest.current
+    const tower = focus ? current.towers.find((t) => t.block === focus) : undefined
+    const frame = tower ?? { center: [0, current.size[1] / 2, 0] as Vec3, size: current.size }
     const toTarget = new THREE.Vector3(...frame.center)
     const toZoom = fitZoom(frame.size, width, height)
     const fromTarget = controls ? controls.target.clone() : toTarget.clone()
     const fromZoom = camera.zoom
-    // Keep the viewer's current angle; only the point looked at and the zoom move.
-    const offset = controls
-      ? camera.position.clone().sub(controls.target)
-      : VIEW_DIRECTION.clone().multiplyScalar(CAMERA_DISTANCE)
+    // Back to the starting angle, so a preset always recovers a turned building.
+    const fromOffset = controls ? camera.position.clone().sub(controls.target) : null
+    const toOffset = VIEW_DIRECTION.clone().multiplyScalar(CAMERA_DISTANCE)
 
     const apply = (t: number) => {
       const target = fromTarget.clone().lerp(toTarget, t)
+      const offset = fromOffset ? fromOffset.clone().lerp(toOffset, t).setLength(CAMERA_DISTANCE) : toOffset
       camera.position.copy(target.clone().add(offset))
       camera.zoom = fromZoom + (toZoom - fromZoom) * t
       camera.updateProjectionMatrix()
@@ -120,7 +131,7 @@ function Framing({ layout, focus }: { layout: BuildingLayout; focus: string | nu
     }
     raf = requestAnimationFrame(step)
     return () => cancelAnimationFrame(raf)
-  }, [layout, focus, width, height, get])
+  }, [shape, focus, nonce, width, height, get])
 
   return null
 }
@@ -203,12 +214,22 @@ function Units({
   )
 }
 
-const OUTLINE = new THREE.EdgesGeometry(new THREE.BoxGeometry(UNIT_SIZE.w * 1.1, UNIT_SIZE.h * 1.14, UNIT_SIZE.d * 1.1))
+/** The edges drawn round a hovered or selected unit; one per scene, disposed with it. */
+function useOutlineGeometry(): THREE.EdgesGeometry {
+  const geometry = useMemo(() => {
+    const box = new THREE.BoxGeometry(UNIT_SIZE.w * 1.1, UNIT_SIZE.h * 1.14, UNIT_SIZE.d * 1.1)
+    const edges = new THREE.EdgesGeometry(box)
+    box.dispose()
+    return edges
+  }, [])
+  useEffect(() => () => geometry.dispose(), [geometry])
+  return geometry
+}
 
-function Outline({ at, color }: { at: Vec3 | undefined; color: string }) {
+function Outline({ at, color, geometry }: { at: Vec3 | undefined; color: string; geometry: THREE.EdgesGeometry }) {
   if (!at) return null
   return (
-    <lineSegments position={at} geometry={OUTLINE}>
+    <lineSegments position={at} geometry={geometry}>
       <lineBasicMaterial color={color} />
     </lineSegments>
   )
@@ -264,6 +285,43 @@ function LabelProjector({ anchors, labels }: { anchors: Anchor[]; labels: RefObj
   return null
 }
 
+const MIN_ZOOM = 4
+const MAX_ZOOM = 90
+
+/**
+ * Zooms only with Ctrl or ⌘ held (a trackpad pinch sends the same), so a plain
+ * scroll over the 620px canvas still scrolls the page, as a presenter expects.
+ */
+function WheelZoom() {
+  const get = useThree((s) => s.get)
+  const element = useThree((s) => s.gl.domElement)
+  useEffect(() => {
+    const onWheel = (event: WheelEvent) => {
+      if (!event.ctrlKey && !event.metaKey) return
+      event.preventDefault()
+      const { camera, invalidate } = get()
+      camera.zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, camera.zoom * Math.exp(-event.deltaY * 0.002)))
+      camera.updateProjectionMatrix()
+      invalidate()
+    }
+    element.addEventListener('wheel', onWheel, { passive: false })
+    return () => element.removeEventListener('wheel', onWheel)
+  }, [element, get])
+  return null
+}
+
+/** Draws again once the browser hands back a lost GPU context; on demand, nothing else would. */
+function ContextRestore() {
+  const invalidate = useThree((s) => s.invalidate)
+  const element = useThree((s) => s.gl.domElement)
+  useEffect(() => {
+    const redraw = () => invalidate()
+    element.addEventListener('webglcontextrestored', redraw)
+    return () => element.removeEventListener('webglcontextrestored', redraw)
+  }, [element, invalidate])
+  return null
+}
+
 function Scene({
   units,
   layout,
@@ -272,15 +330,18 @@ function Scene({
   focus,
   onSelect,
   onHover,
+  nonce,
   anchors,
   labels
 }: SalesChartBuildingProps & {
   layout: BuildingLayout
   focus: string | null
+  nonce: number
   anchors: Anchor[]
   labels: RefObject<Map<string, HTMLSpanElement>>
 }) {
   const colors = useSceneColors()
+  const outline = useOutlineGeometry()
   const [hoverIndex, setHoverIndex] = useState<number | null>(null)
   const indexOf = useMemo(() => new Map(units.map((unit, i) => [unit.code, i])), [units])
   const selectedUnit = selected !== null ? units[indexOf.get(selected) ?? -1] : undefined
@@ -317,9 +378,11 @@ function Scene({
       />
 
       {hoveredUnit && hoveredUnit.code !== selected ? (
-        <Outline at={layout.positions.get(hoveredUnit.code)} color={colors.hovered} />
+        <Outline at={layout.positions.get(hoveredUnit.code)} color={colors.hovered} geometry={outline} />
       ) : null}
-      {selectedUnit ? <Outline at={layout.positions.get(selectedUnit.code)} color={colors.selected} /> : null}
+      {selectedUnit ? (
+        <Outline at={layout.positions.get(selectedUnit.code)} color={colors.selected} geometry={outline} />
+      ) : null}
 
       <LabelProjector anchors={anchors} labels={labels} />
 
@@ -331,10 +394,11 @@ function Scene({
         maxPolarAngle={Math.PI / 2 - VIEW_ELEVATION + 0.3}
         minAzimuthAngle={START_AZIMUTH - 1.2}
         maxAzimuthAngle={START_AZIMUTH + 1.2}
-        minZoom={4}
-        maxZoom={90}
+        enableZoom={false}
       />
-      <Framing layout={layout} focus={focus} />
+      <WheelZoom />
+      <ContextRestore />
+      <Framing layout={layout} focus={focus} nonce={nonce} />
     </>
   )
 }
@@ -344,6 +408,8 @@ export function SalesChartBuilding(props: SalesChartBuildingProps) {
   const anchors = useMemo(() => labelAnchors(layout), [layout])
   const labels = useRef(new Map<string, HTMLSpanElement>())
   const [focus, setFocus] = useState<string | null>(null)
+  // Every click reframes, even on the preset already pressed.
+  const [nonce, setNonce] = useState(0)
   const presets = [{ id: null, label: 'All' }, ...layout.towers.map((t) => ({ id: t.block, label: t.block }))]
   const start = VIEW_DIRECTION.clone().multiplyScalar(CAMERA_DISTANCE)
 
@@ -359,7 +425,10 @@ export function SalesChartBuilding(props: SalesChartBuildingProps) {
             key={preset.label}
             type="button"
             aria-pressed={focus === preset.id}
-            onClick={() => setFocus(preset.id)}
+            onClick={() => {
+              setFocus(preset.id)
+              setNonce((n) => n + 1)
+            }}
             className={cn(
               'h-7 min-w-8 rounded-sm px-2.5 text-xs font-medium outline-none transition-colors duration-[var(--motion-fast)] focus-visible:ring-2 focus-visible:ring-ring',
               focus === preset.id
@@ -371,6 +440,9 @@ export function SalesChartBuilding(props: SalesChartBuildingProps) {
           </button>
         ))}
       </div>
+      <p className="absolute right-0 top-1.5 z-[1] text-xs text-muted-foreground max-sm:hidden">
+        Drag To Turn · Ctrl Or ⌘ And Scroll To Zoom
+      </p>
       <p className="sr-only">
         Building View Of {props.projectName ?? 'The Project'}. Use The Grid View To Move Between Units By Keyboard.
       </p>
@@ -397,7 +469,7 @@ export function SalesChartBuilding(props: SalesChartBuildingProps) {
           dpr={[1, 2]}
           camera={{ position: [start.x, start.y, start.z], zoom: 10, near: 0.1, far: 1000 }}
         >
-          <Scene {...props} layout={layout} focus={focus} anchors={anchors} labels={labels} />
+          <Scene {...props} layout={layout} focus={focus} nonce={nonce} anchors={anchors} labels={labels} />
         </Canvas>
       </div>
     </div>

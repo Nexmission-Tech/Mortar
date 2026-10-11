@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import { chartUnits, DEFAULT_PROJECT_SETTINGS } from '@mortar/core'
-import { buildingLayout, FLOOR_HEIGHT, PODIUM_HEIGHT, UNIT_SIZE } from '../buildingLayout'
+import { buildingLayout, FLOOR_HEIGHT, layoutKey, PODIUM_HEIGHT, UNIT_SIZE } from '../buildingLayout'
 
 const units = chartUnits(DEFAULT_PROJECT_SETTINGS, [])
 
@@ -53,5 +53,14 @@ describe('buildingLayout', () => {
     const none = buildingLayout([])
     expect(none.positions.size).toBe(0)
     expect(none.towers).toEqual([])
+  })
+
+  test('keys the framing on the building’s shape, not on unit states', () => {
+    const recoloured = chartUnits(DEFAULT_PROJECT_SETTINGS, [
+      { code: 'A-03-01', state: 'signed', bookingId: 'BK-1', heldBy: 'Nurul Aina' }
+    ])
+    expect(layoutKey(buildingLayout(recoloured))).toBe(layoutKey(layout))
+    const smaller = chartUnits({ ...DEFAULT_PROJECT_SETTINGS, blocks: ['A', 'B'] }, [])
+    expect(layoutKey(buildingLayout(smaller))).not.toBe(layoutKey(layout))
   })
 })

@@ -55,3 +55,8 @@ export function buildingLayout(units: ChartUnit[]): BuildingLayout {
     floors: floorNumbers.map((floor) => ({ label: floorLabels.get(floor)!, y: yOf(floor) }))
   }
 }
+
+/** Equal for any two layouts of the same shape, whatever their units' states, so a data refresh never reframes the camera. */
+export function layoutKey(layout: BuildingLayout): string {
+  return [layout.towers.map((t) => t.block).join(','), ...layout.size.map((v) => v.toFixed(3))].join('|')
+}

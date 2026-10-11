@@ -35,6 +35,7 @@ import {
 } from '@/components/sales-chart/salesChart'
 import { UNIT_FILL } from '@/components/sales-chart/unitTone'
 import { canUseWebGL } from '@/components/sales-chart/webgl'
+import { BuildingBoundary } from '@/components/sales-chart/BuildingBoundary'
 
 // three.js loads only when the Building view first draws.
 const SalesChartBuilding = lazy(() => import('@/components/sales-chart/SalesChartBuilding'))
@@ -64,7 +65,8 @@ export function SalesChartPage() {
   const clearHover = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [selected, setSelected] = useState<string | null>(null)
   const [inspecting, setInspecting] = useState<string | null>(null)
-  const [webgl] = useState(canUseWebGL)
+  const [webgl, setWebgl] = useState(canUseWebGL)
+  const [sceneFailed, setSceneFailed] = useState(false)
   const [view, setViewState] = useState<ChartView>(() => initialView(webgl))
   const setView = (next: ChartView) => {
     setViewState(next)
@@ -236,6 +238,11 @@ export function SalesChartPage() {
               </ul>
             </div>
 
+            {sceneFailed ? (
+              <p role="status" className="mt-3 text-sm text-muted-foreground">
+                This Browser Could Not Draw The Building View. The Grid Shows The Same Units.
+              </p>
+            ) : null}
             {lit && lit.size === 0 ? (
               <p role="status" className="mt-3 text-sm text-muted-foreground">
                 {persona === 'manager'
@@ -248,16 +255,24 @@ export function SalesChartPage() {
 
             <div className="mt-3">
               {view === 'building' ? (
-                <Suspense fallback={<Skeleton className="h-[620px]" />}>
-                  <SalesChartBuilding
-                    units={units}
-                    lit={lit}
-                    selected={selected}
-                    onSelect={select}
-                    onHover={hover}
-                    projectName={settings.projectName}
-                  />
-                </Suspense>
+                <BuildingBoundary
+                  onFail={() => {
+                    setSceneFailed(true)
+                    setWebgl(false)
+                    setView('grid')
+                  }}
+                >
+                  <Suspense fallback={<Skeleton className="h-[620px]" />}>
+                    <SalesChartBuilding
+                      units={units}
+                      lit={lit}
+                      selected={selected}
+                      onSelect={select}
+                      onHover={hover}
+                      projectName={settings.projectName}
+                    />
+                  </Suspense>
+                </BuildingBoundary>
               ) : (
                 <SalesChartGrid units={units} lit={lit} selected={selected} onSelect={select} onHover={hover} />
               )}
