@@ -1,8 +1,8 @@
 /**
  * Where each unit sits in the Building view, in scene units. Each block is a
- * slab two units deep: units 1 to half run left to right along the front row,
- * the rest come back right to left along the rear, as numbers wrap a corridor
- * on a real floor plate. Pure, so it is tested without WebGL.
+ * slab one unit deep with its units in a row, left to right, so every unit
+ * faces the viewer as it does on a sales chart; the blocks stand side by side.
+ * Pure, so it is tested without WebGL.
  */
 import type { ChartUnit } from '@mortar/core'
 
@@ -33,8 +33,7 @@ export function buildingLayout(units: ChartUnit[]): BuildingLayout {
   const floorNumbers = [...floorLabels.keys()].sort((a, b) => a - b)
   const lowest = floorNumbers[0]!
   const highest = floorNumbers[floorNumbers.length - 1]!
-  const perFloor = Math.max(...units.map((u) => u.unit))
-  const cols = Math.ceil(perFloor / 2)
+  const cols = Math.max(...units.map((u) => u.unit))
   const totalWidth = blocks.length * cols + (blocks.length - 1) * TOWER_GAP
   const yOf = (floor: number) => PODIUM_HEIGHT + (floor - lowest) * FLOOR_HEIGHT + UNIT_SIZE.h / 2
   const towerLeft = (i: number) => -totalWidth / 2 + i * (cols + TOWER_GAP)
@@ -42,10 +41,7 @@ export function buildingLayout(units: ChartUnit[]): BuildingLayout {
   const positions = new Map<string, Vec3>()
   for (const unit of units) {
     const i = blocks.indexOf(unit.block)
-    const front = unit.unit <= cols
-    // The rear row runs back from the far end, so unit `perFloor` sits behind unit 1.
-    const col = front ? unit.unit - 1 : perFloor - unit.unit
-    positions.set(unit.code, [towerLeft(i) + col + 0.5, yOf(unit.floor), front ? 0.5 : -0.5])
+    positions.set(unit.code, [towerLeft(i) + unit.unit - 0.5, yOf(unit.floor), 0])
   }
   const height = yOf(highest) + UNIT_SIZE.h / 2
   return {
@@ -53,9 +49,9 @@ export function buildingLayout(units: ChartUnit[]): BuildingLayout {
     towers: blocks.map((block, i) => ({
       block,
       center: [towerLeft(i) + cols / 2, height / 2, 0],
-      size: [cols, height, 2]
+      size: [cols, height, 1]
     })),
-    size: [totalWidth, height, 2],
+    size: [totalWidth, height, 1],
     floors: floorNumbers.map((floor) => ({ label: floorLabels.get(floor)!, y: yOf(floor) }))
   }
 }

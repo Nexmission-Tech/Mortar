@@ -20,18 +20,14 @@ describe('buildingLayout', () => {
     expect(y28 - y3).toBeCloseTo(25 * FLOOR_HEIGHT)
   })
 
-  test('wraps unit numbers around the corridor: front row left to right, back row right to left', () => {
+  test('runs each floor’s units left to right in one row facing the viewer', () => {
     const [x1, , z1] = layout.positions.get('A-03-01')!
-    const [x6, , z6] = layout.positions.get('A-03-06')!
-    const [x7, , z7] = layout.positions.get('A-03-07')!
+    const [x2] = layout.positions.get('A-03-02')!
     const [x12, , z12] = layout.positions.get('A-03-12')!
-    expect(z1).toBeGreaterThan(0)
-    expect(z6).toBeCloseTo(z1)
-    expect(z7).toBeLessThan(0)
-    expect(x6).toBeGreaterThan(x1)
-    expect(x7).toBeCloseTo(x6)
-    expect(x12).toBeCloseTo(x1)
-    expect(z12).toBeCloseTo(z7)
+    expect(x2 - x1).toBeCloseTo(1)
+    expect(x12 - x1).toBeCloseTo(11)
+    expect(z1).toBe(0)
+    expect(z12).toBe(0)
   })
 
   test('puts the blocks side by side, centred on the origin', () => {

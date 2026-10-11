@@ -9,7 +9,13 @@ import { buildSnapshot } from '@/components/bookings/__tests__/snapshotFixture'
 import { STATE_LABELS, unitsForSnapshot } from '@/components/sales-chart/salesChart'
 import { SalesChartPage } from '@/pages/SalesChartPage'
 
-const state = vi.hoisted(() => ({ snapshot: null as Snapshot | null }))
+const state = vi.hoisted(() => ({ snapshot: null as Snapshot | null, webgl: false }))
+
+vi.mock('@/components/sales-chart/webgl', () => ({ canUseWebGL: () => state.webgl }))
+// jsdom has no WebGL; the scene is checked in a real browser.
+vi.mock('@/components/sales-chart/SalesChartBuilding', () => ({
+  default: () => <div data-testid="building" />
+}))
 
 vi.mock('@/lib/api', async () => ({
   fetchSnapshot: vi.fn(async () => state.snapshot),
@@ -67,6 +73,7 @@ function renderPage(persona: Persona, patch: Partial<Snapshot> = {}) {
 describe('SalesChartPage', () => {
   beforeEach(() => {
     window.localStorage.clear()
+    state.webgl = false
   })
 
   it('shows the figures, lights a filter, and opens a case from its unit', async () => {
@@ -152,5 +159,28 @@ describe('SalesChartPage', () => {
     })
     // The modal sheet hides the page from the accessibility tree while it is open.
     expect(await screen.findByRole('button', { name: 'A-12-03, SPA Signed', hidden: true })).toBeTruthy()
+  })
+
+  it('opens on the Building view where WebGL works, and remembers a switch to the Grid', async () => {
+    state.webgl = true
+    const first = renderPage('manager')
+    expect(await screen.findByTestId('building')).toBeTruthy()
+    const views = screen.getByRole('group', { name: 'Chart view' })
+    fireEvent.click(within(views).getByRole('button', { name: 'Grid' }))
+    expect(screen.queryByTestId('building')).toBeNull()
+    expect(screen.getAllByRole('table').length).toBeGreaterThan(0)
+    expect(window.localStorage.getItem('mortar.salesChart.view')).toBe('grid')
+    first.unmount()
+    renderPage('manager')
+    expect(await screen.findByRole('group', { name: 'Chart view' })).toBeTruthy()
+    expect(screen.queryByTestId('building')).toBeNull()
+  })
+
+  it('stays on the Grid without WebGL and says why the Building view is off', async () => {
+    renderPage('manager')
+    const views = await screen.findByRole('group', { name: 'Chart view' })
+    expect((within(views).getByRole('button', { name: 'Building' }) as HTMLButtonElement).disabled).toBe(true)
+    expect(screen.queryByTestId('building')).toBeNull()
+    expect(screen.getAllByRole('table').length).toBeGreaterThan(0)
   })
 })
