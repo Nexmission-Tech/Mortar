@@ -98,13 +98,13 @@ Mortar is structured as a Bun multi-package monorepo configured in
 `package.json`. It isolates core domain logic from transport and presentation
 layers.
 
-| Directory        | Package / Workspace  | Responsibility                                                     |
-| ---------------- | -------------------- | ------------------------------------------------------------------ |
-| `packages/core/` | `@mortar/core`       | Contract types, Monte Carlo simulation, forecasting, and fixtures  |
-| `packages/jev/`  | `@mortar/jev`        | Server-only TypeSafe Jev service client, questions, and fallbacks  |
-| `server/`        | Workspace `server`   | Bun HTTP server, SQL schema, REST endpoints, and precompute script |
-| `frontend/`      | Workspace `frontend` | React 19, Vite, Tailwind CSS 4, shadcn/ui components, and pages    |
-| `docs/`          | Non-package          | Technical, product, and design system documentation                |
+| Directory        | Package / Workspace  | Responsibility                                                                                                                                                       |
+| ---------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/core/` | `@mortar/core`       | Contract types, Monte Carlo simulation, forecasting, and fixtures                                                                                                    |
+| `packages/jev/`  | `@mortar/jev`        | Server-only TypeSafe Jev service client, questions, and fallbacks                                                                                                    |
+| `server/`        | Workspace `server`   | Bun HTTP server, SQL schema, REST endpoints, and precompute script                                                                                                   |
+| `frontend/`      | Workspace `frontend` | React 19, Vite, Tailwind CSS 4, shadcn/ui components, and pages; three.js with react-three-fiber for the Sales Chart's Building view, in its own lazily loaded chunk |
+| `docs/`          | Non-package          | Technical, product, and design system documentation                                                                                                                  |
 
 Key files within each package include:
 

@@ -39,15 +39,15 @@ Contents:
 Seven core decisions were settled during design system research. All seven are
 binding, and nothing below reopens them.
 
-| Question        | Decision                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Look            | Flat ledger: white ground, white cards lifted off it by `Elevation/Card`, 6px radius. The one glass surface is the Bookings bulk-action island, which floats at the bottom centre while rows are selected, with a translucent card fill and a backdrop blur. Shared modal overlays and the sidebar scrim use the scrim blur token. No gradient or glow blob in the application; the landing's chromatic panel is the one sanctioned gradient. A card is separated from the page by its shadow, never by a coloured edge strip and never by a grey page band. |
-| Status colour   | Ink is the action colour everywhere, the landing included; the application carries no chromatic accent. The landing panel is the one chromatic surface, scoped to public pages. Six status tones carry every state, each always with a word. The four desk colours, on the role label and the profile avatar only, say whose work it is.                                                                                                                                                                                                                     |
-| Type            | Geist for UI, Geist Mono for unit codes and IDs. Nine text styles. No third family.                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| Density         | Controls 36px, table rows 44px, body 14px. Built for a working day in lists.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| Native controls | None. Select, date picker, menu, tooltip, file drop, checkbox and scrollbar are Mortar components (Radix/shadcn restyled). No alert/confirm/prompt.                                                                                                                                                                                                                                                                                                                                                                                                          |
-| Modes           | Light and dark from one token set (Color collection has Light and Dark modes).                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| Icons           | Lucide (lucide-react), 16px, stroke 2, coloured like adjacent text. 20px in empty states.                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| Question        | Decision                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Look            | Flat ledger: white ground, white cards lifted off it by `Elevation/Card`, 6px radius. The one glass surface is the Bookings bulk-action island, which floats at the bottom centre while rows are selected, with a translucent card fill and a backdrop blur. Shared modal overlays and the sidebar scrim use the scrim blur token. No gradient or glow blob in the application; the landing's chromatic panel is the one sanctioned gradient. The Sales Chart's Building view is the one 3D surface (see [Building View](#building-view)). A card is separated from the page by its shadow, never by a coloured edge strip and never by a grey page band. |
+| Status colour   | Ink is the action colour everywhere, the landing included; the application carries no chromatic accent. The landing panel is the one chromatic surface, scoped to public pages. Six status tones carry every state, each always with a word. The four desk colours, on the role label and the profile avatar only, say whose work it is.                                                                                                                                                                                                                                                                                                                  |
+| Type            | Geist for UI, Geist Mono for unit codes and IDs. Nine text styles. No third family.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Density         | Controls 36px, table rows 44px, body 14px. Built for a working day in lists.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Native controls | None. Select, date picker, menu, tooltip, file drop, checkbox and scrollbar are Mortar components (Radix/shadcn restyled). No alert/confirm/prompt.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Modes           | Light and dark from one token set (Color collection has Light and Dark modes).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Icons           | Lucide (lucide-react), 16px, stroke 2, coloured like adjacent text. 20px in empty states.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 
 Mortar is an internal operations tool for developer staff tracking property unit
 bookings from initial deposit through loan submission, loan approval, and final
@@ -911,6 +911,40 @@ control, and none appears. Do not "fix" this by removing the input.
     held unit is booked and the Units Booked figure counts them all.
   - The header carries no "Simulated data" label.
 
+#### Building View
+
+The one 3D surface in the product, and a named exception in the style of the
+landing gradient and the glass island. It is scoped to `/sales-chart`; no other
+surface may use three.js or draw in 3D.
+
+- **Switch:** a Building and Grid switch styled like Today's Mine and Everyone
+  switch. Building is the default where WebGL works and the window is at least
+  720px wide; the choice is remembered under `mortar.salesChart.view`. Without
+  WebGL the Building button is disabled and an InfoTooltip says the Grid shows
+  the same units.
+- **Scene:** each block a slab one unit deep, its units in a row, so every unit
+  faces the viewer; blocks stand side by side on a `--muted` podium. An
+  orthographic camera starts a little left of square on and about 22° above.
+- **Shading:** flat. Lambert boxes under one ambient and one directional light
+  give three fixed face steps; the top face shows the token's own colour. No
+  gradient, glow, glass, texture, shadow or transparency.
+- **Colour:** read at runtime from the status tokens, so the scene follows dark
+  mode. Available draws in `--border`, because a white top face vanishes against
+  the white card; filtered-out units draw in `--muted`. Hover outlines in
+  `--muted-foreground`, selection in `--foreground`.
+- **Motion:** none unless the viewer moves it. The scene renders on demand,
+  never in a loop, and redraws after a lost GPU context returns. Dragging turns
+  the building within limits; zoom needs Ctrl or ⌘ with the wheel (or a trackpad
+  pinch), so a plain scroll still scrolls the page; panning is off. The All and
+  Block presets reframe from the starting angle over `motion/base` (200ms), or
+  at once under reduced motion, every time they are clicked. A data refresh
+  never moves the camera.
+- **Labels:** block names in Geist and every fifth floor plus the top floor in
+  Geist Mono, drawn in the DOM over the canvas, never as canvas text.
+- **Access:** the canvas is hidden from assistive technology, with a line that
+  points to the Grid, which stays the chart's accessible form. A click that ends
+  a drag never selects.
+
 ### Drop Zone
 
 - **Purpose:** File upload target for importing booking sheets.
@@ -1321,8 +1355,10 @@ and dark modes:
   glass surface; no other surface may use glass or an extra backdrop blur.
   Shared modal overlays and the sidebar scrim use `--scrim-blur`. The landing's
   chromatic panel is the one sanctioned gradient and no desk may reference it.
-  Card shadows are not on this list: cards carry `--shadow-card`, and nothing
-  invents a shadow of its own outside that token and `--shadow-overlay`.
+  The Sales Chart's Building view is the one 3D surface; its flat face steps are
+  not gradients, and no other surface may draw in 3D. Card shadows are not on
+  this list: cards carry `--shadow-card`, and nothing invents a shadow of its
+  own outside that token and `--shadow-overlay`.
 - **Do not** run a coloured strip, bar, rule or accent edge along any border of
   a card, stat tile or panel, in any tone, at any width, on any side. Urgency,
   risk and status are carried by the pill and its word. The only edges a card
@@ -1349,7 +1385,7 @@ and dark modes:
   the landing page. The hero's "Open Mortar" is the page's only Primary and its
   only link.
 - **Do not** reintroduce video, autoplay or a looping background to any surface
-  in the product.
+  in the product. The Building view renders on demand and moves only on input.
 - **Do not** apply colored background washes or zebra striping to table rows.
 - **Do not** use emoji as icons, or import a secondary icon set beyond Lucide.
 - **Do not** load a third typeface family, or style text outside the nine

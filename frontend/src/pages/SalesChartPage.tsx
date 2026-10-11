@@ -4,7 +4,7 @@
  * and a readout of the unit under the pointer. Clicking a unit the viewer may
  * open brings up the same side sheet Today and Bookings use.
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { SearchX } from 'lucide-react'
 import { DEFAULT_PROJECT_SETTINGS, forecast, type ChartUnit } from '@mortar/core'
@@ -34,6 +34,26 @@ import {
   type ChartFilter
 } from '@/components/sales-chart/salesChart'
 import { UNIT_FILL } from '@/components/sales-chart/unitTone'
+import { canUseWebGL } from '@/components/sales-chart/webgl'
+import { BuildingBoundary } from '@/components/sales-chart/BuildingBoundary'
+
+// three.js loads only when the Building view first draws.
+const SalesChartBuilding = lazy(() => import('@/components/sales-chart/SalesChartBuilding'))
+
+type ChartView = 'building' | 'grid'
+const VIEW_KEY = 'mortar.salesChart.view'
+
+/** The view to open on: the viewer's last choice, else Building where it can draw and fits. */
+function initialView(webgl: boolean): ChartView {
+  if (!webgl) return 'grid'
+  try {
+    const stored = window.localStorage.getItem(VIEW_KEY)
+    if (stored === 'building' || stored === 'grid') return stored
+  } catch {
+    // Storage blocked: fall through to the default.
+  }
+  return window.innerWidth >= 720 ? 'building' : 'grid'
+}
 
 export function SalesChartPage() {
   const { snapshot, loading, error, refresh } = useSnapshot()
@@ -45,6 +65,17 @@ export function SalesChartPage() {
   const clearHover = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [selected, setSelected] = useState<string | null>(null)
   const [inspecting, setInspecting] = useState<string | null>(null)
+  const [webgl, setWebgl] = useState(canUseWebGL)
+  const [sceneFailed, setSceneFailed] = useState(false)
+  const [view, setViewState] = useState<ChartView>(() => initialView(webgl))
+  const setView = (next: ChartView) => {
+    setViewState(next)
+    try {
+      window.localStorage.setItem(VIEW_KEY, next)
+    } catch {
+      // Storage blocked: the choice lasts for this visit only.
+    }
+  }
 
   const setFilter = (next: ChartFilter | null) =>
     setParams(
@@ -156,6 +187,28 @@ export function SalesChartPage() {
 
           <section className="mt-4 rounded-md bg-card p-4 shadow-card" aria-label="Units">
             <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <div role="group" aria-label="Chart view" className="flex rounded-md bg-muted p-0.5">
+                  {(['building', 'grid'] as const).map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      aria-pressed={view === option}
+                      disabled={option === 'building' && !webgl}
+                      onClick={() => setView(option)}
+                      className={cn(
+                        'h-7 rounded-sm px-2.5 text-xs font-medium outline-none transition-colors duration-[var(--motion-fast)] focus-visible:ring-2 focus-visible:ring-ring disabled:text-disabled-foreground',
+                        view === option
+                          ? 'bg-card text-foreground shadow-card'
+                          : 'text-muted-foreground hover:text-foreground'
+                      )}
+                    >
+                      {option === 'building' ? 'Building' : 'Grid'}
+                    </button>
+                  ))}
+                </div>
+                {!webgl ? <InfoTooltip text="This Browser Cannot Draw 3D. The Grid Shows The Same Units." /> : null}
+              </div>
               <div role="group" aria-label="Filter units" className="flex flex-wrap items-center gap-2">
                 {CHART_FILTERS.map((f) => (
                   <span key={f.id} className="inline-flex items-center gap-1">
@@ -185,6 +238,11 @@ export function SalesChartPage() {
               </ul>
             </div>
 
+            {sceneFailed ? (
+              <p role="status" className="mt-3 text-sm text-muted-foreground">
+                This Browser Could Not Draw The Building View. The Grid Shows The Same Units.
+              </p>
+            ) : null}
             {lit && lit.size === 0 ? (
               <p role="status" className="mt-3 text-sm text-muted-foreground">
                 {persona === 'manager'
@@ -196,7 +254,28 @@ export function SalesChartPage() {
             <Readout unit={shown} />
 
             <div className="mt-3">
-              <SalesChartGrid units={units} lit={lit} selected={selected} onSelect={select} onHover={hover} />
+              {view === 'building' ? (
+                <BuildingBoundary
+                  onFail={() => {
+                    setSceneFailed(true)
+                    setWebgl(false)
+                    setView('grid')
+                  }}
+                >
+                  <Suspense fallback={<Skeleton className="h-[620px]" />}>
+                    <SalesChartBuilding
+                      units={units}
+                      lit={lit}
+                      selected={selected}
+                      onSelect={select}
+                      onHover={hover}
+                      projectName={settings.projectName}
+                    />
+                  </Suspense>
+                </BuildingBoundary>
+              ) : (
+                <SalesChartGrid units={units} lit={lit} selected={selected} onSelect={select} onHover={hover} />
+              )}
             </div>
           </section>
         </>
