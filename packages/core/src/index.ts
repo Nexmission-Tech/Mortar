@@ -7,6 +7,7 @@
 export type * from './types'
 export * from './profiles'
 export * from './projectSettings'
+export * from './units'
 export * from './manager'
 export * from './sim'
 export * from './ball'

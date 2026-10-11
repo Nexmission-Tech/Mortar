@@ -11,6 +11,9 @@ export interface UnitModel {
   bathrooms?: number
 }
 
+/** How floors and units are numbered. `skip-four` writes 4 as 03A, 14 as 13A, 24 as 23A. */
+export type UnitNumbering = 'plain' | 'skip-four'
+
 export interface ProjectSettings {
   projectName: string
   /** Legacy single-block setting, retained for existing imports. */
@@ -20,6 +23,8 @@ export interface ProjectSettings {
   minFloor: number
   maxFloor: number
   unitsPerFloor: number
+  /** Missing on records saved before numbering existed: read as plain. */
+  numbering?: UnitNumbering
   defaultLawFirm: string
   defaultPriceRm: number
   models: UnitModel[]
@@ -72,10 +77,11 @@ export const DEFAULT_UNIT_MODELS: UnitModel[] = [
 export const DEFAULT_PROJECT_SETTINGS: ProjectSettings = {
   projectName: PROJECT_NAME,
   blockPrefix: 'A',
-  blocks: ['A'],
-  minFloor: 1,
-  maxFloor: 35,
+  blocks: ['A', 'B', 'C'],
+  minFloor: 3,
+  maxFloor: 28,
   unitsPerFloor: 12,
+  numbering: 'skip-four',
   defaultLawFirm: 'Teh & Partners',
   defaultPriceRm: 480_000,
   models: DEFAULT_UNIT_MODELS,
@@ -167,6 +173,7 @@ export function normalizeProjectSettings(value: unknown): ProjectSettings | null
     minFloor: v.minFloor!,
     maxFloor: v.maxFloor!,
     unitsPerFloor: v.unitsPerFloor!,
+    numbering: v.numbering === 'skip-four' ? 'skip-four' : 'plain',
     defaultLawFirm: v.defaultLawFirm.trim(),
     defaultPriceRm: v.defaultPriceRm!,
     models: cleanModels,

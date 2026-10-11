@@ -100,7 +100,7 @@ export const LAW_FIRMS = [
 
 const SOLICITORS = ['Audrey Lim', 'S. Devan', 'Rachel Kuan', 'Jason Teh', 'Priya Raman', 'Kelvin Yap'] as const
 
-export const PROJECT_NAME = 'Residensi Cahaya Muda'
+export const PROJECT_NAME = 'Aster Heights'
 
 export function pickSalesAgent(rng: Rng): string {
   return rng.pick(SALES_AGENTS)
