@@ -955,11 +955,13 @@ surface may use three.js or draw in 3D.
   barrier lanes, a drop-off canopy, a water feature and palms; a car park ramp
   up the podium's side; ventilation bands and a planted edge on the podium; a
   lawned facility deck with a lap pool and a children's pool on a stone terrace,
-  a lawn and a playground between the towers, two BBQ pavilions, a glass gym, a
-  hall, a jogging loop, a covered walkway and a row of trees; shade trees round
-  the boundary; and quiet neighbours across the road. Facility labels, the name
-  plate and a north mark show in the All framing only, which fits the whole
-  plinth. No cars or people.
+  a lawn and a playground between the towers where the gaps allow, two BBQ
+  pavilions, a glass gym, a hall, a jogging loop, a covered walkway and a row of
+  trees; shade trees round the boundary; and quiet neighbours across the road.
+  Facilities claim deck space in turn and never overlap: a small podium shows
+  fewer of them, not crowded ones. Facility labels, the name plate and a north
+  mark show in the front All framing only, which fits the whole plinth. No cars
+  or people.
 - **Shading:** a hemisphere light and one sun from the upper left front cast one
   soft shadow. Tone mapping is off, so a lit top face shows its token's own
   colour. No tinted light, reflections, glow or bloom.

@@ -439,9 +439,10 @@ function labelAnchors(model: TowerModel, focus: string | null, side: Side, site:
           className: FLOOR_LABEL
         }))
     : []
-  // The site's facility labels, name plate and north mark belong to the All framing.
+  // The site's facility labels, name plate and north mark belong to the front
+  // All framing; from behind, the towers hide the deck the labels name.
   const sites =
-    focus === null
+    focus === null && side === 'front'
       ? site.labels.map((l) => ({
           key: l.key,
           text: l.text,
@@ -512,8 +513,10 @@ function ContextRestore() {
 /** A hemisphere light and one sun from the upper left front, its shadow sized to the model. */
 function Lights({ bounds, colors }: { bounds: { min: Vec3; max: Vec3 }; colors: SceneColors }) {
   const { min, max } = bounds
-  // The sun aims at the origin, so its shadow reaches the plinth's furthest corner from it.
-  const span = Math.max(...[min[0], max[0], min[2], max[2]].map(Math.abs), max[1]) * 1.05
+  // The sun aims at the origin and its shadow square turns with it, so it must
+  // reach the furthest top corner of the model in any direction.
+  const span =
+    Math.max(...[min[0], max[0]].flatMap((x) => [min[2], max[2]].map((z) => Math.hypot(x, max[1], z)))) * 1.02
   const sun = useRef<THREE.DirectionalLight>(null)
   useLayoutEffect(() => {
     const light = sun.current

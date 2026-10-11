@@ -75,9 +75,9 @@ consult, not a real building's plans.
 
 ## The Site
 
-- **Plinth:** a rectangular timber base, 2 m thick at model scale, with a darker
-  edge band. The project name plate ("Aster Heights" from Settings) and a north
-  arrow sit on its front edge as DOM labels.
+- **Plinth:** a rectangular timber base, 2.5 m thick at model scale. The project
+  name plate ("Aster Heights" from Settings) and a north arrow sit on its front
+  edge as DOM labels.
 - **Roads:** a main road along the front edge and a side road along the right
   edge, meeting at a junction, in warm grey with white dashed lane markings.
 - **Arrival:** an entrance off the main road with a 4 by 6 m guardhouse between

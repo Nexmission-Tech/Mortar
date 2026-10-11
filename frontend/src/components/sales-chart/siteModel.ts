@@ -38,7 +38,13 @@ export interface SiteLabel {
   at: Vec3
   kind: 'facility' | 'nameplate' | 'north'
 }
-type Rect = { min: [number, number]; max: [number, number] }
+export type Rect = { min: [number, number]; max: [number, number] }
+type Spot = [number, number]
+/** A facility's footprint on the podium, claimed so nothing else lands on it. */
+export interface DeckSpot {
+  key: string
+  rect: Rect
+}
 export interface SiteModel {
   boxes: SiteBox[]
   trees: Tree[]
@@ -47,6 +53,7 @@ export interface SiteModel {
   roads: Rect[]
   driveway: Rect
   podium: Rect
+  deck: DeckSpot[]
 }
 
 const STRIP = 18
@@ -60,8 +67,22 @@ const DECK = PODIUM_HEIGHT
 
 /** A small, stable 0–1 variation from an index, so nothing moves between renders. */
 const vary = (i: number, salt: number) => (((i + 1) * 9301 + salt * 49297) % 233280) / 233280
+const overlaps = (a: Rect, b: Rect) =>
+  a.min[0] < b.max[0] && b.min[0] < a.max[0] && a.min[1] < b.max[1] && b.min[1] < a.max[1]
+const NONE: Rect = { min: [0, 0], max: [0, 0] }
+const EMPTY_SITE: SiteModel = {
+  boxes: [],
+  trees: [],
+  labels: [],
+  bounds: { min: [0, 0, 0], max: [0, 0, 0] },
+  roads: [],
+  driveway: NONE,
+  podium: NONE,
+  deck: []
+}
 
 export function siteModel(towers: TowerModel, projectName: string): SiteModel {
+  if (towers.towers.length === 0) return EMPTY_SITE
   const boxes: SiteBox[] = []
   const trees: Tree[] = []
   const labels: SiteLabel[] = []
@@ -119,9 +140,11 @@ export function siteModel(towers: TowerModel, projectName: string): SiteModel {
   label('facility', 'Guardhouse', [ex + 16, 2, sz1 - 5])
   label('facility', 'Drop-Off', [ex - 16, 6, pz1 + 4])
 
-  // The car park ramp up the podium's right side, low end to the front.
+  // The car park ramp up the podium's right side, low end to the front, into an
+  // opening in the podium face at its top.
   const rampLength = 30
-  add('paving', [px1 + 4.5, 2, pz1 - rampLength / 2 - 4], [7, 0.6, rampLength], Math.atan2(4, rampLength))
+  add('paving', [px1 + 3.5, 2, pz1 - rampLength / 2 - 4], [7, 0.6, rampLength], Math.atan2(4, rampLength))
+  add('band', [px1 + 0.1, 4.3, pz1 - rampLength], [0.2, 2.4, 8])
 
   // The podium: ventilation bands on its faces and a planted edge round its roof.
   for (const y of [2.6, 6]) {
@@ -146,46 +169,92 @@ export function siteModel(towers: TowerModel, projectName: string): SiteModel {
   const dcz = (dz0 + dz1) / 2
   const top = DECK + 0.1
 
-  // A lawn across the front deck, under everything else on it.
+  // A lawn across the front deck, under everything else on it, ringed by the
+  // jogging loop.
   add('lawn', [dcx, top + 0.02, dcz], [dx1 - dx0 - 4, 0.04, dz1 - dz0 - 4])
-
-  // Lap pool on its terrace, the children's pool beside it.
-  add('stone', [dcx, top + 0.08, dcz], [33, 0.15, 16])
-  add('water', [dcx, top + 0.2, dcz], [25, 0.12, 8])
-  add('stone', [dcx + 22, top + 0.08, dcz], [10, 0.15, 10])
-  add('water', [dcx + 22, top + 0.2, dcz], [6, 0.12, 6])
-  label('facility', 'Lap Pool', [dcx, top + 1, dcz])
-  label('facility', 'Children’s Pool', [dcx + 22, top + 1, dcz])
-
-  // The jogging loop round the front deck.
   add('track', [dcx, top + 0.03, dz0 + 1], [dx1 - dx0, 0.06, 2])
   add('track', [dcx, top + 0.03, dz1 - 1], [dx1 - dx0, 0.06, 2])
   add('track', [dx0 + 1, top + 0.03, dcz], [2, 0.06, dz1 - dz0])
   add('track', [dx1 - 1, top + 0.03, dcz], [2, 0.06, dz1 - dz0])
 
+  // Facilities claim space inside the loop in priority order: the gym and hall
+  // take the back corners, then the pools, pavilions, lawn and playground. Each
+  // tries its usual place, then any free spot; one that fits nowhere is left out
+  // rather than overlapping another, so a small podium gets fewer, not crowded,
+  // facilities.
+  const deck: DeckSpot[] = []
+  const ix0 = dx0 + 2.5
+  const ix1 = dx1 - 2.5
+  const iz0 = dz0 + 2.5
+  const iz1 = dz1 - 2.5
+  const anywhere: Spot[] = []
+  for (let z = iz0; z <= iz1; z += 2) for (let x = ix0; x <= ix1; x += 2) anywhere.push([x, z])
+  const claim = (key: string, w: number, d: number, preferred: Spot[]): Spot | null => {
+    for (const [x, z] of [...preferred, ...anywhere]) {
+      const rect: Rect = { min: [x - w / 2, z - d / 2], max: [x + w / 2, z + d / 2] }
+      const onDeck = rect.min[0] >= ix0 && rect.max[0] <= ix1 && rect.min[1] >= iz0 && rect.max[1] <= iz1
+      if (onDeck && !deck.some((s) => overlaps(s.rect, rect))) {
+        deck.push({ key, rect })
+        return [x, z]
+      }
+    }
+    return null
+  }
+
   // Gym in glass, hall in white, at the back corners of the front deck.
-  add('glass', [dx1 - 11, top + 2, dz0 + 9], [15, 4, 12])
-  add('structure', [dx1 - 11, top + 4.15, dz0 + 9], [16, 0.3, 13])
-  add('structure', [dx0 + 13, top + 2.25, dz0 + 9], [18, 4.5, 12])
-  label('facility', 'Gym', [dx1 - 11, top + 6, dz0 + 9])
-  label('facility', 'Hall', [dx0 + 13, top + 6, dz0 + 9])
+  const gym = claim('gym', 16, 13, [[dx1 - 11, dz0 + 9]])
+  if (gym) {
+    add('glass', [gym[0], top + 2, gym[1]], [15, 4, 12])
+    add('structure', [gym[0], top + 4.15, gym[1]], [16, 0.3, 13])
+    label('facility', 'Gym', [gym[0], top + 6, gym[1]])
+  }
+  const hall = claim('hall', 18, 12, [[dx0 + 13, dz0 + 9]])
+  if (hall) {
+    add('structure', [hall[0], top + 2.25, hall[1]], [18, 4.5, 12])
+    label('facility', 'Hall', [hall[0], top + 6, hall[1]])
+  }
+
+  // Lap pool on its terrace, compact on a small deck; the children's pool beside it.
+  const lap = claim('lap-pool', 33, 16, [[dcx, dcz]])
+  const pool = lap ?? claim('lap-pool', 21, 12, [[dcx, dcz]])
+  const poolWidth = lap ? 33 : 21
+  if (pool) {
+    add('stone', [pool[0], top + 0.08, pool[1]], [poolWidth, 0.15, lap ? 16 : 12])
+    add('water', [pool[0], top + 0.2, pool[1]], [lap ? 25 : 15, 0.12, lap ? 8 : 6])
+    label('facility', 'Lap Pool', [pool[0], top + 1, pool[1]])
+  }
+  const besidePool: Spot[] = pool
+    ? [
+        [pool[0] + poolWidth / 2 + 5.5, pool[1]],
+        [pool[0] - poolWidth / 2 - 5.5, pool[1]]
+      ]
+    : []
+  const kids = claim('children-pool', 10, 10, besidePool)
+  if (kids) {
+    add('stone', [kids[0], top + 0.08, kids[1]], [10, 0.15, 10])
+    add('water', [kids[0], top + 0.2, kids[1]], [6, 0.12, 6])
+    label('facility', 'Children’s Pool', [kids[0], top + 1, kids[1]])
+  }
 
   // Two BBQ pavilions on the front edge.
-  for (const end of [-1, 1]) {
-    const x = end < 0 ? dx0 + 9 : dx1 - 9
-    add('structure', [x, top + 3, dz1 - 5], [5, 0.3, 4])
+  let bbqLabelled = false
+  for (const x of [dx0 + 9, dx1 - 9]) {
+    const bbq = claim('bbq', 5, 4, [[x, dz1 - 5]])
+    if (!bbq) continue
+    add('structure', [bbq[0], top + 3, bbq[1]], [5, 0.3, 4])
     for (const [px, pz] of [
       [-2.2, -1.7],
       [2.2, -1.7],
       [-2.2, 1.7],
       [2.2, 1.7]
     ] as const)
-      add('structure', [x + px, top + 1.5, dz1 - 5 + pz], [0.25, 3, 0.25])
+      add('structure', [bbq[0] + px, top + 1.5, bbq[1] + pz], [0.25, 3, 0.25])
+    if (!bbqLabelled) label('facility', 'BBQ', [bbq[0], top + 4, bbq[1]])
+    bbqLabelled = true
   }
-  label('facility', 'BBQ', [dx0 + 9, top + 4, dz1 - 5])
 
-  // Lawn and playground in the gaps between towers, or on the front deck when
-  // there are none.
+  // Lawn and playground in the gaps between towers when they are wide enough,
+  // otherwise on the deck.
   const gaps = towers.towers.slice(1).map((t, i) => {
     const a = towers.towers[i]!
     const left = a.center[0] + a.size[0] / 2
@@ -196,33 +265,44 @@ export function siteModel(towers: TowerModel, projectName: string): SiteModel {
       width: right - left
     }
   })
-  const lawnAt: Vec3 = gaps[0] && gaps[0].width > 17 ? [gaps[0].x, top + 0.1, gaps[0].z] : [dcx - 30, top + 0.1, dcz]
-  const playAt: Vec3 =
-    gaps[1] && gaps[1].width > 12
-      ? [gaps[1].x, top + 0.1, gaps[1].z]
-      : gaps[0] && gaps[0].width > 17
-        ? [dcx - 30, top + 0.1, dcz]
-        : [dcx + 36, top + 0.1, dcz]
-  add('lawn', lawnAt, [15, 0.2, 20])
-  add('lawn', playAt, [10, 0.2, 12])
-  for (const [px, pz, h] of [
-    [-3, -3, 2.5],
-    [2.5, 2, 1.6],
-    [0, -1, 3.2]
-  ] as const)
-    add('structure', [playAt[0] + px, top + h / 2, playAt[2] + pz], [1.2, h, 1.2])
-  label('facility', 'Lawn', [lawnAt[0], top + 1, lawnAt[2]])
-  label('facility', 'Playground', [playAt[0], top + 4, playAt[2]])
+  const inGap = (key: string, gap: (typeof gaps)[number] | undefined, minWidth: number, w: number, d: number) => {
+    if (!gap || gap.width <= minWidth) return null
+    deck.push({ key, rect: { min: [gap.x - w / 2, gap.z - d / 2], max: [gap.x + w / 2, gap.z + d / 2] } })
+    return [gap.x, gap.z] satisfies Spot
+  }
+  const lawn = inGap('lawn', gaps[0], 17, 15, 20) ?? claim('lawn', 15, 20, [[dcx - 30, dcz]])
+  const play =
+    inGap('playground', gaps[1], 12, 10, 12) ??
+    claim('playground', 10, 12, [
+      [dcx - 30, dcz],
+      [dcx + 36, dcz]
+    ])
+  if (lawn) {
+    add('lawn', [lawn[0], top + 0.1, lawn[1]], [15, 0.2, 20])
+    label('facility', 'Lawn', [lawn[0], top + 1, lawn[1]])
+  }
+  if (play) {
+    add('lawn', [play[0], top + 0.1, play[1]], [10, 0.2, 12])
+    for (const [px, pz, h] of [
+      [-3, -3, 2.5],
+      [2.5, 2, 1.6],
+      [0, -1, 3.2]
+    ] as const)
+      add('structure', [play[0] + px, top + h / 2, play[1] + pz], [1.2, h, 1.2])
+    label('facility', 'Playground', [play[0], top + 4, play[1]])
+  }
 
-  // The covered walkway in front of the towers, linking their lobbies.
+  // The covered walkway in front of the towers, linking their lobbies, with
+  // posts evenly spaced from the first lobby to the last.
   const first = towers.towers[0]!
   const last = towers.towers[towers.towers.length - 1]!
   const span = last.center[0] - first.center[0]
   if (span > 0) {
     const wz = dz0 - 1.5
     add('structure', [(first.center[0] + last.center[0]) / 2, top + 3, wz], [span, 0.3, 3])
-    for (let x = first.center[0]; x <= last.center[0] + 1e-6; x += 8)
-      add('structure', [x, top + 1.5, wz + 1.2], [0.25, 3, 0.25])
+    const posts = Math.max(1, Math.round(span / 8))
+    for (let i = 0; i <= posts; i++)
+      add('structure', [first.center[0] + (span * i) / posts, top + 1.5, wz + 1.2], [0.25, 3, 0.25])
   }
 
   // Trees: shade trees round the site boundary, street trees across the road,
@@ -247,16 +327,28 @@ export function siteModel(towers: TowerModel, projectName: string): SiteModel {
     if (z < pz1 - 40 || z > pz1) shade(sx1 - 4, z)
   }
   for (let x = x0 + 8; x <= x1 - 8; x += 12) shade(x, sz1 + MAIN_ROAD + 2.5)
-  // A row of trees along the deck's front, clear of the BBQ pavilions.
-  for (let x = dx0 + 6; x <= dx1 - 6; x += 12)
-    if (Math.abs(x - (dx0 + 9)) > 6 && Math.abs(x - (dx1 - 9)) > 6) shade(x, dz1 - 4.5, top)
+  // Deck trees wherever a facility leaves room: a row along its front and four
+  // round the pool.
+  const roomFor = (x: number, z: number, margin: number) =>
+    x >= ix0 &&
+    x <= ix1 &&
+    z >= iz0 &&
+    z <= iz1 &&
+    !deck.some(
+      (s) =>
+        x > s.rect.min[0] - margin &&
+        x < s.rect.max[0] + margin &&
+        z > s.rect.min[1] - margin &&
+        z < s.rect.max[1] + margin
+    )
+  for (let x = dx0 + 6; x <= dx1 - 6; x += 12) if (roomFor(x, dz1 - 4.5, 3)) shade(x, dz1 - 4.5, top)
   for (const [dx, dz] of [
     [-18, -9],
     [18, -9],
     [-18, 9],
     [18, 9]
   ] as const)
-    shade(dcx + dx, dcz + dz, top)
+    if (roomFor(dcx + dx, dcz + dz, 1.5)) shade(dcx + dx, dcz + dz, top)
   for (const [dx, dz] of [
     [-8, 10],
     [8, 10],
@@ -284,6 +376,7 @@ export function siteModel(towers: TowerModel, projectName: string): SiteModel {
     bounds: { min: [x0, -PLINTH, z0], max: [x1, towers.bounds.max[1], z1] },
     roads: [main, side],
     driveway,
-    podium: { min: [px0, pz0], max: [px1, pz1] }
+    podium: { min: [px0, pz0], max: [px1, pz1] },
+    deck
   }
 }

@@ -109,3 +109,39 @@ describe('siteModel', () => {
     expect(site.labels.find((l) => l.kind === 'nameplate')?.text).toBe('Aster Heights')
   })
 })
+
+describe('siteModel across project shapes', () => {
+  const shapes = [1, 2, 3, 4].flatMap((count) =>
+    [4, 7, 12].map((unitsPerFloor) => ({ blocks: ['A', 'B', 'C', 'D'].slice(0, count), unitsPerFloor }))
+  )
+
+  it.each(shapes)('places $blocks.length block(s) of $unitsPerFloor units without collisions', (shape) => {
+    const towers = towersFor(shape)
+    const site = siteModel(towers, 'Aster Heights')
+    for (const spot of site.deck) {
+      expect(inside(spot.rect.min, site.podium) && inside(spot.rect.max, site.podium)).toBe(true)
+      for (const tower of towerRects(towers)) expect(overlap(spot.rect, tower), spot.key).toBe(false)
+    }
+    for (const [i, a] of site.deck.entries())
+      for (const b of site.deck.slice(i + 1)) expect(overlap(a.rect, b.rect), `${a.key} / ${b.key}`).toBe(false)
+    for (const box of deckFeatures(site.boxes)) {
+      const r = rectOf(box)
+      expect(inside(r.min, site.podium) && inside(r.max, site.podium)).toBe(true)
+    }
+    const deckTrees = site.trees.filter((t) => t.at[1] > PODIUM_HEIGHT)
+    for (const tree of deckTrees)
+      for (const spot of site.deck) expect(inside([tree.at[0], tree.at[2]], spot.rect), spot.key).toBe(false)
+  })
+
+  it('keeps the usual facilities on the default site', () => {
+    const keys = siteModel(towersFor(), 'Aster Heights').deck.map((s) => s.key)
+    for (const key of ['lap-pool', 'children-pool', 'gym', 'hall', 'bbq', 'lawn', 'playground'])
+      expect(keys).toContain(key)
+  })
+
+  it('draws nothing for a project with no units', () => {
+    const site = siteModel(towerModel([]), 'Aster Heights')
+    expect(site.boxes).toEqual([])
+    expect(site.labels).toEqual([])
+  })
+})
