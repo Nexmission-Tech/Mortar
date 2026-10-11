@@ -3,6 +3,9 @@
  * build against these types. Change them only through a reviewed pull request.
  */
 
+import type { ProjectSettings } from './projectSettings'
+import type { HeldUnit } from './units'
+
 /** Calendar date, `YYYY-MM-DD`. */
 export type IsoDate = string
 /** Timestamp with offset, e.g. `2026-09-18T09:30:00+08:00`. */
@@ -380,6 +383,10 @@ export interface SimulationMeta {
 export interface Snapshot extends Dataset {
   meta: SimulationMeta
   forecastModel?: ForecastModel
+  /** The stored project layout; absent means the default demo layout. */
+  projectSettings?: ProjectSettings
+  /** Units bookings hold, set by `scopeSnapshot`: the whole project, booking ids only where the viewer may open them. */
+  units?: HeldUnit[]
   messages: Message[]
   playbooks: Playbook[]
   tasks: Task[]

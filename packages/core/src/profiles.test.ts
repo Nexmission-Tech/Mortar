@@ -65,6 +65,20 @@ describe('staff profiles and snapshot scope', () => {
     expect(scopeSnapshot(snapshot, profileFor('legal-admin')!).bookings).toHaveLength(0)
   })
 
+  test('scoped snapshots carry every held unit but only the viewer’s own booking ids', () => {
+    const inLayout: Snapshot = { ...snapshot, bookings: [booking, { ...other, unit: 'A-03-02' }] }
+    const sales = scopeSnapshot(inLayout, profileFor('sales-nurul-aina')!)
+    const manager = scopeSnapshot(inLayout, profileFor('manager')!)
+    expect(manager.units?.map((u) => [u.code, u.bookingId, u.heldBy])).toEqual([
+      ['A-03-02', 'BK-9910', 'Farah Izzati'],
+      ['A-12-03', booking.id, booking.salesOwner]
+    ])
+    expect(sales.units?.map((u) => [u.code, u.bookingId, u.heldBy])).toEqual([
+      ['A-03-02', null, 'Farah Izzati'],
+      ['A-12-03', booking.id, booking.salesOwner]
+    ])
+  })
+
   test('uses current confirmed responsibility, exact internal ownership and open task assignment', () => {
     const story = STORIES[0]!
     const legalStory = STORIES.find((candidate) => candidate.booking.id === 'BK-9006')!
