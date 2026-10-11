@@ -18,6 +18,7 @@ import type { ChartUnit } from '@mortar/core'
 import { cn } from '@/lib/utils'
 import { modelKey, towerModel, type Box, type TowerModel, type Vec3 } from './towerModel'
 import { sceneColors, type SceneColors } from './sceneColors'
+import { siteModel, type SiteMaterial, type SiteModel } from './siteModel'
 
 type SalesChartBuildingProps = {
   units: ChartUnit[]
@@ -68,29 +69,49 @@ function prefersReducedMotion(): boolean {
   return typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
+/** The eight corners of a box of `size` round its centre. */
+function boxCorners(size: Vec3): THREE.Vector3[] {
+  const corners: THREE.Vector3[] = []
+  for (const sx of [-1, 1])
+    for (const sy of [-1, 1])
+      for (const sz of [-1, 1])
+        corners.push(new THREE.Vector3((sx * size[0]) / 2, (sy * size[1]) / 2, (sz * size[2]) / 2))
+  return corners
+}
+
 /**
- * The distance from `size`'s centre at which every corner of the box fits the
- * canvas, seen along `direction` (from the target towards the camera).
+ * The distance from the target at which every point (relative to the target)
+ * fits the canvas, seen along `direction` (from the target towards the camera).
  */
-function fitDistance(size: Vec3, direction: THREE.Vector3, aspect: number): number {
+function fitDistance(points: THREE.Vector3[], direction: THREE.Vector3, aspect: number): number {
   const toCamera = direction.clone().normalize()
   const right = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), toCamera).normalize()
   const up = new THREE.Vector3().crossVectors(toCamera, right)
   const tanV = Math.tan((FOV * Math.PI) / 360)
   const tanH = tanV * aspect
   let distance = 0
-  for (const sx of [-1, 1])
-    for (const sy of [-1, 1])
-      for (const sz of [-1, 1]) {
-        const corner = new THREE.Vector3((sx * size[0]) / 2, (sy * size[1]) / 2, (sz * size[2]) / 2)
-        const depth = corner.dot(toCamera)
-        distance = Math.max(
-          distance,
-          depth + Math.abs(corner.dot(right)) / tanH,
-          depth + Math.abs(corner.dot(up)) / tanV
-        )
-      }
+  for (const point of points) {
+    const depth = point.dot(toCamera)
+    distance = Math.max(distance, depth + Math.abs(point.dot(right)) / tanH, depth + Math.abs(point.dot(up)) / tanV)
+  }
   return distance * FIT_MARGIN
+}
+
+/**
+ * What the All framing fits: the plinth's four top corners and each tower's
+ * top, not the whole bounding box, whose top corners hang in empty sky.
+ */
+function allFrame(site: SiteModel, model: TowerModel): { center: Vec3; points: THREE.Vector3[] } {
+  const { min, max } = site.bounds
+  const raw: THREE.Vector3[] = []
+  for (const x of [min[0], max[0]]) for (const z of [min[2], max[2]]) raw.push(new THREE.Vector3(x, 0, z))
+  for (const t of model.towers)
+    for (const dx of [-1, 1])
+      for (const dz of [-1, 1])
+        raw.push(new THREE.Vector3(t.center[0] + (dx * t.size[0]) / 2, t.size[1], t.center[2] + (dz * t.size[2]) / 2))
+  const box = new THREE.Box3().setFromPoints(raw)
+  const center = box.getCenter(new THREE.Vector3())
+  return { center: [center.x, center.y, center.z], points: raw.map((p) => p.clone().sub(center)) }
 }
 
 type OrbitLike = { target: THREE.Vector3; update: () => void }
@@ -104,20 +125,25 @@ type OrbitLike = { target: THREE.Vector3; update: () => void }
  */
 function Framing({
   model,
+  site,
   focus,
   side,
   nonce
 }: {
   model: TowerModel
+  /** The All framing fits the whole model on its plinth. */
+  site: SiteModel
   focus: string | null
   side: Side
   nonce: number
 }) {
   const shape = modelKey(model)
   const latest = useRef(model)
+  const latestSite = useRef(site)
   useEffect(() => {
     latest.current = model
-  }, [model])
+    latestSite.current = site
+  }, [model, site])
   const width = useThree((s) => s.size.width)
   const height = useThree((s) => s.size.height)
   const get = useThree((s) => s.get)
@@ -128,14 +154,12 @@ function Framing({
     const controls = get().controls as unknown as OrbitLike | null
     const current = latest.current
     const tower = focus ? current.towers.find((t) => t.block === focus) : undefined
-    const { min, max } = current.bounds
-    const frame = tower ?? {
-      center: [(min[0] + max[0]) / 2, max[1] / 2, (min[2] + max[2]) / 2] as Vec3,
-      size: [max[0] - min[0], max[1], max[2] - min[2]] as Vec3
-    }
+    const frame = tower
+      ? { center: tower.center, points: boxCorners(tower.size) }
+      : allFrame(latestSite.current, current)
     const toTarget = new THREE.Vector3(...frame.center)
     const to = new THREE.Spherical(1, START_POLAR, START_AZIMUTH + (side === 'back' ? Math.PI : 0))
-    to.radius = fitDistance(frame.size, new THREE.Vector3().setFromSpherical(to), width / Math.max(1, height))
+    to.radius = fitDistance(frame.points, new THREE.Vector3().setFromSpherical(to), width / Math.max(1, height))
     const fromTarget = controls ? controls.target.clone() : toTarget.clone()
     const from = new THREE.Spherical().setFromVector3(camera.position.clone().sub(fromTarget))
     // The short way round.
@@ -192,7 +216,9 @@ function writeBoxMatrices(m: THREE.InstancedMesh, boxes: Box[]) {
   const position = new THREE.Vector3()
   const scale = new THREE.Vector3()
   const rotation = new THREE.Quaternion()
+  const euler = new THREE.Euler()
   boxes.forEach((box, i) => {
+    rotation.setFromEuler(euler.set(box.tilt ?? 0, 0, 0))
     m.setMatrixAt(i, matrix.compose(position.set(...box.center), rotation, scale.set(...box.size)))
   })
   m.instanceMatrix.needsUpdate = true
@@ -376,6 +402,11 @@ interface Anchor {
 }
 
 const FLOOR_LABEL = 'font-mono text-[10px] text-muted-foreground'
+const FACILITY_LABEL = 'text-[10px] font-medium text-muted-foreground'
+const NAMEPLATE_LABEL =
+  'rounded-sm border border-border bg-card px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground'
+const NORTH_LABEL =
+  'flex size-6 items-center justify-center rounded-full border border-border bg-card text-[10px] font-semibold text-foreground'
 const BLOCK_LABEL =
   'rounded-sm border border-border bg-card/90 px-1.5 py-0.5 text-xs font-semibold text-foreground shadow-card'
 
@@ -383,7 +414,7 @@ const BLOCK_LABEL =
  * A pill above each roof; with a block framed, every fifth floor and the top
  * one up the corner that sits leftmost on screen from that side.
  */
-function labelAnchors(model: TowerModel, focus: string | null, side: Side): Anchor[] {
+function labelAnchors(model: TowerModel, focus: string | null, side: Side, site: SiteModel): Anchor[] {
   const blocks = model.towers.map((tower) => ({
     key: `block-${tower.block}`,
     text: `Block ${tower.block}`,
@@ -408,7 +439,18 @@ function labelAnchors(model: TowerModel, focus: string | null, side: Side): Anch
           className: FLOOR_LABEL
         }))
     : []
-  return [...blocks, ...floors]
+  // The site's facility labels, name plate and north mark belong to the front
+  // All framing; from behind, the towers hide the deck the labels name.
+  const sites =
+    focus === null && side === 'front'
+      ? site.labels.map((l) => ({
+          key: l.key,
+          text: l.text,
+          at: l.at,
+          className: l.kind === 'facility' ? FACILITY_LABEL : l.kind === 'nameplate' ? NAMEPLATE_LABEL : NORTH_LABEL
+        }))
+      : []
+  return [...blocks, ...floors, ...sites]
 }
 
 /** Moves each label to its anchor's place on screen whenever the scene draws; hides labels behind the camera. */
@@ -469,9 +511,12 @@ function ContextRestore() {
 }
 
 /** A hemisphere light and one sun from the upper left front, its shadow sized to the model. */
-function Lights({ model, colors }: { model: TowerModel; colors: SceneColors }) {
-  const { min, max } = model.bounds
-  const span = Math.max(max[0] - min[0], max[2] - min[2], max[1]) * 0.75
+function Lights({ bounds, colors }: { bounds: { min: Vec3; max: Vec3 }; colors: SceneColors }) {
+  const { min, max } = bounds
+  // The sun aims at the origin and its shadow square turns with it, so it must
+  // reach the furthest top corner of the model in any direction.
+  const span =
+    Math.max(...[min[0], max[0]].flatMap((x) => [min[2], max[2]].map((z) => Math.hypot(x, max[1], z)))) * 1.02
   const sun = useRef<THREE.DirectionalLight>(null)
   useLayoutEffect(() => {
     const light = sun.current
@@ -503,6 +548,101 @@ function Lights({ model, colors }: { model: TowerModel; colors: SceneColors }) {
   )
 }
 
+const SITE_COLOR: Record<SiteMaterial, keyof SceneColors> = {
+  plinth: 'plinth',
+  ground: 'ground',
+  paving: 'paving',
+  stone: 'stone',
+  road: 'road',
+  lane: 'lane',
+  lawn: 'lawn',
+  water: 'water',
+  foliage: 'foliage',
+  track: 'track',
+  structure: 'structure',
+  glass: 'available',
+  neighbour: 'neighbour',
+  band: 'band'
+}
+
+/** One instanced mesh of `geometry` per group of boxes; it takes no clicks. */
+function ShapeMesh({ geometry, boxes, color }: { geometry: THREE.BufferGeometry; boxes: Box[]; color: string }) {
+  const mesh = useRef<THREE.InstancedMesh>(null)
+  const invalidate = useThree((st) => st.invalidate)
+  useLayoutEffect(() => {
+    if (!mesh.current) return
+    writeBoxMatrices(mesh.current, boxes)
+    invalidate()
+  }, [boxes, invalidate])
+  if (boxes.length === 0) return null
+  return (
+    <instancedMesh
+      key={boxes.length}
+      ref={mesh}
+      args={[geometry, undefined, boxes.length]}
+      castShadow
+      receiveShadow
+      raycast={() => null}
+    >
+      <meshLambertMaterial color={color} />
+    </instancedMesh>
+  )
+}
+
+/** Geometry made for this scene and disposed with it, so a remount leaks no renderer. */
+function useGeometry<T extends THREE.BufferGeometry>(make: () => T): T {
+  const [geometry] = useState(make)
+  useEffect(() => () => geometry.dispose(), [geometry])
+  return geometry
+}
+
+/** Trunks, round canopies for shade trees and flat crowns for palms, each one instanced mesh. */
+function Trees({ trees, colors }: { trees: SiteModel['trees']; colors: SceneColors }) {
+  const trunkGeometry = useGeometry(() => new THREE.CylinderGeometry(0.18, 0.25, 1, 6))
+  const canopyGeometry = useGeometry(() => new THREE.IcosahedronGeometry(1, 0))
+  const frondGeometry = useGeometry(() => new THREE.ConeGeometry(1, 0.5, 7))
+  const parts = useMemo(() => {
+    const trunk: Box[] = []
+    const canopy: Box[] = []
+    const frond: Box[] = []
+    for (const t of trees) {
+      trunk.push({ center: [t.at[0], t.at[1] + t.trunk / 2, t.at[2]], size: [1, t.trunk, 1] })
+      if (t.kind === 'palm')
+        frond.push({ center: [t.at[0], t.at[1] + t.trunk, t.at[2]], size: [t.canopy, t.canopy * 0.6, t.canopy] })
+      else
+        canopy.push({
+          center: [t.at[0], t.at[1] + t.trunk + t.canopy * 0.55, t.at[2]],
+          size: [t.canopy, t.canopy * 0.85, t.canopy]
+        })
+    }
+    return { trunk, canopy, frond }
+  }, [trees])
+  return (
+    <>
+      <ShapeMesh geometry={trunkGeometry} boxes={parts.trunk} color={colors.trunk} />
+      <ShapeMesh geometry={canopyGeometry} boxes={parts.canopy} color={colors.foliage} />
+      <ShapeMesh geometry={frondGeometry} boxes={parts.frond} color={colors.foliage} />
+    </>
+  )
+}
+
+/** The plinth, roads, arrival, podium details, deck and neighbours: one instanced mesh per material. */
+function Site({ site, colors, cube }: { site: SiteModel; colors: SceneColors; cube: THREE.BoxGeometry }) {
+  const groups = useMemo(() => {
+    const byMaterial = new Map<SiteMaterial, Box[]>()
+    for (const box of site.boxes) byMaterial.set(box.material, [...(byMaterial.get(box.material) ?? []), box])
+    return [...byMaterial.entries()]
+  }, [site])
+  return (
+    <>
+      {groups.map(([material, boxes]) => (
+        <ShapeMesh key={material} geometry={cube} boxes={boxes} color={colors[SITE_COLOR[material]]} />
+      ))}
+      <Trees trees={site.trees} colors={colors} />
+    </>
+  )
+}
+
 function Scene({
   units,
   model,
@@ -514,9 +654,11 @@ function Scene({
   onHover,
   nonce,
   anchors,
-  labels
+  labels,
+  site
 }: SalesChartBuildingProps & {
   model: TowerModel
+  site: SiteModel
   focus: string | null
   side: Side
   nonce: number
@@ -547,7 +689,8 @@ function Scene({
 
   return (
     <>
-      <Lights model={model} colors={colors} />
+      <Lights bounds={site.bounds} colors={colors} />
+      <Site site={site} colors={colors} cube={cube} />
 
       <mesh position={model.podium.center} receiveShadow raycast={() => null}>
         <boxGeometry args={model.podium.size} />
@@ -610,7 +753,7 @@ function Scene({
       />
       <WheelZoom />
       <ContextRestore />
-      <Framing model={model} focus={focus} side={side} nonce={nonce} />
+      <Framing model={model} site={site} focus={focus} side={side} nonce={nonce} />
     </>
   )
 }
@@ -648,9 +791,10 @@ function Segmented<T extends string | null>({
 
 export function SalesChartBuilding(props: SalesChartBuildingProps) {
   const model = useMemo(() => towerModel(props.units), [props.units])
+  const site = useMemo(() => siteModel(model, props.projectName ?? 'The Project'), [model, props.projectName])
   const [focus, setFocus] = useState<string | null>(null)
   const [side, setSide] = useState<Side>('front')
-  const anchors = useMemo(() => labelAnchors(model, focus, side), [model, focus, side])
+  const anchors = useMemo(() => labelAnchors(model, focus, side, site), [model, focus, side, site])
   const labels = useRef(new Map<string, HTMLSpanElement>())
   // Every click reframes, even on the preset already pressed.
   const [nonce, setNonce] = useState(0)
@@ -706,12 +850,21 @@ export function SalesChartBuilding(props: SalesChartBuildingProps) {
         </div>
         <Canvas
           flat
-          shadows="soft"
+          shadows="percentage"
           frameloop="demand"
           dpr={[1, 2]}
           camera={{ fov: FOV, near: 1, far: 5000, position: [-300, 220, 400] }}
         >
-          <Scene {...props} model={model} focus={focus} side={side} nonce={nonce} anchors={anchors} labels={labels} />
+          <Scene
+            {...props}
+            model={model}
+            site={site}
+            focus={focus}
+            side={side}
+            nonce={nonce}
+            anchors={anchors}
+            labels={labels}
+          />
         </Canvas>
       </div>
     </div>

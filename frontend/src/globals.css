@@ -261,6 +261,20 @@
   /* The model's light: a white sky and a neutral grey bounce, never tinted. */
   --model-sky: #ffffff;
   --model-sky-ground: #8c8c8c;
+  /* The site: muted landscape, always quieter than the status tones. */
+  --model-plinth: #a98a63;
+  --model-ground: #ebe7e0;
+  --model-paving: #f2efe9;
+  --model-stone: #faf8f4;
+  --model-road: #a6a29a;
+  --model-lane: #f7f5f0;
+  --model-lawn: #b8c7a0;
+  --model-water: #9cc0cf;
+  --model-foliage: #9dad8c;
+  --model-track: #d2bfae;
+  --model-neighbour: #e4e1db;
+  --model-band: #8f8b84;
+  --model-trunk: #8a7a64;
 
   /* Canvas — the faint dot grid behind the cards on every signed-in page */
   --canvas-dot: color-mix(in oklab, var(--color-ink-950) 12%, transparent);
@@ -382,6 +396,19 @@
   --model-structure: #3b3a37;
   --model-glass: #2b3239;
   --model-podium: #262523;
+  --model-plinth: #4a3b29;
+  --model-ground: #232220;
+  --model-paving: #2b2a27;
+  --model-stone: #33322f;
+  --model-road: #1a1a19;
+  --model-lane: #55534e;
+  --model-lawn: #33402c;
+  --model-water: #2f4a55;
+  --model-foliage: #384833;
+  --model-track: #463a31;
+  --model-neighbour: #2a2927;
+  --model-band: #171716;
+  --model-trunk: #3a3128;
 
   /* Canvas */
   --canvas-dot: color-mix(in oklab, #fafafa 8%, transparent);
