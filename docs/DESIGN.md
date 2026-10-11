@@ -1063,14 +1063,17 @@ surface may use three.js or draw in 3D.
   view's bottom right: Zoom In and Zoom Out (each one step of 1.25×, within the
   wheel's limits), then Expand. Expand lifts the view into a modal that covers
   80% of the screen (the full screen less 12px on phones) over the dimmed,
-  blurred `--scrim`, and becomes Collapse. Escape, the backdrop or Collapse puts
-  it back, and focus returns to Expand; with a unit selected, the first Escape
-  closes the unit instead. While expanded, the app behind is inert and the
-  guided-tour button hides.
+  blurred `--scrim`, and becomes Collapse. The camera keeps its angle and zoom
+  across the switch. Escape, the backdrop or Collapse puts it back, and focus
+  returns to Expand; with a unit selected, the first Escape closes the unit
+  instead. While expanded, the app behind is inert, and the guided-tour button
+  and tour chrome hide. The hover readout stays behind the backdrop; the unit
+  island carries the selected unit.
 - **Layers:** the expanded view sits at z-index 62–63, above the top bar and
-  sidebar. The unit island rises to 64 above it, the case panel stays at 70–71,
-  and Radix portals at 100, so nothing that opens from the view is hidden under
-  it.
+  sidebar. The unit island rises to 64 above it and keeps left of the view's
+  control column. The case panel and Ask Mortar AI stay at 70–71, popovers,
+  selects and menus at 80, and tooltips at 100, all portalled outside the inert
+  app, so nothing that opens from the view is hidden under it.
 - **Labels:** a pill above each roof names its block. With a block framed, every
   fifth floor and the top floor are numbered up the corner that sits leftmost on
   screen, in Geist Mono. All labels are drawn in the DOM over the canvas, never

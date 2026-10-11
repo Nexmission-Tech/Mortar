@@ -321,6 +321,8 @@ describe('SalesChartPage', () => {
     const island = screen.getByRole('region', { name: 'Selected Unit' })
     expect(island.parentElement).toBe(document.body)
     expect(island.className).toContain('z-[64]')
+    // Raised, it keeps clear of the view's zoom and collapse column on narrow screens.
+    expect(island.className).toContain('max-md:right-[5.5rem]')
     fireEvent.click(within(screen.getByRole('group', { name: 'Chart view' })).getByRole('button', { name: 'Grid' }))
     expect(screen.getByRole('region', { name: 'Selected Unit' }).className).toContain('z-40')
   })

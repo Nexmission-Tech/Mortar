@@ -61,6 +61,18 @@ export function ExpandableViewport({
   const expandButton = useRef<HTMLButtonElement>(null)
   const collapseButton = useRef<HTMLButtonElement>(null)
   const wasExpanded = useRef(false)
+  // Unmounting while expanded (a route change, a failed scene) still reports a
+  // collapse, so nothing outside stays raised for a view that is gone.
+  const latest = useRef({ expanded, onExpandedChange })
+  useEffect(() => {
+    latest.current = { expanded, onExpandedChange }
+  })
+  useEffect(
+    () => () => {
+      if (latest.current.expanded) latest.current.onExpandedChange(false)
+    },
+    []
+  )
 
   // Focus follows the mode: Collapse when the modal opens, Expand when it closes.
   useEffect(() => {

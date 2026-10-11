@@ -152,7 +152,10 @@ export function SalesChartPage() {
       const cell =
         chart?.querySelector<HTMLElement>(`[aria-label^="${selected},"]`) ??
         chart?.querySelector<HTMLElement>('[tabindex="0"]')
-      ;(cell ?? chart)?.focus()
+      const target = cell ?? chart
+      // While the Building view is expanded the chart is inert; its Collapse button takes focus instead.
+      const reachable = target && !target.closest('[inert]') ? target : null
+      ;(reachable ?? document.querySelector<HTMLElement>('[role="dialog"] button[aria-label="Collapse"]'))?.focus()
     }
     setSelected(null)
   }, [selected])
@@ -362,7 +365,8 @@ function Readout({ unit }: { unit: ChartUnit | null }) {
   return (
     <div
       aria-live="polite"
-      className="mt-3 flex min-h-10 flex-wrap items-center gap-x-3 gap-y-1 rounded-md bg-muted px-3 py-2 text-sm"
+      // Two lines are reserved on phones, so a tap's hover never pushes the grid under the finger.
+      className="mt-3 flex min-h-10 flex-wrap items-center gap-x-3 gap-y-1 rounded-md bg-muted px-3 py-2 text-sm max-sm:min-h-16"
     >
       {unit ? (
         <>
@@ -371,7 +375,7 @@ function Readout({ unit }: { unit: ChartUnit | null }) {
             <span aria-hidden="true" className={cn('size-2.5 rounded-[2px]', UNIT_FILL[unit.state])} />
             {STATE_LABELS[unit.state]}
           </span>
-          <span className="text-muted-foreground">
+          <span className="min-w-0 text-muted-foreground max-sm:basis-full max-sm:truncate">
             {unit.state === 'available'
               ? 'No Booking Holds This Unit'
               : unit.bookingId

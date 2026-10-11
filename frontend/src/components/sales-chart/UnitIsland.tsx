@@ -74,7 +74,8 @@ export function UnitIsland({
       // Under the app shell's scrims and popovers; clear of the tour button by its offset, not its layer.
       className={cn(
         'fixed inset-x-4 bottom-4 mx-auto max-md:right-16 max-w-[560px] rounded-md border border-border bg-card/85 p-4 shadow-[var(--shadow-overlay)] backdrop-blur-md duration-[var(--motion-base)] animate-in fade-in-0 motion-safe:slide-in-from-bottom-4',
-        elevated ? 'z-[64]' : 'z-40'
+        // Raised over the expanded view, it stays left of that view's zoom and collapse column.
+        elevated ? 'z-[64] md:right-[calc(10%+5rem)] max-md:right-[5.5rem]' : 'z-40'
       )}
     >
       <div className="flex items-start gap-3 pr-8">

@@ -5,17 +5,22 @@ import { ExpandableViewport } from '@/components/sales-chart/ExpandableViewport'
 
 function Harness({
   escapeEnabled = true,
-  onZoom = () => {}
+  onZoom = () => {},
+  onChange = () => {}
 }: {
   escapeEnabled?: boolean
   onZoom?: (f: number) => void
+  onChange?: (expanded: boolean) => void
 }) {
   const [expanded, setExpanded] = useState(false)
   return (
     <ExpandableViewport
       label="Building View"
       expanded={expanded}
-      onExpandedChange={setExpanded}
+      onExpandedChange={(next) => {
+        setExpanded(next)
+        onChange(next)
+      }}
       escapeEnabled={escapeEnabled}
       onZoom={onZoom}
     >
@@ -84,6 +89,24 @@ describe('ExpandableViewport', () => {
       expect(root.hasAttribute('inert')).toBe(true)
       fireEvent.click(screen.getByRole('button', { name: 'Collapse' }))
       expect(root.hasAttribute('inert')).toBe(false)
+    } finally {
+      root.remove()
+    }
+  })
+
+  it('restores the page and reports itself collapsed when it unmounts while expanded', () => {
+    const root = document.createElement('div')
+    root.id = 'root'
+    document.body.appendChild(root)
+    const onChange = vi.fn()
+    try {
+      const { unmount } = render(<Harness onChange={onChange} />, { container: root })
+      fireEvent.click(screen.getByRole('button', { name: 'Expand' }))
+      expect(document.body.style.overflow).toBe('hidden')
+      unmount()
+      expect(root.hasAttribute('inert')).toBe(false)
+      expect(document.body.style.overflow).toBe('')
+      expect(onChange).toHaveBeenLastCalledWith(false)
     } finally {
       root.remove()
     }

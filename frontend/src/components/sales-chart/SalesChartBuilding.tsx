@@ -126,12 +126,16 @@ type OrbitLike = { target: THREE.Vector3; update: () => void }
  * through the building. A data refresh that only recolours units leaves the
  * camera where the viewer put it.
  */
+/** Where the camera stood when its canvas went away, so Expand and Collapse keep the view. */
+type CameraState = { position: THREE.Vector3; target: THREE.Vector3; zoom: number }
+
 function Framing({
   model,
   site,
   focus,
   side,
-  nonce
+  nonce,
+  resumeRef
 }: {
   model: TowerModel
   /** The All framing fits the whole model on its plinth. */
@@ -139,6 +143,8 @@ function Framing({
   focus: string | null
   side: Side
   nonce: number
+  /** Saved on unmount; the next canvas starts from it instead of the preset. */
+  resumeRef: RefObject<CameraState | null>
 }) {
   const shape = modelKey(model)
   const latest = useRef(model)
@@ -187,6 +193,20 @@ function Framing({
       invalidate()
     }
 
+    if (first.current && resumeRef.current) {
+      first.current = false
+      const saved = resumeRef.current
+      resumeRef.current = null
+      camera.position.copy(saved.position)
+      camera.zoom = saved.zoom
+      camera.updateProjectionMatrix()
+      if (controls) {
+        controls.target.copy(saved.target)
+        controls.update()
+      } else camera.lookAt(saved.target)
+      invalidate()
+      return
+    }
     if (first.current || prefersReducedMotion()) {
       first.current = false
       apply(1)
@@ -201,7 +221,20 @@ function Framing({
     }
     raf = requestAnimationFrame(step)
     return () => cancelAnimationFrame(raf)
-  }, [shape, focus, side, nonce, width, height, get])
+  }, [shape, focus, side, nonce, width, height, get, resumeRef])
+
+  useEffect(
+    () => () => {
+      const { camera } = get()
+      const controls = get().controls as unknown as OrbitLike | null
+      resumeRef.current = {
+        position: camera.position.clone(),
+        target: controls ? controls.target.clone() : new THREE.Vector3(),
+        zoom: camera.zoom
+      }
+    },
+    [get, resumeRef]
+  )
 
   return null
 }
@@ -505,14 +538,16 @@ function WheelZoom() {
 function ZoomBridge({ zoomRef }: { zoomRef: RefObject<((factor: number) => void) | null> }) {
   const get = useThree((s) => s.get)
   useEffect(() => {
-    zoomRef.current = (factor: number) => {
+    const zoom = (factor: number) => {
       const { camera, invalidate } = get()
       camera.zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, camera.zoom * factor))
       camera.updateProjectionMatrix()
       invalidate()
     }
+    zoomRef.current = zoom
     return () => {
-      zoomRef.current = null
+      // The next canvas may already have taken the ref.
+      if (zoomRef.current === zoom) zoomRef.current = null
     }
   }, [get, zoomRef])
   return null
@@ -676,7 +711,8 @@ function Scene({
   anchors,
   labels,
   site,
-  zoomRef
+  zoomRef,
+  resumeRef
 }: SalesChartBuildingProps & {
   model: TowerModel
   site: SiteModel
@@ -686,6 +722,7 @@ function Scene({
   anchors: Anchor[]
   labels: RefObject<Map<string, HTMLSpanElement>>
   zoomRef: RefObject<((factor: number) => void) | null>
+  resumeRef: RefObject<CameraState | null>
 }) {
   const colors = useSceneColors()
   const cube = useUnitCube()
@@ -708,6 +745,13 @@ function Scene({
     onHover(index === null ? null : (units[index] ?? null))
   }
   useEffect(() => () => void (document.body.style.cursor = ''), [])
+  // A canvas that goes away under the pointer clears the page's hover readout.
+  useEffect(
+    () => () => {
+      if (hovered.current !== null) onHover(null)
+    },
+    [onHover]
+  )
 
   return (
     <>
@@ -776,7 +820,7 @@ function Scene({
       <WheelZoom />
       <ZoomBridge zoomRef={zoomRef} />
       <ContextRestore />
-      <Framing model={model} site={site} focus={focus} side={side} nonce={nonce} />
+      <Framing model={model} site={site} focus={focus} side={side} nonce={nonce} resumeRef={resumeRef} />
     </>
   )
 }
@@ -825,6 +869,7 @@ export function SalesChartBuilding(props: SalesChartBuildingProps) {
   const blocks = [{ id: null, label: 'All' }, ...model.towers.map((t) => ({ id: t.block, label: `Block ${t.block}` }))]
 
   const zoomRef = useRef<((factor: number) => void) | null>(null)
+  const resumeRef = useRef<CameraState | null>(null)
   const [expanded, setExpanded] = useState(false)
   const { onExpandedChange } = props
   const changeExpanded = useCallback(
@@ -913,6 +958,7 @@ export function SalesChartBuilding(props: SalesChartBuildingProps) {
                 anchors={anchors}
                 labels={labels}
                 zoomRef={zoomRef}
+                resumeRef={resumeRef}
               />
             </Canvas>
           </div>
