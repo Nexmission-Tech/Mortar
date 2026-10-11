@@ -110,7 +110,7 @@ export function AskPanel({
   const [imageError, setImageError] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
-  // The forecast inside the context is a Monte Carlo; build it once per snapshot.
+  // The shared calculated context is built once per snapshot.
   const context = useMemo(() => (snapshot ? buildAskContext(snapshot) : null), [snapshot])
   const chips = useMemo(() => suggestedQuestions(persona).slice(0, CHIP_LIMIT), [persona])
 
@@ -228,8 +228,15 @@ export function AskPanel({
   const initialSent = useRef(false)
   useEffect(() => {
     if (!initialQuestion || initialSent.current || !context) return
-    initialSent.current = true
-    void ask(initialQuestion)
+    let cancelled = false
+    queueMicrotask(() => {
+      if (cancelled || initialSent.current) return
+      initialSent.current = true
+      void ask(initialQuestion)
+    })
+    return () => {
+      cancelled = true
+    }
   }, [initialQuestion, context, ask])
 
   const runAction = useCallback(

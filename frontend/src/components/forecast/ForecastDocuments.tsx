@@ -352,7 +352,11 @@ export function ForecastDocuments({ documents }: { documents: ForecastDocument[]
             </h2>
             <p className="mt-0.5 text-sm text-muted-foreground">Pick a document to read the detail, or ask about it.</p>
           </div>
-          <p className="text-[13px] tabular-nums text-muted-foreground" aria-live="polite" aria-atomic="true">
+          <p
+            className="shrink-0 whitespace-nowrap text-[13px] tabular-nums text-muted-foreground"
+            aria-live="polite"
+            aria-atomic="true"
+          >
             {index + 1} / {documents.length}
             <span className="sr-only">: {active.title}</span>
           </p>

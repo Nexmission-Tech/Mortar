@@ -1,8 +1,9 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { StrictMode } from 'react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Snapshot } from '@mortar/core'
-import { DEFAULT_SEED, PLAYBOOKS, REFERENCE_DATE, STORIES, generate } from '@mortar/core'
+import { DEFAULT_SEED, FORECAST_DOCUMENT_QUESTIONS, PLAYBOOKS, REFERENCE_DATE, STORIES, generate } from '@mortar/core'
 import { PersonaProvider } from '@/lib/persona'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { AskPanel } from '../AskPanel'
@@ -24,9 +25,10 @@ const SNAP: Snapshot = {
   nextActions: [],
   meta: { seed: DEFAULT_SEED, referenceDate: REFERENCE_DATE, resetAt: null }
 }
+let activeSnapshot = SNAP
 
 vi.mock('@/lib/data', () => ({
-  useSnapshot: () => ({ snapshot: SNAP, loading: false, error: null, refresh: mocks.refresh }),
+  useSnapshot: () => ({ snapshot: activeSnapshot, loading: false, error: null, refresh: mocks.refresh }),
   useCases: () => []
 }))
 
@@ -50,6 +52,22 @@ function renderPanel() {
   )
 }
 
+function strictPanel(question: string, panelKey = 'profile-a') {
+  return (
+    <StrictMode>
+      <MemoryRouter>
+        <PersonaProvider initialPersona="sales-admin">
+          <Dialog open>
+            <DialogContent>
+              <AskPanel key={panelKey} onNavigate={vi.fn()} initialQuestion={question} />
+            </DialogContent>
+          </Dialog>
+        </PersonaProvider>
+      </MemoryRouter>
+    </StrictMode>
+  )
+}
+
 /** The server refusing to run a model, which is what an unset key looks like. */
 const noModel = () => {
   const err = new Error('Ask Mortar AI is not set up')
@@ -64,6 +82,7 @@ const chip = (text: string) => fireEvent.click(screen.getByText(text))
 
 describe('AskPanel', () => {
   beforeEach(() => {
+    activeSnapshot = SNAP
     mocks.refresh.mockReset()
     mocks.postTask.mockReset().mockResolvedValue({})
     mocks.askAssistantStream.mockReset().mockImplementation(async (_input, onEvent) => {
@@ -73,6 +92,83 @@ describe('AskPanel', () => {
         questions: ['Who owns the next step?', 'What is blocked?', 'Which booking is oldest?', 'What needs follow up?']
       })
     })
+  })
+
+  it('sends the forecast document question once and shows a scripted answer under StrictMode', async () => {
+    mocks.askAssistantStream.mockImplementation(noModel)
+    render(strictPanel(FORECAST_DOCUMENT_QUESTIONS.outlook))
+
+    await waitFor(() => expect(screen.getByText('Counted From Your Bookings')).toBeTruthy())
+    expect(screen.getByText(/The booking-day-30 outlook is unavailable|The estimate is/)).toBeTruthy()
+    expect(screen.getAllByText(FORECAST_DOCUMENT_QUESTIONS.outlook)).toHaveLength(1)
+    expect(mocks.askAssistantStream).toHaveBeenCalledTimes(1)
+    expect(mocks.askAssistantStream.mock.calls[0][0]).toMatchObject({
+      question: FORECAST_DOCUMENT_QUESTIONS.outlook,
+      persona: 'sales-admin',
+      history: []
+    })
+  })
+
+  it('does not resend the initial question when the snapshot refreshes and the panel rerenders', async () => {
+    mocks.askAssistantStream.mockImplementation(noModel)
+    const view = render(strictPanel(FORECAST_DOCUMENT_QUESTIONS.outlook))
+    await waitFor(() => expect(screen.getByText('Counted From Your Bookings')).toBeTruthy())
+
+    await act(async () => {
+      activeSnapshot = { ...SNAP }
+      view.rerender(strictPanel(FORECAST_DOCUMENT_QUESTIONS.outlook))
+    })
+
+    expect(mocks.askAssistantStream).toHaveBeenCalledTimes(1)
+    expect(screen.getAllByText(FORECAST_DOCUMENT_QUESTIONS.outlook)).toHaveLength(1)
+    expect(screen.getAllByText('Counted From Your Bookings')).toHaveLength(1)
+  })
+
+  it('does not send an initial question after unmounting before its queued work runs', async () => {
+    const view = render(strictPanel(FORECAST_DOCUMENT_QUESTIONS.outlook))
+    view.unmount()
+
+    await act(async () => {
+      await Promise.resolve()
+    })
+
+    expect(mocks.askAssistantStream).not.toHaveBeenCalled()
+  })
+
+  it('starts a new question on profile-key remount without showing an in-flight old reply', async () => {
+    let finishOld: (() => void) | undefined
+    mocks.askAssistantStream
+      .mockImplementationOnce(
+        (_input, onEvent) =>
+          new Promise<void>((resolve) => {
+            finishOld = () => {
+              onEvent({ type: 'answer', answer: { answer: 'Old profile reply.', citations: [] } })
+              resolve()
+            }
+          })
+      )
+      .mockImplementation(noModel)
+    const view = render(strictPanel(FORECAST_DOCUMENT_QUESTIONS.outlook, 'profile-a'))
+    await waitFor(() => expect(mocks.askAssistantStream).toHaveBeenCalledTimes(1))
+    const oldSignal = mocks.askAssistantStream.mock.calls[0][2] as AbortSignal
+
+    view.rerender(strictPanel(FORECAST_DOCUMENT_QUESTIONS.approved, 'profile-b'))
+    await waitFor(() => expect(screen.getByText('Counted From Your Bookings')).toBeTruthy())
+    expect(oldSignal.aborted).toBe(true)
+    expect(mocks.askAssistantStream).toHaveBeenCalledTimes(2)
+    expect(mocks.askAssistantStream.mock.calls[1][0]).toMatchObject({
+      question: FORECAST_DOCUMENT_QUESTIONS.approved,
+      persona: 'sales-admin',
+      history: []
+    })
+
+    await act(async () => {
+      finishOld?.()
+    })
+    expect(screen.queryByText(FORECAST_DOCUMENT_QUESTIONS.outlook)).toBeNull()
+    expect(screen.queryByText('Old profile reply.')).toBeNull()
+    expect(screen.getAllByText(FORECAST_DOCUMENT_QUESTIONS.approved)).toHaveLength(1)
+    expect(screen.getAllByText('Counted From Your Bookings')).toHaveLength(1)
   })
 
   it('is titled Ask MortarAI, and says where the answers come from', () => {

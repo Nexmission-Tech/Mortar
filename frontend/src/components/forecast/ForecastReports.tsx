@@ -39,7 +39,7 @@ function useVisibleRows<Row>(rows: Row[]) {
   }
 }
 
-function TableFrame({ children, minWidth = 'min-w-[760px]' }: { children: ReactNode; minWidth?: string }) {
+function TableFrame({ children, minWidth = 'min-w-[720px]' }: { children: ReactNode; minWidth?: string }) {
   return <Table className={minWidth}>{children}</Table>
 }
 
@@ -48,7 +48,7 @@ function BookingReference({ bookingId, unit }: Pick<InsightBooking, 'bookingId' 
     <span className="inline-flex min-w-28 flex-col items-start gap-0.5">
       <Link
         to={`/bookings/${encodeURIComponent(bookingId)}`}
-        className="font-medium text-foreground underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="font-mono text-[13px] font-medium text-foreground underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {unit}
       </Link>
