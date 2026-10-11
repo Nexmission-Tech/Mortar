@@ -1,6 +1,6 @@
 /**
- * Sheet — a Dialog anchored to one edge of the screen, for looking into a row
- * without leaving the list. Same surface, overlay and focus trap as Dialog:
+ * Sheet — a Dialog anchored to one edge of the screen, or floating above the
+ * bottom edge, for looking into a row without leaving the list. Same surface, overlay and focus trap as Dialog:
  * solid popover ground with the shared token-backed scrim behind it.
  */
 
@@ -35,7 +35,11 @@ const SIDE_STYLES = {
     'inset-y-0 right-0 h-full w-[calc(100vw-2rem)] max-w-md border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right',
   left: 'inset-y-0 left-0 h-full w-[calc(100vw-2rem)] max-w-md border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left',
   bottom:
-    'inset-x-0 bottom-0 max-h-[85vh] rounded-t-md border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom'
+    'inset-x-0 bottom-0 max-h-[85vh] rounded-t-md border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom',
+  // The case panel: a card floating 16px in from the bottom and sides, centred.
+  // It rises where motion is welcome and only fades under reduced motion.
+  floating:
+    'inset-x-4 bottom-4 mx-auto max-h-[85vh] max-w-[720px] rounded-md border data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 motion-safe:data-[state=closed]:slide-out-to-bottom motion-safe:data-[state=open]:slide-in-from-bottom'
 } as const
 
 function SheetContent({
@@ -48,6 +52,7 @@ function SheetContent({
     <SheetPortal>
       <SheetOverlay />
       <SheetPrimitive.Content
+        data-side={side}
         className={cn(
           'fixed z-[71] flex flex-col gap-4 overflow-y-auto border-border bg-popover p-6 shadow-[var(--shadow-overlay)] duration-[var(--motion-slow)] data-[state=open]:animate-in data-[state=closed]:animate-out',
           SIDE_STYLES[side],

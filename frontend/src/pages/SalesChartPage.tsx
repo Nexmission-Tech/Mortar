@@ -2,7 +2,7 @@
  * Sales Chart: every unit of the project by how far its booking has got
  * towards a signed SPA. Four figures, three filters, the legend, the chart,
  * and a readout of the unit under the pointer. Clicking a unit the viewer may
- * open brings up the same side sheet Today and Bookings use.
+ * open brings up the same case panel Today and Bookings use.
  */
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'

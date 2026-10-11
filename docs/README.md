@@ -205,7 +205,7 @@ personas: two Sales Admins, one Loan Admin, one Legal Admin and one Manager.
 | `/app`          | Redirects to the active persona's home                                                                                               |
 | `/chase`        | Today: who to chase today, with rule-based next steps, blocker reasons, and WhatsApp click-to-chat links                             |
 | `/team`         | Team: every desk's load side by side, most overdue first, with Open Bookings, Overdue Cases, Value At Risk and Expected Signings     |
-| `/bookings`     | Bookings: unit pipeline, Who Holds Each Booking filter, and side sheet quick view; hand-entry Add Booking and closed Excel export    |
+| `/bookings`     | Bookings: unit pipeline, Who Holds Each Booking filter, and case panel quick view; hand-entry Add Booking and closed Excel export    |
 | `/bookings/:id` | Case page: single-sentence status header, dual tracks, button-driven updates, and verbal Jev readings                                |
 | `/legal`        | Legal: SPA execution queue with No Appointment Yet and Appointment Set, Not Signed sections, with inline appointment/signing dialogs |
 | `/forecast`     | Forecast: projected signings, accuracy score sentence, the supporting document stack, and where bookings died                        |

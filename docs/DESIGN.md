@@ -973,6 +973,22 @@ surface may use three.js or draw in 3D.
   cancel button on destructive dialogs. Replaces all native browser `alert()`,
   `confirm()`, and `prompt()` calls.
 
+### Floating Panel
+
+- **Purpose:** The case quick view: one booking's state, who holds it and its
+  next step, opened over Bookings, Today and the Sales Chart without leaving
+  them.
+- **Anatomy:** a card 16px in from the bottom and side edges, up to 720px wide
+  and centred, at most 85% of the window tall and scrolling inside. Popover
+  fill, 1px `--border`, 6px radius (`--radius-md`), `Elevation/Overlay`. The
+  close button sits top right, as on Dialog.
+- **Behaviour:** modal. The shared scrim dims the page; Esc, a scrim click or
+  the close button closes it, and focus returns to what opened it.
+- **Motion:** rises from below the window over `motion/slow` and sinks on close;
+  under reduced motion it fades instead.
+- **Built on:** the Sheet primitive's `floating` side, so the focus trap and
+  scrim are the Dialog's.
+
 ### Ask Panel
 
 - **Purpose:** Answering a set list of questions about the current bookings,

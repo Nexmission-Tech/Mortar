@@ -78,7 +78,7 @@ asynchronous classification workflows:
   without masking data.
 - **Unified Next Step Derivation:** `frontend/src/components/case/nextStep.ts`
   establishes single rule-based moves from `ballInCourt` as the default across
-  cards and side sheets, surfacing Jev alternatives when they differ.
+  cards and case panels, surfacing Jev alternatives when they differ.
 - **Client Snapshot Provider:** The React client loads the entire operational
   dataset via `GET /api/snapshot`, fetched lazily on the first `useSnapshot()`
   call so public pages never hit the API. The browser's `SnapshotProvider`
@@ -134,7 +134,7 @@ Key files within each package include:
   persona page boundaries with redirection.
 - `frontend/src/components/case/nextStep.ts`: Unified rule-based next step
   derivation and verb resolution.
-- `frontend/src/components/case/CaseQuickView.tsx`: Shared quick view side sheet
+- `frontend/src/components/case/CaseQuickView.tsx`: Shared quick view case panel
   opened from Today and Bookings.
 
 ## Data Model And Schema

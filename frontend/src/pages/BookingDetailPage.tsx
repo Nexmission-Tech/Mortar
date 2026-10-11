@@ -156,7 +156,7 @@ export function BookingDetailPage() {
                 referenceDate={referenceDate}
                 onChanged={onChanged}
                 // Jev's cached answer for this case, so the "Jev Suggests" line
-                // appears here as it does on Today and in the side sheet.
+                // appears here as it does on Today and in the case panel.
                 suggestion={data.suggestion}
                 wide
               />

@@ -1,7 +1,8 @@
 /**
- * Case quick view — a side sheet opened from the ledger's row or its Waiting
- * On cell, so a desk can see where a unit is, who holds it and what to do next
- * without leaving the table (its filters, sort and page stay put). Record An
+ * Case quick view — a floating panel that rises from the bottom, opened from
+ * the ledger's row, its Waiting On cell, a Today card or a Sales Chart unit, so
+ * a desk can see where a unit is, who holds it and what to do next without
+ * leaving the screen (its filters, sort and page stay put). Record An
  * Update opens in place behind a button, so the answer can be logged without
  * the full case page. The full case is one link away.
  */

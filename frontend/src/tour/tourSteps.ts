@@ -60,7 +60,7 @@ export const TOUR_STEPS: Record<Persona, TourStep[]> = {
       route: '/chase',
       target: '[data-tour="today-quick-view"]',
       caption:
-        'When a booking is shown, open it to record what happened in its side sheet. This does not take you away from Today.'
+        'When a booking is shown, open it to record what happened in its case panel. This does not take you away from Today.'
     },
     {
       label: 'Open Tasks',
