@@ -1,16 +1,16 @@
 /**
- * Today's rail — the right-hand column that stays in view while the queue
- * scrolls, and stacks above the queue below 1280px.
+ * Today's overview and view bodies.
  *
- * Everything in it is a summary of, or a shortcut into, work that lives
- * elsewhere: the two figures (each clears the queue's filters), Your Tasks,
- * Recent Bookings, and for the Manager, Follow-Ups You Sent and the busiest
- * desk.
+ * The overview is one strip: two workload figures (the first clears the
+ * worklist's filters) and a compact third cell, Your Tasks' due shortcut for
+ * admins or the busiest desk for the Manager. Below the tabs, each view holds
+ * one complete list: Your Tasks, Recent Bookings, or the Manager's Follow-Ups
+ * You Sent. No list folds behind a Show More.
  */
 
-import { useState, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, Check } from 'lucide-react'
+import { ArrowRight, Check, ChevronRight, ListChecks } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { Booking, StaffProfile, Task, TeamRow } from '@mortar/core'
 import { canManageTaskStatus } from '@mortar/core'
@@ -20,46 +20,43 @@ import { InfoTooltip } from '@/components/ui/InfoTooltip'
 import { StatusPill } from '@/components/ui/status-pill'
 import { cn } from '@/lib/utils'
 import type { ManagerCase } from '@/components/manager/managerQueue'
+import { dueOrOverduePhrase } from './today'
 
 export const EYEBROW = 'text-[11px] font-semibold uppercase leading-[14px] tracking-[0.08em] text-muted-foreground'
 
-const RAIL_CARD = 'rounded-md border border-card-border bg-card shadow-card'
+const SURFACE = 'rounded-md border border-card-border bg-card shadow-card'
+const LABEL = 'text-xs leading-4 text-muted-foreground'
 
-/** The rail's container: sticky from 1280px, scrolling on its own when taller than the window. */
-export function Rail({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <aside
-      aria-label={label}
-      className="flex flex-col gap-4 xl:sticky xl:top-[72px] xl:col-start-2 xl:row-start-1 xl:max-h-[calc(100dvh-88px)] xl:overflow-y-auto xl:pb-1"
-    >
-      {children}
-    </aside>
-  )
-}
-
-export type RailFigure = {
+export type TodayFigureCell = {
   label: string
   icon: LucideIcon
   value: string
+  /** The scope the number covers, under it. */
+  caption: string
   /** The exact figure, for a rounded one. */
   exact?: string
   info?: string
   tone?: 'default' | 'alert'
   /** Applies the filter behind the number. */
   onClick?: () => void
+  /** Accessible name for the click, when the number does something. */
+  action?: string
   to?: string
 }
 
-/** Two figures: a two-up row below 1280px, stacked in one card beside the queue. */
-export function RailFigures({ figures }: { figures: [RailFigure, RailFigure] }) {
+/** One strip: two figures, then the third cell (spanning both below 1024px). */
+export function TodayOverview({ figures, third }: { figures: [TodayFigureCell, TodayFigureCell]; third: ReactNode }) {
   return (
-    <div className={cn(RAIL_CARD, 'grid grid-cols-2 px-4 xl:grid-cols-1')}>
+    <section
+      aria-label="Today's figures"
+      className={cn(SURFACE, 'grid grid-cols-2 lg:grid-cols-[240px_320px_minmax(0,1fr)]')}
+    >
       {figures.map((f, i) => {
         const body = (
           <>
             <span className="flex items-center gap-1.5">
               <f.icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
-              <span className={EYEBROW}>{f.label}</span>
+              <span className="text-[13px] leading-[18px] text-muted-foreground">{f.label}</span>
             </span>
             <span
               title={f.exact}
@@ -70,35 +67,126 @@ export function RailFigures({ figures }: { figures: [RailFigure, RailFigure] }) 
             >
               {f.value}
             </span>
+            <span className={LABEL}>{f.caption}</span>
           </>
         )
         const className = cn(
-          'flex flex-col items-start gap-1 py-3 text-left',
-          i === 0 ? 'border-r border-border pr-4 xl:border-b xl:border-r-0 xl:pr-0' : 'pl-4 xl:pl-0',
+          'flex grow flex-col items-start gap-1 text-left',
           (f.onClick || f.to) &&
             'rounded-sm outline-none transition-colors duration-[var(--motion-fast)] hover:text-link focus-visible:ring-2 focus-visible:ring-ring'
         )
         return (
-          <div key={f.label} className="flex min-w-0 items-start gap-1">
+          <div
+            key={f.label}
+            className={cn(
+              'flex min-w-0 items-start gap-1 px-4 py-3 sm:px-5',
+              i === 0 ? 'border-r border-border' : 'lg:border-r lg:border-border'
+            )}
+          >
             {f.to ? (
-              <Link to={f.to} className={cn(className, 'grow')}>
+              <Link to={f.to} aria-label={f.action} className={className}>
                 {body}
               </Link>
             ) : f.onClick ? (
-              <button type="button" onClick={f.onClick} className={cn(className, 'grow')}>
+              <button type="button" onClick={f.onClick} aria-label={f.action} className={className}>
                 {body}
               </button>
             ) : (
-              <div className={cn(className, 'grow')}>{body}</div>
+              <div className={className}>{body}</div>
             )}
             {f.info ? (
-              <span className="mt-3 shrink-0">
+              <span className="shrink-0">
                 <InfoTooltip text={f.info} />
               </span>
             ) : null}
           </div>
         )
       })}
+      <div className="col-span-2 min-w-0 border-t border-border px-4 py-3 sm:px-5 lg:col-span-1 lg:border-t-0">
+        {third}
+      </div>
+    </section>
+  )
+}
+
+/** The admin third cell: a direct way into Your Tasks, counting overdue ones honestly. */
+export function TasksShortcut({ count, onOpen }: { count: number; onOpen: () => void }) {
+  return (
+    <div className="flex flex-col items-start gap-1">
+      <span className="flex items-center gap-1.5">
+        <ListChecks aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+        <span className="text-[13px] leading-[18px] text-muted-foreground">Your Tasks</span>
+      </span>
+      <button
+        type="button"
+        onClick={onOpen}
+        className="-mx-1 flex items-center gap-1 rounded-sm px-1 text-sm font-medium leading-6 text-foreground outline-none transition-colors duration-[var(--motion-fast)] hover:text-link focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        {dueOrOverduePhrase(count)}
+        <ChevronRight aria-hidden="true" className="size-4" />
+      </button>
+      <span className={LABEL}>Assigned To You</span>
+    </div>
+  )
+}
+
+/** The Manager's third cell: the desk holding the most overdue work, with a way to Team. */
+export function BusiestDesk({ row }: { row: TeamRow | undefined }) {
+  if (!row)
+    return (
+      <div className="flex flex-col gap-1">
+        <span className="text-[13px] leading-[18px] text-muted-foreground">Busiest Desk</span>
+        <span className="text-sm text-muted-foreground">No Desk Has Stalled Work</span>
+      </div>
+    )
+  return (
+    <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-2">
+      <div className="flex min-w-0 flex-col gap-1">
+        <span className="text-[13px] leading-[18px] text-muted-foreground">Busiest Desk</span>
+        <span className="flex items-center gap-2">
+          <RoleLabel desk={DESK_OF_PERSONA[row.persona]} />
+          <span className="text-sm font-medium">{row.name}</span>
+        </span>
+        <span className={LABEL}>
+          {row.stalled} Stalled ·{' '}
+          <span className="tabular-nums" title={formatRm(row.valueAtRisk)}>
+            {formatRmCompact(row.valueAtRisk)}
+          </span>
+        </span>
+      </div>
+      <Link
+        to="/team"
+        className="group flex items-center gap-1 rounded-sm text-[13px] font-medium outline-none hover:text-link focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        Open Team
+        <ArrowRight aria-hidden="true" className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+      </Link>
+    </div>
+  )
+}
+
+/** A view's heading: Title Case section title, a muted count line, and controls on the right. */
+export function ViewHeader({
+  title,
+  detail,
+  info,
+  children
+}: {
+  title: string
+  detail?: string
+  info?: string
+  children?: ReactNode
+}) {
+  return (
+    <div className="flex flex-wrap items-end justify-between gap-3">
+      <div className="flex min-w-0 flex-col gap-0.5">
+        <h2 className="flex items-center gap-1 text-base font-semibold leading-6 tracking-[-0.01em] text-foreground">
+          {title}
+          {info ? <InfoTooltip text={info} /> : null}
+        </h2>
+        {detail ? <p className="text-[13px] leading-[18px] text-muted-foreground">{detail}</p> : null}
+      </div>
+      {children}
     </div>
   )
 }
@@ -110,11 +198,10 @@ function DuePill({ dueOn, referenceDate }: { dueOn: string; referenceDate: strin
   return <StatusPill tone="neutral">Due {formatDate(dueOn)}</StatusPill>
 }
 
-const TASK_PREVIEW = 5
-
 /**
- * Your Tasks: the person's open tasks, soonest first, with a Mine/Everyone
- * switch. Each row's circle completes the task; the title opens the case.
+ * Your Tasks: every open task in scope, Manager follow-ups first, then by due
+ * date, with a Mine/Everyone switch. Each row's circle completes the task; the
+ * title opens the case.
  */
 export function YourTasks({
   mine,
@@ -135,21 +222,18 @@ export function YourTasks({
   completing: ReadonlySet<string>
   onComplete: (task: Task) => void
 }) {
-  const [expanded, setExpanded] = useState(false)
   const tasks = [...(mineOnly ? mine : everyone)].sort(
     (a, b) =>
       Number(!!b.managerFlaggedBy) - Number(!!a.managerFlaggedBy) ||
       a.dueOn.localeCompare(b.dueOn) ||
       a.title.localeCompare(b.title)
   )
-  const shown = expanded ? tasks : tasks.slice(0, TASK_PREVIEW)
   return (
-    <section data-tour="open-tasks" aria-label="Your tasks" className={cn(RAIL_CARD, 'flex flex-col gap-3 p-4')}>
-      <div className="flex items-center justify-between gap-3">
-        <h2 className={cn(EYEBROW, 'flex items-center gap-1')}>
-          Your Tasks · {tasks.length}
-          <InfoTooltip text="Open Tasks, Ordered By Due Date." />
-        </h2>
+    <section aria-label="Your tasks" className="flex flex-col gap-3">
+      <ViewHeader
+        title="Your Tasks"
+        detail={`${tasks.length} Open · Manager Follow-Ups First, Then Due Date`}
+      >
         <div role="group" aria-label="Whose tasks" className="flex rounded-md bg-muted p-0.5">
           {[
             { label: 'Mine', on: mineOnly, value: true },
@@ -159,12 +243,9 @@ export function YourTasks({
               key={option.label}
               type="button"
               aria-pressed={option.on}
-              onClick={() => {
-                onMineOnly(option.value)
-                setExpanded(false)
-              }}
+              onClick={() => onMineOnly(option.value)}
               className={cn(
-                'h-7 rounded-sm px-2.5 text-xs font-medium outline-none transition-colors duration-[var(--motion-fast)] focus-visible:ring-2 focus-visible:ring-ring',
+                'h-8 rounded-sm px-3 text-[13px] font-medium outline-none transition-colors duration-[var(--motion-fast)] focus-visible:ring-2 focus-visible:ring-ring',
                 option.on ? 'bg-card text-foreground shadow-card' : 'text-muted-foreground hover:text-foreground'
               )}
             >
@@ -172,21 +253,23 @@ export function YourTasks({
             </button>
           ))}
         </div>
-      </div>
+      </ViewHeader>
       {tasks.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          {mineOnly ? `No Open Tasks For ${profile.name}.` : 'No Open Tasks.'}
-        </p>
+        <div className={cn(SURFACE, 'px-4 py-6 text-center')}>
+          <p className="text-sm font-medium text-foreground">
+            {mineOnly ? 'No Open Tasks For You' : 'No Open Tasks'}
+          </p>
+          {mineOnly ? (
+            <p className="mt-1 text-[13px] text-muted-foreground">Recommended Actions Are Ready When You Are</p>
+          ) : null}
+        </div>
       ) : (
-        <ul className="flex flex-col">
-          {shown.map((task) => {
+        <ul className={cn(SURFACE, 'divide-y divide-border')}>
+          {tasks.map((task) => {
             const canComplete = canManageTaskStatus(task, profile)
             const busy = completing.has(task.id)
             return (
-              <li
-                key={task.id}
-                className="flex items-start gap-3 border-t border-border py-2.5 first:border-t-0 first:pt-0"
-              >
+              <li key={task.id} className="flex items-start gap-3 px-4 py-3">
                 {canComplete ? (
                   <button
                     type="button"
@@ -229,22 +312,11 @@ export function YourTasks({
           })}
         </ul>
       )}
-      {tasks.length > TASK_PREVIEW ? (
-        <button
-          type="button"
-          onClick={() => setExpanded((v) => !v)}
-          className="self-start text-[13px] font-medium text-foreground underline-offset-4 hover:underline"
-        >
-          {expanded ? 'Show Fewer Tasks' : `Show All ${tasks.length} Tasks`}
-        </button>
-      ) : null}
     </section>
   )
 }
 
-const RECENT_PREVIEW = 5
-
-/** Bookings created in the last seven days, folded to one line until opened. */
+/** Every booking created in the last seven days, newest first; each opens the case panel. */
 export function RecentBookings({
   bookings,
   canOpen,
@@ -254,59 +326,35 @@ export function RecentBookings({
   canOpen: (id: string) => boolean
   onOpen: (id: string) => void
 }) {
-  const [open, setOpen] = useState(false)
-  const [expanded, setExpanded] = useState(false)
-  const shown = expanded ? bookings : bookings.slice(0, RECENT_PREVIEW)
   return (
-    <section aria-label="Recent bookings" className={cn(RAIL_CARD, 'flex flex-col gap-3 p-4')}>
-      <div className="flex items-center justify-between gap-3">
-        <h2 className={EYEBROW}>Recent Bookings{bookings.length > 0 ? ` · ${bookings.length}` : ''}</h2>
-        {bookings.length === 0 ? (
-          <span className="text-[13px] text-muted-foreground">None This Week</span>
-        ) : (
-          <button
-            type="button"
-            aria-expanded={open}
-            onClick={() => setOpen((v) => !v)}
-            className="text-[13px] font-medium text-foreground underline-offset-4 hover:underline"
-          >
-            {open ? 'Hide' : 'Show'}
-          </button>
-        )}
-      </div>
-      {open && bookings.length > 0 ? (
-        <>
-          <ul className="flex flex-col">
-            {shown.map((booking) => (
-              <li key={booking.id} className="border-t border-border first:border-t-0">
-                {canOpen(booking.id) ? (
-                  <button
-                    type="button"
-                    onClick={() => onOpen(booking.id)}
-                    aria-label={`Open ${booking.id} · ${booking.buyer.name}`}
-                    className="-mx-2 flex w-[calc(100%+16px)] flex-col items-start gap-0.5 rounded-sm px-2 py-2 text-left transition-colors duration-[var(--motion-fast)] hover:bg-accent"
-                  >
-                    <RecentLine booking={booking} />
-                  </button>
-                ) : (
-                  <div className="flex flex-col gap-0.5 py-2">
-                    <RecentLine booking={booking} />
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-          {bookings.length > RECENT_PREVIEW ? (
-            <button
-              type="button"
-              onClick={() => setExpanded((v) => !v)}
-              className="self-start text-[13px] font-medium text-foreground underline-offset-4 hover:underline"
-            >
-              {expanded ? 'Show Fewer' : `Show ${bookings.length - RECENT_PREVIEW} More`}
-            </button>
-          ) : null}
-        </>
-      ) : null}
+    <section aria-label="Recent bookings" className="flex flex-col gap-3">
+      <ViewHeader title="Recent Bookings" detail="Added In The Last 7 Days · Newest First" />
+      {bookings.length === 0 ? (
+        <div className={cn(SURFACE, 'px-4 py-6 text-center text-sm font-medium text-foreground')}>
+          No New Bookings This Week
+        </div>
+      ) : (
+        <ul className={cn(SURFACE, 'divide-y divide-border')}>
+          {bookings.map((booking) => (
+            <li key={booking.id}>
+              {canOpen(booking.id) ? (
+                <button
+                  type="button"
+                  onClick={() => onOpen(booking.id)}
+                  aria-label={`Open ${booking.id} · ${booking.buyer.name}`}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors duration-[var(--motion-fast)] hover:bg-accent"
+                >
+                  <RecentLine booking={booking} />
+                </button>
+              ) : (
+                <div className="flex items-center gap-3 px-4 py-2.5">
+                  <RecentLine booking={booking} />
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   )
 }
@@ -314,33 +362,44 @@ export function RecentBookings({
 function RecentLine({ booking }: { booking: Booking }) {
   return (
     <>
-      <span className="font-mono text-[13px] font-medium">{booking.unit}</span>
-      <span className="text-[13px] text-muted-foreground">
-        <span className="font-mono text-xs">{booking.id}</span> · {booking.buyer.name}
+      <span className="flex min-w-0 flex-col">
+        <span className="flex flex-wrap items-baseline gap-x-2">
+          <span className="font-mono text-[13px] font-medium">{booking.unit}</span>
+          <span className="text-sm">{booking.buyer.name}</span>
+        </span>
+        <span className="font-mono text-[13px] text-muted-foreground">{booking.id}</span>
+      </span>
+      <span className="ml-auto shrink-0 text-[13px] tabular-nums text-muted-foreground">
+        {formatRm(booking.priceRm)}
       </span>
     </>
   )
 }
 
 /** The Manager's follow-ups that still stand: case, blocker, recipient and whether they replied. */
-export function FollowUpsSent({ cases }: { cases: readonly ManagerCase[] }) {
+export function FollowUpsSent({ cases, onOpen }: { cases: readonly ManagerCase[]; onOpen: (id: string) => void }) {
   return (
-    <section aria-label="Follow-ups you sent" className={cn(RAIL_CARD, 'flex flex-col gap-3.5 p-4')}>
-      <h2 className={EYEBROW}>Follow-Ups You Sent · {cases.length}</h2>
+    <section aria-label="Follow-ups you sent" className="flex flex-col gap-3">
+      <ViewHeader title="Follow-Ups You Sent" detail="Awaiting Reply Until The Desk Records New Information" />
       {cases.length === 0 ? (
-        <p className="text-sm text-muted-foreground">None Waiting On A Reply.</p>
+        <div className={cn(SURFACE, 'px-4 py-6 text-center')}>
+          <p className="text-sm font-medium text-foreground">No Follow-Ups Waiting On A Reply</p>
+          <p className="mt-1 text-[13px] text-muted-foreground">Request A Follow-Up From Decisions For You</p>
+        </div>
       ) : (
-        <ul className="flex flex-col">
+        <ul className={cn(SURFACE, 'divide-y divide-border')}>
           {cases.map(({ booking, summary, recipient, wait, followUp }) => (
-            <li
-              key={booking.id}
-              className="flex flex-col gap-1.5 border-t border-border py-3 first:border-t-0 first:pt-0"
-            >
+            <li key={booking.id} className="flex flex-col gap-1.5 px-4 py-3">
               <div className="flex items-center justify-between gap-2">
-                <Link to={`/bookings/${booking.id}`} className="min-w-0 truncate underline-offset-4 hover:underline">
+                <button
+                  type="button"
+                  onClick={() => onOpen(booking.id)}
+                  aria-label={`Quick View ${booking.unit}: ${booking.id} · ${booking.buyer.name}`}
+                  className="-mx-1 min-w-0 truncate rounded-sm px-1 text-left hover:bg-accent"
+                >
                   <span className="font-mono text-[13px] font-medium">{booking.unit}</span>
-                  <span className="text-[13px] text-muted-foreground"> · {booking.buyer.name}</span>
-                </Link>
+                  <span className="text-sm"> {booking.buyer.name}</span>
+                </button>
                 {followUp?.status === 'open' ? (
                   <StatusPill tone="neutral" className="shrink-0">
                     Awaiting Reply
@@ -364,35 +423,5 @@ export function FollowUpsSent({ cases }: { cases: readonly ManagerCase[] }) {
         </ul>
       )}
     </section>
-  )
-}
-
-/** The desk holding the most overdue work, as a shortcut to Team. */
-export function BusiestDesk({ row }: { row: TeamRow }) {
-  return (
-    <Link
-      to="/team"
-      className={cn(
-        RAIL_CARD,
-        'group flex flex-col gap-2 p-4 outline-none transition-[box-shadow,transform] duration-[160ms] ease-[var(--ease-out)] hover:-translate-y-px hover:shadow-card-hover focus-visible:ring-2 focus-visible:ring-ring'
-      )}
-    >
-      <span className={EYEBROW}>Busiest Desk</span>
-      <span className="flex items-center gap-2">
-        <RoleLabel desk={DESK_OF_PERSONA[row.persona]} />
-        <span className="font-medium">{row.name}</span>
-      </span>
-      <span className="text-[13px] text-muted-foreground">
-        {row.stalled} Stalled ·{' '}
-        <span className="tabular-nums" title={formatRm(row.valueAtRisk)}>
-          {formatRmCompact(row.valueAtRisk)}
-        </span>{' '}
-        At Risk
-      </span>
-      <span className="flex items-center gap-1 text-[13px] font-medium">
-        Open Team
-        <ArrowRight aria-hidden="true" className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-      </span>
-    </Link>
   )
 }

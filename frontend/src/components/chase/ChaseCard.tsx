@@ -98,7 +98,7 @@ export function ChaseCard({
                   <ClockPill
                     tone="danger"
                     label={`Overdue ${daysTitle(summary.daysSinceEvidence)}`}
-                    clock="Days Without A Confirmed Update, Counted From 10 Days."
+                    clock={`${summary.daysSinceEvidence} days without an update. This is not a task deadline.`}
                   />
                 ) : null}
                 {highRisk ? <RiskChip risk={summary.risk} /> : null}

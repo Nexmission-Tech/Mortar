@@ -1,9 +1,9 @@
 /**
- * Manager card — one overdue case in the Manager's Decisions For You, drawn as
- * a Today card: unit and buyer, how far past its expected wait it is, the
- * blocker in plain words, one meta line, who it is waiting on, then Open Case
- * and Request Follow-Up. No percentages and no Jev scores: the blocker sentence
- * says why the case is here.
+ * Manager row — one overdue case in the Manager's Decisions For You, drawn as
+ * a Today worklist row: unit and buyer (which open the case panel), the
+ * blocker and how far past its expected wait the case is, then the next step,
+ * the person it waits on and Request Follow-Up. No percentages and no Mortar
+ * AI scores: the blocker says why the case is here.
  *
  * Request Follow-Up raises the next step as a task for the person holding the
  * case, flagged as the Manager's; the server reuses an equivalent open task
@@ -11,28 +11,32 @@
  */
 
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Send, type LucideIcon } from 'lucide-react'
-import { STAGE_LABELS, formatDaysLong, formatRm } from '@/components/case'
+import { Send } from 'lucide-react'
+import { RiskChip, STAGE_LABELS, formatRm } from '@/components/case'
 import { stepToTask } from '@/components/case/nextStep'
-import { blockerIcon } from '@/components/chase/chase'
+import { blockerIcon, documentStepLabel } from '@/components/chase/chase'
+import { headlineBlocker } from '@/components/chase/today'
+import {
+  ClockPill,
+  RowBlocker,
+  RowFacts,
+  RowIdentity,
+  WorklistRow,
+  daysTitle,
+  useDetails
+} from '@/components/chase/worklist'
 import { DESK_OF_PERSONA, RoleLabel } from '@/components/people/RoleLabel'
 import { Button } from '@/components/ui/button'
-import { StatusPill } from '@/components/ui/status-pill'
 import { notify } from '@/components/ui/toastConfig'
 import { postTask } from '@/lib/api'
 import { overdueBy, type ManagerCase } from './managerQueue'
-
-/** Renders a glyph handed in as a prop, so the icon is never created inside the card's render. */
-function Glyph({ icon: Icon }: { icon: LucideIcon }) {
-  return <Icon aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-}
 
 export function ManagerCard({
   item,
   referenceDate,
   managerName,
   onSent,
+  onInspect,
   tourTarget
 }: {
   item: ManagerCase
@@ -40,10 +44,15 @@ export function ManagerCard({
   managerName: string
   /** Called once the follow-up is saved, to refresh the queue. */
   onSent: () => Promise<void> | void
+  /** Opens the case's case panel over the worklist. */
+  onInspect: () => void
   tourTarget?: string
 }) {
   const { booking, summary, wait, recipient, ownerRole, step } = item
   const [saving, setSaving] = useState(false)
+  const headline = headlineBlocker(summary.stallReasons) ?? { text: wait.reason, generic: false }
+  const late = overdueBy(wait)
+  const unit = wait.unit === 'working days' ? (late === 1 ? 'Working Day' : 'Working Days') : late === 1 ? 'Day' : 'Days'
 
   const send = async () => {
     if (!recipient || saving) return
@@ -58,64 +67,81 @@ export function ManagerCard({
       notify.success(`Follow-up sent to ${recipient.name}.`)
       await onSent()
     } catch (e) {
-      notify.error(e instanceof Error ? e.message : 'Could not send the follow-up.')
+      notify.error(e instanceof Error ? e.message : 'Could not send the follow-up. Try again.')
       await onSent()
     } finally {
       setSaving(false)
     }
   }
 
+  const { toggle, panel } = useDetails(
+    booking.unit,
+    <RowFacts
+      facts={[
+        { label: 'Stage', value: STAGE_LABELS[summary.stage] },
+        { label: 'Booking Age', value: daysTitle(summary.bookingAgeDays), numeric: true },
+        { label: 'Last Update', value: `${daysTitle(summary.daysSinceEvidence)} Ago`, numeric: true },
+        { label: 'Booking Value', value: formatRm(booking.priceRm), numeric: true },
+        { label: 'Financing Risk', value: <RiskChip risk={summary.risk} /> }
+      ]}
+      blockers={summary.stallReasons.length > 0 ? summary.stallReasons : [wait.reason]}
+    />
+  )
+
   return (
-    <article
-      data-testid={`manager-card-${booking.id}`}
-      data-tour={tourTarget}
-      className="flex flex-col gap-3 rounded-md border border-card-border bg-card p-4 shadow-card transition-[box-shadow,transform] duration-[160ms] ease-[var(--ease-out)] hover:-translate-y-px hover:shadow-card-hover"
-    >
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <span className="block font-mono text-[13px] font-medium text-foreground">{booking.unit}</span>
-          <span className="block truncate text-[13px] text-muted-foreground">
-            {booking.id} · {booking.buyer.name}
-          </span>
+    <WorklistRow
+      testId={`manager-card-${booking.id}`}
+      tourTarget={tourTarget}
+      identity={<RowIdentity booking={booking} onInspect={onInspect} />}
+      blocker={
+        <RowBlocker
+          icon={blockerIcon(summary.stallReasons, step.document)}
+          text={headline.text}
+          generic={headline.generic}
+          pills={
+            <>
+              <ClockPill
+                tone="danger"
+                label={`Overdue ${late} ${unit}`}
+                clock={`${late} ${unit.toLowerCase()} beyond this step's expected wait.`}
+              />
+              {summary.risk.level === 'high' ? <RiskChip risk={summary.risk} /> : null}
+            </>
+          }
+        />
+      }
+      action={
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+          <div className="flex min-w-0 flex-col gap-0.5">
+            <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+              <span className="text-sm font-medium leading-5 text-foreground">
+                {documentStepLabel(step.label, step.document)}
+              </span>
+              {recipient ? <RoleLabel desk={DESK_OF_PERSONA[recipient.persona]} /> : null}
+            </span>
+            <span className="text-[13px] leading-[18px] text-muted-foreground">
+              {recipient ? recipient.name : 'No One On The Team'}
+            </span>
+          </div>
+          <div className="ml-auto flex items-center gap-1 max-md:w-full max-md:justify-between max-md:pt-1">
+            {recipient ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="max-md:mr-auto"
+                disabled={saving}
+                onClick={() => void send()}
+              >
+                <Send aria-hidden="true" />
+                {saving ? 'Sending…' : 'Request Follow-Up'}
+              </Button>
+            ) : null}
+            {toggle}
+          </div>
         </div>
-        <StatusPill tone="danger" className="shrink-0">
-          Overdue {overdueBy(wait)} d
-        </StatusPill>
-      </div>
-
-      <p className="flex items-start gap-2 text-base font-semibold tracking-[-0.01em] text-foreground">
-        <Glyph icon={blockerIcon(summary.stallReasons, step.document)} />
-        <span>{summary.stallReasons.length > 0 ? summary.stallReasons.join(' · ') : wait.reason}</span>
-      </p>
-
-      <p className="text-[13px] text-muted-foreground">
-        {STAGE_LABELS[summary.stage]} · Last Update {formatDaysLong(summary.daysSinceEvidence)} Ago ·{' '}
-        <span className="tabular-nums">{formatRm(booking.priceRm)}</span>
-      </p>
-
-      <div className="flex flex-wrap items-center gap-2 text-[13px]">
-        <span className="text-muted-foreground">Waiting On</span>
-        {recipient ? (
-          <>
-            <RoleLabel desk={DESK_OF_PERSONA[recipient.persona]} />
-            <span className="font-medium text-foreground">{recipient.name}</span>
-          </>
-        ) : (
-          <span className="text-muted-foreground">No One On The Team</span>
-        )}
-      </div>
-
-      <div className="mt-auto flex items-center justify-between gap-2 pt-1">
-        <Button asChild variant="ghost" size="sm" className="-ml-1.5 px-1.5">
-          <Link to={`/bookings/${booking.id}`}>Open Case</Link>
-        </Button>
-        {recipient ? (
-          <Button type="button" size="sm" disabled={saving} onClick={() => void send()}>
-            <Send aria-hidden="true" />
-            {saving ? 'Sending…' : 'Request Follow-Up'}
-          </Button>
-        ) : null}
-      </div>
-    </article>
+      }
+      details={panel}
+    />
   )
 }
