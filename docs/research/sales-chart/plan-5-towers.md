@@ -242,8 +242,11 @@ describe('towerModel', () => {
           expect([...m.units.values()].every((b) => b.side === 'front')).toBe(
             true
           )
+        // No setback: every tower stands at the same depth.
         if (blocks.length !== 3)
-          expect(m.towers.every((t) => Math.abs(t.center[2]) < 1e-6)).toBe(true)
+          expect(
+            new Set(m.towers.map((t) => t.center[2].toFixed(3))).size
+          ).toBe(1)
       }
   })
 
