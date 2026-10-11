@@ -163,6 +163,7 @@ export function RecordUpdateForm({
   onRecorded,
   initialKind,
   collapsible = false,
+  bare = false,
   className
 }: {
   booking: Booking
@@ -188,6 +189,8 @@ export function RecordUpdateForm({
    * that have no room for the toggle (a dialog, a narrow sheet).
    */
   collapsible?: boolean
+  /** Inside the case panel, whose title already names the form: no heading or divider of its own. */
+  bare?: boolean
   /** Sits on the caller's own separator, where the form is not the last block. */
   className?: string
 }) {
@@ -477,6 +480,8 @@ export function RecordUpdateForm({
       </Dialog>
     </>
   )
+
+  if (bare) return <div className="flex flex-col gap-3">{form}</div>
 
   if (!collapsible) {
     return (

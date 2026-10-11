@@ -261,6 +261,7 @@ export function BookingDetailPage() {
                 summary={data.summary}
                 referenceDate={referenceDate}
                 reportedBy={reviewer}
+                bare
                 onRecorded={async () => {
                   await onChanged()
                   setAction(null)
@@ -273,6 +274,7 @@ export function BookingDetailPage() {
                 booking={data.booking}
                 banker={data.applications[data.applications.length - 1]?.banker}
                 referenceDate={referenceDate}
+                bare
                 onAdded={onChanged}
               />
             ) : action === 'guidance' ? (
@@ -281,6 +283,7 @@ export function BookingDetailPage() {
                 summary={data.summary}
                 playbooks={data.playbooks}
                 refreshKey={refreshKey}
+                bare
               />
             ) : null}
           </CaseActionSheet>

@@ -20,7 +20,7 @@ export function ApplicationsCard({ applications, summary }: { applications: Loan
   const statusById = new Map(summary.applications.map((a) => [a.id, a.status]))
   return (
     <Card>
-      <CardContent className="flex flex-col gap-3 p-4">
+      <CardContent className="flex flex-col gap-3 p-4 md:p-6">
         <h2 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
           Bank Applications
         </h2>
