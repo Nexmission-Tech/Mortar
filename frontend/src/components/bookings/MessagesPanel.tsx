@@ -35,9 +35,9 @@ const DECISION_TOASTS: Record<Decision, string> = {
 
 /** How sure Jev is, in the words a reader uses rather than a probability. */
 export function certainty(confidence: number): string {
-  if (confidence >= 0.9) return 'Jev Is Sure'
-  if (confidence >= 0.7) return 'Jev Is Fairly Sure'
-  return 'Jev Is Not Sure'
+  if (confidence >= 0.9) return 'Mortar AI Is Sure'
+  if (confidence >= 0.7) return 'Mortar AI Is Fairly Sure'
+  return 'Mortar AI Is Not Sure'
 }
 
 /**
@@ -115,7 +115,7 @@ function ProposalBlock({
   return (
     <div className="mt-2 rounded-md border border-border bg-muted/50 p-3">
       <p className="text-sm">
-        <span className="text-muted-foreground">Jev Suggests: </span>
+        <span className="text-muted-foreground">Mortar AI Suggests: </span>
         <span className="font-medium">{reading.join(' · ')}</span>
         <span className="text-muted-foreground"> · {certainty(event.confidence)}</span>
       </p>
@@ -203,9 +203,9 @@ function MessageItem({
           variant="ghost"
           className="ml-auto h-7 px-2 text-xs text-muted-foreground transition-opacity duration-[var(--motion-fast)] group-focus-within:opacity-100 group-hover:opacity-100 sm:opacity-0"
           disabled={pending}
-          onClick={() => void run('jev', () => extractMessage(message.id), 'Jev re-ran on this message.')}
+          onClick={() => void run('jev', () => extractMessage(message.id), 'Mortar AI checked this message again.')}
         >
-          {pendingAction === 'jev' ? 'Asking Jev…' : extraction ? 'Ask Jev Again' : 'Ask Jev'}
+          {pendingAction === 'jev' ? 'Asking Mortar AI…' : extraction ? 'Ask Mortar AI Again' : 'Ask Mortar AI'}
         </Button>
       </div>
       <p className="mt-1.5 max-w-3xl text-sm">{message.body}</p>
@@ -219,7 +219,7 @@ function MessageItem({
           }
         />
       ) : (
-        <p className="mt-2 text-[13px] text-muted-foreground">Jev Has Not Looked At This Yet.</p>
+        <p className="mt-2 text-[13px] text-muted-foreground">Mortar AI Has Not Checked This Message Yet.</p>
       )}
     </li>
   )

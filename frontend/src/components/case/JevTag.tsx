@@ -21,12 +21,12 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { cn } from '@/lib/utils'
 
 /** Why the clock is there, for anyone who asks the icon. */
-const OUT_OF_DATE = 'Jev Read This Before The Latest Update. Ask Jev Again To Refresh.'
+const OUT_OF_DATE = 'Mortar AI read this before the latest update. Ask Mortar AI again to refresh.'
 
 /** The pill states that still matter to whoever just asked. */
 function pill(meta: JevMeta): { tone: StatusPillTone; label: string } | null {
-  if (meta.source === 'unavailable') return { tone: 'danger', label: 'Jev Could Not Check' }
-  if (meta.source === 'live') return { tone: 'positive', label: 'Jev Checked Just Now' }
+  if (meta.source === 'unavailable') return { tone: 'danger', label: 'Mortar AI Could Not Check' }
+  if (meta.source === 'live') return { tone: 'positive', label: 'Mortar AI Checked Just Now' }
   return null
 }
 

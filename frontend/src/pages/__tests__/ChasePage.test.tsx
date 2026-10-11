@@ -213,7 +213,7 @@ describe('ChasePage', () => {
     expect(card.textContent).toContain('Call The Banker')
     expect(card.textContent).toContain('Application Undecided For 10 Working Days')
     // The rule-based move is the default; Jev's differs and rides one line under it.
-    expect(card.textContent).toContain('Jev Suggests: Ask For The Missing Document Instead')
+    expect(card.textContent).toContain('Mortar AI Suggests: Ask For The Missing Document')
   })
 
   it('names the desk that owns a card’s next step, and leaves it out on that desk', () => {
@@ -256,7 +256,7 @@ describe('ChasePage', () => {
     renderPage()
 
     const card = screen.getByTestId('chase-card-BK-9001')
-    fireEvent.click(within(card).getByRole('button', { name: 'Do That Instead' }))
+    fireEvent.click(within(card).getByRole('button', { name: 'Use This Action' }))
 
     await waitFor(() => expect(mocks.postTask).toHaveBeenCalledTimes(1))
     expect(mocks.postTask).toHaveBeenCalledWith(
@@ -391,7 +391,7 @@ describe('ChasePage', () => {
       fireEvent.click(screen.getByRole('button', { name: /^Quick View A-12-03: BK-9001/ }))
 
       const sheet = document.querySelector<HTMLElement>('[role="dialog"]')!
-      expect(within(sheet).getByText('Jev Suggests: Ask For The Missing Document Instead')).toBeTruthy()
+      expect(within(sheet).getByText('Mortar AI Suggests: Ask For The Missing Document')).toBeTruthy()
     })
 
     it('refreshes the queue after a save in the sheet', async () => {

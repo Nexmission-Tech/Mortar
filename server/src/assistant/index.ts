@@ -219,7 +219,7 @@ export function createAssistant(options: AssistantOptions) {
           .catch((e) => {
             if (disconnect.signal.aborted) return
             console.error('ask mortar:', e instanceof Error ? e.message : String(e))
-            send({ type: 'error', message: 'Ask MortarAI Could Not Check. Try Again.' })
+            send({ type: 'error', message: 'Mortar AI could not check. Try again.' })
           })
           .finally(() => {
             req.signal.removeEventListener('abort', onAbort)

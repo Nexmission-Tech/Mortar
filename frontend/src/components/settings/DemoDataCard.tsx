@@ -57,7 +57,7 @@ export function DemoDataCard({
     ['Messages', snapshot.messages.length],
     ['Tasks', snapshot.tasks.length],
     ['Playbooks', snapshot.playbooks.length],
-    ['Jev Answers', jevAnswers]
+    ['Mortar AI Answers', jevAnswers]
   ]
 
   return (

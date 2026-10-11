@@ -70,7 +70,7 @@ describe('SettingsPage', () => {
     expect(screen.getByText('20260918')).toBeTruthy()
     expect(screen.getByText('18 Sep 2026')).toBeTruthy()
     expect(screen.getByText('Bookings')).toBeTruthy()
-    expect(screen.getByText('Jev Answers')).toBeTruthy()
+    expect(screen.getByText('Mortar AI Answers')).toBeTruthy()
     expect((screen.getByRole('button', { name: 'Add Demo Data' }) as HTMLButtonElement).disabled).toBe(true)
     expect((screen.getByRole('button', { name: 'Delete Demo Data' }) as HTMLButtonElement).disabled).toBe(false)
     await waitFor(() => expect(mocks.fetchHealth).toHaveBeenCalled())
@@ -95,13 +95,13 @@ describe('SettingsPage', () => {
     renderPage()
     // The snapshot carries zero extractions/signals/nextActions; the stored
     // count of 87 must come from /api/health, and the row shows '—' until then.
-    const row = (await screen.findByText('Jev Answers')).closest('div')!
+    const row = (await screen.findByText('Mortar AI Answers')).closest('div')!
     await waitFor(() => expect(within(row).getByText('87')).toBeTruthy())
   })
 
   it('words the Jev line as a configured key, not a live connection', async () => {
     renderPage()
-    const note = await screen.findByText('Whether A TypeSafe API Key Is Configured')
+    const note = await screen.findByText('Whether message readings are configured.')
     const row = note.closest('div')!.parentElement!
     expect(within(row).getByText('Configured')).toBeTruthy()
     expect(within(row).queryByText('Connected')).toBeNull()
@@ -109,9 +109,9 @@ describe('SettingsPage', () => {
 
   it('says whether Ask MortarAI has a Gemini key, in the Jev row’s own words', async () => {
     renderPage()
-    const note = await screen.findByText('Whether A Gemini Key Is Configured')
+    const note = await screen.findByText('Whether assistant answers are configured.')
     const row = note.closest('div')!.parentElement!
-    expect(within(row).getByText('Ask MortarAI')).toBeTruthy()
+    expect(within(row).getByText('Ask Mortar AI')).toBeTruthy()
     // The panel falls back to its own answers without a key, so the row says
     // so rather than reporting a failure.
     expect(within(row).getByText('Configured')).toBeTruthy()
@@ -122,8 +122,8 @@ describe('SettingsPage', () => {
     mocks.fetchHealth.mockResolvedValue({ ok: true, db: true, jev: true, assistant: false, jevAnswers: 87 })
     renderPage()
 
-    const jevRow = (await screen.findByText('Whether A TypeSafe API Key Is Configured')).closest('div')!.parentElement!
-    const askRow = (await screen.findByText('Whether A Gemini Key Is Configured')).closest('div')!.parentElement!
+    const jevRow = (await screen.findByText('Whether message readings are configured.')).closest('div')!.parentElement!
+    const askRow = (await screen.findByText('Whether assistant answers are configured.')).closest('div')!.parentElement!
     expect(within(jevRow).getByText('Configured')).toBeTruthy()
     expect(within(askRow).getByText('Missing')).toBeTruthy()
   })

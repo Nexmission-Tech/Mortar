@@ -278,7 +278,7 @@ export async function askAssistantStream(
     clearTimeout(timer)
     signal?.removeEventListener('abort', abort)
     if (response.status === 401 || response.status === 409) invalidateSession()
-    throw new ApiError('Ask MortarAI Could Not Check. Try Again.', response.status)
+    throw new ApiError('Mortar AI could not check. Try again.', response.status)
   }
   try {
     const reader = response.body.getReader()

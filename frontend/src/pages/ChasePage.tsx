@@ -253,9 +253,10 @@ function AdminToday() {
     try {
       const suggestion = await fetchNextAction(bookingId)
       setLive((prev) => ({ ...prev, [bookingId]: suggestion }))
-      if (suggestion.meta.source === 'unavailable') notify.warning('Jev is unavailable — showing a neutral answer')
+      if (suggestion.meta.source === 'unavailable')
+        notify.warning('Mortar AI could not check. The usual next step is shown.')
     } catch (e) {
-      notify.error(e instanceof ApiError ? e.message : 'Could Not Reach Jev. Try Again.')
+      notify.error(e instanceof ApiError ? e.message : 'Could not reach Mortar AI. Try again.')
     } finally {
       setFlag(setSuggesting, bookingId, false)
     }

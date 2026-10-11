@@ -25,7 +25,7 @@ const HESITATION: { tone: StatusPillTone; label: string }[] = [
 ]
 
 const SOURCE_NOTE =
-  "Jev's Read Of This Buyer's Messages: Reply Speed And Any Doubts. Log Messages On The Case Page To Update It."
+  'Mortar AI’s reading of this buyer’s messages: reply speed and any doubts. Add messages to update it.'
 
 const band = (score: number) => Math.min(2, Math.max(0, Math.round(score)))
 

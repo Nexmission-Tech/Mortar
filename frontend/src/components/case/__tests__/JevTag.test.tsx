@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import type { JevMeta } from '@mortar/core'
 import { JevTag } from '../JevTag'
 
-const OUT_OF_DATE = 'Jev Read This Before The Latest Update. Ask Jev Again To Refresh.'
+const OUT_OF_DATE = 'Mortar AI read this before the latest update. Ask Mortar AI again to refresh.'
 
 describe('JevTag', () => {
   it.each([
@@ -11,12 +11,12 @@ describe('JevTag', () => {
     { name: 'a live read with no latency recorded', meta: { source: 'live', stale: false, latencyMs: null } as JevMeta }
   ])('keeps $name as a positive pill', ({ meta }) => {
     render(<JevTag meta={meta} />)
-    expect(screen.getByText('Jev Checked Just Now').className).toContain('bg-status-positive-bg')
+    expect(screen.getByText('Mortar AI Checked Just Now').className).toContain('bg-status-positive-bg')
   })
 
   it('keeps an unavailable read as a danger pill', () => {
     render(<JevTag meta={{ source: 'unavailable', stale: false, latencyMs: null }} />)
-    expect(screen.getByText('Jev Could Not Check').className).toContain('bg-status-danger-bg')
+    expect(screen.getByText('Mortar AI Could Not Check').className).toContain('bg-status-danger-bg')
   })
 
   it('says nothing for a cached answer the case has not moved past', () => {

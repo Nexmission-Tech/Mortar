@@ -115,19 +115,21 @@ describe('MessagesPanel Jev line', () => {
       />
     )
     // The line is built from three spans, so match the block that holds them.
-    return [...container.querySelectorAll('p')].map((p) => p.textContent).find((t) => t?.startsWith('Jev Suggests:'))!
+    return [...container.querySelectorAll('p')]
+      .map((p) => p.textContent)
+      .find((t) => t?.startsWith('Mortar AI Suggests:'))!
   }
 
   it('reads the proposal on one line, with the document and who it lands on', () => {
-    expect(readLine(0.9)).toBe('Jev Suggests: Documents Received · Payslip · Loan Admin · Jev Is Sure')
+    expect(readLine(0.9)).toBe('Mortar AI Suggests: Documents Received · Payslip · Loan Admin · Mortar AI Is Sure')
   })
 
   it.each([
-    [0.94, 'Jev Is Sure'],
-    [0.9, 'Jev Is Sure'],
-    [0.84, 'Jev Is Fairly Sure'],
-    [0.7, 'Jev Is Fairly Sure'],
-    [0.62, 'Jev Is Not Sure']
+    [0.94, 'Mortar AI Is Sure'],
+    [0.9, 'Mortar AI Is Sure'],
+    [0.84, 'Mortar AI Is Fairly Sure'],
+    [0.7, 'Mortar AI Is Fairly Sure'],
+    [0.62, 'Mortar AI Is Not Sure']
   ])('maps %s confidence to words, never a percentage', (confidence, expected) => {
     const line = readLine(confidence)
     expect(line).toContain(expected)

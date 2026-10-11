@@ -87,7 +87,7 @@ describe("The Manager's Today", () => {
     expect(within(card).getByText('Nurul Aina')).toBeTruthy()
     expect(within(card).getByRole('link', { name: 'Open Case' }).getAttribute('href')).toBe('/bookings/BK-9001')
     expect(document.body.textContent).not.toMatch(/%/)
-    expect(document.body.textContent).not.toMatch(/Jev:/)
+    expect(document.body.textContent).not.toMatch(/Mortar AI:/)
 
     fireEvent.click(within(card).getByRole('button', { name: 'Request Follow-Up' }))
     await waitFor(() =>

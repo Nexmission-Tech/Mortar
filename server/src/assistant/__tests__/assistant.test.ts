@@ -593,7 +593,7 @@ describe('POST /api/assistant', () => {
     const res = await post_(makeApp(new FakeDb(), slow, KEY, 120), QUESTION, '10.0.0.3')
 
     expect(res.status).toBe(503)
-    expect(await errorOf(res)).toBe('Ask MortarAI Took Too Long. Try Again.')
+    expect(await errorOf(res)).toBe('Mortar AI took too long. Try again.')
     // The deadline is the request's, so it cuts the loop short rather than
     // letting four rounds of thirty seconds each run.
     expect(seen).toBeLessThan(MAX_TOOL_ROUNDS)
@@ -750,7 +750,7 @@ describe('POST /api/assistant', () => {
       new Response('nope', { status: 500, statusText: 'Server Error' })) as unknown as typeof fetch
     const res = await post_(makeApp(new FakeDb(), failing), QUESTION)
     expect(res.status).toBe(503)
-    expect(await errorOf(res)).toBe('Ask MortarAI Could Not Check. Try Again.')
+    expect(await errorOf(res)).toBe('Mortar AI could not check. Try again.')
   })
 })
 

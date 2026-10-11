@@ -44,11 +44,11 @@ export function WhyMortar({ className }: { className?: string }) {
 
       <div className="land-pair">
         <div className="land-cell">
-          <h3 className="land-cell-title">Jev Proposes. People Decide.</h3>
+          <h3 className="land-cell-title">Mortar AI Proposes. People Decide.</h3>
           <p className="land-cell-body">
             Practitioners asked for AI on next actions (4 of 8), document checks (3 of 8), and summarising WhatsApp and
-            banker updates (3 of 8); only one respondent would let AI score conversion. So Jev reads and proposes, a
-            person confirms — and the forecast stays statistics, not vibes.
+            banker updates (3 of 8); only one respondent would let AI score conversion. So Mortar AI reads and proposes,
+            a person confirms — and the forecast stays statistics, not vibes.
           </p>
         </div>
         <div className="land-cell">

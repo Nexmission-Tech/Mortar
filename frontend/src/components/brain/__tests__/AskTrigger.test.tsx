@@ -24,8 +24,8 @@ vi.mock('../AskPanel', () => ({
     const [draft, setDraft] = useState('')
     return (
       <div>
-        <div>Ask MortarAI</div>
-        <input aria-label="Ask MortarAI draft" value={draft} onChange={(event) => setDraft(event.target.value)} />
+        <div>Ask Mortar AI</div>
+        <input aria-label="Ask Mortar AI draft" value={draft} onChange={(event) => setDraft(event.target.value)} />
       </div>
     )
   }
@@ -59,13 +59,13 @@ describe('AskTrigger', () => {
     expect(mocks.initialQuestion).toBe('Where are our bookings leaking?')
 
     fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' })
-    fireEvent.click(screen.getByRole('button', { name: 'Ask MortarAI' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Ask Mortar AI' }))
     expect(mocks.initialQuestion).toBeUndefined()
   })
 
   it('passes the open case id to Ask, so a person asking from a case gets that case', () => {
     renderAt('/bookings/BK-9001')
-    fireEvent.click(screen.getByRole('button', { name: 'Ask MortarAI' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Ask Mortar AI' }))
 
     // Radix mounts the dialog content only once it opens, so the prop is read
     // after the click rather than on render.
@@ -74,7 +74,7 @@ describe('AskTrigger', () => {
 
   it('passes no case on a route that has none', () => {
     renderAt('/chase')
-    fireEvent.click(screen.getByRole('button', { name: 'Ask MortarAI' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Ask Mortar AI' }))
 
     expect(mocks.bookingId).toBeUndefined()
   })
@@ -82,7 +82,7 @@ describe('AskTrigger', () => {
   it('still renders its own trigger, so nothing about the top bar changes', () => {
     renderAt('/bookings/BK-9001')
 
-    expect(screen.getByRole('button', { name: 'Ask MortarAI' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Ask Mortar AI' })).toBeTruthy()
     expect(document.querySelector('[data-tour="ask-mortar"]')).toBeTruthy()
   })
 
@@ -105,11 +105,11 @@ describe('AskTrigger', () => {
         </MemoryRouter>
       </PersonaProvider>
     )
-    fireEvent.click(screen.getByRole('button', { name: 'Ask MortarAI' }))
-    fireEvent.change(screen.getByLabelText('Ask MortarAI draft'), { target: { value: 'A private question' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Ask Mortar AI' }))
+    fireEvent.change(screen.getByLabelText('Ask Mortar AI draft'), { target: { value: 'A private question' } })
 
     fireEvent.click(screen.getByText('Use Loan Profile'))
 
-    expect((screen.getByLabelText('Ask MortarAI draft') as HTMLInputElement).value).toBe('')
+    expect((screen.getByLabelText('Ask Mortar AI draft') as HTMLInputElement).value).toBe('')
   })
 })

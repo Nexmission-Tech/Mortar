@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils'
 
 const FREE_FEATURES = [
   'The three desks — Chase, Bookings, Forecast',
-  'Jev proposals, each confirmed by a person',
+  'Mortar AI proposals, each confirmed by a person',
   'The backtested 30-day SPA forecast',
   'Simulated data, resettable in one click'
 ]

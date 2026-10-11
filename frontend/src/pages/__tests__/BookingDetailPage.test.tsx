@@ -128,10 +128,10 @@ describe('BookingDetailPage', () => {
     // One line, built from three spans, so match the block that holds them.
     const line = [...document.body.querySelectorAll('p')]
       .map((p) => p.textContent)
-      .find((t) => t?.startsWith('Jev Suggests:'))
+      .find((t) => t?.startsWith('Mortar AI Suggests:'))
     expect(line).toContain('Documents Requested')
     expect(line).toContain('Payslip')
-    expect(line).toContain('Jev Is Sure')
+    expect(line).toContain('Mortar AI Is Sure')
     // The probability bar and the percentage went; confidence reads in words.
     expect(screen.queryByText(/Confidence \d+%/)).toBeNull()
 
@@ -200,7 +200,7 @@ describe('BookingDetailPage', () => {
     renderDetail('BK-9001')
 
     expect(await screen.findByText('Waiting On')).toBeTruthy()
-    expect(screen.getByText('Jev Suggests: Call The Buyer Instead')).toBeTruthy()
+    expect(screen.getByText('Mortar AI Suggests: Call The Buyer')).toBeTruthy()
   })
 
   it('keeps Record An Update and Paste A Message closed on load and opens them in place', async () => {
@@ -229,7 +229,9 @@ describe('BookingDetailPage', () => {
     // MSG-9002-1: Jev read documents_received, but the message only carries the confirmed `booked`.
     const body = await screen.findByText(/Passing my payslips and bank statement/)
     const item = body.closest('li')!
-    const line = [...item.querySelectorAll('p')].map((p) => p.textContent).find((t) => t?.startsWith('Jev Suggests:'))
+    const line = [...item.querySelectorAll('p')]
+      .map((p) => p.textContent)
+      .find((t) => t?.startsWith('Mortar AI Suggests:'))
     expect(line).toContain('Documents Received')
     expect(line).toContain('Payslip')
     expect(within(item).queryByText('Confirmed')).toBeNull()
@@ -244,7 +246,7 @@ describe('BookingDetailPage', () => {
     const item = body.closest('li')!
     expect(within(item).getByText('No Case Update In This Message.')).toBeTruthy()
     // The no-update read collapses to one muted line — no proposal panel.
-    expect(within(item).queryByText('Jev Suggests')).toBeNull()
+    expect(within(item).queryByText('Mortar AI Suggests')).toBeNull()
     expect(within(item).queryByText('Confirmed')).toBeNull()
   })
 

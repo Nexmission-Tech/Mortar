@@ -28,7 +28,7 @@ const SOURCE_LABELS: Record<CaseEvent['source'], string> = {
   generator: 'Demo',
   story: 'Demo',
   staff: 'Staff',
-  jev: 'Jev'
+  jev: 'Mortar AI'
 }
 
 export function EvidenceLog({ events }: { events: CaseEvent[] }) {
