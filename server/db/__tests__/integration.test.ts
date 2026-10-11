@@ -215,6 +215,15 @@ describe.skipIf(!TEST_DATABASE_URL)('database integration', () => {
     expect(after[0]?.n).toBe(before[0]?.n)
   })
 
+  test('Add Demo Data restores the demo project layout, and the snapshot carries it', async () => {
+    await deleteDemoData(sql)
+    await db.setProjectSettings({ ...DEFAULT_PROJECT_SETTINGS, projectName: 'Somewhere Else', blocks: ['Z'] })
+    await addDemoData(sql)
+    db.forgetSnapshot()
+    expect(await db.getProjectSettings()).toEqual(DEFAULT_PROJECT_SETTINGS)
+    expect((await db.snapshot()).projectSettings).toEqual(DEFAULT_PROJECT_SETTINGS)
+  })
+
   test('deleting demo data wipes the demo bookings and everything attached, keeping visitor bookings', async () => {
     try {
       // A booking of the visitor's own, with the rows that hang off it.

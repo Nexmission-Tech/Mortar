@@ -1,3 +1,4 @@
+import { DEFAULT_PROJECT_SETTINGS } from './projectSettings'
 import { describe, expect, it } from 'vitest'
 import {
   checkBookingDraft,
@@ -275,5 +276,35 @@ describe('checkBookingDraft', () => {
     expect(problems).toContain('bookingDate is after 2026-09-18')
     expect(problems).toContain('buyer.age must be a whole number from 18 to 100')
     expect(checkBookingDraft(null, '2026-09-18')).toEqual(['Not A Booking'])
+  })
+})
+
+describe('readBookingSheet with the project layout', () => {
+  const row = (unit: string) => [
+    unit,
+    'Nur Aisyah Binti Kamal',
+    '900514-00-0001',
+    '+60 00-000 0001',
+    'RM 612,800',
+    '2/9/2026',
+    '8,500'
+  ]
+  const options = {
+    ...OPTIONS,
+    defaults: { ...DEFAULTS, project: 'Aster Heights' },
+    settings: DEFAULT_PROJECT_SETTINGS,
+    held: new Map([[unitKey('Aster Heights', 'A-12-03'), 'BK-9001']])
+  }
+
+  it('refuses a label the numbering would not write', () => {
+    const reading = readBookingSheet([HEADER, row('A-24-02')], options)
+    expect(reading.rows[0]?.errors).toContain("Unit A-24-02 Is Not In This Project's Numbering; Did You Mean A-23A-02?")
+    expect(reading.rows[0]?.draft).toBeNull()
+  })
+
+  it('writes the unit the layout’s way, so a held unit is caught however it was typed', () => {
+    const reading = readBookingSheet([HEADER, row('a-12-3')], options)
+    expect(reading.rows[0]?.unit).toBe('A-12-03')
+    expect(reading.rows[0]?.errors).toContain('Unit Already Held By BK-9001')
   })
 })

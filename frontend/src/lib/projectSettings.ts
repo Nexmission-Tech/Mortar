@@ -3,14 +3,19 @@ import { useCallback, useEffect, useState } from 'react'
 import {
   DEFAULT_PROJECT_SETTINGS,
   DEFAULT_UNIT_MODELS,
+  MAX_PROJECT_UNITS,
   PANEL_LAW_FIRMS,
   normalizeProjectSettings,
+  parseUnitCode,
+  projectBlocks,
+  projectUnits,
+  unitCode,
   unitKey
 } from '@mortar/core'
 import type { ProjectSettings } from '@mortar/core'
 import { fetchProjectSettings, saveProjectSettings } from '@/lib/api'
 
-export const MAX_PROJECT_UNITS = 10_000
+export { MAX_PROJECT_UNITS }
 
 export function projectInventorySize(settings: ProjectSettings): number {
   const blockCount = settings.blocks?.length || 1
@@ -20,19 +25,9 @@ export function projectInventorySize(settings: ProjectSettings): number {
 export { DEFAULT_PROJECT_SETTINGS, DEFAULT_UNIT_MODELS, PANEL_LAW_FIRMS, normalizeProjectSettings }
 export type { ProjectSettings, UnitModel } from '@mortar/core'
 
+/** Every unit code in the layout, in the project's numbering. */
 export function generateProjectInventoryUnits(settings: ProjectSettings): string[] {
-  const units: string[] = []
-  const blocks = settings.blocks?.length ? settings.blocks : settings.blockPrefix ? [settings.blockPrefix] : ['']
-  if (projectInventorySize(settings) > MAX_PROJECT_UNITS) return units
-  for (const block of blocks) {
-    const prefix = block ? `${block}-` : ''
-    for (let floor = settings.minFloor; floor <= settings.maxFloor; floor++) {
-      for (let number = 1; number <= settings.unitsPerFloor; number++) {
-        units.push(`${prefix}${String(floor).padStart(2, '0')}-${String(number).padStart(2, '0')}`)
-      }
-    }
-  }
-  return units
+  return projectUnits(settings).map((unit) => unit.code)
 }
 
 export function getAvailableInventoryUnits(
@@ -47,43 +42,27 @@ export function getAvailableInventoryUnits(
 }
 
 export function formatUnitRangeDescription(settings: ProjectSettings): string {
-  const blocks = settings.blocks?.length ? settings.blocks : settings.blockPrefix ? [settings.blockPrefix] : ['']
-  const first = blocks[0] ? `${blocks[0]}-` : ''
-  const lastBlock = blocks[blocks.length - 1]
-  const last = lastBlock ? `${lastBlock}-` : ''
-  const min = String(settings.minFloor).padStart(2, '0')
-  const max = String(settings.maxFloor).padStart(2, '0')
-  const maxUnit = String(settings.unitsPerFloor).padStart(2, '0')
-  const count = blocks.length * (settings.maxFloor - settings.minFloor + 1) * settings.unitsPerFloor
-  return `${first}${min}-01 to ${last}${max}-${maxUnit} (${count.toLocaleString()} units)`
+  const blocks = projectBlocks(settings)
+  const numbering = settings.numbering ?? 'plain'
+  const first = unitCode(blocks[0] ?? '', settings.minFloor, 1, numbering)
+  const last = unitCode(blocks[blocks.length - 1] ?? '', settings.maxFloor, settings.unitsPerFloor, numbering)
+  return `${first} to ${last} (${projectInventorySize(settings).toLocaleString()} units)`
 }
 
 export function isUnitInRange(unit: string, settings: ProjectSettings): { inRange: boolean; reason?: string } {
   const normalized = unit.trim().toUpperCase()
   if (!normalized) return { inRange: false, reason: 'Choose A Unit' }
-  const blocks = settings.blocks?.length ? settings.blocks : settings.blockPrefix ? [settings.blockPrefix] : ['']
-  let unitPart = normalized
-  if (blocks[0]) {
-    const matchedBlock = blocks.find((block) => normalized.startsWith(`${block.toUpperCase()}-`))
-    if (!matchedBlock) {
-      return { inRange: false, reason: `Choose A Unit In ${blocks.join(', ')}` }
-    }
-    unitPart = normalized.slice(matchedBlock.length + 1)
-  }
-  const parts = unitPart.split('-')
-  if (parts.length !== 2 || !/^\d+$/.test(parts[0]) || !/^\d+$/.test(parts[1])) {
-    return { inRange: false, reason: 'Enter A Unit Number In The Configured Format' }
-  }
-  const [floorText, unitText] = parts
-  const floor = Number.parseInt(floorText, 10)
-  const number = Number.parseInt(unitText, 10)
-  if (unitPart !== `${String(floor).padStart(2, '0')}-${String(number).padStart(2, '0')}`) {
+  const blocks = projectBlocks(settings)
+  const position = parseUnitCode(normalized)
+  if (!position) return { inRange: false, reason: 'Enter A Unit Number In The Configured Format' }
+  const block = blocks.find((candidate) => candidate.toUpperCase() === position.block)
+  if (block === undefined) return { inRange: false, reason: `Choose A Unit In ${blocks.join(', ')}` }
+  if (normalized !== unitCode(block, position.floor, position.unit, settings.numbering ?? 'plain').toUpperCase())
     return { inRange: false, reason: 'Choose A Unit In The Configured Format' }
-  }
-  if (floor < settings.minFloor || floor > settings.maxFloor)
-    return { inRange: false, reason: `Floor ${floor} Is Outside The Configured Range` }
-  if (number < 1 || number > settings.unitsPerFloor)
-    return { inRange: false, reason: `Unit ${number} Is Outside The Configured Range` }
+  if (position.floor < settings.minFloor || position.floor > settings.maxFloor)
+    return { inRange: false, reason: `Floor ${position.floor} Is Outside The Configured Range` }
+  if (position.unit < 1 || position.unit > settings.unitsPerFloor)
+    return { inRange: false, reason: `Unit ${position.unit} Is Outside The Configured Range` }
   return { inRange: true }
 }
 

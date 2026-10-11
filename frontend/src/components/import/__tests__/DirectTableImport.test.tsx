@@ -62,7 +62,7 @@ describe('DirectTableImport', () => {
     )
     fireEvent.focus(input)
     expect(await screen.findByText(/available/)).toBeTruthy()
-    expect(screen.getByText('A-01-01')).toBeTruthy()
+    expect(screen.getByText('A-03-01')).toBeTruthy()
     fireEvent.change(input, { target: { value: 'A-15' } })
     expect(await screen.findByText('A-15-01')).toBeTruthy()
     fireEvent.click(screen.getByText('A-15-01'))

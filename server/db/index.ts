@@ -14,7 +14,9 @@ import {
   canAccessBooking,
   createAssignmentAccessContext,
   currentCaseAssignee,
-  ballInCourt
+  ballInCourt,
+  DEFAULT_PROJECT_SETTINGS,
+  normalizeProjectSettings
 } from '@mortar/core'
 import type {
   Booking,
@@ -383,12 +385,13 @@ export function createDatabase(sql: SQL, clock: () => Date = () => new Date()): 
   }
 
   const assembleSnapshot = async (): Promise<Snapshot> => {
-    const [metaRow, data, messageRows, playbooks, answers] = await Promise.all([
+    const [metaRow, data, messageRows, playbooks, answers, settingsRows] = await Promise.all([
       meta(),
       caseData(),
       sql`select * from messages order by sent_at, id`,
       sql`select * from playbooks order by id`,
-      latestJevAnswers()
+      latestJevAnswers(),
+      sql`select value from meta where key = 'project_settings'`
     ])
     const model = await forecastModel(metaRow?.referenceDate ?? REFERENCE_DATE)
     const messages = messageRows.map(rowToMessage)
@@ -435,6 +438,10 @@ export function createDatabase(sql: SQL, clock: () => Date = () => new Date()): 
       bookings: data.bookings.map(withMaskedContact),
       meta: metaRow ?? { seed: 0, referenceDate: REFERENCE_DATE, resetAt: null },
       forecastModel: model,
+      // The layout the Sales Chart draws; a stored record that no longer reads falls back to the demo's.
+      projectSettings:
+        (settingsRows.length ? normalizeProjectSettings(jsonb<ProjectSettings>(settingsRows[0]!.value)) : null) ??
+        DEFAULT_PROJECT_SETTINGS,
       messages,
       playbooks: playbooks.map(rowToPlaybook),
       extractions,

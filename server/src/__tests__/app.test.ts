@@ -609,6 +609,26 @@ describe('createApp', () => {
     expect(mismatch?.status).toBe(409)
   })
 
+  test('sends every held unit, with booking ids only for the viewer’s own bookings', async () => {
+    const db = new FakeDb()
+    db.bookings.push({ ...OTHER_BOOKING, unit: 'C-28-12', salesOwner: 'Farah Izzati' })
+    deriveCases = true
+    const body = await (async () => {
+      try {
+        return (await (await call(makeApp(db), '/api/snapshot'))?.json()) as Snapshot
+      } finally {
+        deriveCases = false
+      }
+    })()
+    const own = new Set(body.bookings.map((booking) => booking.id))
+    expect(body.units?.length).toBe(2)
+    expect(body.units?.find((unit) => unit.code === 'C-28-12')).toMatchObject({
+      bookingId: null,
+      heldBy: 'Farah Izzati'
+    })
+    for (const unit of body.units ?? []) expect(unit.bookingId === null || own.has(unit.bookingId)).toBe(true)
+  })
+
   test('allows only the manager profile to persist shared project settings', async () => {
     const db = new FakeDb()
     const app = makeApp(db)
@@ -1787,6 +1807,27 @@ describe('createApp', () => {
       expect(db.bookings).toEqual(originalBookings)
       expect(db.events).toEqual(originalEvents)
       expect(db.imports).toEqual(originalImports)
+    })
+
+    test('refuses a unit label the project numbering would not write', async () => {
+      const db = new FakeDb()
+      const res = await call(
+        makeApp(db),
+        '/api/bookings/import',
+        post({ ...valid, bookings: [{ ...draft, unit: 'A-24-02' }] })
+      )
+      expect(res?.status).toBe(400)
+      expect(await errorOf(res)).toContain('Did You Mean A-23A-02?')
+    })
+
+    test('writes units the layout’s way, so a held unit is refused however it was typed', async () => {
+      const db = new FakeDb()
+      const res = await call(
+        makeApp(db),
+        '/api/bookings/import',
+        post({ ...valid, bookings: [{ ...draft, unit: 'a-12-3' }] })
+      )
+      expect(res?.status).toBe(409)
     })
 
     test('numbers the bookings and records a confirmed booked event for each', async () => {

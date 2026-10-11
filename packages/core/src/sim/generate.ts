@@ -14,6 +14,9 @@ import { assumptionValue, DEFAULT_ASSUMPTIONS } from './assumptions'
 import { addDays, addWorkDays, diffDays, stamp } from './dates'
 import { drawBuyer, pickBank, pickBanker, pickLawFirm, pickSalesAgent, pickSolicitor, PROJECT_NAME } from './names'
 import { computeFinancingRisk } from './risk'
+import { DEFAULT_PROJECT_SETTINGS } from '../projectSettings'
+import { STORIES } from '../fixtures/stories'
+import { projectBlocks, uniqueUnits, unitCode } from '../units'
 import { createRng, weighted, type Rng } from './random'
 
 interface PlannedEvent {
@@ -63,9 +66,11 @@ function drawPrice(rng: Rng): number {
   return Math.round((rng.int(lo, hi) * 1000) / 500) * 500
 }
 
+/** Same three draws as ever (block, floor, unit), now read from the demo layout. */
 function drawUnit(rng: Rng): string {
-  const p = (x: number) => String(x).padStart(2, '0')
-  return `${rng.pick(['A', 'B', 'C'] as const)}-${p(rng.int(3, 28))}-${p(rng.int(1, 8))}`
+  const { minFloor, maxFloor, unitsPerFloor, numbering } = DEFAULT_PROJECT_SETTINGS
+  const block = rng.pick(projectBlocks(DEFAULT_PROJECT_SETTINGS))
+  return unitCode(block, rng.int(minFloor, maxFloor), rng.int(1, unitsPerFloor), numbering)
 }
 
 /** Working-day offset measured in calendar days after `day`. */
@@ -317,5 +322,8 @@ export function generateDataset(options: GeneratorOptions): Dataset {
     }
   }
 
-  return { bookings, applications, events }
+  // Random draws collide; give each booking its own unit without touching the
+  // random stream, and keep the story fixtures' units free for them.
+  const reserved = STORIES.map((story) => story.booking.unit)
+  return { bookings: uniqueUnits(bookings, DEFAULT_PROJECT_SETTINGS, reserved), applications, events }
 }

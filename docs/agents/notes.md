@@ -40,6 +40,7 @@ clean recording seed.
 | App shell      | `frontend/src/App.tsx` (routes), `frontend/src/main.tsx` (providers), `frontend/src/components/layout/` (sidebar, nav, `PersonaRoute.tsx` (guard), `AppFooter`, `PublicShell` (footer layout route for `/` and `/faq`), `AppShell`, `PageContainer`, `PageHeaderCard`, `AppErrorBoundary`, `ThemeToggle`, `PersonaSwitch`)                                                                                                                                             |
 | Assistant      | `server/src/assistant/` (`index.ts`, `gemini.ts`, `guardrails.ts`, `prompt.ts`, `tools.ts`, `live-check.ts` — `POST /api/assistant`), `packages/core/src/brain/` (`askBrain`, `buildAskContext`, scripted fallback), `frontend/src/components/brain/` (`AskTrigger` in `AppNav`, `AskPanel` in a Dialog), `frontend/public/ai-mascot*.png`                                                                                                                             |
 | Import         | `packages/core/src/import.ts` (`parseCsv`, `readBookingSheet`, `checkBookingDraft`), `frontend/src/components/import/` (`DropZone`, `readSheetFile`, `SheetReview`), `frontend/src/pages/ImportPage.tsx`, `POST /api/bookings/import` in `server/src/app.ts`, `frontend/public/booking-sheet-template.xlsx` (written by `frontend/scripts/booking-template.mjs`) and `.csv`                                                                                            |
+| Units          | `packages/core/src/units.ts` (`numberLabel`, `parseUnitCode`, `projectUnits`, `uniqueUnits`, `releaseReview`, `heldUnits`, `chartUnits`: the project layout and each unit's Sales Chart state), `scopeSnapshot` in `packages/core/src/profiles.ts` (adds `snapshot.units`)                                                                                                                                                                                             |
 | Waiting On     | `packages/core/src/ball.ts` (`ballInCourt`: who holds a case and the next move), `frontend/src/components/case/nextStep.ts` (rule-based move default, Jev alternative, `stepToTask`), `frontend/src/components/case/ball.ts` (labels, icons, move owners), `frontend/src/components/bookings/WaitingOn.tsx` (cell, journey, panel), `CaseQuickView.tsx` (side sheet from Today and Bookings)                                                                           |
 | Record Update  | `frontend/src/components/bookings/RecordUpdateForm.tsx` (case-page hand entry of booking events, grouped by track, with date, note, and bank/document where relevant; posts `POST /api/applications` for a bank submission, `POST /api/events` for everything else)                                                                                                                                                                                                    |
 | Date Picker    | `frontend/src/components/bookings/DateField.tsx` (the shared Mortar date field: trigger plus a Calendar in a Popover, `YYYY-MM-DD` strings, `min`/`max` bounds, a `today` marker separate from the wall clock; used by `RecordUpdateForm.tsx` and `AddMessageForm.tsx`)                                                                                                                                                                                                |
@@ -181,7 +182,15 @@ clean recording seed.
   `blockPrefix` records remain readable. The inventory API exposes held
   project/unit pairs across all owners without buyer names or booking ids.
   Manual entry opens first; all nonempty forms must be valid before submission.
-  Both manual and sheet imports retain atomic duplicate-unit protection.
+  Both manual and sheet imports retain atomic duplicate-unit protection. Unit
+  codes follow the settings' `numbering`. Add Bookings, sheet imports and
+  `POST /api/bookings/import` pass units through `layoutUnit`: a unit in the
+  layout is written its way (`a-12-3` becomes `A-12-03`, so held-unit checks
+  compare like with like), and a label the numbering would not write is refused
+  with the unit it may mean (`A-24-02` under skip-four: "Did You Mean
+  A-23A-02?"). Demo units come from `DEFAULT_PROJECT_SETTINGS`, and Add Demo
+  Data rewrites the stored settings to that layout, so a visitor's own settings
+  return after a demo reset only if they save them again.
 - **One Next Step Per Case (`nextStep.ts`).**
   `frontend/src/components/case/nextStep.ts` makes the rule-based move from
   `ballInCourt` the default everywhere (Today, Bookings table, and

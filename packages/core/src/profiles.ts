@@ -1,5 +1,7 @@
 import { ballInCourt } from './ball'
 import { summarizeCases, type CaseData } from './sim'
+import { DEFAULT_PROJECT_SETTINGS } from './projectSettings'
+import { heldUnits } from './units'
 import type { Booking, CaseSummary, IsoDate, Persona, Snapshot, StaffProfile, Task } from './types'
 
 export interface AssignmentAccessContext {
@@ -105,8 +107,16 @@ export function scopeSnapshot(snapshot: Snapshot, profile: StaffProfile): Snapsh
   const messageIds = new Set(
     snapshot.messages.filter((message) => bookingIds.has(message.bookingId)).map((message) => message.id)
   )
+  // The whole project's units, so every desk sees the same tower; a booking id
+  // only where the viewer may open the case.
+  const units = heldUnits(
+    snapshot.projectSettings ?? DEFAULT_PROJECT_SETTINGS,
+    snapshot.bookings,
+    context.summaries
+  ).map((unit) => (unit.bookingId && !bookingIds.has(unit.bookingId) ? { ...unit, bookingId: null } : unit))
   return {
     ...snapshot,
+    units,
     bookings: snapshot.bookings.filter((b) => bookingIds.has(b.id)),
     applications: snapshot.applications.filter((a) => bookingIds.has(a.bookingId)),
     events: snapshot.events.filter((e) => bookingIds.has(e.bookingId)),

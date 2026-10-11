@@ -5,7 +5,9 @@
  * Nothing here reads a file or talks to the network: parsing stays in the
  * browser, and only the rows a person chose to import reach the server.
  */
+import type { ProjectSettings } from './projectSettings'
 import type { Booking, Buyer, IsoDate } from './types'
+import { layoutUnit } from './units'
 import { diffDays } from './sim/dates'
 
 /** One cell as a reader hands it over: text from CSV; text, numbers or dates from XLSX. */
@@ -116,6 +118,8 @@ export interface ReadSheetOptions {
   defaults: SheetDefaults
   /** Units already held by an open booking, keyed by `unitKey`, mapped to that booking's id. */
   held?: ReadonlyMap<string, string>
+  /** The project layout: units in it are written its way, and a label its numbering would not write is refused. */
+  settings?: ProjectSettings
 }
 
 const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
@@ -317,8 +321,13 @@ export function readBookingSheet(cells: SheetCell[][], options: ReadSheetOptions
     const errors: string[] = []
     const warnings: string[] = []
 
-    const unit = text(cell('unit')).toUpperCase()
+    let unit = text(cell('unit')).toUpperCase()
     if (!unit) errors.push('Unit Missing')
+    else if (options.settings) {
+      const placed = layoutUnit(unit, options.settings)
+      if ('problem' in placed) errors.push(placed.problem)
+      else unit = placed.code
+    }
     const name = text(cell('buyerName'))
     if (!name) errors.push('Buyer Name Missing')
     const phone = text(cell('phone'))
