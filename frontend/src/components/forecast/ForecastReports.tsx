@@ -296,6 +296,10 @@ function WaitingReport({ insights }: { insights: ForecastInsights }) {
         estimate’s 30-day window. A confirmed buyer withdrawal is shown as a release review when no closure is recorded;
         it does not indicate active legal readiness.
       </p>
+      <p className="text-sm leading-5 text-muted-foreground">
+        Ages measure time in the recorded stage, not time with the current bank or person. A later bank submission does
+        not reset the clock for the same stage.
+      </p>
 
       <section aria-labelledby="waiting-groups-heading" className="space-y-3">
         <h3 id="waiting-groups-heading" className="text-base font-semibold text-foreground">
@@ -691,5 +695,7 @@ export function ForecastReports({ insights }: { insights: ForecastInsights }) {
     }
   ]
 
-  return <ForecastDocuments documents={documents} />
+  const dataNote = `Records as of ${formatDate(insights.asOf)}. Case rows are limited to your permitted bookings.`
+
+  return <ForecastDocuments documents={documents.map((document) => ({ ...document, dataNote }))} />
 }

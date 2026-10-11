@@ -250,6 +250,25 @@ describe('ForecastReports', () => {
     }
   })
 
+  it('shows the data date and permitted case-row scope inside every report dialog', async () => {
+    renderReports()
+    const titles = [
+      'Signing Outlook',
+      'Approved, Awaiting SPA',
+      'Where Bookings Are Waiting',
+      'Conversion And Turnaround',
+      'Lost Bookings'
+    ]
+    const note = 'Records as of 11 Oct 2026. Case rows are limited to your permitted bookings.'
+
+    for (const title of titles) {
+      const dialog = openDocument(title)
+      expect(within(dialog).getByText(note)).toBeTruthy()
+      fireEvent.keyDown(dialog, { key: 'Escape' })
+      await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+    }
+  })
+
   it('shows exact outlook facts, keeps real zero distinct from missing chance, and folds methodology', () => {
     renderReports()
     const dialog = openDocument('Signing Outlook')
@@ -291,6 +310,11 @@ describe('ForecastReports', () => {
     const dialog = openDocument('Where Bookings Are Waiting')
 
     expect(within(dialog).getByText(/including bookings older than the estimate’s 30-day window/i)).toBeTruthy()
+    expect(
+      within(dialog).getByText(
+        'Ages measure time in the recorded stage, not time with the current bank or person. A later bank submission does not reset the clock for the same stage.'
+      )
+    ).toBeTruthy()
     expect(within(dialog).getByText('45 days in stage')).toBeTruthy()
     expect(within(dialog).getAllByText('No recorded progress date').length).toBeGreaterThan(0)
     expect(within(dialog).getByText(/buyer withdrawal is shown as a release review/i)).toBeTruthy()

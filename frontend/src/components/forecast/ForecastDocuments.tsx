@@ -28,6 +28,7 @@ export interface ForecastDocument {
   id?: string
   title: string
   summary: string
+  dataNote?: string
   /** A square monochrome illustration, served from `public/forecast/`. */
   motif: string
   /** What Ask MortarAI is asked about this document. */
@@ -515,6 +516,7 @@ export function ForecastDocuments({ documents }: { documents: ForecastDocument[]
                 </p>
                 <DialogTitle className="pt-2 text-2xl">{active.title}</DialogTitle>
                 <DialogDescription>{active.summary}</DialogDescription>
+                {active.dataNote && <p className="text-sm leading-5 text-muted-foreground">{active.dataNote}</p>}
               </DialogHeader>
             </div>
             <div className="min-h-0 max-h-[calc(min(90vh,900px)-150px)] space-y-4 overflow-y-auto px-6 py-6 sm:px-12 sm:py-8">
