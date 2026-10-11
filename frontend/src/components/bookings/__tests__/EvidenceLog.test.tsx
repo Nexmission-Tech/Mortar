@@ -103,4 +103,10 @@ describe('EvidenceLog', () => {
       'Firm Confirmed 29 Jul, Awaiting Signature'
     )
   })
+  it('names Mortar AI as the reporter of an event the AI proposed, whatever name is stored', () => {
+    render(<EvidenceLog events={[event({ id: 'EV-AI', reportedBy: 'Jev', source: 'jev' })]} />)
+    fireEvent.click(screen.getByRole('button', { name: /Show Full History/ }))
+    expect(screen.getAllByText('Mortar AI').length).toBeGreaterThan(0)
+    expect(screen.queryByText('Jev')).toBeNull()
+  })
 })

@@ -17,6 +17,9 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
+/** The AI's events were stored under its engine name; people see it as Mortar AI. */
+const reporterName = (name: string) => (name === 'Jev' ? 'Mortar AI' : name)
+
 const TRACK_LABELS: Record<CaseEvent['track'], string> = {
   sales: 'Sales',
   loan: 'Loan',
@@ -86,7 +89,7 @@ export function EvidenceLog({ events }: { events: CaseEvent[] }) {
                     <TableCell className="max-w-72 truncate text-[13px] text-muted-foreground">
                       {event.note ? displayNote(event.note) : '—'}
                     </TableCell>
-                    <TableCell className="text-[13px]">{event.reportedBy}</TableCell>
+                    <TableCell className="text-[13px]">{reporterName(event.reportedBy)}</TableCell>
                     <TableCell className="text-[13px]">{event.verifiedBy ?? '—'}</TableCell>
                     <TableCell>
                       <Badge variant="secondary">{SOURCE_LABELS[event.source]}</Badge>

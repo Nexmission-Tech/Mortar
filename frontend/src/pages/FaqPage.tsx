@@ -52,7 +52,7 @@ const FAQS: { question: string; answer: string[] }[] = [
   {
     question: 'What Does Mortar AI Do?',
     answer: [
-      'Mortar AI is Mortar’s AI reader. Paste a buyer’s or banker’s message — English, Malay, Chinese or Manglish — and it proposes what happened, such as Documents Requested for a payslip, with a probability and a confidence. It also suggests next actions on Today and ranks the staff playbooks by fit.',
+      'Mortar AI reads your messages for you. Paste a buyer’s or banker’s message — English, Malay, Chinese or Manglish — and it proposes what happened, such as Documents Requested for a payslip, with a probability and a confidence. It also suggests next actions on Today and ranks the staff playbooks by fit.',
       'Ask Mortar AI, the sparkle button in the top bar, answers questions about your bookings from Mortar’s own data, can read a photo of a letter, never changes anything, and says when the data does not hold the answer.',
       'Mortar AI only proposes. A person confirms, disputes or dismisses every suggestion before it moves a booking, and anything under 60% confidence is flagged Needs Review. The forecast is calculated from recorded case outcomes — the practitioners we surveyed wanted AI on document checks and next actions, not on conversion.'
     ]

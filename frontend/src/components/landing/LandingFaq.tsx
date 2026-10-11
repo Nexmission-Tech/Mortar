@@ -35,7 +35,7 @@ const QUESTIONS: { q: string; a: string[] }[] = [
   {
     q: 'What Does Mortar AI Do?',
     a: [
-      'Mortar AI is Mortar’s AI reader. Paste a buyer’s or banker’s message — English, Malay, Chinese or Manglish — and it proposes what happened, such as Documents Requested for a payslip, with a probability and a confidence. It also suggests next actions on Today and ranks the staff playbooks by fit.',
+      'Mortar AI reads your messages for you. Paste a buyer’s or banker’s message — English, Malay, Chinese or Manglish — and it proposes what happened, such as Documents Requested for a payslip, with a probability and a confidence. It also suggests next actions on Today and ranks the staff playbooks by fit.',
       'Mortar AI only proposes. A person confirms, disputes or dismisses every suggestion before it moves a case, and anything under 60% confidence is flagged Needs Review. The forecast is calculated from recorded case outcomes.'
     ]
   },
