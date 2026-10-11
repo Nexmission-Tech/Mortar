@@ -18,6 +18,8 @@ export interface UnitBox extends Box {
   code: string
   block: string
   side: 'front' | 'back'
+  /** The unit's balcony: drawn in the unit's own colour, so a held unit reads at a distance. */
+  balcony: Box
 }
 export interface TowerFrame {
   block: string
@@ -45,9 +47,9 @@ export const BAY_DEPTH = 11
 export const CORRIDOR = 2.4
 export const FLOOR_HEIGHT = 3.15
 export const SLAB = 0.3
-export const RECESS = 0.4
+export const RECESS = 0.25
 export const PROJECTION = 1.2
-export const BALCONY_DEPTH = 1.5
+export const BALCONY_DEPTH = 1
 export const PODIUM_HEIGHT = 8
 export const TOWER_GAP = 30
 export const MIDDLE_SETBACK = 12
@@ -114,13 +116,23 @@ export function towerModel(units: ChartUnit[]): TowerModel {
       if (unit.block !== block) continue
       const { side, slot, count } = slotOf(unit.unit)
       const s = sign(side)
-      const centre = s * (faceOf(count, slot) - BAY_DEPTH / 2)
+      const face = faceOf(count, slot)
+      const level = floorIndex.get(unit.floor)!
+      const x = ox + xOf(side, slot)
       unitBoxes.set(unit.code, {
         code: unit.code,
         block,
         side,
-        center: [ox + xOf(side, slot), yOf(floorIndex.get(unit.floor)!), oz + centre],
-        size: [BAY_WIDTH - SLAB, unitHeight, BAY_DEPTH]
+        center: [x, yOf(level), oz + s * (face - BAY_DEPTH / 2)],
+        size: [BAY_WIDTH - SLAB, unitHeight, BAY_DEPTH],
+        balcony: {
+          center: [
+            x,
+            PODIUM_HEIGHT + level * FLOOR_HEIGHT + SLAB / 2,
+            oz + s * (face + RECESS + SLAB + BALCONY_DEPTH / 2)
+          ],
+          size: [BAY_WIDTH * 0.7, SLAB / 2, BALCONY_DEPTH]
+        }
       })
     }
 
@@ -136,12 +148,6 @@ export function towerModel(units: ChartUnit[]): TowerModel {
           box(
             [x, PODIUM_HEIGHT + level * FLOOR_HEIGHT + SLAB / 2, oz + s * (face - BAY_DEPTH + slabDepth / 2)],
             [BAY_WIDTH, SLAB, slabDepth]
-          )
-        // A balcony across 70% of the bay on every residential floor.
-        for (let level = 0; level < storeys; level++)
-          box(
-            [x, PODIUM_HEIGHT + level * FLOOR_HEIGHT + SLAB / 2, oz + s * (face + RECESS + SLAB + BALCONY_DEPTH / 2)],
-            [BAY_WIDTH * 0.7, SLAB / 2, BALCONY_DEPTH]
           )
         // The parapet along the bay's outward edge.
         box([x, roof + PARAPET / 2, oz + s * (face + RECESS + SLAB / 2)], [BAY_WIDTH, PARAPET, SLAB])

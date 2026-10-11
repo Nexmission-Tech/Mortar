@@ -253,6 +253,12 @@
   --desk-manager-fg: #782a69;
   --desk-manager-bg: #f8ecf5;
 
+  /* Model — the Sales Chart's Building view, a sales-gallery scale model.
+     Muted, so a unit's status colour is always the loudest thing in it. */
+  --model-structure: #f4f2ee;
+  --model-glass: #c3ccd4;
+  --model-podium: #dedad3;
+
   /* Canvas — the faint dot grid behind the cards on every signed-in page */
   --canvas-dot: color-mix(in oklab, var(--color-ink-950) 12%, transparent);
 
@@ -368,6 +374,11 @@
   --desk-legal-bg: #1c182f;
   --desk-manager-fg: #e9b1dd;
   --desk-manager-bg: #2a1426;
+
+  /* Model — a night model: dark structure, so white SPA Signed units stand out. */
+  --model-structure: #3b3a37;
+  --model-glass: #2b3239;
+  --model-podium: #262523;
 
   /* Canvas */
   --canvas-dot: color-mix(in oklab, #fafafa 8%, transparent);

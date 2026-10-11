@@ -12,7 +12,10 @@ describe('sceneColors', () => {
     '--card': 'rgb(10, 10, 10)',
     '--muted': 'rgb(7, 7, 7)',
     '--foreground': 'rgb(8, 8, 8)',
-    '--muted-foreground': 'rgb(9, 9, 9)'
+    '--muted-foreground': 'rgb(9, 9, 9)',
+    '--model-glass': 'rgb(11, 11, 11)',
+    '--model-structure': 'rgb(12, 12, 12)',
+    '--model-podium': 'rgb(13, 13, 13)'
   }
 
   test('maps each state to its status token', () => {
@@ -23,9 +26,10 @@ describe('sceneColors', () => {
       needs_action: 'rgb(3, 3, 3)',
       release_review: 'rgb(4, 4, 4)',
       signed: 'rgb(5, 5, 5)',
-      available: 'rgb(6, 6, 6)',
+      available: 'rgb(11, 11, 11)',
       ghost: 'rgb(7, 7, 7)',
-      podium: 'rgb(7, 7, 7)',
+      podium: 'rgb(13, 13, 13)',
+      structure: 'rgb(12, 12, 12)',
       selected: 'rgb(8, 8, 8)',
       selectedInner: 'rgb(10, 10, 10)',
       hovered: 'rgb(9, 9, 9)'
