@@ -6,7 +6,7 @@
 import type { UnitState } from '@mortar/core'
 
 export type SceneColors = Record<
-  UnitState | 'ghost' | 'podium' | 'structure' | 'selected' | 'selectedInner' | 'hovered',
+  UnitState | 'ghost' | 'podium' | 'structure' | 'sky' | 'skyGround' | 'selected' | 'selectedInner' | 'hovered',
   string
 >
 
@@ -21,6 +21,8 @@ const TOKENS: Record<keyof SceneColors, string> = {
   ghost: '--muted',
   podium: '--model-podium',
   structure: '--model-structure',
+  sky: '--model-sky',
+  skyGround: '--model-sky-ground',
   selected: '--foreground',
   // The gap between the ink ring and the unit, as the Grid's ring offset: it shows on signed units too.
   selectedInner: '--card',

@@ -258,6 +258,9 @@
   --model-structure: #f4f2ee;
   --model-glass: #c3ccd4;
   --model-podium: #dedad3;
+  /* The model's light: a white sky and a neutral grey bounce, never tinted. */
+  --model-sky: #ffffff;
+  --model-sky-ground: #8c8c8c;
 
   /* Canvas — the faint dot grid behind the cards on every signed-in page */
   --canvas-dot: color-mix(in oklab, var(--color-ink-950) 12%, transparent);

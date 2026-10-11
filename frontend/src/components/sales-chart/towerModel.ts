@@ -83,12 +83,18 @@ export function towerModel(units: ChartUnit[]): TowerModel {
   const frontCount = Math.ceil(perFloor / 2)
   const backCount = perFloor - frontCount
   const plateWidth = frontCount * BAY_WIDTH
-  const rowOffset = backCount > 0 ? CORRIDOR / 2 + BAY_DEPTH / 2 : 0
+  /**
+   * Where a row's units start, outward from the tower's centre line: the
+   * corridor's edge, or the plate's back when a floor has one row.
+   */
+  const inner = backCount > 0 ? CORRIDOR / 2 : -BAY_DEPTH / 2
   const roof = PODIUM_HEIGHT + storeys * FLOOR_HEIGHT
   const unitHeight = FLOOR_HEIGHT - SLAB
   const top = roof + OVERRUN + FLOOR_HEIGHT
   const step = plateWidth + TOWER_GAP
   const setBackMiddle = blocks.length >= 3 && blocks.length % 2 === 1
+  const plateDepth = backCount > 0 ? CORRIDOR + 2 * BAY_DEPTH : BAY_DEPTH
+  const crown: [number, number] = [Math.min(CROWN[0], plateWidth - 1), Math.min(CROWN[1], plateDepth - 1)]
 
   const slotOf = (n: number) =>
     n <= frontCount
@@ -97,15 +103,22 @@ export function towerModel(units: ChartUnit[]): TowerModel {
   const projects = (count: number, slot: number) => count >= 3 && (slot === 0 || slot === count - 1)
   const xOf = (side: 'front' | 'back', slot: number) =>
     side === 'front' ? -plateWidth / 2 + (slot + 0.5) * BAY_WIDTH : plateWidth / 2 - (slot + 0.5) * BAY_WIDTH
+  /** A bay boundary's x: boundaries run left to right along the front, right to left along the back. */
+  const boundaryX = (side: 'front' | 'back', b: number) =>
+    side === 'front' ? -plateWidth / 2 + b * BAY_WIDTH : plateWidth / 2 - b * BAY_WIDTH
   const sign = (side: 'front' | 'back') => (side === 'front' ? 1 : -1)
-  /** The unit's outward face, as a distance from the tower's centre line. */
-  const faceOf = (count: number, slot: number) => rowOffset + BAY_DEPTH / 2 + (projects(count, slot) ? PROJECTION : 0)
+  /** A unit's outward face, from the centre line. A projecting end unit is deeper, not moved, so no floor has a hole. */
+  const faceOf = (count: number, slot: number) => inner + BAY_DEPTH + (projects(count, slot) ? PROJECTION : 0)
+  /** How far a row reaches, balconies included. */
+  const reachOf = (count: number) => inner + BAY_DEPTH + (count >= 3 ? PROJECTION : 0) + RECESS + SLAB + BALCONY_DEPTH
   const yOf = (i: number) => PODIUM_HEIGHT + i * FLOOR_HEIGHT + SLAB + unitHeight / 2
 
   const unitBoxes = new Map<string, UnitBox>()
   const structure: Box[] = []
   const towers: TowerFrame[] = []
   const box = (center: Vec3, size: Vec3) => structure.push({ center, size })
+  /** A box spanning `from` to `to` outward from the centre line, on one side. */
+  const zSpan = (oz: number, s: number, from: number, to: number) => oz + (s * (from + to)) / 2
 
   blocks.forEach((block, i) => {
     const ox = (i - (blocks.length - 1) / 2) * step
@@ -123,8 +136,8 @@ export function towerModel(units: ChartUnit[]): TowerModel {
         code: unit.code,
         block,
         side,
-        center: [x, yOf(level), oz + s * (face - BAY_DEPTH / 2)],
-        size: [BAY_WIDTH - SLAB, unitHeight, BAY_DEPTH],
+        center: [x, yOf(level), zSpan(oz, s, inner, face)],
+        size: [BAY_WIDTH - SLAB, unitHeight, face - inner],
         balcony: {
           center: [
             x,
@@ -142,39 +155,62 @@ export function towerModel(units: ChartUnit[]): TowerModel {
       for (let slot = 0; slot < count; slot++) {
         const x = ox + xOf(side, slot)
         const face = faceOf(count, slot)
-        // A slab edge under every bay at every level, roof included, 0.3m proud of the frame.
-        const slabDepth = BAY_DEPTH + RECESS + SLAB
+        const edge = face + RECESS + SLAB
+        // A slab under every bay at every level, roof included, from the corridor to 0.3m proud of the frame.
         for (let level = 0; level <= storeys; level++)
           box(
-            [x, PODIUM_HEIGHT + level * FLOOR_HEIGHT + SLAB / 2, oz + s * (face - BAY_DEPTH + slabDepth / 2)],
-            [BAY_WIDTH, SLAB, slabDepth]
+            [x, PODIUM_HEIGHT + level * FLOOR_HEIGHT + SLAB / 2, zSpan(oz, s, inner, edge)],
+            [BAY_WIDTH, SLAB, edge - inner]
           )
         // The parapet along the bay's outward edge.
         box([x, roof + PARAPET / 2, oz + s * (face + RECESS + SLAB / 2)], [BAY_WIDTH, PARAPET, SLAB])
       }
-      // A fin at every bay boundary, at the frame plane of the further-out neighbour.
+      // A fin at every bay boundary, at the frame plane of the further-out neighbour; the row's end fins sit inside it.
       for (let b = 0; b <= count; b++) {
         const out = Math.max(b > 0 ? faceOf(count, b - 1) : 0, b < count ? faceOf(count, b) : 0)
-        const x = side === 'front' ? -plateWidth / 2 + b * BAY_WIDTH : plateWidth / 2 - b * BAY_WIDTH
+        const inward = b === 0 ? 1 : b === count ? -1 : 0
+        const x = boundaryX(side, b) + inward * (side === 'front' ? 1 : -1) * (SLAB / 2)
         box(
           [ox + x, PODIUM_HEIGHT + (storeys * FLOOR_HEIGHT) / 2, oz + s * (out + RECESS / 2)],
           [SLAB, storeys * FLOOR_HEIGHT, RECESS]
         )
       }
+      // The roof's end walls at the row's two ends, from the centre line (or the plate's back) to the end bay's edge.
+      const from = backCount > 0 ? 0 : inner
+      for (const [b, slot] of [
+        [0, 0],
+        [count, count - 1]
+      ] as const) {
+        const edge = faceOf(count, slot) + RECESS + SLAB
+        const inward = b === 0 ? 1 : -1
+        const x = boundaryX(side, b) + inward * (side === 'front' ? 1 : -1) * (SLAB / 2)
+        box([ox + x, roof + PARAPET / 2, zSpan(oz, s, from, edge)], [SLAB, PARAPET, edge - from])
+      }
     }
 
-    // The corridor's slab at every level, and the plate's end walls on the roof.
-    const plateDepth = 2 * rowOffset + (backCount > 0 ? 0 : BAY_DEPTH)
-    if (backCount > 0)
+    if (backCount > 0) {
+      // The corridor's slab at every level.
       for (let level = 0; level <= storeys; level++)
         box([ox, PODIUM_HEIGHT + level * FLOOR_HEIGHT + SLAB / 2, oz], [plateWidth, SLAB, CORRIDOR])
-    for (const end of [-1, 1])
-      box([ox + (end * plateWidth) / 2, roof + PARAPET / 2, oz], [SLAB, PARAPET, plateDepth + BAY_DEPTH])
+      // A short back row leaves its left end open: close it with a blank wall up the corridor's edge.
+      const open = (frontCount - backCount) * BAY_WIDTH
+      if (open > 0) {
+        const x = -plateWidth / 2 + open / 2
+        box(
+          [ox + x, PODIUM_HEIGHT + (storeys * FLOOR_HEIGHT) / 2, oz - CORRIDOR / 2 - SLAB / 2],
+          [open, storeys * FLOOR_HEIGHT, SLAB]
+        )
+        box([ox + x, roof + PARAPET / 2, oz - CORRIDOR / 2 - SLAB / 2], [open, PARAPET, SLAB])
+      }
+    } else {
+      // One row: a parapet along the plate's back.
+      box([ox, roof + PARAPET / 2, oz + inner + SLAB / 2], [plateWidth, PARAPET, SLAB])
+    }
 
-    // The core's overrun, two water tanks and a crown frame one floor tall.
+    // The core's overrun with two water tanks on it, and a crown frame one floor tall round them.
     box([ox, roof + OVERRUN / 2, oz], CORE)
-    for (const end of [-1, 1]) box([ox + end * 7, roof + TANK[1] / 2, oz], TANK)
-    const [cw, cd] = CROWN
+    for (const end of [-1, 1]) box([ox + end * 2, roof + OVERRUN + TANK[1] / 2, oz], TANK)
+    const [cw, cd] = crown
     const crownBase = roof + OVERRUN
     for (const [dx, dz] of [
       [-1, -1],
@@ -186,15 +222,15 @@ export function towerModel(units: ChartUnit[]): TowerModel {
     for (const dz of [-1, 1]) box([ox, crownBase + FLOOR_HEIGHT - BEAM / 2, oz + (dz * cd) / 2], [cw, BEAM, BEAM])
     for (const dx of [-1, 1]) box([ox + (dx * cw) / 2, crownBase + FLOOR_HEIGHT - BEAM / 2, oz], [BEAM, BEAM, cd])
 
-    const reach = rowOffset + BAY_DEPTH / 2 + (frontCount >= 3 ? PROJECTION : 0) + RECESS + SLAB + BALCONY_DEPTH
-    const backReach = backCount > 0 ? reach : BAY_DEPTH / 2
+    const frontReach = reachOf(frontCount)
+    const backReach = backCount > 0 ? reachOf(backCount) : -inner
     towers.push({
       block,
-      center: [ox, top / 2, oz + (reach - backReach) / 2],
-      size: [plateWidth, top, reach + backReach],
+      center: [ox, top / 2, oz + (frontReach - backReach) / 2],
+      size: [plateWidth, top, frontReach + backReach],
       roof,
       left: ox - plateWidth / 2,
-      front: oz + rowOffset + BAY_DEPTH / 2 + RECESS
+      front: oz + inner + BAY_DEPTH + RECESS
     })
   })
 

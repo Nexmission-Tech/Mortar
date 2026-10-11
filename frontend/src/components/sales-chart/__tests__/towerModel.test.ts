@@ -57,13 +57,17 @@ describe('towerModel', () => {
     expect(new Set(ys.map((y) => y.toFixed(3))).size).toBe(stack.length)
   })
 
-  it('projects the end units of a row of three or more', () => {
+  it('projects the end units of a row of three or more, deeper rather than moved', () => {
     const floor = units
       .filter((u) => u.block === units[0]!.block && u.floor === units[0]!.floor)
       .sort((a, b) => a.unit - b.unit)
-    const z = (n: number) => model.units.get(floor[n - 1]!.code)!.center[2]
-    expect(z(1) - z(2)).toBeCloseTo(PROJECTION)
-    expect(z(6) - z(5)).toBeCloseTo(PROJECTION)
+    const box = (n: number) => model.units.get(floor[n - 1]!.code)!
+    const face = (n: number) => box(n).center[2] + box(n).size[2] / 2
+    const inner = (n: number) => box(n).center[2] - box(n).size[2] / 2
+    expect(face(1) - face(2)).toBeCloseTo(PROJECTION)
+    expect(face(6) - face(5)).toBeCloseTo(PROJECTION)
+    // Every front unit starts at the corridor, so no floor has a hole behind a projecting unit.
+    expect(inner(1)).toBeCloseTo(inner(2))
   })
 
   it('sets the middle of three blocks back', () => {
@@ -120,5 +124,37 @@ describe('towerModel', () => {
     expect(empty.units.size).toBe(0)
     expect(empty.towers).toHaveLength(0)
     expect(empty.structure).toHaveLength(0)
+  })
+  it('meets the corridor slab under every bay, so no floor has a hole', () => {
+    const tower = model.towers[0]!
+    const level0 = model.structure.filter(
+      (b) => Math.abs(b.center[1] - (8 + 0.15)) < 1e-6 && Math.abs(b.center[0] - tower.center[0]) < tower.size[0] / 2
+    )
+    const corridor = level0.find((b) => b.size[2] === CORRIDOR)!
+    expect(corridor).toBeTruthy()
+    const frontSlabs = level0.filter((b) => b.center[2] > tower.center[2] + CORRIDOR / 2 && b.size[0] === BAY_WIDTH)
+    expect(frontSlabs).toHaveLength(6)
+    for (const slab of frontSlabs) expect(slab.center[2] - slab.size[2] / 2).toBeCloseTo(tower.center[2] + CORRIDOR / 2)
+  })
+
+  it('keeps every structure piece over its tower, at any units per floor', () => {
+    for (const unitsPerFloor of [1, 2, 3, 7, 12]) {
+      const m = towerModel(project({ unitsPerFloor, minFloor: 3, maxFloor: 5 }))
+      for (const box of m.structure) {
+        const tower = m.towers.find((t) => Math.abs(box.center[0] - t.center[0]) <= t.size[0] / 2 + 1)
+        expect(tower, `units per floor ${unitsPerFloor}: a piece at x ${box.center[0]}`).toBeTruthy()
+        for (const k of [0, 2] as const)
+          expect(Math.abs(box.center[k] - tower!.center[k]) + box.size[k] / 2).toBeLessThanOrEqual(
+            tower!.size[k] / 2 + 1e-6
+          )
+      }
+    }
+  })
+
+  it('stands the water tanks on the core', () => {
+    const tower = model.towers[0]!
+    const tanks = model.structure.filter((b) => b.size[0] === 3.5 && b.size[1] === 2.5)
+    expect(tanks.length).toBeGreaterThan(0)
+    for (const tank of tanks) expect(tank.center[1] - tank.size[1] / 2).toBeCloseTo(tower.roof + 6)
   })
 })

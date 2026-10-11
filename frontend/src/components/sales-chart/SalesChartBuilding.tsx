@@ -179,7 +179,12 @@ function Framing({
   return null
 }
 
-const UNIT_CUBE = new THREE.BoxGeometry(1, 1, 1)
+/** The unit cube every box is scaled from: one per scene, disposed with it, so a remount leaks no renderer. */
+function useUnitCube(): THREE.BoxGeometry {
+  const cube = useMemo(() => new THREE.BoxGeometry(1, 1, 1), [])
+  useEffect(() => () => cube.dispose(), [cube])
+  return cube
+}
 
 /** Writes each box's position and size into an instanced mesh's matrices. */
 function writeBoxMatrices(m: THREE.InstancedMesh, boxes: Box[]) {
@@ -210,6 +215,7 @@ function UnitMesh({
   ghost,
   part,
   onTop = false,
+  cube,
   onHoverIndex,
   onPick
 }: {
@@ -222,6 +228,7 @@ function UnitMesh({
   part: 'body' | 'balcony'
   /** A filter's lit units draw over the see-through building, so they show from any side. */
   onTop?: boolean
+  cube: THREE.BoxGeometry
   onHoverIndex?: (index: number | null) => void
   onPick?: (index: number) => void
 }) {
@@ -260,9 +267,9 @@ function UnitMesh({
   if (indices.length === 0) return null
   return (
     <instancedMesh
-      key={`${part}-${ghost}-${indices.length}`}
+      key={`${part}-${ghost}-${onTop}-${indices.length}`}
       ref={mesh}
-      args={[UNIT_CUBE, undefined, indices.length]}
+      args={[cube, undefined, indices.length]}
       castShadow={!ghost && !onTop}
       receiveShadow={!ghost && !onTop}
       renderOrder={onTop ? 2 : ghost ? 1 : 0}
@@ -293,13 +300,22 @@ function UnitMesh({
         transparent={ghost || onTop}
         opacity={ghost ? GHOST_OPACITY : 1}
         depthWrite={!ghost}
-        depthTest={!onTop}
       />
     </instancedMesh>
   )
 }
 
-function Structure({ model, colors, ghost }: { model: TowerModel; colors: SceneColors; ghost: boolean }) {
+function Structure({
+  model,
+  colors,
+  ghost,
+  cube
+}: {
+  model: TowerModel
+  colors: SceneColors
+  ghost: boolean
+  cube: THREE.BoxGeometry
+}) {
   const mesh = useRef<THREE.InstancedMesh>(null)
   const invalidate = useThree((st) => st.invalidate)
   useLayoutEffect(() => {
@@ -312,12 +328,14 @@ function Structure({ model, colors, ghost }: { model: TowerModel; colors: SceneC
     <instancedMesh
       key={model.structure.length}
       ref={mesh}
-      args={[UNIT_CUBE, undefined, model.structure.length]}
+      args={[cube, undefined, model.structure.length]}
       castShadow={!ghost}
       receiveShadow={!ghost}
       raycast={() => null}
     >
+      {/* Keyed by mode: three bakes opacity into the shader and never recompiles it when only transparent changes. */}
       <meshLambertMaterial
+        key={ghost ? 'glass' : 'solid'}
         color={colors.structure}
         transparent={ghost}
         opacity={ghost ? STRUCTURE_GHOST_OPACITY : 1}
@@ -451,7 +469,7 @@ function ContextRestore() {
 }
 
 /** A hemisphere light and one sun from the upper left front, its shadow sized to the model. */
-function Lights({ model }: { model: TowerModel }) {
+function Lights({ model, colors }: { model: TowerModel; colors: SceneColors }) {
   const { min, max } = model.bounds
   const span = Math.max(max[0] - min[0], max[2] - min[2], max[1]) * 0.75
   const sun = useRef<THREE.DirectionalLight>(null)
@@ -470,7 +488,7 @@ function Lights({ model }: { model: TowerModel }) {
   return (
     <>
       {/* Intensities are in units of π, so a lit top face shows its token's own colour. */}
-      <hemisphereLight args={['#ffffff', '#8a8780', 0.72 * Math.PI]} />
+      <hemisphereLight args={[colors.sky, colors.skyGround, 0.72 * Math.PI]} />
       <directionalLight
         ref={sun}
         position={[-span * 1.2, span * 2, span]}
@@ -506,6 +524,7 @@ function Scene({
   labels: RefObject<Map<string, HTMLSpanElement>>
 }) {
   const colors = useSceneColors()
+  const cube = useUnitCube()
   const unitSize = model.units.values().next().value?.size ?? ([1, 1, 1] as Vec3)
   const outline = useOutlineGeometry(unitSize, 1.04)
   const outerRing = useOutlineGeometry(unitSize, 1.12)
@@ -528,14 +547,14 @@ function Scene({
 
   return (
     <>
-      <Lights model={model} />
+      <Lights model={model} colors={colors} />
 
       <mesh position={model.podium.center} receiveShadow raycast={() => null}>
         <boxGeometry args={model.podium.size} />
         <meshLambertMaterial color={colors.podium} />
       </mesh>
 
-      <Structure model={model} colors={colors} ghost={filtering} />
+      <Structure model={model} colors={colors} ghost={filtering} cube={cube} />
       {(['body', 'balcony'] as const).map((part) => (
         <UnitMesh
           key={part}
@@ -546,6 +565,7 @@ function Scene({
           ghost={false}
           part={part}
           onTop={filtering}
+          cube={cube}
           onHoverIndex={hover}
           onPick={(index) => {
             const unit = units[index]
@@ -554,7 +574,16 @@ function Scene({
         />
       ))}
       {(['body', 'balcony'] as const).map((part) => (
-        <UnitMesh key={`ghost-${part}`} units={units} indices={ghost} model={model} colors={colors} ghost part={part} />
+        <UnitMesh
+          key={`ghost-${part}`}
+          units={units}
+          indices={ghost}
+          model={model}
+          colors={colors}
+          ghost
+          part={part}
+          cube={cube}
+        />
       ))}
 
       {hoveredUnit && hoveredUnit.code !== selected ? (

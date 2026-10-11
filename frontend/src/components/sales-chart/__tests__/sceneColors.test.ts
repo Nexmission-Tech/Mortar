@@ -15,7 +15,9 @@ describe('sceneColors', () => {
     '--muted-foreground': 'rgb(9, 9, 9)',
     '--model-glass': 'rgb(11, 11, 11)',
     '--model-structure': 'rgb(12, 12, 12)',
-    '--model-podium': 'rgb(13, 13, 13)'
+    '--model-podium': 'rgb(13, 13, 13)',
+    '--model-sky': 'rgb(14, 14, 14)',
+    '--model-sky-ground': 'rgb(15, 15, 15)'
   }
 
   test('maps each state to its status token', () => {
@@ -30,6 +32,8 @@ describe('sceneColors', () => {
       ghost: 'rgb(7, 7, 7)',
       podium: 'rgb(13, 13, 13)',
       structure: 'rgb(12, 12, 12)',
+      sky: 'rgb(14, 14, 14)',
+      skyGround: 'rgb(15, 15, 15)',
       selected: 'rgb(8, 8, 8)',
       selectedInner: 'rgb(10, 10, 10)',
       hovered: 'rgb(9, 9, 9)'
