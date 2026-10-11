@@ -87,6 +87,8 @@ export interface JourneyDetour {
 export interface BookingJourneyModel {
   bookingId: Booking['id']
   referenceDate: IsoDate
+  /** Calendar days from the booking date to the reference date. */
+  ageDays: number
   resolution: 'open' | 'signed' | 'cancelled' | 'lapsed'
   releaseReview: boolean
   stops: readonly [JourneyStop, JourneyStop, JourneyStop, JourneyStop, JourneyStop]
@@ -371,6 +373,7 @@ export function bookingJourney({
   return {
     bookingId: booking.id,
     referenceDate: ref,
+    ageDays: ordinal(ref) - ordinal(booking.bookingDate),
     resolution,
     releaseReview,
     stops,

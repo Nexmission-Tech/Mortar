@@ -52,6 +52,7 @@ describe('bookingJourney', () => {
   it('reads BK-9002 as the design describes it', () => {
     const model = journeyOf(story.booking, story.applications, story.events)
     expect(model.resolution).toBe('open')
+    expect(model.ageDays).toBe(17)
     expect(stop(model, 'booked')).toMatchObject({ state: 'done', caption: '1 Sep 2026', current: false })
     expect(stop(model, 'documents')).toMatchObject({
       state: 'record_missing',
