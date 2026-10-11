@@ -141,7 +141,7 @@ export function financingRisk(booking: Booking, assumptions: Assumption[] = DEFA
   return financingRiskFor(booking, assumptions)
 }
 
-/** Expected signings within the horizon for live bookings, with a range from repeated draws. */
+/** Expected signings within the horizon for live bookings, with an exact independent-outcome count range. */
 export function forecast(
   data: Dataset,
   asOf: IsoDate,

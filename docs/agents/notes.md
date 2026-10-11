@@ -106,11 +106,16 @@ clean recording seed.
 - **The Sidebar Puts The Persona's Home First.** `AppSidebar` hoists the active
   persona's home route above `NAV_ITEMS`' canonical order; keep new routes in
   canonical order in `NAV_ITEMS`.
-- **Both Halves Of `/forecast` Read One Log.** `forecast()` projects forward and
-  `leakage()` counts backward, both from the same confirmed events in
-  `@mortar/core`, so what signed and what died cannot drift apart. Any recovery
-  estimate must carry its Wilson interval and its sample size on screen — the
-  second-bank rate is measured over single-digit resolved cases.
+- **Forecast Reports Read One Calculation.** `forecastInsights()` in
+  `packages/core/src/sim/insights.ts` supplies the page and both assistant
+  paths. Current rows use only authorized bookings and confirmed events whose
+  occurrence and recording dates are known by the report date. Historical rates
+  may use the case-free project aggregate. The estimate ends at each booking's
+  day 30; its range is an exact independent-outcome count range, not a
+  confidence interval. Operational queues retain older open cases. Second-bank
+  outcomes require a confirmed distinct-bank submission after rejection, never
+  just an application row. Their observed sample is not a promise of recoverable
+  sales.
 - **`open` Is Not `live`.** `deriveCase` computes both. `live` adds
   `ageDays < HORIZON_DAYS` (30) and is what the forecast counts; `open` is just
   unsigned and not exited. Stall reasons derive from `open`, because gating them
@@ -180,9 +185,11 @@ clean recording seed.
   figures, Your Tasks (a Mine or Everyone switch) and Recent Bookings; below
   1280px the rail stacks above the queue. Recent Bookings uses
   `Booking.createdAt`, never `bookingDate`.
-- **Forecast Documents Are Back.** The #54/#61 document stack, removed in #60,
-  sits above the headline figures with its chips, and each card carries Open
-  Document and Ask MortarAI. The Suggestions tab and the Forecast tabs are gone.
+- **Forecast Documents Follow The Figures.** `ForecastDocuments` owns selection,
+  shuffle motion, the reading dialog and its focus return. Covers and details
+  read the same calculated findings. The five report definitions and their
+  presentation rules live in [Design](../DESIGN.md#forecast-document-stack);
+  alternate-data runs and placeholder assumptions are not business reports.
 - **Shared Settings And Inventory.** Project settings live on the server and
   only Manager can change them. `blocks` supports multiple blocks while old
   `blockPrefix` records remain readable. The inventory API exposes held

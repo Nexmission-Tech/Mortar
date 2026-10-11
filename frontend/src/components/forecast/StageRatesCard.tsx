@@ -1,97 +1,68 @@
-/**
- * Stage conversion rates — the share of resolved bookings reaching each stage
- * that signed within the horizon. Bar chart with Wilson-interval whiskers over
- * a table carrying the exact rate, sample size and interval.
- */
-
-import { Bar, BarChart, CartesianGrid, ErrorBar, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import type { StageRate } from '@mortar/core'
-import { STAGE_LABELS, formatPercent } from '@/components/case'
-import { ProbabilityBar } from '@/components/case'
-import { ChartTooltipContent } from '@/components/charts/ChartTooltipContent'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { InfoTooltip } from '@/components/ui/InfoTooltip'
+import type { Stage, StageRate } from '@mortar/core'
+import { STAGE_LABELS, formatDate, formatPercent } from '@/components/case'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
-export function StageRatesCard({ stageRates }: { stageRates: StageRate[] }) {
-  const chartData = stageRates.map((r) => ({
-    stage: STAGE_LABELS[r.stage],
-    rate: Math.round(r.rate * 100),
-    error: [Math.max(0, Math.round((r.rate - r.low) * 100)), Math.max(0, Math.round((r.high - r.rate) * 100))] as [
-      number,
-      number
-    ]
-  }))
+const SIGNING_STAGES = new Set<Stage>(['booked', 'loan_applied', 'lo_issued'])
+
+export function StageRatesCard({
+  stageRates,
+  scope,
+  asOf
+}: {
+  stageRates: StageRate[]
+  scope: 'project' | 'visible'
+  asOf: string
+}) {
+  const rows = stageRates.filter((row) => SIGNING_STAGES.has(row.stage))
+  const historyLabel = scope === 'project' ? 'Project-wide history' : 'Your accessible history'
 
   return (
-    <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-base">
-          How Often Each Stage Reaches Signing
-          <InfoTooltip text="Share of resolved bookings reaching each stage that signed within 30 days of booking." />
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        <div className="h-44" aria-hidden="true">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 8, right: 8, bottom: 0, left: -18 }}>
-              <CartesianGrid vertical={false} stroke="var(--border)" />
-              <XAxis
-                dataKey="stage"
-                tickLine={false}
-                axisLine={{ stroke: 'var(--border)' }}
-                tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
-                interval="preserveStartEnd"
-              />
-              <YAxis
-                tickLine={false}
-                axisLine={false}
-                tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
-                tickFormatter={(v: number) => `${v}%`}
-              />
-              <Tooltip
-                cursor={{ fill: 'var(--accent)' }}
-                content={<ChartTooltipContent valueFormatter={(v) => `${v}%`} />}
-              />
-              <Bar dataKey="rate" name="Signed Rate" fill="var(--status-signed)" radius={[2, 2, 0, 0]}>
-                <ErrorBar dataKey="error" width={4} strokeWidth={1.5} stroke="var(--muted-foreground)" />
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-        <Table>
-          <TableHeader>
-            <TableRow className="hover:bg-transparent">
-              <TableHead>Stage</TableHead>
-              <TableHead className="text-right">Signed / Resolved</TableHead>
-              <TableHead className="w-40">
-                Rate
-                <InfoTooltip text="Approval falls as the debt service ratio rises — by construction, so the risk flag carries signal." />
-              </TableHead>
-              <TableHead className="text-right">
-                Likely Range
-                <InfoTooltip text="Wilson score interval at 95% confidence; wide bands mean few resolved cases." />
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {stageRates.map((r) => (
-              <TableRow key={r.stage}>
-                <TableCell>{STAGE_LABELS[r.stage]}</TableCell>
-                <TableCell className="text-right tabular-nums text-muted-foreground">
-                  {r.signed} / {r.resolved}
-                </TableCell>
-                <TableCell>
-                  <ProbabilityBar probability={r.rate} />
-                </TableCell>
-                <TableCell className="text-right tabular-nums text-muted-foreground">
-                  {r.resolved === 0 ? '—' : `${formatPercent(r.low)} – ${formatPercent(r.high)}`}
-                </TableCell>
+    <section aria-labelledby="forecast-stage-rates-heading" className="space-y-3">
+      <div>
+        <h3 id="forecast-stage-rates-heading" className="text-base font-semibold text-foreground">
+          Signed By Booking Day 30
+        </h3>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Among bookings that reached each stage and have a known 30-day outcome, the rate shows how many signed by day
+          30. It is not the chance of reaching the next stage.
+        </p>
+        <p className="mt-1 text-[13px] text-muted-foreground">
+          Historical rate rows use {historyLabel.toLowerCase()} as of {formatDate(asOf)}.
+        </p>
+      </div>
+
+      {rows.length > 0 ? (
+        <div className="min-w-0 max-w-full overflow-x-auto">
+          <Table className="min-w-[620px]">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead>Stage</TableHead>
+                <TableHead className="text-right">Signed / Known Outcome</TableHead>
+                <TableHead className="text-right">Rate</TableHead>
+                <TableHead className="text-right">Range</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+            </TableHeader>
+            <TableBody>
+              {rows.map((row) => (
+                <TableRow key={row.stage}>
+                  <TableCell>{STAGE_LABELS[row.stage]}</TableCell>
+                  <TableCell className="text-right tabular-nums text-muted-foreground">
+                    {row.signed} / {row.resolved}
+                  </TableCell>
+                  <TableCell className="text-right tabular-nums">
+                    {row.resolved === 0 ? '—' : formatPercent(row.rate)}
+                  </TableCell>
+                  <TableCell className="text-right tabular-nums text-muted-foreground">
+                    {row.resolved === 0 ? '—' : `${formatPercent(row.low)} – ${formatPercent(row.high)}`}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ) : (
+        <p className="text-sm text-muted-foreground">No pre-signing stage outcomes are available in this history.</p>
+      )}
+    </section>
   )
 }

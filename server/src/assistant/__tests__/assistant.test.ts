@@ -330,7 +330,8 @@ describe('POST /api/assistant', () => {
       { id: 'legal-admin', name: 'Arvind Raj', persona: 'legal-admin' },
       db as never
     )
-    expect(answer).toContain('of 1 live bookings, expect 1.0')
+    expect(answer).toContain('Booking-day-30 outlook: 1 expected SPA signings, range 1 to 1; 1 eligible bookings')
+    expect(answer).toContain('10 resolved bookings, 10 signed by booking day 30')
     expect(answer).toContain(
       'Historical rates updated 2026-09-28; next refresh 2026-10-05. Current bookings stay live.'
     )
@@ -354,7 +355,8 @@ describe('POST /api/assistant', () => {
       { id: 'manager', name: 'Robert Khoo', persona: 'manager' },
       db as never
     )
-    expect(answer).toContain('Forecast unavailable')
+    expect(answer).toContain('Booking-day-30 outlook: unavailable')
+    expect(answer).toContain('0 resolved bookings, 0 signed by booking day 30')
     expect(answer).toContain('Historical rates updated 2026-09-28')
     expect(answer).not.toContain('0 to 0')
     expect(answer).not.toContain('0.0 to sign')

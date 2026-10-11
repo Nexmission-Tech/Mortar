@@ -8,7 +8,7 @@
  * None of these writes. The assistant may suggest a next step; a person acts
  * through the existing buttons.
  */
-import { DEFAULT_ASSUMPTIONS, ballInCourt, forecast, searchPlaybooks, summarizeCases } from '@mortar/core'
+import { DEFAULT_ASSUMPTIONS, ballInCourt, forecastInsights, searchPlaybooks, summarizeCases } from '@mortar/core'
 import { scopeSnapshot } from '@mortar/core'
 import type { CaseEvent, CaseSummary, DocumentKind, Message, Persona, StaffProfile, Snapshot } from '@mortar/core'
 import type { Database } from '../../db/index'
@@ -115,8 +115,8 @@ export const TOOL_DECLARATIONS = [
   {
     name: 'get_forecast_summary',
     description:
-      'How many signings to expect in the coming month, the likely range around it, and the bookings most likely and least ' +
-      'likely to sign. One call answers any "how many will sign" question.',
+      'Summarize the booking-day-30 SPA outlook, approved bookings awaiting SPA, where unsigned bookings are waiting, ' +
+      'observed conversion rates and completed signing times, and recorded exits with second-bank follow-ups.',
     parameters: { type: 'object', properties: {} }
   },
   {
@@ -398,21 +398,59 @@ export async function runTool(name: string, args: ToolInput, profile: StaffProfi
     }
 
     case 'get_forecast_summary': {
-      const result = forecast(snapshot, snapshot.meta.referenceDate, { draws: 400, model: snapshot.forecastModel })
-      const cadence = snapshot.forecastModel
-        ? `Historical rates updated ${snapshot.forecastModel.refreshedAt.slice(0, 10)}; next refresh ${snapshot.forecastModel.nextRefreshAt.slice(0, 10)}. Current bookings stay live.`
-        : 'Historical rates are unavailable.'
-      if (result.support === 'insufficient-history')
-        return `Forecast unavailable: there is not enough resolved booking history. ${cadence}`
-      const byChance = [...result.perBooking].sort((a, b) => b.probability - a.probability)
-      const top = byChance.slice(0, 5)
-      const bottom = byChance.slice(-3).reverse()
+      const insights = forecastInsights(snapshot, snapshot.meta.referenceDate, { model: snapshot.forecastModel })
+      const stageNames = { booked: 'Booked', loan_applied: 'With Bank', lo_issued: 'Loan Approved' }
+      const rates = insights.forecast.stageRates
+        .filter((rate): rate is typeof rate & { stage: keyof typeof stageNames } => rate.stage in stageNames)
+        .map((rate) =>
+          rate.resolved === 0
+            ? `${stageNames[rate.stage]} ${rate.signed}/0 (rate —, range —)`
+            : `${stageNames[rate.stage]} ${rate.signed}/${rate.resolved} (rate ${Math.round(rate.rate * 100)}%, range ${Math.round(rate.low * 100)}–${Math.round(rate.high * 100)}%)`
+        )
+        .join('; ')
+      const references = [
+        ['outlook', insights.outlook.map((row) => row.bookingId)],
+        ['approved', insights.approved.rows.map((row) => row.bookingId)],
+        ['waiting', insights.waiting.rows.map((row) => row.bookingId)],
+        ['conversion', insights.turnaround.rows.map((row) => row.bookingId)],
+        ['exits', insights.exits.rows.map((row) => row.bookingId)],
+        [
+          'second-bank and financing review',
+          [...insights.secondBank.rows, ...insights.secondBank.followUp].map((row) => row.bookingId)
+        ]
+      ] as const
+      const cited = new Set<string>()
+      const referenceLines = references.flatMap(([label, bookingIds]) => {
+        const selected = bookingIds.filter((bookingId) => !cited.has(bookingId)).slice(0, 2)
+        selected.forEach((bookingId) => cited.add(bookingId))
+        return selected.length > 0 ? [`${label}: ${selected.join(', ')}`] : []
+      })
+      const estimate =
+        insights.forecast.support === 'supported'
+          ? `${Math.round(insights.forecast.expectedSignings)} expected SPA signings, range ${insights.forecast.rangeLow} to ${insights.forecast.rangeHigh}`
+          : 'unavailable because resolved history does not support an estimate'
+      const historyScope = insights.history.scope === 'project' ? 'project-wide' : 'accessible'
+      const turnaround = (medianDays: number | null, sample: number) =>
+        `${medianDays === null ? '—' : `${medianDays} days`} (${sample} signed bookings)`
+      const retrySummary =
+        insights.secondBank.resolvedCount > 0
+          ? `${insights.secondBank.signedCount} of ${insights.secondBank.resolvedCount} completed booking${insights.secondBank.resolvedCount === 1 ? '' : 's'} signed; the observed sample may be small and does not guarantee another booking will sign.`
+          : 'No completed bookings that went to another bank after a rejection are recorded.'
       return [
-        cadence,
-        `As of ${day(result.asOf)}, of ${result.liveBookings} live bookings, expect ${result.expectedSignings.toFixed(1)} to ` +
-          `sign within ${result.horizonDays} days. The likely range is ${result.rangeLow} to ${result.rangeHigh}.`,
-        `Most likely to sign: ${top.map((p) => `${p.bookingId} (${Math.round(p.probability * 100)}% chance)`).join('; ')}`,
-        `Least likely to sign: ${bottom.map((p) => `${p.bookingId} (${Math.round(p.probability * 100)}% chance)`).join('; ')}`
+        `Booking-day-30 outlook: ${estimate}; ${insights.forecast.liveBookings} eligible bookings. ${insights.open.olderCount} older unsigned bookings are outside the estimate.`,
+        `History basis: ${insights.history.resolved} resolved bookings, ${insights.history.signed} signed by booking day 30, as of ${day(insights.history.asOf)} (${historyScope} history).`,
+        ...(snapshot.forecastModel
+          ? [
+              `Historical rates updated ${snapshot.forecastModel.refreshedAt.slice(0, 10)}; next refresh ${snapshot.forecastModel.nextRefreshAt.slice(0, 10)}. Current bookings stay live.`
+            ]
+          : []),
+        `Approved, awaiting SPA: ${insights.approved.count} booking${insights.approved.count === 1 ? '' : 's'}, ${rm(insights.approved.valueRm)} booked value; ${insights.approved.withoutAppointmentCount} without a recorded appointment. Loan approval does not verify legal readiness or an LO signature.`,
+        `Recorded appointments from ${day(insights.appointments.from)} through ${day(insights.appointments.to)}: ${insights.appointments.upcoming.length} upcoming, ${insights.appointments.overdue.length} overdue, ${insights.appointments.undatedCount} with a missing date.`,
+        `Unsigned waiting queue: ${insights.open.count} bookings, ${rm(insights.open.valueRm)} booked value; ${insights.open.olderCount} at least 30 days old. Waiting groups: ${insights.waiting.groups.map((group) => `${group.holder} ${group.count} (${rm(group.valueRm)})`).join('; ') || 'none'}.`,
+        `Conversion history: ${insights.history.resolved} resolved bookings, ${insights.history.signed} signed by booking day 30. Among bookings that reached each stage and have a known 30-day outcome, the rate shows how many signed by day 30. It is not the chance of reaching the next stage. Signed by booking day 30 (signed/known outcomes): ${rates || 'no stage sample'}. Median booking-to-SPA: ${turnaround(insights.turnaround.bookingToSigning.medianDays, insights.turnaround.bookingToSigning.sample)}; approval-to-SPA: ${turnaround(insights.turnaround.approvalToSigning.medianDays, insights.turnaround.approvalToSigning.sample)}.`,
+        `Recorded exits: ${insights.exits.cancelledCount} cancellations, ${insights.exits.lapsedCount} lapses, ${insights.exits.count} exited bookings, ${rm(insights.exits.valueRm)} booked value; this is not recognized revenue lost or permanent stock loss.`,
+        `Second-bank outcomes: ${insights.secondBank.attemptedCount} bookings that went to another bank after a rejection, ${insights.secondBank.resolvedCount} completed booking${insights.secondBank.resolvedCount === 1 ? '' : 's'}, ${insights.secondBank.signedCount} signed, ${insights.secondBank.pendingCount} still open. ${retrySummary} Financing reviews: ${insights.secondBank.followUp.length} open rejected booking${insights.secondBank.followUp.length === 1 ? '' : 's'}; no recoverable money or units forecast.`,
+        ...(referenceLines.length > 0 ? [`Case references (at most 12): ${referenceLines.join('; ')}.`] : [])
       ].join('\n')
     }
 

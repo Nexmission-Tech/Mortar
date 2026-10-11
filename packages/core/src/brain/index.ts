@@ -15,6 +15,7 @@ import { forecast } from '../sim'
 import { ASK_QUESTIONS } from './questions'
 
 export { ASK_QUESTIONS } from './questions'
+export { FORECAST_DOCUMENT_QUESTIONS } from './forecast'
 export { isLive } from './helpers'
 
 /** Words that carry no topic, dropped before coverage is measured. */

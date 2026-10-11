@@ -527,9 +527,9 @@ Rules governing summary derivation include:
 
 ## Forecast And Backtest Method
 
-Mortar's cash forecasting engine (`packages/core/src/sim.ts`) replaces
-uncalibrated face-value booking sums with stage-weighted statistical
-probabilities.
+Mortar's SPA signing forecast (`packages/core/src/sim.ts`) replaces uncalibrated
+booking counts with stage-weighted historical signing chances. Booking value is
+not cash collected or recognized revenue.
 
 ### Statistical Forecast
 
@@ -553,9 +553,13 @@ calendar days of the initial booking deposit:
   interval. Brown, Cai, and DasGupta (2001) recommend Wilson or Jeffreys
   intervals for samples of 40 or fewer, where the textbook Wald interval is
   unreliable.
-- **Monte Carlo Aggregate Distribution:** Expected signings equal the arithmetic
-  sum of individual booking probabilities. High and low uncertainty bands
-  represent the 10th and 90th percentiles of 2,000 seeded random outcome draws.
+- **Exact Aggregate Distribution:** Expected signings equal the sum of
+  individual booking probabilities. A Poisson-binomial dynamic program
+  calculates the independent-outcome count distribution exactly; the displayed
+  endpoints are its 10th and 90th percentiles. Legacy `seed` and `draws` options
+  remain accepted but do not change the result. This range assumes fixed rates
+  and independent outcomes; it is not a confidence interval for all sources of
+  forecast error.
 
 ### Backtest Validation
 
@@ -571,9 +575,9 @@ The engine validates its calibration through temporal backtesting (`backtest`):
 - **Verification Metrics:** Reports the overall Brier score (mean squared
   probability error) and a four-bucket calibration table comparing mean forecast
   probabilities against observed signing proportions.
-- **Interface Caption:** In accordance with documentation guidelines, the
-  backtest card displays the caption: _"A Backtest On Simulated Data Proves The
-  Method, Not The Business."_
+- **Use:** Backtests remain an engineering validation tool, outside the business
+  document deck. Synthetic validation demonstrates implementation behavior, not
+  measured accuracy on a developer's real bookings.
 
 ### Parameter Assumptions
 
@@ -586,14 +590,14 @@ are assumptions:
 | --------------------------------- | -------------------- | ----- | ---------- | ---------------------------- |
 | Bank approval per application     | 0.62                 | rate  | Assumption | Between REHDA 55–69% and 74% |
 | Bank decision, complete documents | 2–9 (rejections 1–2) | days  | Industry   | ABM, Oct 2017                |
-| Submissions missing a document    | ~0.35                | rate  | Assumption | Assumptions panel            |
+| Submissions missing a document    | ~0.35                | rate  | Assumption | Documented model input       |
 | Debt service ratio ceiling        | 0.40                 | rate  | Industry   | ABM, 2017                    |
-| Mortgage interest rate            | 0.042                | rate  | Assumption | Assumptions panel            |
+| Mortgage interest rate            | 0.042                | rate  | Assumption | Documented model input       |
 | Maximum loan tenure               | 35                   | years | Official   | BNM, Jul 2013                |
-| Tenure age bound                  | Matures by age 70    | years | Assumption | Assumptions panel            |
+| Tenure age bound                  | Matures by age 70    | years | Assumption | Documented model input       |
 | Margin cap, third home onward     | 0.70                 | rate  | Official   | BNM, Nov 2010                |
 | Margin cap, first and second home | ~0.90                | rate  | Industry   | Press                        |
-| Conversion horizon                | 30                   | days  | Assumption | Assumptions panel            |
+| Conversion horizon                | 30                   | days  | Assumption | Documented model input       |
 
 ## Financing-Risk Method
 

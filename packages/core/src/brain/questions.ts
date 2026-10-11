@@ -13,6 +13,7 @@
  */
 import type { AskContext, AskQuestion, AskReply, CaseSummary, DocumentKind } from '../types'
 import { count, days, isLive, isOpen, joinList, percent, rm, rmCompact, sumBy, tally } from './helpers'
+import { FORECAST_ASK_QUESTIONS } from './forecast'
 /**
  * Document names as a sentence says them: lowercase, except the acronyms,
  * which DESIGN.md keeps in capitals.
@@ -126,8 +127,9 @@ export const ASK_QUESTIONS: AskQuestion[] = [
       return {
         text:
           `The ${count(cases.length, 'live booking')} on the books are worth ${rmCompact(total)}. ` +
-          `Weighting each by how often its stage reaches signing, about ${rmCompact(weighted)} should sign ` +
-          `within ${days(ctx.forecast.horizonDays)}.${refreshed}`,
+          `Weighting each by how often its stage reaches signing, the weighted booking value is about ` +
+          `${rmCompact(weighted)} within ${days(ctx.forecast.horizonDays)} of booking. This is an estimate, ` +
+          `not guaranteed proceeds.${refreshed}`,
         citations: cite(ctx, cases)
       }
     }
@@ -388,5 +390,6 @@ export const ASK_QUESTIONS: AskQuestion[] = [
         citations: cite(ctx, cases)
       }
     }
-  }
+  },
+  ...FORECAST_ASK_QUESTIONS
 ]

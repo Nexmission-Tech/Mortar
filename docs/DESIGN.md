@@ -855,19 +855,33 @@ control, and none appears. Do not "fix" this by removing the input.
 
 ### Forecast Document Stack
 
-- **Purpose:** The detail behind the forecast as documents to pick from (#54).
-- **Anatomy:** Chips above the stack pick a document. The front card is 2:1 (up
-  to 768px wide), 32px padding: "Document N Of M" eyebrow, the title in 24/32, a
-  two-line summary, then two text actions (Open Document with `ArrowUpRight`,
-  Ask Mortar AI with `Sparkles`). A square monochrome motif fills the card's
-  right side, inverted in dark mode. Two cards peek out beneath. Round outline
-  previous and next buttons sit either side (below it on phones).
-- **Rules:** Click, swipe and the arrow keys move the stack. Open Document reads
-  the document in a centred Dialog, with long content scrolling inside it;
-  Escape and the close button dismiss it, returning focus to Open Document. Ask
-  Mortar AI opens the assistant with a question about that document already
-  sent. Below 640px the motif is hidden, the card sizes to its text, and the
-  controls stay below it as before.
+- **Purpose:** Five booking-backed reports: Signing Outlook; Approved, Awaiting
+  SPA; Where Bookings Are Waiting; Conversion And Turnaround; Lost Bookings.
+- **Anatomy:** Chips above the stack pick a document. The front card is 2:1
+  where its content fits, up to 980px wide (980 × 490px on a wide desktop), with
+  32px padding. Its eyebrow, 24/32 title and summary lead into a calculated
+  finding, then Open Document with `ArrowUpRight` and Ask Mortar AI with
+  `Sparkles`. A square monochrome motif sits on the right, inverted in dark
+  mode. Two sheets peek out beneath; round outline arrows sit either side. Below
+  640px the motif is hidden, the card fits its text, and the arrows sit below.
+- **Motion:** A 360ms ease-out shuffle is a named exception to the normal motion
+  durations. The outgoing sheet moves aside with a slight two-dimensional turn
+  and passes behind the incoming sheet. Previous reverses it. Chips, horizontal
+  swipe and unmodified arrow keys use the same movement; a direct selection
+  moves once. Rapid input keeps the last requested document. There is no
+  autoplay or page-load entrance. Reduced motion uses a short fade with the
+  backing sheets still visible. Outgoing sheets are inert and hidden from
+  assistive technology; only the selected document has active controls.
+- **Reading:** Open Document uses the centred, scrollable Dialog. Escape and
+  close return focus to its trigger. Long tables disclose all contributing
+  bookings behind a counted Show All button. Ask Mortar AI sends the selected
+  report's question; both assistant paths use the same scoped calculations.
+- **Meaning:** Estimates refer to signing by each booking's day-30 deadline, not
+  the next calendar month. Recorded appointments are a separate fact, not
+  promised signings. Show the report date, sample and access scope, distinguish
+  missing evidence from zero, and call monetary totals booking value rather than
+  revenue or guaranteed recoveries. The deck contains no alternate-data runs,
+  placeholder parameters or claims of proven business accuracy.
 
 ### Sales Chart
 
@@ -1116,25 +1130,26 @@ ledger readable at a glance:
 
 - **One focus per screen:** A page opens on the answer — the figure, queue or
   card a person acts on now — and everything else ranks behind it. Supporting
-  detail follows in reading order: `/forecast` leads with expected signings, its
-  range and the live count, then where bookings died ranked by what they cost,
-  then the stage rates and the backtest.
-- **Progressive disclosure:** Nothing is deleted, but long reference material
-  waits behind one control that names what it hides — the assumptions table
-  folds behind "Show 51 Assumptions". The control is a real button with
-  `aria-expanded`; the revealed content renders in full, identical to what it
-  replaces.
+  detail follows in reading order: `/forecast` leads with estimated signings by
+  booking day 30, the estimated range and eligible booking count, then its five
+  operational documents.
+- **Progressive disclosure:** Long lists wait behind a control that names what
+  it reveals, such as "Show All 25 Bookings". Calculation notes fold behind "How
+  This Is Counted". Each control is a real button with `aria-expanded`; opening
+  it reveals the full content rather than a truncated sample.
 - **Chip economy:** A chip earns its place only when it discriminates between
-  rows or marks a state worth noticing. A fact true of the whole dataset —
-  simulated data, its seed and as-of date — is stated once on `/settings`, never
-  repeated as chrome on every screen or a badge on every row.
+  rows or marks a state worth noticing. A fact true of the whole dataset — demo
+  provenance and generator settings — is stated once on `/settings`, never
+  repeated as chrome on every screen or a badge on every row. A report's as-of
+  date, access scope and signing horizon remain visible because they change the
+  meaning of its numbers.
 - **Tooltip rule:** An explanatory sub-caption under a heading or the second
   line of a metric tile moves into an `InfoTooltip` beside its label: one short
   sentence, never a paragraph, opened on hover or keyboard focus. The heading
-  and the figure stay on the surface. Captions that carry required context — "A
-  Backtest On Simulated Data Proves The Method, Not The Business", the
-  placeholder marking on Assumptions — remain visible text; tooltips hold
-  explanation, not obligations.
+  and the figure stay on the surface. Required context remains visible: an
+  estimate is not a recorded signing, a booking value is not collected revenue,
+  and a missing historical sample is not zero. Tooltips hold explanation, not
+  obligations.
 
 ## Public Pages
 
