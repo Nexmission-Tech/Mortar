@@ -38,45 +38,51 @@ function HeadingNote({ text, label }: { text: string; label: string }) {
 export function SignalsPanel({
   signals,
   hasBuyerMessages,
-  loading = false
+  loading = false,
+  embedded = false
 }: {
   signals: BuyerSignals | null
   /** `false` when the buyer has never messaged — Jev is never asked, so there is no read to show. */
   hasBuyerMessages: boolean
   /** The read is in flight and has not landed (or come from the snapshot) yet. */
   loading?: boolean
+  /** Inside another card (Case Details): the same content with no card of its own. */
+  embedded?: boolean
 }) {
   const needsReview =
     signals !== null &&
     (signals.responsiveness.confidence < JEV_REVIEW_THRESHOLD || signals.hesitation.confidence < JEV_REVIEW_THRESHOLD)
-  return (
-    <Card>
-      <CardContent className="flex flex-col gap-3 p-4">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <h2 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-            Buyer Response
-          </h2>
-          {signals && (
-            <HeadingNote
-              label="Buyer signal confidences"
-              text={`Responsiveness Confidence ${formatPercent(signals.responsiveness.confidence)} · Hesitation Confidence ${formatPercent(signals.hesitation.confidence)}`}
-            />
-          )}
-          {signals && <JevTag meta={signals.meta} />}
-          {needsReview && <StatusPill tone="warning">Needs Review</StatusPill>}
-        </div>
-        {signals ? (
-          <SignalChips signals={signals} />
-        ) : (
-          <p className="text-sm text-muted-foreground">
-            {!hasBuyerMessages
-              ? 'No Buyer Messages Have Arrived Yet.'
-              : loading
-                ? 'Reading Buyer Messages…'
-                : 'No Signal Read Yet.'}
-          </p>
+  const body = (
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+        <h2 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Buyer Response</h2>
+        {signals && (
+          <HeadingNote
+            label="Buyer signal confidences"
+            text={`Responsiveness Confidence ${formatPercent(signals.responsiveness.confidence)} · Hesitation Confidence ${formatPercent(signals.hesitation.confidence)}`}
+          />
         )}
-      </CardContent>
+        {signals && <JevTag meta={signals.meta} />}
+        {needsReview && <StatusPill tone="warning">Needs Review</StatusPill>}
+      </div>
+      {signals ? (
+        <SignalChips signals={signals} />
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          {!hasBuyerMessages
+            ? 'No Buyer Messages Have Arrived Yet.'
+            : loading
+              ? 'Reading Buyer Messages…'
+              : 'No Signal Read Yet.'}
+        </p>
+      )}
+    </div>
+  )
+  return embedded ? (
+    body
+  ) : (
+    <Card>
+      <CardContent className="p-4">{body}</CardContent>
     </Card>
   )
 }
