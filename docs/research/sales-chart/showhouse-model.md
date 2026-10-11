@@ -176,14 +176,16 @@ The case quick view keeps its content and changes its container, on every page
 that opens it.
 
 - **Container:** a floating card 16 px in from the bottom and side edges, up to
-  720 px wide and centred, at most 85% of the window tall, scrolling inside.
-  Radius `--radius-lg`, `--card` fill and the overlay elevation.
+  720 px wide and centred, at most 85% of the window tall, scrolling inside. A 6
+  px radius (`--radius-md`, the largest the app shell uses), the popover fill
+  and the overlay elevation.
 - **Motion:** it rises from below the window over `motion/slow` (250 ms) and
   sinks on close; under reduced motion it fades.
 - **Behaviour:** a modal, as the side sheet was. The scrim dims the page. Esc, a
-  scrim click or ✕ closes it, and on touch it can be dragged down to close.
-- **Built on:** the `vaul` drawer already in the repo, with background scaling
-  off.
+  scrim click or ✕ closes it.
+- **Built on:** the existing Radix Sheet, as a new `floating` side, so the focus
+  trap, scrim and close button stay as they are. Drag-to-close on touch is left
+  out; Esc, the scrim and ✕ cover it.
 
 ## Architecture
 
@@ -200,8 +202,7 @@ that opens it.
   the presets.
 - `frontend/src/components/sales-chart/UnitIsland.tsx` (new) and
   `unitOverview.ts` (new, pure): the island and the facts it shows.
-- `frontend/src/components/ui/floating-panel.tsx` (new): the floating bottom
-  panel primitive on `vaul`.
+- `frontend/src/components/ui/sheet.tsx`: gains the `floating` side.
 - `frontend/src/components/bookings/CaseQuickView.tsx`: moves from the Sheet to
   the floating panel.
 - `frontend/src/pages/SalesChartPage.tsx`: shows the island on selection; Open
@@ -269,8 +270,9 @@ chunk grows by under 5 kB. The scene still renders on demand, never in a loop.
 
 Three pull requests, each merged when CI is green and its review is clean:
 
-1.  **The panel and the island:** `floating-panel.tsx`, `CaseQuickView` on it,
-    the unit island and its overview, the page wiring and the DESIGN.md entries.
+1.  **The panel and the island:** the Sheet's `floating` side, `CaseQuickView`
+    on it, the unit island and its overview, the page wiring and the DESIGN.md
+    entries.
 1.  **The towers:** `towerModel.ts`, the facade, core and roof, the perspective
     camera, light and shadow, the presets with Front and Back, and the
     see-through filter.
