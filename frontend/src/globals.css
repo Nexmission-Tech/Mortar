@@ -278,6 +278,9 @@
 
   /* Canvas — the faint dot grid behind the cards on every signed-in page */
   --canvas-dot: color-mix(in oklab, var(--color-ink-950) 12%, transparent);
+  /* The pointer bloom: brighter dots and a faint wash, under the pointer only. */
+  --canvas-dot-lit: color-mix(in oklab, var(--color-ink-950) 42%, transparent);
+  --canvas-glow: color-mix(in oklab, var(--color-ink-950) 5%, transparent);
 
   /* Charts — status solids as series colours (signed, info, positive, warning, danger) */
 
@@ -412,6 +415,8 @@
 
   /* Canvas */
   --canvas-dot: color-mix(in oklab, #fafafa 8%, transparent);
+  --canvas-dot-lit: color-mix(in oklab, #fafafa 34%, transparent);
+  --canvas-glow: color-mix(in oklab, #fafafa 5%, transparent);
 
   /* Scrim */
   --scrim: color-mix(in oklab, black 45%, transparent);
@@ -534,16 +539,59 @@ select:focus-visible,
 
 /* CANVAS — the signed-in page ground: a faint dot grid behind the cards, like a
    sketchbook page. The one sanctioned pattern in the application; cards, the
-   sidebar, the top bar and every overlay stay solid over it. */
+   sidebar, the top bar and every overlay stay solid over it. The FAQ and
+   sign-in pages share the same ground. */
 .app-canvas {
+  position: relative;
+  isolation: isolate;
   background-color: var(--background);
   background-image: radial-gradient(var(--canvas-dot) 1px, transparent 1.25px);
   background-size: 20px 20px;
   background-position: 10px 10px;
 }
-/* The full case page: the same ground without the dots behind its journey drawing. */
-.app-canvas.app-canvas-solid {
-  background-image: none;
+
+/* The pointer bloom, as on the landing hero: a stronger copy of the dot field
+   and a soft wash, masked to a circle that trails the pointer. useCanvasGlow
+   writes --canvas-spot-x/y in the canvas's own pixels and sets data-spot while
+   the pointer is over it. Fine pointers with motion allowed only. Cards stay
+   solid over it, so it lights only the ground between them. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .app-canvas::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      radial-gradient(
+        340px circle at var(--canvas-spot-x, 50%) var(--canvas-spot-y, 40%),
+        var(--canvas-glow),
+        transparent 70%
+      ),
+      radial-gradient(var(--canvas-dot-lit) 1.1px, transparent 1.5px);
+    background-size:
+      100% 100%,
+      20px 20px;
+    background-position:
+      0 0,
+      10px 10px;
+    -webkit-mask-image: radial-gradient(
+      280px circle at var(--canvas-spot-x, 50%) var(--canvas-spot-y, 40%),
+      #000 0%,
+      transparent 100%
+    );
+    mask-image: radial-gradient(
+      280px circle at var(--canvas-spot-x, 50%) var(--canvas-spot-y, 40%),
+      #000 0%,
+      transparent 100%
+    );
+    opacity: 0;
+    transition: opacity 280ms var(--ease-out);
+  }
+
+  .app-canvas[data-spot='on']::before {
+    opacity: 1;
+  }
 }
 
 /* SIDEBAR TRANSITION — defined in CSS so it's never re-set by React renders */

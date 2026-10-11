@@ -32,7 +32,7 @@ export function SignInPage() {
   }
 
   return (
-    <main className="grid min-h-dvh grid-cols-1 bg-background min-[900px]:grid-cols-[minmax(420px,1fr)_1fr]">
+    <main className="app-canvas grid min-h-dvh grid-cols-1 min-[900px]:grid-cols-[minmax(420px,1fr)_1fr]">
       <section className="flex flex-col justify-center px-6 pt-12 pb-16 min-[900px]:px-16">
         <div className="mx-auto flex w-full max-w-[520px] flex-col gap-6">
           <Link
