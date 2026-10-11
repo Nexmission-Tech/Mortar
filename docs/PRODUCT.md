@@ -149,6 +149,10 @@ In Mortar, Sales Admin Nurul Aina starts her working day on Today (`/chase`).
   creating an assigned follow-up task with one click.
 - **Buyer Outreach:** Uses vetted playbooks to draft targeted buyer requests via
   existing WhatsApp communication channels.
+- **Sales Chart:** Opens the Sales Chart (`/sales-chart`) to see each unit in
+  the tower by its booking's state. The filters count only her own bookings, so
+  Loan Approved, No SPA Appointment gives her the buyers who need a signing
+  date.
 
 ### Loan Administration
 
@@ -194,6 +198,9 @@ the team view at `/team`.
   row per staff profile opening the bookings waiting on that person.
 - **Department Escalation:** Opens a case or requests a direct follow-up from
   the assigned sales, loan, or legal owner with one click.
+- **Sales Chart:** Opens `/sales-chart` to see every unit by its booking's
+  state, then clicks a unit to open its case. The Loan Approved, No SPA
+  Appointment filter lists the buyers who need only a signing date.
 - **Company-Wide Scoping:** Maintains unrestricted access to every booking,
   while individual staff desks remain scoped to assigned cases.
 
@@ -242,6 +249,26 @@ Clicking a unit code on Today or a row in Bookings opens the same side sheet
 (`CaseQuickView`). It shows who the case waits on, the next step with Add Task,
 Record An Update, and Open Full Case, allowing staff to unblock cases without
 leaving their queue.
+
+### Sales Chart
+
+The Sales Chart shows every unit in the project on one page, laid out by floor
+and unit as the sales gallery already keeps it. Each unit takes one of six
+states, and each state is named in words: Available, Booked, Loan Approved,
+Needs Action, Release Review and SPA Signed. A unit shows as signed only when
+its booking has a confirmed SPA signing on the evidence log.
+
+Three filters light the units that need a decision:
+
+- **Needs Action:** units whose booking the stall rule flagged.
+- **Loan Approved, No SPA Appointment:** the closing list. The loan is through
+  and no signing date is on record. It uses the same split as the Legal desk's
+  No Appointment Yet section.
+- **Release Review:** units whose recovery paths look spent.
+
+Release Review is advisory. A person decides whether to cancel and re-release
+the unit, and Mortar never cancels. Clicking a unit opens the shared side sheet
+for its booking.
 
 ### Ask MortarAI
 
