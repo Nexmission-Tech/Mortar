@@ -159,6 +159,8 @@ export interface Task {
   completedAt: IsoDateTime | null
   /** Manager's durable attention flag; cleared when the task is closed. */
   managerFlaggedBy?: string | null
+  /** What happened, in the close-out's one line: "No answer, try Tuesday". `null` on tasks closed without one. */
+  result?: string | null
 }
 
 // Derived Views -------------------------------------------------------------

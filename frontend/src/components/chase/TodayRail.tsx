@@ -8,7 +8,7 @@
  * You Sent. No list folds behind a Show More.
  */
 
-import type { ReactNode } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Check, ChevronRight, ListChecks } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -20,6 +20,8 @@ import { InfoTooltip } from '@/components/ui/InfoTooltip'
 import { StatusPill } from '@/components/ui/status-pill'
 import { cn } from '@/lib/utils'
 import type { ManagerCase } from '@/components/manager/managerQueue'
+import type { TaskCloseOut as TaskCloseOutValue } from '@/lib/api'
+import { TaskCloseOut } from './TaskCloseOut'
 import { dueOrOverduePhrase } from './today'
 
 export const EYEBROW = 'text-[11px] font-semibold uppercase leading-[14px] tracking-[0.08em] text-muted-foreground'
@@ -208,8 +210,9 @@ function DuePill({ dueOn, referenceDate }: { dueOn: string; referenceDate: strin
 
 /**
  * Your Tasks: every open task in scope, Manager follow-ups first, then by due
- * date, with a Mine/Everyone switch. Each row's circle completes the task; the
- * title opens the case.
+ * date, with a Mine/Everyone switch. Each row's circle opens the task's
+ * close-out in place: what happened, then the update recorded or a next date.
+ * The title opens the case.
  */
 export function YourTasks({
   mine,
@@ -228,8 +231,13 @@ export function YourTasks({
   profile: StaffProfile
   referenceDate: string
   completing: ReadonlySet<string>
-  onComplete: (task: Task) => void
+  /** Saves the close-out; `true` once the task is closed, so the form can go. */
+  onComplete: (task: Task, closeOut: TaskCloseOutValue) => Promise<boolean>
 }) {
+  /** The task whose close-out is open; one at a time. */
+  const [closing, setClosing] = useState<string | null>(null)
+  /** Each row's completion circle, to take focus back when its close-out is cancelled. */
+  const circles = useRef(new Map<string, HTMLButtonElement>())
   const tasks = [...(mineOnly ? mine : everyone)].sort(
     (a, b) =>
       Number(!!b.managerFlaggedBy) - Number(!!a.managerFlaggedBy) ||
@@ -275,10 +283,15 @@ export function YourTasks({
               <li key={task.id} className="flex items-start gap-3 px-4 py-3">
                 {canComplete ? (
                   <button
+                    ref={(node) => {
+                      if (node) circles.current.set(task.id, node)
+                      else circles.current.delete(task.id)
+                    }}
                     type="button"
                     aria-label={`Complete: ${task.title}`}
+                    aria-expanded={closing === task.id}
                     disabled={busy}
-                    onClick={() => onComplete(task)}
+                    onClick={() => setClosing(closing === task.id ? null : task.id)}
                     className="group mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border-[1.5px] border-muted-foreground/60 bg-card outline-none transition-colors duration-[var(--motion-fast)] hover:border-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
                   >
                     <Check
@@ -308,6 +321,22 @@ export function YourTasks({
                     <RoleLabel desk={DESK_OF_ROLE[task.ownerRole]} className="w-fit">
                       {OWNER_ROLE_LABELS[task.ownerRole]} · {task.ownerName}
                     </RoleLabel>
+                  ) : null}
+                  {canComplete && closing === task.id ? (
+                    <TaskCloseOut
+                      task={task}
+                      referenceDate={referenceDate}
+                      busy={busy}
+                      onClose={(closeOut) =>
+                        void onComplete(task, closeOut).then((closed) => {
+                          if (closed) setClosing(null)
+                        })
+                      }
+                      onCancel={() => {
+                        circles.current.get(task.id)?.focus()
+                        setClosing(null)
+                      }}
+                    />
                   ) : null}
                 </div>
               </li>
@@ -379,7 +408,12 @@ function RecentLine({ booking }: { booking: Booking }) {
   )
 }
 
-/** The Manager's follow-ups that still stand: case, blocker, recipient and whether they replied. */
+/**
+ * The Manager's follow-ups that still stand: case, blocker, recipient and where
+ * the follow-up is. A follow-up stands only until a confirmed update follows it,
+ * so a closed task listed here was closed without one: it never reads Answered,
+ * and shows what its close-out said instead.
+ */
 export function FollowUpsSent({ cases, onOpen }: { cases: readonly ManagerCase[]; onOpen: (id: string) => void }) {
   return (
     <section aria-label="Follow-ups you sent" className="flex flex-col gap-3">
@@ -408,12 +442,18 @@ export function FollowUpsSent({ cases, onOpen }: { cases: readonly ManagerCase[]
                     Awaiting Reply
                   </StatusPill>
                 ) : (
-                  <StatusPill tone="positive" className="shrink-0">
-                    Answered
+                  <StatusPill tone="warning" className="shrink-0">
+                    Closed, No Update Yet
                   </StatusPill>
                 )}
               </div>
               <span className="text-[13px] text-muted-foreground">{summary.stallReasons[0] ?? wait.reason}</span>
+              {followUp?.status === 'done' && followUp.result ? (
+                <span className="text-[13px]">
+                  <span className="text-muted-foreground">Result: </span>
+                  {followUp.result}
+                </span>
+              ) : null}
               {recipient ? (
                 <span className="flex items-center gap-1.5 text-[13px]">
                   <span className="text-muted-foreground">To</span>

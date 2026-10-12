@@ -156,7 +156,8 @@ export function rowToTask(row: Row): Task {
     origin: row.origin as Task['origin'],
     createdAt: isoDateTime(row.created_at),
     completedAt: row.completed_at == null ? null : isoDateTime(row.completed_at),
-    managerFlaggedBy: row.manager_flagged_by == null ? null : String(row.manager_flagged_by)
+    managerFlaggedBy: row.manager_flagged_by == null ? null : String(row.manager_flagged_by),
+    result: row.result == null ? null : String(row.result)
   }
 }
 
