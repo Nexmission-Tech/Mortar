@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { JEV_REVIEW_THRESHOLD, proposalFromExtraction, searchPlaybooks } from './jev'
+import { JEV_REVIEW_THRESHOLD, playbookValidated, proposalFromExtraction, searchPlaybooks } from './jev'
+import { PLAYBOOKS as SEEDED_PLAYBOOKS } from './fixtures/playbooks'
 import type { CaseSummary, Extraction, Message, Playbook } from './types'
 
 const playbook = (overrides: Partial<Playbook>): Playbook => ({
@@ -129,6 +130,22 @@ describe('searchPlaybooks', () => {
   it('honours the limit and returns approved playbooks for an empty query', () => {
     expect(searchPlaybooks(PLAYBOOKS, '', 1)).toHaveLength(1)
     expect(searchPlaybooks(PLAYBOOKS, '')[0]?.playbook.status).toBe('approved')
+  })
+})
+
+// Issue #75: guidance shows its action and limits only once a named reviewer approves it.
+describe('playbookValidated', () => {
+  it('takes an approved playbook with a named reviewer, and nothing short of that', () => {
+    const base = PLAYBOOKS[0]!
+    expect(playbookValidated({ ...base, status: 'approved', reviewer: 'Arvind Raj' })).toBe(true)
+    expect(playbookValidated({ ...base, status: 'approved', reviewer: '  ' })).toBe(false)
+    for (const status of ['draft', 'superseded', 'retired'] as const)
+      expect(playbookValidated({ ...base, status, reviewer: 'Arvind Raj' })).toBe(false)
+  })
+
+  it('keeps every seeded demo playbook illustrative until a real reviewer approves it', () => {
+    expect(SEEDED_PLAYBOOKS.length).toBeGreaterThan(0)
+    expect(SEEDED_PLAYBOOKS.filter(playbookValidated)).toEqual([])
   })
 })
 

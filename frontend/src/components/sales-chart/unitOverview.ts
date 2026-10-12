@@ -6,7 +6,7 @@
  */
 import { ballInCourt, type CaseSummary, type ChartUnit, type UnitState } from '@mortar/core'
 import type { BookingRow } from '@/components/bookings/BookingsTable'
-import { formatRm } from '@/components/case/format'
+import { formatDate, formatRm } from '@/components/case/format'
 import { nextStepFor } from '@/components/case/nextStep'
 import { OWNER_ROLE_LABELS } from '@/components/case/OwnerBadge'
 import { NEXT_ACTION_LABELS, ownerName } from '@/components/chase/chase'
@@ -21,7 +21,10 @@ export type UnitOverview =
       stalled: boolean
       buyer: string
       bookingId: string
+      /** The full booking price: never a loss, never cash received. */
       price: string
+      /** The booking date, so the age has its clock: `12 Aug 2026`. */
+      bookedOn: string
       position: string
       nextStep: string | null
     }
@@ -82,6 +85,7 @@ export function unitOverview(unit: ChartUnit, row: BookingRow | null): UnitOverv
     buyer: booking.buyer.name,
     bookingId: booking.id,
     price: formatRm(booking.priceRm),
+    bookedOn: formatDate(booking.bookingDate),
     position: loanPosition(summary),
     nextStep: next.waitingOnNobody
       ? null

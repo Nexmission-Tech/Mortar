@@ -1,5 +1,5 @@
 /**
- * Team (`/team`, Manager only) — who each booking is waiting on, desk by desk.
+ * Team (`/team`, Manager only) — who owns each booking's follow-up, desk by desk.
  *
  * Four figures open the page, each a way into the view behind its number. The
  * desks table follows: one row per staff profile, most overdue first, counting
@@ -7,6 +7,10 @@
  * Manager's follow-ups use (`currentCaseAssignee`). A row opens Bookings
  * narrowed to those bookings. It replaces the old `/manager` page, which
  * redirects here.
+ *
+ * Money beside a name is the full booking price of the stalled cases that
+ * person follows up, never a loss: the definition is one hover away wherever
+ * the two meet, because the follow-up owner owns the chase, not the delay.
  */
 
 import { useMemo } from 'react'
@@ -14,7 +18,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ChevronRight, SearchX } from 'lucide-react'
 import { forecast, teamSummary, type TeamRow } from '@mortar/core'
 import { formatRm, formatRmCompact } from '@/components/case'
-import { EYEBROW } from '@/components/chase/TodayRail'
+import { EYEBROW, STALLED_VALUE_DEFINITION } from '@/components/chase/TodayRail'
 import { PageContainer } from '@/components/layout/PageContainer'
 import { PageHeaderCard } from '@/components/layout/PageHeaderCard'
 import { DESK_OF_PERSONA, ProfileAvatar, RoleLabel } from '@/components/people/RoleLabel'
@@ -97,7 +101,7 @@ export function TeamPage() {
     <PageContainer>
       <PageHeaderCard tourTarget="team-header">
         <h1 className="text-[32px] font-semibold leading-[1.16] tracking-[-0.02em] text-foreground">Team</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Who Each Booking Is Waiting On, Desk By Desk</p>
+        <p className="mt-1 text-sm text-muted-foreground">Who Owns Each Booking’s Follow-Up, Desk By Desk</p>
       </PageHeaderCard>
 
       {error && !snapshot ? (
@@ -119,23 +123,27 @@ export function TeamPage() {
             <Figure label="Open Bookings" value={String(team.openBookings)} to="/bookings" />
             <Figure label="Overdue Cases" value={String(team.overdue)} to="/chase" alert={team.overdue > 0} />
             <Figure
-              label="Value At Risk"
+              label="Stalled Booking Value"
               value={formatRmCompact(team.valueAtRisk)}
               exact={formatRm(team.valueAtRisk)}
               to="/bookings"
             />
             <Figure
-              label={`Expected Signings In ${outlook.horizonDays} Days`}
+              label={`Estimated SPAs By Booking Day ${outlook.horizonDays}`}
               value={outlook.support === 'supported' ? String(Math.round(outlook.expectedSignings)) : 'Unavailable'}
               exact={outlook.support === 'supported' ? outlook.expectedSignings.toFixed(1) : undefined}
               to="/forecast"
             />
           </div>
+          <p className="mt-3 text-[13px] text-muted-foreground">
+            Stalled Booking Value Is Full Booking Prices, Not A Loss Estimate. The Named Person Owns The Chase, Not
+            Necessarily The Delay.
+          </p>
 
           <div className="mb-3 mt-9 flex flex-wrap items-center justify-between gap-3">
             <h2 className={cn(EYEBROW, 'flex items-center gap-1')}>
               Desks
-              <InfoTooltip text="Open Bookings Whose Next Move Sits With Each Person, Most Overdue First." />
+              <InfoTooltip text="Open Bookings Whose Next Move Each Person Owns, Most Overdue First." />
             </h2>
             <div className="flex items-center gap-4 text-[13px] text-muted-foreground">
               <span className="flex items-center gap-1.5">
@@ -151,8 +159,8 @@ export function TeamPage() {
 
           <div className={cn(CARD, 'overflow-x-auto')}>
             <table
-              className="w-full min-w-[860px] border-collapse text-sm"
-              aria-label="Bookings waiting on each person"
+              className="w-full min-w-[900px] border-collapse text-sm"
+              aria-label="Bookings each person follows up"
             >
               <thead>
                 <tr className="h-10 border-b border-border text-left">
@@ -160,11 +168,12 @@ export function TeamPage() {
                     Person
                   </th>
                   <th scope="col" className={cn(EYEBROW, 'px-4 font-semibold')}>
-                    Waiting On Them
+                    Follow-Up Owner
                   </th>
-                  {['Stalled', 'Overdue', 'Longest Wait', 'Value At Risk', 'Open Tasks'].map((h) => (
+                  {['Stalled', 'Overdue', 'Longest Wait', 'Stalled Booking Value', 'Open Tasks'].map((h) => (
                     <th key={h} scope="col" className={cn(EYEBROW, 'px-4 text-right font-semibold')}>
                       {h}
+                      {h === 'Stalled Booking Value' ? <InfoTooltip text={STALLED_VALUE_DEFINITION} /> : null}
                     </th>
                   ))}
                   <th scope="col" className="w-10">

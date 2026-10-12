@@ -43,7 +43,7 @@ const QUESTIONS: { q: string; a: string[] }[] = [
     q: 'How Does The Forecast Work?',
     a: [
       'It counts signed SPAs, not bookings. A booking is a promise; only a signed SPA — with 10% of the price due on signing — makes the unit sold. The headline is expected signings within 30 days of booking, with a range around it.',
-      'Each live booking is weighted by its stage and financing risk, the stage conversion rates and their sample sizes sit beside the figure, and a backtest against the book’s own history is on the same page.'
+      'Each live booking is weighted by its stage and financing risk, the stage conversion rates and their sample sizes sit beside the figure, and an accuracy check against the book’s own history is on the same page.'
     ]
   }
 ]

@@ -292,6 +292,7 @@ export function BookingDetailPage() {
                     messages={data.messages}
                     extractions={data.extractions}
                     events={data.events}
+                    applications={data.applications}
                     reviewer={reviewer}
                     onChanged={onChanged}
                   />

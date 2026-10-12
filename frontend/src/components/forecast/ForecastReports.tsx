@@ -1,7 +1,8 @@
-import { useState, type ReactNode } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import type { ForecastInsights, InsightBooking } from '@mortar/core'
-import { FORECAST_DOCUMENT_QUESTIONS } from '@mortar/core'
+import type { Backtest, Dataset, ForecastInsights, InsightBooking } from '@mortar/core'
+import { FORECAST_DOCUMENT_QUESTIONS, HORIZON_DAYS, backtest, cohortResult } from '@mortar/core'
+import { DateField } from '@/components/bookings/DateField'
 import {
   BALL_HOLDER_LABELS,
   STAGE_LABELS,
@@ -12,9 +13,11 @@ import {
   formatRmCompact
 } from '@/components/case'
 import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { ForecastDocuments, type ForecastDocument } from './ForecastDocuments'
 import { StageRatesCard } from './StageRatesCard'
+import { addDays } from './forecast'
 
 const ROW_LIMIT = 8
 
@@ -66,7 +69,15 @@ function Definition({ label, children }: { label: string; children: ReactNode })
   )
 }
 
-function OutlookReport({ insights }: { insights: ForecastInsights }) {
+function OutlookReport({
+  insights,
+  accuracy,
+  reach
+}: {
+  insights: ForecastInsights
+  accuracy: Backtest | null
+  reach: HistoryReach
+}) {
   const { visibleRows, control } = useVisibleRows(insights.outlook)
   const { visibleRows: upcomingRows, control: upcomingControl } = useVisibleRows(insights.appointments.upcoming)
   const supported = insights.forecast.support === 'supported'
@@ -192,12 +203,99 @@ function OutlookReport({ insights }: { insights: ForecastInsights }) {
         ) : null}
       </section>
 
-      <HowThisIsCounted insights={insights} historyScope={historyScope} />
+      <HowThisIsCounted insights={insights} historyScope={historyScope} accuracy={accuracy} reach={reach} />
     </div>
   )
 }
 
-function HowThisIsCounted({ insights, historyScope }: { insights: ForecastInsights; historyScope: string }) {
+/**
+ * How much of the intake the viewer's records cover: every booking (the
+ * Manager), the bookings they own (a Sales Admin), or only the bookings that
+ * are theirs to move now (Loan and Legal). The last loses a booking from view
+ * as it moves on, signed ones first, so a cohort or an accuracy check on it
+ * would count only what was left.
+ */
+export type HistoryReach = 'all' | 'own' | 'assigned'
+
+/** What the cohort result and the accuracy check say on a view that keeps a booking only while it is the desk's. */
+const ASSIGNED_REACH_NOTE =
+  'This view keeps a booking only while it is yours to move, so signed bookings leave it. The Manager’s Forecast carries this check.'
+
+/** Bands where the method promised at least this much more than happened: where it was over-confident. */
+const OVER_CONFIDENT_BY = 0.1
+
+/**
+ * The accuracy check: the same method run at a past cut-off, from what was
+ * recorded by then, against the signings that followed. One sentence, the
+ * bands with their case counts, and where it promised more than happened.
+ */
+function AccuracyCheck({ accuracy, reach }: { accuracy: Backtest | null; reach: HistoryReach }) {
+  if (reach === 'assigned') return <p>Accuracy check: not shown here. {ASSIGNED_REACH_NOTE}</p>
+  if (!accuracy) return null
+  const on = reach === 'own' ? ' on your bookings' : ''
+  if (accuracy.support !== 'validated') {
+    return (
+      <p>
+        Accuracy check{on}: not enough history before {formatDate(accuracy.cutoff)} to run the method then.
+      </p>
+    )
+  }
+  const bands = accuracy.calibration.filter((band) => band.n > 0)
+  const overConfident = bands.filter((band) => band.predicted - band.observed >= OVER_CONFIDENT_BY)
+  return (
+    <div className="space-y-2">
+      <p>
+        Accuracy check{on}: at {formatDate(accuracy.cutoff)}, the method expected {accuracy.predicted.toFixed(1)}{' '}
+        signings by booking day 30; {accuracy.observed} happened.
+        {overConfident.length > 0
+          ? ` It was over-confident in the ${overConfident
+              .map(
+                (band) =>
+                  `${band.bucket} band (${formatPercent(band.predicted)} expected, ${formatPercent(band.observed)} happened, ${band.n} booking${band.n === 1 ? '' : 's'})`
+              )
+              .join(' and the ')}.`
+          : ''}
+      </p>
+      <TableFrame minWidth="min-w-[420px]">
+        <TableHeader>
+          <TableRow className="hover:bg-transparent">
+            <TableHead>Signing Chance</TableHead>
+            <TableHead className="text-right">Bookings</TableHead>
+            <TableHead className="text-right">Expected</TableHead>
+            <TableHead className="text-right">Happened</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {accuracy.calibration.map((band) => (
+            <TableRow key={band.bucket}>
+              <TableCell>{band.bucket}</TableCell>
+              <TableCell className="text-right tabular-nums">{band.n}</TableCell>
+              <TableCell className="text-right tabular-nums">
+                {band.n === 0 ? '—' : formatPercent(band.predicted)}
+              </TableCell>
+              <TableCell className="text-right tabular-nums">
+                {band.n === 0 ? '—' : formatPercent(band.observed)}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </TableFrame>
+      <p className="text-[13px]">Simulated history; not measured on real bookings.</p>
+    </div>
+  )
+}
+
+function HowThisIsCounted({
+  insights,
+  historyScope,
+  accuracy,
+  reach
+}: {
+  insights: ForecastInsights
+  historyScope: string
+  accuracy: Backtest | null
+  reach: HistoryReach
+}) {
   const [expanded, setExpanded] = useState(false)
   return (
     <section className="border-t border-border pt-4">
@@ -229,6 +327,7 @@ function HowThisIsCounted({ insights, historyScope }: { insights: ForecastInsigh
             The range assumes independent booking outcomes with fixed historical chances. It does not capture all
             uncertainty.
           </p>
+          <AccuracyCheck accuracy={accuracy} reach={reach} />
         </div>
       ) : null}
     </section>
@@ -382,13 +481,98 @@ function WaitingReport({ insights }: { insights: ForecastInsights }) {
   )
 }
 
-function ConversionReport({ insights }: { insights: ForecastInsights }) {
+/**
+ * The cohort result: the bookings made between two dates and where each stands,
+ * read as the 30-day verified SPA rate, the one number a pilot reports. Exits
+ * stay in the count, and the estimate stays out of it. It opens on the four
+ * weeks that ended 30 days ago, the latest intake whose result is final.
+ */
+function CohortSection({ dataset, asOf, reach }: { dataset: Dataset; asOf: string; reach: HistoryReach }) {
+  const [from, setFrom] = useState(() => addDays(asOf, -(HORIZON_DAYS + 27)))
+  const [to, setTo] = useState(() => addDays(asOf, -HORIZON_DAYS))
+  const result = useMemo(() => cohortResult(dataset, from, to, asOf), [dataset, from, to, asOf])
+  const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`
+
+  return (
+    <section aria-labelledby="cohort-heading" className="space-y-3">
+      <h3 id="cohort-heading" className="text-base font-semibold text-foreground">
+        Cohort Result
+      </h3>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="cohort-from">Booked From</Label>
+          <DateField id="cohort-from" label="Booked From" value={from} onChange={setFrom} max={to} today={asOf} />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="cohort-to">Booked To</Label>
+          <DateField id="cohort-to" label="Booked To" value={to} onChange={setTo} min={from} max={asOf} today={asOf} />
+        </div>
+      </div>
+      {result.enrolled === 0 ? (
+        <p className="text-sm text-muted-foreground">No accessible bookings were made between these dates.</p>
+      ) : (
+        <>
+          <p className="text-sm font-medium text-foreground">
+            {result.signedByDay30} of {result.enrolled}
+            {reach === 'own' ? ' of your bookings' : ''} signed by booking day 30 ({formatPercent(result.rate ?? 0)}).
+          </p>
+          <dl className="divide-y divide-border">
+            <Definition label="Enrolled">
+              {plural(result.enrolled, 'booking', 'bookings')} made in these dates.
+            </Definition>
+            <Definition label="Signed By Day 30">
+              {plural(result.signedByDay30, 'confirmed SPA signing', 'confirmed SPA signings')} by booking day 30.
+            </Definition>
+            <Definition label="Signed Later">
+              {plural(result.signedLater, 'booking', 'bookings')} signed after day 30: a later conversion, outside this
+              rate.
+            </Definition>
+            <Definition label="Exited">
+              {plural(result.exited, 'cancellation or lapse', 'cancellations and lapses')}, kept in the count.
+            </Definition>
+            <Definition label="Still Unsigned">
+              {plural(result.unsigned, 'booking', 'bookings')}
+              {result.maturing > 0 ? `, ${result.maturing} not yet 30 days from booking` : ''}.
+            </Definition>
+          </dl>
+          <p className="text-sm leading-5 text-muted-foreground">
+            {result.maturing > 0
+              ? 'Some bookings have not reached day 30, so this result is not final. '
+              : 'Every booking here has had its full 30 days, so this result is final. '}
+            Recorded, confirmed signings as of {formatDate(asOf)}; the booking-day-30 estimate is not part of it.
+          </p>
+        </>
+      )}
+    </section>
+  )
+}
+
+function ConversionReport({
+  insights,
+  dataset,
+  reach
+}: {
+  insights: ForecastInsights
+  dataset: Dataset | null
+  reach: HistoryReach
+}) {
   const { visibleRows, control } = useVisibleRows(insights.turnaround.rows)
   const bookingMedian = insights.turnaround.bookingToSigning.medianDays
   const approvalMedian = insights.turnaround.approvalToSigning.medianDays
 
   return (
     <div className="min-w-0 space-y-6">
+      {reach === 'assigned' ? (
+        <section aria-labelledby="cohort-heading" className="space-y-3">
+          <h3 id="cohort-heading" className="text-base font-semibold text-foreground">
+            Cohort Result
+          </h3>
+          <p className="text-sm leading-5 text-muted-foreground">Not shown here. {ASSIGNED_REACH_NOTE}</p>
+        </section>
+      ) : dataset ? (
+        <CohortSection dataset={dataset} asOf={insights.asOf} reach={reach} />
+      ) : null}
+
       <StageRatesCard
         stageRates={insights.forecast.stageRates}
         scope={insights.history.scope}
@@ -616,8 +800,23 @@ function capitalize(value: string): string {
   return value.length > 0 ? value[0]!.toUpperCase() + value.slice(1) : value
 }
 
-export function ForecastReports({ insights }: { insights: ForecastInsights }) {
+export function ForecastReports({
+  insights,
+  dataset = null,
+  reach = 'all'
+}: {
+  insights: ForecastInsights
+  /** The bookings and events behind the reports, for the cohort result and the accuracy check. */
+  dataset?: Dataset | null
+  /** How much of the intake `dataset` covers; see `HistoryReach`. */
+  reach?: HistoryReach
+}) {
   const supported = insights.forecast.support === 'supported'
+  // The method run at the cut-off whose bookings have all had their 30 days since.
+  const accuracy = useMemo(
+    () => (dataset && reach !== 'assigned' ? backtest(dataset, addDays(insights.asOf, -HORIZON_DAYS)) : null),
+    [dataset, reach, insights.asOf]
+  )
   const largestGroup = insights.waiting.groups[0]
   const conversionMedian = insights.turnaround.bookingToSigning.medianDays
 
@@ -635,7 +834,7 @@ export function ForecastReports({ insights }: { insights: ForecastInsights }) {
           ? `${insights.forecast.liveBookings} eligible bookings · ${insights.forecast.rangeLow} to ${insights.forecast.rangeHigh} estimated range`
           : undefined
       },
-      content: <OutlookReport insights={insights} />
+      content: <OutlookReport insights={insights} accuracy={accuracy} reach={reach} />
     },
     {
       id: 'approved',
@@ -670,7 +869,8 @@ export function ForecastReports({ insights }: { insights: ForecastInsights }) {
     {
       id: 'conversion',
       title: 'Conversion And Turnaround',
-      summary: 'Observed signing outcomes and completed turnaround times, with the size of the history behind them.',
+      summary:
+        'The day-30 SPA result for an intake you choose, then observed signing outcomes and completed turnaround times, with the size of the history behind them.',
       motif: '/forecast/backtest.webp',
       question: FORECAST_DOCUMENT_QUESTIONS.conversion,
       finding: {
@@ -678,7 +878,7 @@ export function ForecastReports({ insights }: { insights: ForecastInsights }) {
         label: 'Median Booking-To-SPA Time',
         detail: `${insights.turnaround.bookingToSigning.sample} signed bookings in your accessible history`
       },
-      content: <ConversionReport insights={insights} />
+      content: <ConversionReport insights={insights} dataset={dataset} reach={reach} />
     },
     {
       id: 'lost',

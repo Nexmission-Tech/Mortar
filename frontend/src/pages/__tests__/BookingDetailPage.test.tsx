@@ -129,7 +129,7 @@ describe('BookingDetailPage', () => {
       expect(screen.getByRole('tab', { name: view })).toBeTruthy()
     expect(screen.getByRole('tab', { name: /^Overview/ }).getAttribute('aria-selected')).toBe('true')
     expect(screen.getByRole('button', { name: /^Legal/ })).toBeTruthy()
-    expect(screen.getByText('Apex Bank')).toBeTruthy()
+    expect(within(screen.getByRole('tabpanel', { name: /^Overview/ })).getByText('Apex Bank')).toBeTruthy()
   })
 
   it("shows the banker's message with Jev's proposal and confirms it", async () => {
@@ -146,6 +146,8 @@ describe('BookingDetailPage', () => {
     expect(line).toContain('Mortar AI Is Sure')
     // The probability bar and the percentage went; confidence reads in words.
     expect(screen.queryByText(/Confidence \d+%/)).toBeNull()
+    // The bank the proposal will update is named before anyone confirms.
+    expect(screen.getByRole('button', { name: 'Confirm' }).parentElement?.textContent).toContain('Updates Apex Bank')
 
     fireEvent.click(screen.getByRole('button', { name: 'Confirm' }))
 
@@ -473,8 +475,8 @@ describe('BookingDetailPage', () => {
 
       fireEvent.click(await screen.findByRole('button', { name: 'Paste A Message' }))
       fireEvent.change(screen.getByLabelText('Message'), { target: { value: 'Payslip sent last night' } })
-      await pickDay('Sent At', 'Thursday, September 17th, 2026')
-      fireEvent.change(screen.getByLabelText('Time'), { target: { value: '21:05' } })
+      await pickDay('Message Sent On', 'Thursday, September 17th, 2026')
+      fireEvent.change(screen.getByLabelText('Message Sent Time'), { target: { value: '21:05' } })
       fireEvent.click(screen.getByRole('button', { name: 'Add Message' }))
 
       await waitFor(() =>
@@ -493,7 +495,12 @@ describe('BookingDetailPage', () => {
 
       fireEvent.click(await screen.findByRole('button', { name: 'Paste A Message' }))
       fireEvent.change(screen.getByLabelText('Message'), { target: { value: 'Noted, thanks' } })
-      expect(screen.getByLabelText('Sent At, 18 Sep 2026')).toBeTruthy()
+      expect(screen.getByLabelText('Message Sent On, 18 Sep 2026')).toBeTruthy()
+      // Issue #75: the time is when the message was sent, since the proposal is dated from it.
+      expect(screen.getByLabelText('Message Sent Time').getAttribute('aria-describedby')).toBe('add-message-sent-hint')
+      expect(document.getElementById('add-message-sent-hint')?.textContent).toBe(
+        'Use The Original Message Time. If The Event Happened Earlier, Dismiss The Proposal And Use Record An Update.'
+      )
       fireEvent.click(screen.getByRole('button', { name: 'Add Message' }))
 
       await waitFor(() => expect(vi.mocked(postMessage)).toHaveBeenCalledTimes(1))
@@ -505,7 +512,7 @@ describe('BookingDetailPage', () => {
 
       fireEvent.click(await screen.findByRole('button', { name: 'Paste A Message' }))
       fireEvent.change(screen.getByLabelText('Message'), { target: { value: 'Noted, thanks' } })
-      fireEvent.change(screen.getByLabelText('Time'), { target: { value: '25:00' } })
+      fireEvent.change(screen.getByLabelText('Message Sent Time'), { target: { value: '25:00' } })
       fireEvent.click(screen.getByRole('button', { name: 'Add Message' }))
 
       expect(await screen.findByText('Enter The Time As HH:MM, For Example 09:30.')).toBeTruthy()

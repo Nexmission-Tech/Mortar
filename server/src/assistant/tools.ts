@@ -8,7 +8,14 @@
  * None of these writes. The assistant may suggest a next step; a person acts
  * through the existing buttons.
  */
-import { DEFAULT_ASSUMPTIONS, ballInCourt, forecastInsights, searchPlaybooks, summarizeCases } from '@mortar/core'
+import {
+  DEFAULT_ASSUMPTIONS,
+  ballInCourt,
+  forecastInsights,
+  playbookValidated,
+  searchPlaybooks,
+  summarizeCases
+} from '@mortar/core'
 import { scopeSnapshot } from '@mortar/core'
 import type { CaseEvent, CaseSummary, DocumentKind, Message, Persona, StaffProfile, Snapshot } from '@mortar/core'
 import type { Database } from '../../db/index'
@@ -460,14 +467,23 @@ export async function runTool(name: string, args: ToolInput, profile: StaffProfi
       const limit = cap(args.limit, PLAYBOOK_LIMIT, PLAYBOOK_LIMIT)
       const hits = searchPlaybooks(snapshot.playbooks, query, limit)
       if (hits.length === 0) return 'No playbook matches that. Say what the situation is in the words the desk uses.'
+      // Only a validated playbook's action and limits are guidance; any other is
+      // an illustrative example no Loan or Legal reviewer has checked yet.
       return hits
         .map(({ playbook }) =>
-          [
-            `${playbook.title} — when: ${playbook.situation}`,
-            `  do: ${playbook.action}`,
-            `  why: ${playbook.rationale}`,
-            `  watch out: ${playbook.limits}`
-          ].join('\n')
+          (playbookValidated(playbook)
+            ? [
+                `${playbook.title} — when: ${playbook.situation}`,
+                `  reviewed by: ${playbook.reviewer}`,
+                `  do: ${playbook.action}`,
+                `  why: ${playbook.rationale}`,
+                `  watch out: ${playbook.limits}`
+              ]
+            : [
+                `${playbook.title} — when: ${playbook.situation}`,
+                '  illustrative, not yet reviewed: no validated action or limits to follow yet'
+              ]
+          ).join('\n')
         )
         .join('\n')
     }

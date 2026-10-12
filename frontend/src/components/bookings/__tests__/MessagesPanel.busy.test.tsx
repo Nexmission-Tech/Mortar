@@ -66,6 +66,7 @@ describe('MessagesPanel', () => {
         messages={[MESSAGE]}
         extractions={new Map()}
         events={[]}
+        applications={[]}
         reviewer="Nurul Aina"
         onChanged={vi.fn(async () => {})}
       />
@@ -90,6 +91,7 @@ describe('MessagesPanel', () => {
         messages={[MESSAGE]}
         extractions={new Map([[MESSAGE.id, EXTRACTION]])}
         events={[]}
+        applications={[]}
         reviewer="Nurul Aina"
         onChanged={vi.fn(async () => {})}
       />
@@ -113,6 +115,7 @@ describe('MessagesPanel', () => {
         messages={[MESSAGE]}
         extractions={new Map([[MESSAGE.id, EXTRACTION]])}
         events={[PROPOSAL]}
+        applications={[]}
         reviewer="Nurul Aina"
         onChanged={vi.fn(async () => {})}
       />

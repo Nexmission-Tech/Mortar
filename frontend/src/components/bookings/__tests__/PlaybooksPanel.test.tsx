@@ -80,4 +80,31 @@ describe('PlaybooksPanel', () => {
     expect(await screen.findByText('Ranked For “missing payslip”')).toBeTruthy()
     expect(screen.getByRole('textbox', { name: 'Search guidance' })).toBeTruthy()
   })
+
+  // Issue #75: every playbook shown names its reviewer or carries the Illustrative label.
+  it('labels an unreviewed playbook illustrative and keeps its action and limits back', async () => {
+    renderPanel()
+    fireEvent.click(await screen.findByRole('button', { name: 'Show 4 More' }))
+    expect(screen.getAllByText('Illustrative, Not Yet Reviewed')).toHaveLength(5)
+
+    const pb001 = PLAYBOOKS.find((p) => p.id === 'PB-001')!
+    fireEvent.click(screen.getByRole('button', { name: titleOf('PB-001') }))
+    expect(screen.getByText(pb001.situation)).toBeTruthy()
+    expect(screen.queryByText(pb001.action)).toBeNull()
+    expect(screen.queryByText(pb001.limits)).toBeNull()
+    expect(screen.getByText('Its Action And Limits Show Once A Loan Or Legal Reviewer Validates It.')).toBeTruthy()
+  })
+
+  it('names the reviewer of a validated playbook and shows its action and limits', async () => {
+    const reviewed = PLAYBOOKS.map((p) =>
+      p.id === 'PB-001' ? { ...p, status: 'approved' as const, reviewer: 'Arvind Raj', reviewedOn: '2026-10-01' } : p
+    )
+    render(<PlaybooksPanel bookingId="BK-9001" summary={SUMMARY} playbooks={reviewed} refreshKey={0} />)
+    fireEvent.click(await screen.findByRole('button', { name: titleOf('PB-001') }))
+
+    expect(screen.getByText('Reviewed By Arvind Raj · 1 Oct 2026')).toBeTruthy()
+    expect(screen.queryByText('Illustrative, Not Yet Reviewed')).toBeNull()
+    expect(screen.getByText(reviewed[0]!.action)).toBeTruthy()
+    expect(screen.getByText(reviewed[0]!.limits)).toBeTruthy()
+  })
 })

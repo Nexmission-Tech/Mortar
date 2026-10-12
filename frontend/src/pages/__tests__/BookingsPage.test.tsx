@@ -5,6 +5,7 @@ import {
   DEFAULT_SEED,
   PLAYBOOKS,
   REFERENCE_DATE,
+  ballInCourt,
   currentCaseAssignee,
   generate,
   summarizeCases,
@@ -514,17 +515,33 @@ describe('BookingsPage', () => {
     expect(screen.queryByText('BK-9001')).toBeNull()
   })
 
-  it('presets the holder filter to Buyer for Sales Admin and Solicitor for Legal Admin (Change 6)', async () => {
+  // Issue #75: Sales Admin's ledger opens on every holder, so a search finds a unit wherever it waits.
+  it('opens Sales Admin on every holder and presets Solicitor for Legal Admin (Change 6)', async () => {
     const { unmount } = renderBookings('sales-admin')
-    expect(await screen.findByText('4 Of 20 Bookings')).toBeTruthy()
+    expect(await screen.findByText('20 Bookings')).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: /Who Holds Each Booking/i }))
-    expect(screen.getByRole('button', { name: /Filter by Buyer/i }).getAttribute('aria-pressed')).toBe('true')
+    for (const holder of [/Filter by Buyer/i, /Filter by Bank/i, /Filter by Solicitor/i])
+      expect(screen.getByRole('button', { name: holder }).getAttribute('aria-pressed')).toBe('false')
     unmount()
 
     renderBookings('legal-admin')
     expect(await screen.findByText('1 Of 20 Bookings')).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: /Who Holds Each Booking/i }))
     expect(screen.getByRole('button', { name: /Filter by Solicitor/i }).getAttribute('aria-pressed')).toBe('true')
+  })
+
+  it('finds a unit waiting on the solicitor from Sales Admin’s first search', async () => {
+    const { buildSnapshot } = await import('@/components/bookings/__tests__/snapshotFixture')
+    const snapshot = buildSnapshot()
+    const withSolicitor = summarizeCases(snapshot, snapshot.meta.referenceDate).find(
+      (summary) => ballInCourt(summary).holder === 'solicitor'
+    )!
+    const booking = snapshot.bookings.find((b) => b.id === withSolicitor.bookingId)!
+    renderBookings('sales-admin')
+    fireEvent.change(await screen.findByRole('textbox', { name: 'Search bookings' }), {
+      target: { value: booking.unit }
+    })
+    await waitFor(() => expect(screen.getByText(booking.id)).toBeTruthy())
   })
 
   it('sums the 5 pipeline step counts to equal the Active tab count (Change 4)', async () => {

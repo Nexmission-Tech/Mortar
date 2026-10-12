@@ -185,7 +185,7 @@ export function ImportPage() {
     <PageContainer>
       <PageHeaderCard tourTarget="import-header">
         <h1 className="text-[32px] font-semibold leading-[1.16] tracking-[-0.02em] text-foreground">Add Bookings</h1>
-        <InfoTooltip text="Upload A Spreadsheet, Or Enter Bookings One At A Time." />
+        <InfoTooltip text="Upload The Booking Sheet. Demo Entry Types Rows In With Made-Up Buyer Details." />
       </PageHeaderCard>
 
       {inventoryError && (
@@ -193,13 +193,15 @@ export function ImportPage() {
           {inventoryError}
         </p>
       )}
-      <Tabs defaultValue="type" className="mt-4">
+      {/* The sheet is the real route in: it checks every required column. Demo
+          Entry fills in made-up buyer finances, so it never opens first. */}
+      <Tabs defaultValue="upload" className="mt-4">
         <TabsList className="h-11 gap-5 rounded-md border border-card-border bg-card px-4 shadow-card">
-          <TabsTrigger value="type" className="h-full flex-none px-0 focus-visible:outline-offset-[-2px]">
-            Type Them In
-          </TabsTrigger>
           <TabsTrigger value="upload" className="h-full flex-none px-0 focus-visible:outline-offset-[-2px]">
             Upload A Sheet
+          </TabsTrigger>
+          <TabsTrigger value="type" className="h-full flex-none px-0 focus-visible:outline-offset-[-2px]">
+            Demo Entry
           </TabsTrigger>
         </TabsList>
 

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { summarizeCases, type CaseSummary, type ChartUnit } from '@mortar/core'
 import { buildSnapshot } from '@/components/bookings/__tests__/snapshotFixture'
 import { quickViewRow } from '@/components/bookings/quickViewRow'
-import { formatRm } from '@/components/case/format'
+import { formatDate, formatRm } from '@/components/case/format'
 import { unitsForSnapshot } from '@/components/sales-chart/salesChart'
 import { loanPosition, unitLocation, unitOverview } from '@/components/sales-chart/unitOverview'
 
@@ -97,6 +97,7 @@ describe('unitOverview', () => {
     expect(overview.buyer).toBe(row.booking.buyer.name)
     expect(overview.bookingId).toBe('BK-9001')
     expect(overview.price).toBe(formatRm(row.booking.priceRm))
+    expect(overview.bookedOn).toBe(formatDate(row.booking.bookingDate))
     expect(overview.age).toMatch(/^\d+ Days? Old$/)
     expect(overview.position).toBe(loanPosition(row.summary))
     expect(overview.nextStep === null || / · /.test(overview.nextStep)).toBe(true)

@@ -365,7 +365,7 @@ const gridCodes = () =>
     .sort()
 
 async function chooseSoldBy(option: string) {
-  fireEvent.click(screen.getByRole('combobox', { name: 'Sold By' }))
+  fireEvent.click(screen.getByRole('combobox', { name: 'Booking Owner' }))
   fireEvent.click(await screen.findByRole('option', { name: option }))
 }
 
@@ -378,7 +378,7 @@ async function expectBothViews(codes: string[] | null) {
   fireEvent.click(within(views).getByRole('button', { name: 'Grid' }))
 }
 
-describe('Sales Chart Sold By', () => {
+describe('Sales Chart Booking Owner', () => {
   beforeEach(() => {
     window.localStorage.clear()
     window.localStorage.setItem('mortar.salesChart.view', 'grid')
@@ -386,12 +386,24 @@ describe('Sales Chart Sold By', () => {
     state.sceneFails = false
   })
 
+  // Issue #75: the picker highlights a recorded owner's units; it claims no sales result.
+  it('labels the picker Booking Owner, with a hint that the figures keep their scope', async () => {
+    renderPage('manager', OWNER_PATCH)
+    const toolbar = await screen.findByRole('group', { name: 'Filter units' })
+    expect(within(toolbar).getByRole('combobox', { name: 'Booking Owner' })).toBeTruthy()
+    expect(within(toolbar).queryByText('Sold By')).toBeNull()
+    fireEvent.focus(within(toolbar).getByText('Booking Owner').parentElement!.querySelector('button')!)
+    expect(
+      (await screen.findAllByText('Highlights units; the figures keep their current scope.')).length
+    ).toBeGreaterThan(0)
+  })
+
   it.each(['manager', 'sales-admin', 'loan-admin', 'legal-admin'] as const)(
     'lets %s pick sorted owners with merged counts and lights the same codes in both views',
     async (persona) => {
       renderPage(persona, OWNER_PATCH)
       const toolbar = await screen.findByRole('group', { name: 'Filter units' })
-      const picker = within(toolbar).getByRole('combobox', { name: 'Sold By' })
+      const picker = within(toolbar).getByRole('combobox', { name: 'Booking Owner' })
       expect(picker.tagName).toBe('BUTTON')
       expect(picker.textContent).toContain('Everyone')
       await expectBothViews(null)
@@ -410,7 +422,7 @@ describe('Sales Chart Sold By', () => {
 
   it('intersects a Manager’s person and filter, preserves params, and Everyone restores the filter', async () => {
     renderPage('manager', OWNER_PATCH, '/sales-chart?filter=needs_action&view=detail')
-    await screen.findByRole('combobox', { name: 'Sold By' })
+    await screen.findByRole('combobox', { name: 'Booking Owner' })
     await expectBothViews(['A-03-01', 'A-03-03'])
     await chooseSoldBy('Zara · 2')
     await expectBothViews(['A-03-01'])
@@ -434,7 +446,7 @@ describe('Sales Chart Sold By', () => {
       ...OWNER_PATCH,
       units: OWNER_UNITS.map((unit) => (unit.heldBy === 'Amir' ? unit : { ...unit, bookingId: null }))
     })
-    await screen.findByRole('combobox', { name: 'Sold By' })
+    await screen.findByRole('combobox', { name: 'Booking Owner' })
     await chooseSoldBy('Zara · 2')
     await expectBothViews(['A-03-01', 'A-03-02'])
     fireEvent.click(screen.getByRole('button', { name: /Needs Action ·/ }))
@@ -447,7 +459,7 @@ describe('Sales Chart Sold By', () => {
 
   it('opens a deep link by trimmed owner key and keeps it when a filter changes', async () => {
     renderPage('manager', OWNER_PATCH, '/sales-chart?soldBy=%20zARA%20')
-    expect((await screen.findByRole('combobox', { name: 'Sold By' })).textContent).toContain('Zara · 2')
+    expect((await screen.findByRole('combobox', { name: 'Booking Owner' })).textContent).toContain('Zara · 2')
     await expectBothViews(['A-03-01', 'A-03-02'])
     fireEvent.click(screen.getByRole('button', { name: /Needs Action ·/ }))
     expect(urlParams().get('soldBy')).toBe(' zARA ')
@@ -458,7 +470,7 @@ describe('Sales Chart Sold By', () => {
     'ignores an unknown owner, retains its URL value, and applies the remaining constraint (%s)',
     async (filter) => {
       renderPage('manager', OWNER_PATCH, `/sales-chart?soldBy=Missing${filter}`)
-      expect((await screen.findByRole('combobox', { name: 'Sold By' })).textContent).toContain('Everyone')
+      expect((await screen.findByRole('combobox', { name: 'Booking Owner' })).textContent).toContain('Everyone')
       expect(urlParams().get('soldBy')).toBe('Missing')
       expect(screen.queryByRole('status')).toBeNull()
       await expectBothViews(filter ? ['A-03-01', 'A-03-03'] : null)
@@ -470,14 +482,14 @@ describe('Sales Chart Sold By', () => {
     const name = 'Éva & Ali + Co'
     const patch = { ...OWNER_PATCH, units: [{ ...OWNER_UNITS[0]!, heldBy: name }] }
     const first = renderPage('manager', patch, '/sales-chart?filter=needs_action')
-    await screen.findByRole('combobox', { name: 'Sold By' })
+    await screen.findByRole('combobox', { name: 'Booking Owner' })
     await chooseSoldBy(`${name} · 1`)
     expect(urlParams().get('soldBy')).toBe(name)
     expect(urlParams().get('filter')).toBe('needs_action')
     const entry = `/sales-chart${screen.getByTestId('location').getAttribute('data-search')}`
     first.unmount()
     renderPage('manager', patch, entry)
-    expect((await screen.findByRole('combobox', { name: 'Sold By' })).textContent).toContain(`${name} · 1`)
+    expect((await screen.findByRole('combobox', { name: 'Booking Owner' })).textContent).toContain(`${name} · 1`)
     await expectBothViews(['A-03-01'])
   })
 
@@ -495,32 +507,32 @@ describe('Sales Chart Sold By', () => {
     await waitFor(() => expect(screen.queryByRole('group', { name: 'Filter units' })).toBeNull())
     expect(urlParams().get('soldBy')).toBe('Zara')
     await act(async () => resolve(state.snapshot!))
-    expect((await screen.findByRole('combobox', { name: 'Sold By' })).textContent).toContain('Zara · 2')
+    expect((await screen.findByRole('combobox', { name: 'Booking Owner' })).textContent).toContain('Zara · 2')
     await expectBothViews(['A-03-01', 'A-03-02'])
   })
 
   it('retains a freed owner’s URL across refreshes and reselects them when they hold a unit again', async () => {
     renderPage('manager', OWNER_PATCH, '/sales-chart?soldBy=Zara')
-    expect((await screen.findByRole('combobox', { name: 'Sold By' })).textContent).toContain('Zara · 2')
+    expect((await screen.findByRole('combobox', { name: 'Booking Owner' })).textContent).toContain('Zara · 2')
     state.snapshot = { ...state.snapshot!, units: [OWNER_UNITS[2]!] }
     await act(async () => {
       await refreshRef.current?.()
     })
-    expect(screen.getByRole('combobox', { name: 'Sold By' }).textContent).toContain('Everyone')
+    expect(screen.getByRole('combobox', { name: 'Booking Owner' }).textContent).toContain('Everyone')
     expect(urlParams().get('soldBy')).toBe('Zara')
     await expectBothViews(null)
     state.snapshot = { ...state.snapshot!, units: [OWNER_UNITS[0]!] }
     await act(async () => {
       await refreshRef.current?.()
     })
-    expect(screen.getByRole('combobox', { name: 'Sold By' }).textContent).toContain('Zara · 1')
+    expect(screen.getByRole('combobox', { name: 'Booking Owner' }).textContent).toContain('Zara · 1')
     expect(urlParams().get('soldBy')).toBe('Zara')
     await expectBothViews(['A-03-01'])
   })
 
   it.each(['__everyone__', 'everyone'])('selects an owner named %s without colliding with Everyone', async (name) => {
     renderPage('manager', { ...OWNER_PATCH, units: [{ ...OWNER_UNITS[0]!, heldBy: name }] })
-    await screen.findByRole('combobox', { name: 'Sold By' })
+    await screen.findByRole('combobox', { name: 'Booking Owner' })
     await chooseSoldBy(`${name} · 1`)
     expect(urlParams().get('soldBy')).toBe(name)
     await expectBothViews(['A-03-01'])

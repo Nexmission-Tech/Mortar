@@ -42,13 +42,31 @@ describe('TeamPage', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Team' })).toBeTruthy()
     expect(screen.getByRole('link', { name: /Open Bookings/ }).getAttribute('href')).toBe('/bookings')
     expect(screen.getByRole('link', { name: /Overdue Cases/ }).getAttribute('href')).toBe('/chase')
-    expect(screen.getByRole('link', { name: /Value At Risk/ }).getAttribute('href')).toBe('/bookings')
-    expect(screen.getByRole('link', { name: /Expected Signings In \d+ Days/ }).getAttribute('href')).toBe('/forecast')
+    expect(screen.getByRole('link', { name: /Stalled Booking Value/ }).getAttribute('href')).toBe('/bookings')
+    // The booking-day-30 wording Forecast uses, not "in the next 30 days".
+    expect(screen.getByRole('link', { name: /Estimated SPAs By Booking Day 30/ }).getAttribute('href')).toBe(
+      '/forecast'
+    )
+    expect(screen.queryByText(/Expected Signings In/)).toBeNull()
+  })
+
+  // Issue #75: money beside a name is defined as full booking prices, and the name owns the chase.
+  it('defines the stalled booking value and names follow-up owners, not people at risk', () => {
+    show()
+    expect(screen.queryByText(/At Risk/)).toBeNull()
+    expect(screen.queryByText('Waiting On Them')).toBeNull()
+    expect(screen.getByRole('columnheader', { name: 'Follow-Up Owner' })).toBeTruthy()
+    expect(screen.getByRole('columnheader', { name: /Stalled Booking Value/ })).toBeTruthy()
+    expect(
+      screen.getByText(
+        'Stalled Booking Value Is Full Booking Prices, Not A Loss Estimate. The Named Person Owns The Chase, Not Necessarily The Delay.'
+      )
+    ).toBeTruthy()
   })
 
   it('lists one row per staff profile, the Manager excluded', () => {
     show()
-    const table = screen.getByRole('table', { name: 'Bookings waiting on each person' })
+    const table = screen.getByRole('table', { name: 'Bookings each person follows up' })
     const staff = DEMO_PROFILES.filter((p) => p.persona !== 'manager')
     expect(within(table).getAllByRole('row')).toHaveLength(staff.length + 1)
     for (const person of staff) expect(within(table).getByRole('link', { name: person.name })).toBeTruthy()

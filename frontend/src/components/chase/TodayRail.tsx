@@ -26,6 +26,13 @@ import { dueOrOverduePhrase } from './today'
 
 export const EYEBROW = 'text-[11px] font-semibold uppercase leading-[14px] tracking-[0.08em] text-muted-foreground'
 
+/**
+ * What the money beside a person's name is, and is not: one hover away
+ * wherever the two meet, on Today and on Team.
+ */
+export const STALLED_VALUE_DEFINITION =
+  'Full booking prices of stalled bookings, not a loss estimate. The named person owns the chase, not necessarily the delay.'
+
 const SURFACE = 'rounded-md border border-card-border bg-card shadow-card'
 const LABEL = 'text-xs leading-4 text-muted-foreground'
 
@@ -155,6 +162,7 @@ export function BusiestDesk({ row }: { row: TeamRow | undefined }) {
           <span className="tabular-nums" title={formatRm(row.valueAtRisk)}>
             {formatRmCompact(row.valueAtRisk)}
           </span>
+          <InfoTooltip text={`Stalled booking value. ${STALLED_VALUE_DEFINITION}`} />
         </span>
       </div>
       <Link
