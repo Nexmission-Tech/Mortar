@@ -305,7 +305,7 @@ Corner rounding is strictly restrained. There are no pill-shaped buttons:
 - `radius/md` (6px, `--radius-md`): buttons, input fields, select triggers,
   cards, menus, popovers, drop zones, dialog panels.
 - `radius/full` (9999px): scrollbar thumbs, stage tracker bars, avatars, the
-  Today Rail's Complete control, and the Forecast Document Stack's previous and
+  Your Tasks Complete control, and the Forecast Document Stack's previous and
   next buttons.
 
 Two larger steps exist for the public pages alone. The application shell is
@@ -836,45 +836,59 @@ blockers, dates and required actions stay visible outside supplementary details.
 - **Rules:** No zebra striping, no row risk tinting. Clicking a row opens the
   unit booking detail drawer; column headers trigger sorting.
 
-### Chase Card
+### Today Worklist Row
 
-- **Purpose:** Action card in Sales Admin Today directing staff to unblock stuck
-  bookings.
-- **Anatomy:** Width 360px, padding 16px, gap 12px, background `--card`
-  (`#FFFFFF` / `#141414`), 1px `--card-border`, corner radius 6px
-  (`--radius-md`), `Elevation/Card`. No coloured strip, bar or rule runs down
-  any edge of the card. Urgency is carried by the pill and its word alone
-  (Overdue 3 d / Due today / In 2 days).
-  - Stack order:
-    1. Header: Unit code (Mono/Data) + Buyer name (muted) + Urgency pill.
-    2. Blocker sentence: Heading/Section (Geist SemiBold 16/24).
-    3. Meta line: elapsed time in stage, last chase date, Body/Small muted.
-    4. Contact line: 16px `MessageCircle` icon + contact note ("Chase Ahmad
-       Faizal, panel banker").
-    5. Action footer: Primary button "Log follow-up" + Ghost button "Snooze".
-       Primary on every card in the queue, identically: it is one action offered
-       many times. Never filled on the first card only.
-- **States and tokens:**
-  - `Overdue`: danger pill reading "Overdue N d". No edge treatment.
-  - `Due today`: warning pill reading "Due today". No edge treatment.
-  - `Upcoming`: neutral pill reading "In N days". No edge treatment.
-  - `Hover`: the card raises to `Elevation/Card-Hover`. Nothing else changes.
-- **Rules:** "Log follow-up" opens an inline modal dialog, not a new page. Cards
-  sort by days overdue descending, then value at risk. Snoozed cards disappear
-  until their snooze date arrives.
+- **Anatomy:** One ordered list in a shared card surface using --card,
+  --card-border, --shadow-card and 6px radius. At 1280px and above use minmax(0,
+  24fr) minmax(0, 23fr) minmax(0, 53fr), 12px column gaps, 16px side padding and
+  4px vertical padding. At 1440px, collapsed rows are 56px minimum, about 65px
+  with an alternative, and at most 72px for the demo fixtures. Below 1280px use
+  12px side padding; permit wrapping. At 720–1023px use two columns in a 1:1.4
+  ratio. Below 720px stack booking, blocker and action groups with 10px vertical
+  / 12px side padding and 6px gaps. One separator per row; no independent
+  shadows or hover lift.
+- **Typography:** Unit and buyer share a line, ID follows. Full buyer names
+  wrap. Unit/ID use Mono/Data; buyer uses Body/Default. Specific blocker uses
+  14/20 medium foreground; No Update For N Days uses 14/20 regular muted text.
+  Its collapsed headline may ellipsize to one line; all full reasons remain in
+  Details. Keep Overdue and High Risk pills visible. Next step is Label/Default
+  with an inline Role Label. Alternative is a continuous Body/Small muted line:
+  Mortar AI Suggests {Action} · {Role} · Use This Action. On phones it may wrap;
+  do not split it into labelled blocks or add a separator.
+- **Disclosure:** Rightmost 32px ghost ChevronDown button, with Details / Hide
+  Details tooltip, booking-specific accessible name, aria-expanded and unique
+  aria-controls. Opens stage, age, last update, exact value, financing risk and
+  all original reasons together. Four-column definition list on desktop, two on
+  phone. No nested scrolling or animated height.
+- **Actions:** Create Task is a 32px outline button on every eligible row.
+  Refresh and Details are 32px ghost buttons. Use This Action is an underlined
+  muted text button with at least a 24px target; it creates directly. No solid
+  ink action appears inside this worklist. On desktop step, role and controls
+  share a line with controls right-aligned; the alternative follows. On phones
+  the controls form one row after the step and optional alternative. Preserve
+  focus rings, tooltips, Task Open, disabled states and conflicting-task rules.
+- **Behavior:** Keep the existing blocker selector, next-step helpers, payloads,
+  order and permissions. AI refresh does not reorder. Failed writes retain the
+  record. The unit opens the shared centred case panel. Render every row in
+  normal flow; no Snooze, Show More or Log Follow-Up is introduced.
 
-### Manager Card
+Today Worklist Row and Manager Decision Row are scoped exceptions to the
+repeated Primary button rule: every row uses the same 32px outline action, with
+32px ghost refresh/disclosure buttons. No row uses solid ink. Use This Action
+has at least a 24px target within the compact alternative line. This exception
+applies to the Button guidance, Acceptance item 6, the 36px control rule and the
+instruction that every repeated primary action must be filled. Other views
+retain their existing control sizes and primary-action treatment.
 
-- **Purpose:** One overdue case in the Manager's Decisions For You, drawn as a
-  Chase Card so the Manager's Today reads like everyone else's.
-- **Anatomy:** The Chase Card's surface and stack: unit and buyer with an
-  "Overdue N d" danger pill (N counted in the rule's own unit), the blocker
-  sentence, a meta line (stage, last update, price), "Waiting On" with the
-  person's [Role Label](#role-label) and name, then a footer with a ghost Open
-  Case link on the left and a primary Request Follow-Up button on the right.
-- **Rules:** No percentages and no Mortar AI scores: the blocker sentence says
-  why the case is here. A case with a standing follow-up leaves the queue for
-  the rail's Follow-Ups You Sent, so no case shows twice.
+### Manager Decision Row
+
+Use Today Worklist Row geometry. Keep the owner chip inline beside the existing
+step and recipient name below. Request Follow-Up is a repeated 32px outline
+action, with Details as the rightmost chevron. Preserve the overdue pill and its
+existing days/working-days rule. No recipient means No One On The Team and no
+send action, with the unit still inspectable. Retain task reuse and manager
+flagging; a standing follow-up moves the case into Follow-Ups You Sent. Do not
+add a redundant Open Case footer link.
 
 ### Role Label
 
@@ -906,24 +920,43 @@ blockers, dates and required actions stay visible outside supplementary details.
 - **Rules:** Picking a profile opens that persona's home. Esc closes the
   switcher, then the panel, returning focus to what opened each.
 
-### Today Rail
+### Today Overview And Views
 
-- **Purpose:** Keeps the day's summary beside the work queue instead of above
-  it.
-- **Anatomy:** From 1280px, a 320px column beside the queue that stays in view
-  while the queue scrolls (`top: 72px`), scrolling on its own when taller than
-  the window. Below 1280px it stacks above the queue. Cards, 16px apart:
-  - Figures: two figures in one card (a two-up row below 1280px), each an
-    eyebrow with its glyph over a 30/36 figure. Each applies the filter behind
-    its number.
-  - Your Tasks: "Your Tasks · N" with a Mine/Everyone segmented control; rows
-    with a 20px circular Complete control, the task title linking to its case,
-    the booking ID in Mono and one due pill (Overdue, Due Today or the date).
-    Five rows, then Show All.
-  - Recent Bookings: one folded line until opened.
-  - Manager only: Follow-Ups You Sent (case, blocker, recipient, Awaiting Reply
-    or Answered) and a Busiest Desk shortcut to Team.
-- **Rules:** The rail summarises; it never holds the only copy of a list.
+- **Overview:** Today and one lead phrase, without a floating header shortcut. A
+  single strip holds two workload figures and a compact third figure. At 1280px
+  and above the cells are 240px / 320px / remaining width. Admin's third figure
+  shows Your Tasks, {N} Task(s) Due Or Overdue and Assigned To You; its shortcut
+  opens Your Tasks directly. Manager's third figure shows Busiest Desk, a desk
+  chip beside the person, {N} Stalled · RM {Compact Value}, and Open Team. There
+  is no separate Busiest Desk card.
+- **Scope:** Stalled count follows Risk/Desk and says Matching These Filters.
+  Value At Risk remains accessible-portfolio scoped and says All Accessible
+  Bookings. Manager figures say Across All Desks. Exact money sits in the
+  figure’s title and is read out to screen readers; the explanation is on the
+  (i) beside it. Task creation does not imply a booking is no longer stalled.
+- **Views:** Actions, Your Tasks and Recent Bookings for admins; Decisions and
+  Follow-Ups for Manager. Default to Actions/Decisions. Follow-Ups carries the
+  Awaiting Reply count. Keep full panel headings, Mine as task default, access
+  and completion permissions, queue filters and in-flight work. Lists open in
+  full with no Show More. There is no permanent rail.
+- **Supporting Work:** Retain task completion, booking ID, due state, named
+  owner and manager flag. Keep recent intake's real seven-date creation window
+  and follow-up recipient, Awaiting Reply / Answered state. Open Team and the
+  task shortcut stay one click from every view.
+- **Responsive And Access:** At desktop use 24px main block padding, 12px gaps
+  after header, figures and tabs, then 8px before the worklist. Below 1024px the
+  third figure spans both columns inside the same strip. Below 720px page
+  gutters are 16px; keep the two workload figures and Risk/Desk two-up. Phone
+  tabs use 13/18; below 360px permit Label/Small tabs and Display/Page figures.
+  Tabs and filters scroll normally. Filters/shell remain 36px, tabs at least
+  48px. Reuse the existing semantic tokens, fonts, icons, focus and modal rules.
+
+Today reuses the shell's existing Lucide glyphs: BellRing, ClipboardList,
+Building2, TrendingUp, Settings, Menu, House, Bell, Moon and X. X closes the
+existing modal. No new icon family or custom pictogram is introduced. Use Scale
+for the legal blocker, Clock for an update wait and FileWarning for an
+outstanding document. Keep icon colour inherited from adjacent text; desk
+colours remain confined to Role Label and profile avatar.
 
 ### Forecast Document Stack
 
@@ -1222,8 +1255,12 @@ personas:
 - **Content canvas:** Centered layout capped at a maximum width of 1280px with
   32px horizontal gutters (24px below 1280px). Pages open with a page header
   (Display/Page title + one descriptive line), followed by up to four stat
-  tiles, followed by the active working list or table. Today puts its figures in
-  the [Today Rail](#today-rail) instead.
+  tiles, followed by the active working list or table. Today keeps the centred
+  container and dotted ground. Two workload figures and one compact task/desk
+  figure share a strip above named views. The default Actions or Manager
+  Decisions worklist is one ordered list with compact rows. Your Tasks, Recent
+  Bookings and Follow-Ups remain one click away. See Today Overview And Views
+  for its scoped spacing, phone gutters and type steps.
 - **Canvas dot grid:** Behind the cards on every signed-in page, and on the FAQ
   and sign-in pages, the page ground carries 1px dots every 20px (`.app-canvas`,
   `--canvas-dot`: ink at 12% in light mode, white at 8% in dark), like a

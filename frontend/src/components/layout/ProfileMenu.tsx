@@ -90,7 +90,7 @@ export function ProfileMenu() {
               <span className="grid w-full grid-cols-2 gap-3">
                 {(figures ?? [null, null]).map((figure, i) => (
                   <span key={i} className="flex flex-col gap-0.5">
-                    <span className={EYEBROW}>{figure?.label ?? (i === 0 ? 'Today' : 'Due Today')}</span>
+                    <span className={EYEBROW}>{figure?.label ?? (i === 0 ? 'Today' : 'Due Or Overdue')}</span>
                     <span className="text-2xl font-semibold tabular-nums tracking-[-0.02em]">
                       {figure ? figure.value : '–'}
                     </span>

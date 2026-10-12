@@ -35,7 +35,7 @@ export const TOUR_STEPS: Record<Persona, TourStep[]> = {
       label: 'Today',
       route: '/chase',
       target: '[data-tour="today-header"]',
-      caption: 'Today shows the bookings that need a move and the tasks due today.'
+      caption: 'Today lists the bookings that need a move, with the next step and its desk on each row.'
     },
     {
       label: 'Sales Chart',
@@ -48,7 +48,7 @@ export const TOUR_STEPS: Record<Persona, TourStep[]> = {
       label: 'The Next Move',
       route: '/chase',
       target: '[data-tour="today-card"]',
-      caption: 'Each card names the blocker, the next step and the desk responsible.'
+      caption: 'Each row names the blocker, the next step and the desk responsible.'
     },
     {
       label: 'Create A Task',
@@ -68,7 +68,7 @@ export const TOUR_STEPS: Record<Persona, TourStep[]> = {
       label: 'Open Tasks',
       route: '/chase',
       target: '[data-tour="open-tasks"]',
-      caption: 'Review open work here. Switch between your tasks and every owner’s tasks.'
+      caption: 'Your Tasks holds open work. Switch between your tasks and every owner’s tasks there.'
     },
     {
       label: 'Bookings',

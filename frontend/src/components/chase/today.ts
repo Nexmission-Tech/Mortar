@@ -6,7 +6,7 @@
 
 import { useMemo } from 'react'
 import type { CaseSummary, OwnerRole, Snapshot, StaffProfile, Task } from '@mortar/core'
-import { OWNER_ROLE_LABELS } from '@/components/case/OwnerBadge'
+import { DESK_LABELS, DESK_OF_ROLE } from '@/components/people/RoleLabel'
 import { nextStepFor } from '@/components/case/nextStep'
 import { managerQueue } from '@/components/manager/managerQueue'
 import { useCases, useSnapshot } from '@/lib/data'
@@ -36,10 +36,10 @@ export function headlineFor(ownerFilter: 'all' | OwnerRole, ownDesk: OwnerRole, 
       count,
       sentence: `${count} ${count === 1 ? 'Stalled Booking' : 'Stalled Bookings'}`,
       label: 'Stalled Bookings',
-      info: 'Every booking that has stopped moving, whichever desk holds it.'
+      info: 'Every booking that has stopped moving at the chosen risk level, whichever desk holds it.'
     }
   }
-  const from = ownerFilter === ownDesk ? 'You' : OWNER_ROLE_LABELS[ownerFilter]
+  const from = ownerFilter === ownDesk ? 'You' : DESK_LABELS[DESK_OF_ROLE[ownerFilter]]
   return {
     count,
     sentence: `${count} ${count === 1 ? 'Booking Needs' : 'Bookings Need'} A Move From ${from}`,
@@ -64,9 +64,23 @@ export function dueTodayCount(tasks: readonly Task[], referenceDate: string): nu
   return tasks.filter((t) => t.dueOn <= referenceDate).length
 }
 
-/** The "N Tasks Due Today" half of the lead line. */
-export function dueTodayPhrase(count: number): string {
-  return `${count} ${count === 1 ? 'Task' : 'Tasks'} Due Today`
+/** The Your Tasks shortcut: the count includes overdue tasks, so it says so. */
+export function dueOrOverduePhrase(count: number): string {
+  return `${count} ${count === 1 ? 'Task' : 'Tasks'} Due Or Overdue`
+}
+
+const GENERIC_STALL = /^No Update For \d+ Days?$/
+
+/**
+ * The one blocker a worklist row leads with: the first specific reason, since
+ * "No Update For N Days" is true of almost every stalled case and says least.
+ * The generic reason leads only when it is the only one, and is marked so the
+ * row can set it quietly. Every reason stays in the row's Details.
+ */
+export function headlineBlocker(reasons: readonly string[]): { text: string; generic: boolean } | null {
+  const specific = reasons.find((reason) => !GENERIC_STALL.test(reason))
+  if (specific) return { text: specific, generic: false }
+  return reasons[0] ? { text: reasons[0], generic: true } : null
 }
 
 /** Stalled cases whose next step sits with the given desk ('all' for every desk). */
@@ -109,7 +123,10 @@ export function useTodayFigures(): [TodayFigure, TodayFigure] | null {
     const openTasks = snapshot.tasks.filter((t) => t.status === 'open')
     return [
       { label: headline.label, value: headline.count },
-      { label: 'Due Today', value: dueTodayCount(assignedTasksFor(openTasks, profile), snapshot.meta.referenceDate) }
+      {
+        label: 'Due Or Overdue',
+        value: dueTodayCount(assignedTasksFor(openTasks, profile), snapshot.meta.referenceDate)
+      }
     ]
   }, [snapshot, cases, profile])
 }
