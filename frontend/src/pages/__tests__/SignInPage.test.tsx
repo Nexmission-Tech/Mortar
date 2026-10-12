@@ -55,12 +55,12 @@ describe('SignInPage', () => {
     expect(screen.getByTestId('location').textContent).toBe('/chase')
   })
 
-  it('makes the live guest button the primary action and the dead button transparent', () => {
+  it('makes the live guest button the primary action and the dead button solid, never see-through', () => {
     renderSignIn()
 
     expect(screen.getByRole('button', { name: 'Sign In As Guest' }).className).toContain('bg-primary')
     const dead = screen.getByRole('button', { name: 'Sign In' })
-    expect(dead.className).toContain('disabled:bg-transparent')
+    expect(dead.className).toContain('disabled:bg-card')
     expect(dead.className).toContain('disabled:border-input')
   })
 

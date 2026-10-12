@@ -665,7 +665,7 @@ function TodayViews<V extends string>({
 }) {
   return (
     <Tabs value={value} onValueChange={(v) => onValueChange(v as V)} className="gap-0">
-      <div className="border-b border-border">
+      <div className="rounded-md border border-card-border bg-card px-4 shadow-card">
         <TabsList
           variant="line"
           aria-label="Today Views"

@@ -194,9 +194,13 @@ export function ImportPage() {
         </p>
       )}
       <Tabs defaultValue="type" className="mt-4">
-        <TabsList>
-          <TabsTrigger value="type">Type Them In</TabsTrigger>
-          <TabsTrigger value="upload">Upload A Sheet</TabsTrigger>
+        <TabsList className="h-11 gap-5 rounded-md border border-card-border bg-card px-4 shadow-card">
+          <TabsTrigger value="type" className="h-full flex-none px-0 focus-visible:outline-offset-[-2px]">
+            Type Them In
+          </TabsTrigger>
+          <TabsTrigger value="upload" className="h-full flex-none px-0 focus-visible:outline-offset-[-2px]">
+            Upload A Sheet
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="upload" className="mt-4 space-y-4">

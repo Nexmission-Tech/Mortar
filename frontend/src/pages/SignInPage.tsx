@@ -65,7 +65,7 @@ export function SignInPage() {
               type="button"
               variant="secondary"
               disabled
-              className="w-full disabled:cursor-not-allowed disabled:border-input disabled:bg-transparent"
+              className="w-full disabled:cursor-not-allowed disabled:border-input disabled:bg-card"
             >
               Sign In
             </Button>

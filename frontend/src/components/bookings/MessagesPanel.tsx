@@ -125,7 +125,7 @@ function ProposalBlock({
     owner.value !== 'none' ? OWNER_ROLE_LABELS[owner.value] : null
   ].filter(Boolean)
   return (
-    <div className="mt-2 rounded-md border border-border bg-muted/50 p-3">
+    <div className="mt-2 rounded-md border border-border bg-muted p-3">
       <p className="text-sm">
         <span className="text-muted-foreground">Mortar AI Suggests: </span>
         <span className="font-medium">{reading.join(' · ')}</span>
