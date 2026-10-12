@@ -218,7 +218,8 @@ storage for nested domain entities:
   `author`, `reviewer`, `reviewed_on date`, `status`, `tags text[]`).
 - `tasks`: Action items assigned to staff members (`id text primary key`,
   `booking_id`, `action`, `title`, `owner_role`, `owner_name`, `due_on date`,
-  `status`, `origin`, `created_at`, `completed_at`).
+  `status`, `origin`, `created_at`, `completed_at`, `manager_flagged_by`, and
+  `result`, the close-out's one line on what happened).
 - `jev_answers`: Historical store of model evaluations
   (`id bigint generated always as identity primary key`, `kind`, `subject_id`,
   `input_hash`, `answer jsonb`, `source`, `latency_ms`, `created_at`). Indexed
@@ -272,27 +273,27 @@ The Bun server exposes a RESTful JSON API. Request bodies and responses conform
 directly to contract types. Validation is implemented with explicit type guards;
 no third-party schema validation libraries are loaded.
 
-| Method   | Path                            | Request Body                                                          | Response Body                                                            | Execution Pattern    |
-| -------- | ------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------ | -------------------- |
-| `GET`    | `/api/health`                   | None                                                                  | `{ ok, db, jev, assistant, jevAnswers, jevLastError, commit }`           | Direct Check         |
-| `GET`    | `/api/snapshot`                 | None                                                                  | `Snapshot`                                                               | Database Query       |
-| `POST`   | `/api/assistant`                | `{ question, persona, bookingId?, history?, image? }`                 | `{ answer, citations }`                                                  | Live Gemini Tool-Use |
-| `POST`   | `/api/assistant/stream`         | Same assistant request                                                | SSE tool progress and answer events                                      | Live Gemini Tool-Use |
-| `POST`   | `/api/messages`                 | `{ bookingId, senderRole, senderName, body }`                         | `{ message: Message, extraction: Extraction, event: CaseEvent \| null }` | Live-First Jev       |
-| `POST`   | `/api/messages/:id/extract`     | None                                                                  | `{ extraction: Extraction, event: CaseEvent \| null }`                   | Live-First Jev       |
-| `POST`   | `/api/events`                   | `{ bookingId, track, kind, document?, note?, reportedBy }`            | `CaseEvent`                                                              | Transaction Write    |
-| `POST`   | `/api/applications`             | `{ bookingId, bank, banker, note?, occurredOn?, reportedBy }`         | `{ application: LoanApplication, event: CaseEvent }`                     | Transaction Write    |
-| `POST`   | `/api/events/:id/review`        | `{ decision: 'confirm' \| 'dispute' \| 'dismiss', reviewer: string }` | `CaseEvent`                                                              | Transaction Write    |
-| `POST`   | `/api/bookings/:id/next-action` | None                                                                  | `NextActionSuggestion`                                                   | Live-First Jev       |
-| `GET`    | `/api/bookings/:id/playbooks`   | Optional Query `q`                                                    | `PlaybookRanking`                                                        | Cache-First Jev      |
-| `GET`    | `/api/bookings/:id/signals`     | None                                                                  | `BuyerSignals`                                                           | Cache-First Jev      |
-| `POST`   | `/api/bookings/import`          | `{ bookings: BookingDraft[], reportedBy, source? }`                   | `{ importId, bookings: Booking[] }`                                      | Transaction Write    |
-| `POST`   | `/api/imports/:id/undo`         | `{ reportedBy }`                                                      | `{ removed: string[] }`                                                  | Transaction Write    |
-| `DELETE` | `/api/bookings/:id`             | `{ reportedBy }`                                                      | `{ removed: string }`                                                    | Retention Checked    |
-| `POST`   | `/api/tasks`                    | `{ bookingId, action, title, ownerRole, ownerName, dueOn, origin }`   | `Task`                                                                   | Database Insert      |
-| `PATCH`  | `/api/tasks/:id`                | `{ status: 'open' \| 'done' \| 'cancelled' }`                         | `Task`                                                                   | Database Update      |
-| `POST`   | `/api/admin/demo/add`           | None                                                                  | `SimulationMeta`                                                         | Seed-Owned Insert    |
-| `POST`   | `/api/admin/demo/delete`        | None                                                                  | `{ ok: true }`                                                           | Seed-Owned Delete    |
+| Method   | Path                            | Request Body                                                          | Response Body                                                                                                                                      | Execution Pattern    |
+| -------- | ------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| `GET`    | `/api/health`                   | None                                                                  | `{ ok, db, jev, assistant, jevAnswers, jevLastError, commit }`                                                                                     | Direct Check         |
+| `GET`    | `/api/snapshot`                 | None                                                                  | `Snapshot`                                                                                                                                         | Database Query       |
+| `POST`   | `/api/assistant`                | `{ question, persona, bookingId?, history?, image? }`                 | `{ answer, citations }`                                                                                                                            | Live Gemini Tool-Use |
+| `POST`   | `/api/assistant/stream`         | Same assistant request                                                | SSE tool progress and answer events                                                                                                                | Live Gemini Tool-Use |
+| `POST`   | `/api/messages`                 | `{ bookingId, senderRole, senderName, body }`                         | `{ message: Message, extraction: Extraction, event: CaseEvent \| null }`                                                                           | Live-First Jev       |
+| `POST`   | `/api/messages/:id/extract`     | None                                                                  | `{ extraction: Extraction, event: CaseEvent \| null }`                                                                                             | Live-First Jev       |
+| `POST`   | `/api/events`                   | `{ bookingId, track, kind, document?, note?, reportedBy }`            | `CaseEvent`                                                                                                                                        | Transaction Write    |
+| `POST`   | `/api/applications`             | `{ bookingId, bank, banker, note?, occurredOn?, reportedBy }`         | `{ application: LoanApplication, event: CaseEvent }`                                                                                               | Transaction Write    |
+| `POST`   | `/api/events/:id/review`        | `{ decision: 'confirm' \| 'dispute' \| 'dismiss', reviewer: string }` | `CaseEvent`                                                                                                                                        | Transaction Write    |
+| `POST`   | `/api/bookings/:id/next-action` | None                                                                  | `NextActionSuggestion`                                                                                                                             | Live-First Jev       |
+| `GET`    | `/api/bookings/:id/playbooks`   | Optional Query `q`                                                    | `PlaybookRanking`                                                                                                                                  | Cache-First Jev      |
+| `GET`    | `/api/bookings/:id/signals`     | None                                                                  | `BuyerSignals`                                                                                                                                     | Cache-First Jev      |
+| `POST`   | `/api/bookings/import`          | `{ bookings: BookingDraft[], reportedBy, source? }`                   | `{ importId, bookings: Booking[] }`                                                                                                                | Transaction Write    |
+| `POST`   | `/api/imports/:id/undo`         | `{ reportedBy }`                                                      | `{ removed: string[] }`                                                                                                                            | Transaction Write    |
+| `DELETE` | `/api/bookings/:id`             | `{ reportedBy }`                                                      | `{ removed: string }`                                                                                                                              | Retention Checked    |
+| `POST`   | `/api/tasks`                    | `{ bookingId, action, title, ownerRole, ownerName, dueOn, origin }`   | `Task`                                                                                                                                             | Database Insert      |
+| `PATCH`  | `/api/tasks/:id`                | `{ status: 'open' \| 'done' \| 'cancelled', result?, followUpOn? }`   | `Task`; with `followUpOn`, the same task raised again for that day, in the same transaction; a close-out of a task already closed is refused (409) | Database Update      |
+| `POST`   | `/api/admin/demo/add`           | None                                                                  | `SimulationMeta`                                                                                                                                   | Seed-Owned Insert    |
+| `POST`   | `/api/admin/demo/delete`        | None                                                                  | `{ ok: true }`                                                                                                                                     | Seed-Owned Delete    |
 
 ### Endpoint Details
 
