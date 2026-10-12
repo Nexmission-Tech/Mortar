@@ -1,32 +1,32 @@
 # Graph Report - Mortar  (2026-10-11)
 
 ## Corpus Check
-- 443 files · ~456,583 words
+- 444 files · ~457,015 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 15 file(s) not represented in the graph (top: (none) 8, .css 4, .example 1)
 
 ## Summary
-- 5145 nodes · 14399 edges · 244 communities (196 shown, 48 thin omitted)
+- 5149 nodes · 14414 edges · 242 communities (194 shown, 48 thin omitted)
 - Extraction: 92% EXTRACTED · 8% INFERRED · 0% AMBIGUOUS · INFERRED: 1137 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `a33b31cc`
+- Built from commit: `48bf52a9`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - towerModel.ts
-- api.ts
-- BookingsPage.tsx
+- RecordUpdateForm.tsx
+- lucide-react
 - cn
-- BookingsTable.tsx
-- CaseQuickView.tsx
-- GET /api/snapshot
+- ForecastReports.tsx
+- BookingsPage.tsx
+- jev_answers Table (Model Answer History)
 - Mortar Workspace Engine (Bookings Ledger, Today Queue, Forecast Engine)
-- Technical Requirements Document: Mortar
-- Approved Glyph List
-- precompute.ts
+- Synthetic Data Guarantee
+- Desk Colours
+- integration.test.ts
 - package.json
 - tools.ts
 - Financing-Risk Method
@@ -34,41 +34,41 @@
 - generate.ts
 - Environment Configuration
 - A Company Brain For Booking-To-SPA Conversion
-- Booking
-- Database
+- bookingJourney.ts
+- types.ts
 - app.ts
 - frontend/index.html (Vite SPA Entry Document)
 - Run Jev Locally
 - check Job
 - questions.ts
+- SalesChartGrid.tsx
 - siteModel.test.ts
-- siteModel.ts
 - 5. Component Specifications
-- SalesChartPage.test.tsx
+- SalesChartPage.tsx
 - Mortar Brief
-- better-accessibility Skill: reduced motion, zoom, autoplay
+- Landing Video Pipeline
 - Radius Tokens
 - Mortar (Product Requirements)
 - About The Project section
-- types.ts
+- WaitingOn.tsx
 - What Is Built (measured, not estimated)
-- cases.ts
+- stage.test.ts
 - Assistant area (server/src/assistant/)
 - Live Walkthrough
 - Capture Beat Sequence
-- CaseDetails.test.tsx
+- Booking
 - Persona: Legal Admin (home /legal)
 - mockSnapshot.ts
-- AskPanel.test.tsx
+- api.ts
 - Backtest Validation
 - banks.test.ts
 - ref_playwright
-- FR-5 Today Desk And Task Management
+- User Stories Per Screen
 - json
 - Mortar Demo Recorder
-- bookings Table
+- GET /api/snapshot
 - Sources
-- Open Questions
+- API Reference
 - Data Retention
 - forecastInsights() supplies forecast reports
 - PersonaRoute.tsx (route guard)
@@ -78,8 +78,8 @@
 - Front-End Simulation
 - CaseSummary
 - Gotcha: manager workflows
-- Snapshot
-- AppSidebar.tsx
+- forecast-range.test.ts
+- persona.tsx
 - jev/package.json
 - slides/render.mjs (Slide PNG Renderer)
 - server/package.json
@@ -90,32 +90,32 @@
 - speak.py
 - Questions To Expect
 - App Shell
-- units.ts
+- lib/projectSettings.ts
 - POST /api/assistant
-- ChartUnit
+- units.ts
 - narrate.sh (Voice + Schedule + Subtitles)
 - Preserved Technical Cautions
-- insights.ts
+- cases.ts
 - mappers.ts
 - Status Language
-- Documents Index
-- Non-Functional Requirements
+- Design: Mortar (Visual Specification)
+- chase.ts
 - generate() Stage-Transition Monte Carlo
 - How It Works section
-- Profile Menu
+- Approved Glyph List
 - closedExport.ts
 - patch_docs.py
 - Typeface
-- core/src/index.ts
+- ChasePage.tsx
 - Markdown Style Guide
 - Deployment Workflow
 - Design Research: Layerhand Landing Page
 - TourProvider.tsx
 - frontend/tsconfig.json
-- Pull Request Template
+- Reviews And Merging
 - core/package.json
 - import.ts
-- server/src/index.ts
+- tourAnchors.test.tsx
 - assistant.test.ts
 - record.mjs
 - 6. Component Specifications
@@ -138,9 +138,9 @@
 - Sales Chart: Design
 - Perch Landing Teardown
 - Checklist
-- Architecture And Components
+- server/ Workspace
 - Import area
-- FR-2 Case Summarization And Stall Detection
+- FR-8 Statistical Conversion Forecasting
 - This Week. What We Need.
 - Keep It Current
 - ExpandableViewport.tsx
@@ -149,24 +149,24 @@
 - Acceptance Criteria (14)
 - sim.ts
 - booking-template.mjs
-- Event Model And Evidence Lifecycle
+- unitOverview.test.ts
 - Gotcha: named profiles define data access
-- PersonaProvider
+- SalesChartPage.test.tsx
 - brain/index.ts
 - File Map
 - Gotchas
 - RTK Commands By Workflow
-- 3. The Workflow Today — A, 1:30
+- Step 6: Request Follow-Up From Tan Mei Ling
 - Today Rail
-- FR-8 Statistical Conversion Forecasting
-- sales-chart/README.md
+- Run Of Show
+- Review Focus
 - Project Structure tree
 - assemble.sh Mux Phase
 - notificationStore.ts
 - RecordUpdateForm.test.tsx
 - Agent Skills
 - Functional Requirements
-- app.test.ts
+- CaseEvent
 - jev/tsconfig.json
 - NarrateTests
 - Personas
@@ -175,36 +175,36 @@
 - See Also
 - Meet MortarAI. One Reads, One Answers.
 - Jakub Krehel's Interface Skills
-- forecast-summary.test.ts
+- packages_core_src_index_task
 - server/tsconfig.json
 - subtitles.py
 - Manager (persona)
-- tourAnchors.test.tsx
+- PersonaProvider
 - Ask The Graph First
 - frontend_src_components_case_index_owner_role_labels
 - frontend_src_components_case_index_ownerbadge
 - scripts
 - Landing Page
 - Screenshots: the running app on seeded data, not mockups
-- scopeSnapshot
+- src/projectSettings.ts
 - packages_core_src_index_horizon_days
-- Global Constraints
+- Task 2: Draw The Towers
 - askBrain (scripted fallback)
 - .prettierrc.json
-- Agent Rules
-- Tests area
+- Documents Index
+- readSheetFile.test.ts
 - ChartTooltipContent.tsx
-- proof.test.mjs
+- ref_node_fs
 - core/tsconfig.json
 - walk.mjs
 - SubtitleLayoutTests
-- persona.test.tsx
+- 5. Booking Journey Specification
 - AppLayout.tsx
-- db/index.ts
-- Andrej Karpathy Skills
+- core/src/index.ts
+- SiteShell.tsx
 - frontend_src_components_case_index_ball_holder_labels
 - frontend_src_components_case_index_riskchip
-- MotionSites: cinematic landing page prompts
+- ChaseCard.test.tsx
 - assemble.sh
 - frontend_src_components_case_index_stage_labels
 - packages_core_src_index_playbooks
@@ -213,28 +213,26 @@
 - packages_core_src_sim_horizon_days
 - ref_vitest
 - packages_core_src_sim_persona_staff
-- Gotcha: shared settings and inventory
+- better-ui Skill: surfaces, icons, motion values
 - packages_core_src_sim_reference_date
 - packages_jev_src_index_defaultplaybookquery
 - packages_jev_src_index_jevinputhash
-- schedule.py
+- forecast-range.acceptance.test.ts
 - packages_jev_src_index_nextactionjob
 - frontend/package.json
 - Start From Fresh main
 - narrate.sh
 - packages_jev_src_index_question_version
 - packages_jev_src_index_signalsjob
-- better-ui Skill: surfaces, icons, motion values
+- MotionSites: cinematic landing page prompts
 - Draft While Unfinished
 - packages_core_src_index_sheetfield
-- useTheme.tsx
+- react-router-dom
 - render.mjs
-- Plain Language
+- DropZone
 - resemble-perth Pinned Commit and setuptools<81
-- User Stories Per Screen
+- Non-Functional Requirements
 - @mortar/jev: TypeSafe Jev client (server-side key, cache-first)
-- drawer.tsx
-- TaskCell.test.tsx
 - proof.mjs
 - ForecastReports.test.tsx
 - AppErrorBoundary
@@ -245,8 +243,8 @@
 2. `Button` - 111 edges
 3. `react` - 106 edges
 4. `Booking` - 73 edges
-5. `CaseEvent` - 69 edges
-6. `@testing-library/react` - 68 edges
+5. `@testing-library/react` - 69 edges
+6. `CaseEvent` - 69 edges
 7. `CaseSummary` - 68 edges
 8. `lucide-react` - 67 edges
 9. `react-router-dom` - 58 edges
@@ -259,10 +257,10 @@
   docs/research/sales-chart/README.md → frontend/src/components/bookings/CaseQuickView.tsx
 - `Delivery` --references--> `CaseQuickView()`  [INFERRED]
   docs/research/sales-chart/showhouse-model.md → frontend/src/components/bookings/CaseQuickView.tsx
-- `Meaning Before Decoration` --references--> `progressFromKinds()`  [INFERRED]
-  docs/research/case-page/README.md → frontend/src/components/bookings/StageTracker.tsx
 - `Task 1: Road Geometry And Case Age` --references--> `BookingJourneyModel`  [INFERRED]
   docs/research/case-page/plan-2-journey-view.md → frontend/src/components/bookings/bookingJourney.ts
+- `Today Worklist Row` --references--> `nextStepFor()`  [INFERRED]
+  docs/research/today/README.md → frontend/src/components/case/nextStep.ts
 
 ## Import Cycles
 - None detected.
@@ -308,67 +306,67 @@
 - **Flat Ledger Surface System** — docs_design_flat_ledger, docs_design_elevation_card, docs_design_radius_tokens, docs_design_no_row_tinting, docs_design_semantic_colour, docs_design_canvas_dot_grid [INFERRED 0.85]
 - **Test Database Wiring for the Check Step** — github_workflows_ci_service_postgres, github_workflows_ci_test_database_url, github_workflows_ci_env_postgres_user_mortar, github_workflows_ci_env_postgres_password_mortar, github_workflows_ci_env_postgres_db_mortar_test, github_workflows_ci_port_mapping_5432, github_workflows_ci_step_run_check [INFERRED 0.95]
 
-## Communities (244 total, 48 thin omitted)
+## Communities (242 total, 48 thin omitted)
 
 ### Community 0 - "towerModel.ts"
 Cohesion: 0.11
 Nodes (20): noOverlaps(), overlaps(), BALCONY_DEPTH, BAY_DEPTH, BAY_WIDTH, CORE, CORRIDOR, CROWN (+12 more)
 
-### Community 1 - "api.ts"
-Cohesion: 0.04
-Nodes (116): AddMessageForm(), defaultName(), normalTime(), ROLES, timeNow(), DOCUMENT_LABELS, AFTER_SPA, BANK_OPTIONAL (+108 more)
+### Community 1 - "RecordUpdateForm.tsx"
+Cohesion: 0.06
+Nodes (85): AddMessageForm(), AFTER_SPA, BANK_OPTIONAL, BANK_REQUIRED, CONFIRM, DECIDED, DECISIONS, DOCUMENTS (+77 more)
 
-### Community 2 - "BookingsPage.tsx"
-Cohesion: 0.08
-Nodes (66): Task 3: The Page, Route, Navigation And Tour, App(), HomeRedirect(), BookingPipelineFlow(), BookingPipelineFlowProps, PipelineSelection, PipelineStageCounts, PipelineStageId (+58 more)
+### Community 2 - "lucide-react"
+Cohesion: 0.09
+Nodes (53): ProposalBlock(), StageTracker(), TaskCell(), ASK_EVENT, AskRequest, AskTrigger(), EVIDENCE_LABELS, EVIDENCE_TONES (+45 more)
 
 ### Community 3 - "cn"
-Cohesion: 0.04
-Nodes (116): BookingFilters(), RISKS, View, DateField(), monthOf(), toDate(), toIso(), progressFromKinds() (+108 more)
+Cohesion: 0.05
+Nodes (73): BookingFilters(), DateField(), monthOf(), toDate(), toIso(), BackToTop(), HowItWorks(), Moment (+65 more)
 
-### Community 4 - "BookingsTable.tsx"
-Cohesion: 0.07
-Nodes (87): Task 1: Case Header, BookingsTable(), PILL_STAGES, Sort, SortKey, WIDTHS, EvidenceTable(), reporterName() (+79 more)
+### Community 4 - "ForecastReports.tsx"
+Cohesion: 0.09
+Nodes (76): BookingsTable(), EvidenceTable(), reporterName(), SOURCE_LABELS, TRACK_LABELS, WaitingOnCell(), formatDate(), formatDays() (+68 more)
 
-### Community 5 - "CaseQuickView.tsx"
-Cohesion: 0.27
-Nodes (13): CaseAction, CaseActionSheet(), TITLES, CaseQuickView(), CaseJourney(), frontend_src_components_ui_sheet_sheet, SheetContent(), SheetDescription() (+5 more)
+### Community 5 - "BookingsPage.tsx"
+Cohesion: 0.06
+Nodes (49): Task 1: Case Header, Task 4: Case Action Sheet And What To Do, Task 1: The Floating Case Panel, BookingFilter, BookingFiltersProps, RISKS, View, BookingPipelineFlow() (+41 more)
 
-### Community 6 - "GET /api/snapshot"
-Cohesion: 0.11
-Nodes (51): GET /api/snapshot, API Reference, Caching Strategy: Cache-First Reads, Live-First Mutations, Data Model And Schema, PostgreSQL Entity-Relationship Diagram, Event Ordering: ORDER BY occurred_at, seq, events_seq Sequence / seq Column, events Table (Auditable Event Log) (+43 more)
+### Community 6 - "jev_answers Table (Model Answer History)"
+Cohesion: 0.13
+Nodes (41): Explicit No-Match Fallback Options, Fallback And Caching Ladder, Fallback Ladder Flow Diagram, Fan-Out Job Pattern, GET /api/bookings/:id/playbooks, Input Hash: SHA-256 Of Canonical {kind, state, questionVersion}, jev_answers Table (Model Answer History), server/fixtures/jev-cache.json Precomputed Answers (+33 more)
 
 ### Community 7 - "Mortar Workspace Engine (Bookings Ledger, Today Queue, Forecast Engine)"
 Cohesion: 0.16
-Nodes (24): Manager Persona (Home Route /chase), /team Route (Manager-Only Team View; /manager Redirects Here), Beneficiaries Who Do Not Log In (Finance, Sales Director), Centralized Case Workspace, What The Daily Users Have In Common, Four Daily Users, Decisions For You, Deliberately Not Users (buyers, agents, bankers, solicitors) (+16 more)
+Nodes (23): Beneficiaries Who Do Not Log In (Finance, Sales Director), Centralized Case Workspace, What The Daily Users Have In Common, Four Daily Users, Decisions For You, Deliberately Not Users (buyers, agents, bankers, solicitors), Desk Health, High-Density Ledger Design (+15 more)
 
-### Community 8 - "Technical Requirements Document: Mortar"
-Cohesion: 0.15
-Nodes (19): Data Retention section (docs/TRD.md#data-retention), Technical Requirements Document (docs/TRD.md), PDPC Automated Decision Guidelines (May 2026), 72-Hour Breach Notification Groundwork, Event Status: confirmed, Demo Hygiene On /import, Synthetic Names, NRIC And Phone Numbers, Gemini Free-Tier Data Use Caveat (+11 more)
+### Community 8 - "Synthetic Data Guarantee"
+Cohesion: 0.25
+Nodes (11): PDPC Automated Decision Guidelines (May 2026), 72-Hour Breach Notification Groundwork, Demo Hygiene On /import, Gemini Free-Tier Data Use Caveat, No Real Customer Records Ingested, PDPA 2024 Compliance Posture, Security, Secrets And Privacy, MortarBench (Columbia University, 2026) arXiv:2606.19416 (+3 more)
 
-### Community 9 - "Approved Glyph List"
-Cohesion: 0.18
-Nodes (17): ArrowUpRight Glyph, BriefcaseBusiness Glyph, ChevronsUpDown Glyph, Desk Colour: Legal Admin, Desk Colour: Loan Admin, Desk Colour: Manager, Desk Colour: Sales Admin, Desk Colours (+9 more)
+### Community 9 - "Desk Colours"
+Cohesion: 0.21
+Nodes (14): BriefcaseBusiness Glyph, Desk Colour: Legal Admin, Desk Colour: Loan Admin, Desk Colour: Manager, Desk Colour: Sales Admin, Desk Colours, Handshake Glyph, Landmark Glyph (+6 more)
 
-### Community 10 - "precompute.ts"
+### Community 10 - "integration.test.ts"
 Cohesion: 0.04
-Nodes (59): 8. Copy And Branding Audit, Case Copy Decisions, Gemini And MortarAI Spelling, packages_core_src_index_jevcache, packages_core_src_index_jevcacheentry, packages_core_src_index_jevkind, packages_core_src_index_jevmeta, packages_core_src_index_jevservice (+51 more)
+Nodes (60): banks.test.ts (reversal, ledger, bank clocks), sim/order.test.ts (same-day event ordering), sim/stage.test.ts (SPA-gated progression), Tests area, packages_core_src_index_jevcache, packages_core_src_index_jevcacheentry, packages_core_src_index_jevkind, packages_core_src_index_jevmeta (+52 more)
 
 ### Community 11 - "package.json"
 Cohesion: 0.05
 Nodes (45): isOff(), typescriptFiles, warnings(), description, devDependencies, concurrently, eslint, eslint-config-prettier (+37 more)
 
 ### Community 12 - "tools.ts"
-Cohesion: 0.14
-Nodes (24): packages_core_src_index_default_assumptions, bookingLine(), cap(), caseDetail(), casesFor(), day(), DESK_OF_OWNER_ROLE, deskOfNextMove() (+16 more)
+Cohesion: 0.13
+Nodes (26): packages_core_src_index_default_assumptions, packages_core_src_index_staffprofile, bookingLine(), cap(), caseDetail(), casesFor(), day(), DESK_OF_OWNER_ROLE (+18 more)
 
 ### Community 13 - "Financing-Risk Method"
-Cohesion: 0.18
-Nodes (29): Advisory Early Warning, Not A Blocking Gate, TenureYears = min(35, 70 - age), Approval Probability 0.62 Bridging REHDA And Benchmarks, BNM Margin Rules (Nov 2010), BNM 35-Year Tenure Cap (Jul 2013), Debt Service Ratio Formula, DEFAULT_ASSUMPTIONS Parameter Table, financingRisk() Advisory Credit Flag (+21 more)
+Cohesion: 0.16
+Nodes (32): Advisory Early Warning, Not A Blocking Gate, TenureYears = min(35, 70 - age), Approval Probability 0.62 Bridging REHDA And Benchmarks, BNM Margin Rules (Nov 2010), BNM 35-Year Tenure Cap (Jul 2013), Debt Service Ratio Formula, DEFAULT_ASSUMPTIONS Parameter Table, financingRisk() Advisory Credit Flag (+24 more)
 
 ### Community 15 - "generate.ts"
 Cohesion: 0.10
-Nodes (36): Task 2: Unique Demo Units, DEFAULT_PROJECT_SETTINGS, clamp01(), DISPUTABLE, DOCUMENT_POOL, drawPrice(), drawUnit(), generateDataset() (+28 more)
+Nodes (36): assumptionValue(), clamp01(), DISPUTABLE, DOCUMENT_POOL, drawPrice(), generateDataset(), HESITANT_NOTES, PRICE_BANDS (+28 more)
 
 ### Community 16 - "Environment Configuration"
 Cohesion: 0.08
@@ -378,17 +376,17 @@ Nodes (34): Perth/setuptools Pin (setuptools<81), Base (Impractically Slow Witho
 Cohesion: 0.11
 Nodes (19): 10. A Short Learning Path, 11. Questions To Resolve With The Company, 1. What A Central Company Brain Should Mean Here, 2. Open-Source Projects Worth Learning From, 3. Overall Platform Concept, 4. How The Parts Connect, 5. Turning Staff Experience Into Reusable Knowledge, 6. Does A Knowledge Graph Help? (+11 more)
 
-### Community 18 - "Booking"
-Cohesion: 0.05
-Nodes (54): Booking Journey View Model Implementation Plan, Global Constraints, Review Focus, Task 1: The View Model, 10. Build Plan, 10A. Pure View Model And Evidence Rules, 10B. Component Tree, Ownership And Deletions, 10C. Final DESIGN.md Amendment Text (+46 more)
+### Community 18 - "bookingJourney.ts"
+Cohesion: 0.10
+Nodes (38): Booking Journey View Model Implementation Plan, Global Constraints, Review Focus, Task 1: The View Model, 10A. Pure View Model And Evidence Rules, View-Model Test Cases, approvalWait(), BookingJourneyInput (+30 more)
 
-### Community 19 - "Database"
-Cohesion: 0.04
-Nodes (21): EXTRACTION, MESSAGE, PROPOSAL, EXTRACTION, MESSAGE, PROPOSAL, renderPanel(), packages_core_src_index_extraction (+13 more)
+### Community 19 - "types.ts"
+Cohesion: 0.07
+Nodes (18): EVENT_MAP, JEV_REVIEW_THRESHOLD, STATUS_RANK, PLAYBOOKS, PlannedEvent, bookingEvidence(), event(), ChoiceAnswer (+10 more)
 
 ### Community 20 - "app.ts"
-Cohesion: 0.08
-Nodes (42): packages_core_src_index_checkbookingdraft, packages_core_src_index_language, packages_core_src_index_layoutunit, packages_core_src_index_proposalfromextraction, packages_core_src_index_track, Language, ref_bun_test, cacheBodies() (+34 more)
+Cohesion: 0.05
+Nodes (64): Task 5: Server Settings And Demo Reset, packages_core_src_index_checkbookingdraft, packages_core_src_index_language, packages_core_src_index_layoutunit, packages_core_src_index_proposalfromextraction, packages_core_src_index_simnow, proposalFromExtraction(), normalizeProjectSettings() (+56 more)
 
 ### Community 21 - "frontend/index.html (Vite SPA Entry Document)"
 Cohesion: 0.08
@@ -403,116 +401,116 @@ Cohesion: 0.08
 Nodes (36): package.json build Script, package.json check Script, bun-version-file: package.json, Cancel In Progress, check Job, Lint, typecheck, unit tests, build, CI Workflow, Concurrency Group ci-${{ github.ref }} (+28 more)
 
 ### Community 24 - "questions.ts"
-Cohesion: 0.10
-Nodes (27): FORECAST_ASK_QUESTIONS, count(), days(), isLive(), isOpen(), joinList(), percent(), ringgit (+19 more)
+Cohesion: 0.11
+Nodes (25): count(), days(), isLive(), isOpen(), joinList(), percent(), ringgit, rm() (+17 more)
 
-### Community 25 - "siteModel.test.ts"
+### Community 25 - "SalesChartGrid.tsx"
 Cohesion: 0.15
-Nodes (9): SalesChartGrid, toBlocks(), settings, setup(), units, Rect, towersFor(), packages_core_src_index_chartunits (+1 more)
+Nodes (16): Rulings Carried From The Spec, Task 2: The Grid, Task 4: Numbering In Settings, Task 5: Docs, Verification And The Pull Request, BlockGrid, SalesChartGrid, SalesChartGridProps, STEPS (+8 more)
 
-### Community 26 - "siteModel.ts"
-Cohesion: 0.12
-Nodes (20): Global Constraints, Review Focus, Showhouse Site Implementation Plan, Task 1: The Site Model, Anchor, DeckSpot, EMPTY_SITE, NONE (+12 more)
+### Community 26 - "siteModel.test.ts"
+Cohesion: 0.09
+Nodes (23): Global Constraints, Review Focus, Showhouse Site Implementation Plan, Task 1: The Site Model, Anchor, DeckSpot, EMPTY_SITE, NONE (+15 more)
 
 ### Community 27 - "5. Component Specifications"
 Cohesion: 0.05
-Nodes (42): 1. What Is Overloading Today, 2. The First Five Seconds, 3. Information Architecture, 4. Layout And Measured Rules, 5. Component Specifications, 6. Copy, 7. Build Plan, 8. DESIGN.md Amendments (+34 more)
+Nodes (43): 1. What Is Overloading Today, 2. The First Five Seconds, 3. Information Architecture, 4. Layout And Measured Rules, 5. Component Specifications, 6. Copy, 7. Build Plan, 8. DESIGN.md Amendments (+35 more)
 
-### Community 28 - "SalesChartPage.test.tsx"
-Cohesion: 0.08
-Nodes (25): activeUnsigned(), bookedAndSigned(), CHART_FILTERS, ChartFilter, legendCounts(), litUnits(), matchesFilter(), STATE_LABELS (+17 more)
+### Community 28 - "SalesChartPage.tsx"
+Cohesion: 0.12
+Nodes (23): BuildingBoundary, activeUnsigned(), bookedAndSigned(), CHART_FILTERS, ChartFilter, legendCounts(), litUnits(), matchesFilter() (+15 more)
 
 ### Community 29 - "Mortar Brief"
 Cohesion: 0.06
 Nodes (31): A Day In Mortar, Competition Rounds, Constraints, How Do You Know It Worked?, How Mortar Answers The Brief, Interview Ground Rules, Interview Questions, Mortar Brief (+23 more)
 
-### Community 30 - "better-accessibility Skill: reduced motion, zoom, autoplay"
-Cohesion: 0.29
-Nodes (10): LQIP Placeholder Behind Video Tiles, better-accessibility Skill: reduced motion, zoom, autoplay, Each Rule Has One Owner, Reduced Motion Kill Switch: 0.01ms not none, WCAG 2.2.2 Autoplay Pause Requirement, Gemini Videos Composer at gemini.google.com/videos, Silent Loop Encode: ffmpeg -an libx264 crf 22 plus faststart, Footer Focus Reveal for WCAG 2.4.11 (+2 more)
+### Community 30 - "Landing Video Pipeline"
+Cohesion: 0.17
+Nodes (16): Porting Its Hover Motion without React, LQIP Placeholder Behind Video Tiles, better-accessibility Skill: reduced motion, zoom, autoplay, Each Rule Has One Owner, Reduced Motion Kill Switch: 0.01ms not none, WCAG 2.2.2 Autoplay Pause Requirement, Landing Video Pipeline, The Agent's Video Checklist (+8 more)
 
 ### Community 31 - "Radius Tokens"
-Cohesion: 0.18
-Nodes (15): Button Component, Checkbox Component, Density Decision (36px Controls, 44px Rows), Elevation: Card, Field Component, Mortar Design System In Figma, Flat Ledger Look, Focus Ring (+7 more)
+Cohesion: 0.27
+Nodes (10): Button Component, Checkbox Component, Density Decision (36px Controls, 44px Rows), Field Component, Focus Ring, Ink Is The Action Colour, Radius Tokens, Spacing Scale (4px Base) (+2 more)
 
 ### Community 32 - "Mortar (Product Requirements)"
-Cohesion: 0.11
+Cohesion: 0.10
 Nodes (35): BK-nnnn ids stop before BK-9001, Gotcha: imported bookings are born booked, dated to the desks' today, simNow(REFERENCE_DATE), Mortar (Product Requirements), Mortar Product Overview, See Also (Related Documents), Feature Ideas: written up but not built, 48-Hour Clean Exit (+27 more)
 
 ### Community 33 - "About The Project section"
 Cohesion: 0.13
 Nodes (26): About The Project section, Acknowledgements: YEI 3.0/Kabel, Chin Hin Group, shadcn/ui, Radix UI, Lucide, Booking conversion challenge, Chin Hin Group, Design Spec (DESIGN.md), Hero banner, Illustrative RM24M of phantom reported sales, Interview (source/interview.md) (+18 more)
 
-### Community 34 - "types.ts"
-Cohesion: 0.13
-Nodes (24): ballInCourt, listOf(), STORIES, AssignmentAccessContext, canManageTaskStatus(), currentCaseAssignee(), DEMO_PROFILES, DOCUMENT_LABELS (+16 more)
+### Community 34 - "WaitingOn.tsx"
+Cohesion: 0.12
+Nodes (28): Case Summary — Revised WaitingOnPanel, SEGMENTS, STAGE_PROGRESS, WaitingOnPanel(), waitingOnTask(), BALL_HOLDER_ICONS, BALL_HOLDER_LABELS, BALL_HOLDERS (+20 more)
 
 ### Community 35 - "What Is Built (measured, not estimated)"
 Cohesion: 0.38
 Nodes (7): 4 personas (measured count), 5 demo profiles (measured count), Desk colours mark the role and avatar, never a status, Features section, Profile menu popover: silhouette avatar, persona figures, profile switcher, What Is Built (measured, not estimated), 0 real buyer records in the app
 
-### Community 36 - "cases.ts"
-Cohesion: 0.11
-Nodes (30): managerSuggestions(), assumptions, booking, event(), snapshot(), WaitingSuggestion, assumptionValue(), DEFAULT_ASSUMPTIONS (+22 more)
+### Community 36 - "stage.test.ts"
+Cohesion: 0.08
+Nodes (22): SOURCE_TAG_LABELS, SOURCE_TAG_TONES, appointment(), packages_core_src_index_assumption, packages_core_src_index_dataset, packages_core_src_index_isodate, packages_core_src_index_sourcetag, managerSuggestions() (+14 more)
 
 ### Community 37 - "Assistant area (server/src/assistant/)"
 Cohesion: 0.24
 Nodes (13): frontend/public/ai-mascot*.png, AskPanel (Dialog), AskTrigger (in AppNav), 503 { fallback: true } scripted fallback, Assistant area (server/src/assistant/), 30-second budget, max 4 rounds, buildAskContext, GEMINI_API_KEY (+5 more)
 
 ### Community 38 - "Live Walkthrough"
-Cohesion: 0.12
-Nodes (33): 7. Live Walkthrough — C, 7 Minutes, 8. Before And After — C, 1 Minute, The Bank Still Decides The Loan, Before You Present, BK-9001 (Demo Booking), Contingency: The App Will Not Load → Walk Slide 7 From Screenshot, Contingency: Ask MortarAI Says Counted From Your Bookings, Contingency: Receipt Already Confirmed → Reset Shared Data (+25 more)
+Cohesion: 0.14
+Nodes (29): 7. Live Walkthrough — C, 7 Minutes, 8. Before And After — C, 1 Minute, The Bank Still Decides The Loan, Before You Present, BK-9001 (Demo Booking), Contingency: The App Will Not Load → Walk Slide 7 From Screenshot, Contingency: Ask MortarAI Says Counted From Your Bookings, Contingency: Receipt Already Confirmed → Reset Shared Data (+21 more)
 
 ### Community 39 - "Capture Beat Sequence"
 Cohesion: 0.07
 Nodes (29): banker_message Beat, Banker's mixed Malay/English message; payslip missing, buyer_reply Beat, Pasted Malay buyer reply; Jev answers Documents Received, case_cleared Beat, Outstanding-document pill leaves the case header, case_risk Beat, Financing-risk chip tooltip naming the flag driver (+21 more)
 
-### Community 40 - "CaseDetails.test.tsx"
-Cohesion: 0.11
-Nodes (9): BookingFilter, ACTIVE_STAGES, CLOSED_STAGES, FILTER, booking, details(), summary(), booking (+1 more)
+### Community 40 - "Booking"
+Cohesion: 0.08
+Nodes (19): BookingRow, booking, details(), summary(), booking, BOOKING, RISK, SUMMARY (+11 more)
 
 ### Community 41 - "Persona: Legal Admin (home /legal)"
 Cohesion: 0.15
 Nodes (17): 48-hour screening of every booking, Forecast accuracy score sentence, Legal queue section: Appointment Set, Not Signed, Consequences worn openly, Forecast supporting document stack, Funnel stage 4: SPA signed (buyer pays 10%), Legal queue section: No Appointment Yet, Persona: Legal Admin (home /legal) (+9 more)
 
 ### Community 42 - "mockSnapshot.ts"
-Cohesion: 0.08
-Nodes (24): appointment(), row(), waiting(), defaultData(), mocks, provisionalEvent(), canonicalQuestions, documentTitles (+16 more)
+Cohesion: 0.09
+Nodes (23): row(), waiting(), ChasePage(), defaultData(), mocks, provisionalEvent(), renderPage(), canonicalQuestions (+15 more)
 
-### Community 43 - "AskPanel.test.tsx"
-Cohesion: 0.15
-Nodes (7): generated, mocks, renderPanel(), SNAP, strictPanel(), StubReader, packages_core_src_index_forecast_document_questions
+### Community 43 - "api.ts"
+Cohesion: 0.05
+Nodes (62): defaultName(), normalTime(), ROLES, timeNow(), APPLICATION_STATUS_LABELS, DOCUMENT_LABELS, EVENT_KIND_LABELS, EXTRACTED_EVENT_LABELS (+54 more)
 
 ### Community 44 - "Backtest Validation"
-Cohesion: 0.11
-Nodes (30): Backtest Engineering Validation (Outside Document Deck), Backtest Cutoff At 2026-08-19, Strict Temporal Data Isolation, Backtest Validation, Brown, Cai & DasGupta (2001), bun run test (Vitest), Cohort -> Stage Aggregate -> Global Baseline, packages/core/src/sim.ts Generator + Forecasting (+22 more)
+Cohesion: 0.13
+Nodes (29): Backtest Caption (Superseded: Engineering Tool Outside /forecast), FR-9 Historical Forecast Backtesting, US-16 Approved, Awaiting SPA, Backtest Engineering Validation (Outside Document Deck), Backtest Cutoff At 2026-08-19, Strict Temporal Data Isolation, Scoring Against Truth, Backtest Validation (+21 more)
 
 ### Community 45 - "banks.test.ts"
-Cohesion: 0.21
-Nodes (10): A, approved(), b, booked, ev(), received(), rejected(), requested() (+2 more)
-
-### Community 47 - "FR-5 Today Desk And Task Management"
 Cohesion: 0.19
-Nodes (19): Admin Today Leads With Assigned Tasks, CaseQuickView Side Sheet, daysSinceLoanApproved / daysSinceSpaSet, Decisions For You (Manager Today Queue), FR-17 Waiting On Party, Quick View, Next Move, FR-5 Today Desk And Task Management, JTBD: Decisions Waiting On Me, JTBD: Seeing What Has Stopped (+11 more)
+Nodes (11): A, approved(), b, booked, ev(), received(), rejected(), requested() (+3 more)
+
+### Community 47 - "User Stories Per Screen"
+Cohesion: 0.12
+Nodes (31): Admin Today Leads With Assigned Tasks, CaseQuickView Side Sheet, daysSinceLoanApproved / daysSinceSpaSet, Demo Script As Acceptance, FR-15 SPA Execution Desk, FR-17 Waiting On Party, Quick View, Next Move, FR-19 Record An Update, FR-5 Today Desk And Task Management (+23 more)
 
 ### Community 48 - "json"
-Cohesion: 0.15
-Nodes (16): importlib_util, json, os, pathlib, re, Resolve beat-keyed narration into a timing manifest with visual boundaries., NarrationManifestTests, NarrationScheduleTests (+8 more)
+Cohesion: 0.12
+Nodes (21): importlib_util, json, os, pathlib, re, Resolve beat-keyed narration into a timing manifest with visual boundaries., deconflict(), duration_ms() (+13 more)
 
 ### Community 49 - "Mortar Demo Recorder"
 Cohesion: 0.12
 Nodes (19): A Camera and Dubber, @capture Token, TolongLabs/codenection-dev scripts/demo, DEMO_SLIDES name:seconds Token, Deployed Mortar Site (mortar-d18f.onrender.com), Eight-Step Live Walkthrough, DEMO_FIT_TAIL_MS (250), Picture kept after a segment's last narrated line (+11 more)
 
-### Community 50 - "bookings Table"
-Cohesion: 0.16
-Nodes (28): POST /api/bookings/import, System Prompt Reflects Persona Desk, bookings.created_at Entry Time Semantics, bookings Table, currentCaseAssignee Responsibility Resolution, Data Minimization And Scoped Access, DELETE /api/session (Clear Cookie), Missing Sessions Fail Closed (+20 more)
+### Community 50 - "GET /api/snapshot"
+Cohesion: 0.11
+Nodes (46): POST /api/bookings/import, GET /api/snapshot, Task Writes Share A Natural-Key Advisory Lock, Second Undecided Application To Same Bank (409), bookings.created_at Entry Time Semantics, bookings Table, currentCaseAssignee Responsibility Resolution, Data Minimization And Scoped Access (+38 more)
 
 ### Community 51 - "Sources"
 Cohesion: 0.14
 Nodes (27): Association of Banks in Malaysia (2017) Press Release, Annuity Monthly Instalment, Bank Negara Malaysia (2010) Property Market Measures, Bank Negara Malaysia Monthly Statistical Bulletin, Bank Negara Malaysia (2013) 35-Year Tenure Circular, Debt Service Ratio (DSR), DEFAULT_ASSUMPTIONS Generator Parameters (Not A Forecast Panel), DSR Cap Of 40% Gross Income (+19 more)
 
-### Community 52 - "Open Questions"
-Cohesion: 0.15
-Nodes (15): Booking Fee Prohibition (Reg 11(2) 1989), ClosedExport Excel Export, Direct Core ERP Integration (Out Of Scope), Event Statuses (confirmed/provisional/disputed/superseded), FR-21 Bookings Active And Closed Views With Export, Housing Development (Control and Licensing) Regulations, Late-Delivery Damages Clock (PJD Regency), NFR-8 Synthetic Data And PDPA (+7 more)
+### Community 52 - "API Reference"
+Cohesion: 0.14
+Nodes (26): Data Retention section (docs/TRD.md#data-retention), Technical Requirements Document (docs/TRD.md), API Reference, Architecture And Components, System Prompt Reflects Persona Desk, Caching Strategy: Cache-First Reads, Live-First Mutations, frontend/src/components/case/CaseQuickView.tsx, Five Named Demo Profiles (+18 more)
 
 ### Community 53 - "Data Retention"
 Cohesion: 0.22
@@ -523,12 +521,12 @@ Cohesion: 0.29
 Nodes (8): forecastInsights() supplies forecast reports, Forecast document card (Open Document, Ask MortarAI), Forecast document stack (#54/#61, chips, below headline figures), Gotcha: forecast documents follow the figures, Gotcha: forecast reports read one calculation, Operational queues retain older open bookings, Manager Suggestions view, Historical Rate Scope And Profile-Scoped Case Details
 
 ### Community 55 - "PersonaRoute.tsx (route guard)"
-Cohesion: 0.11
-Nodes (25): AppErrorBoundary, App shell area, canPersonaOpen, frontend/src/App.tsx (routes), frontend/src/main.tsx (providers), Gotcha: / is landing, /app is persona-relative, Gotcha: localStorage access is always wrapped in try/catch, Gotcha: persona pages drive the sidebar and route guard (+17 more)
+Cohesion: 0.13
+Nodes (22): AppErrorBoundary, App shell area, canPersonaOpen, frontend/src/App.tsx (routes), frontend/src/main.tsx (providers), Gotcha: / is landing, /app is persona-relative, Gotcha: persona pages drive the sidebar and route guard, Gotcha: sidebar puts the persona home first (+14 more)
 
 ### Community 56 - "Hugeicons by Halal Lab"
-Cohesion: 0.18
-Nodes (18): Design the Fallback First, Canvas UI shadcn Registry Install, Hugeicons by Halal Lab, Hugeicons Agent Skill (npx skills add), Hugeicons CDN Icon Font (use.hugeicons.com), Hugeicons MCP Server, Hugeicons Stroke Rounded Free Style, Iconsax, from the Vuesax team (+10 more)
+Cohesion: 0.14
+Nodes (22): Design the Fallback First, Canvas UI shadcn Registry Install, Hugeicons by Halal Lab, Hugeicons Agent Skill (npx skills add), Hugeicons CDN Icon Font (use.hugeicons.com), Hugeicons MCP Server, Hugeicons Stroke Rounded Free Style, Why Hugeicons Fits (+14 more)
 
 ### Community 57 - "proxyClient.ts"
 Cohesion: 0.16
@@ -536,27 +534,27 @@ Nodes (23): AnthropicContentBlock, AnthropicMessageResponse, argmax(), assertNev
 
 ### Community 58 - "assistant/index.ts"
 Cohesion: 0.07
-Nodes (43): User messages fenced as untrusted data, canAccessBooking(), createAssignmentAccessContext(), ASSISTANT_TIMEOUT_MS, callGemini(), GeminiContent, GeminiFunctionCall, GeminiOptions (+35 more)
+Nodes (50): User messages fenced as untrusted data, packages_core_src_index_persona, canAccessBooking(), canManageTaskStatus(), createAssignmentAccessContext(), currentCaseAssignee(), scopeSnapshot(), RowAccumulator (+42 more)
 
 ### Community 59 - "Front-End Simulation"
 Cohesion: 0.12
 Nodes (17): First Build, Forecast And Backtest, Front-End Simulation, Generator, How The Simulation Works, Legal And Domain Notes, Messages And Proposed Updates, Open Questions (+9 more)
 
 ### Community 60 - "CaseSummary"
-Cohesion: 0.13
-Nodes (30): Application State Derivation, Second Undecided Application To Same Bank (409), Case Derivation Rules, CaseSummary, db.insertApplication, POST /api/events Refusal Rules, Unmapped Errors Become Generic 500, Health Check Path /api/health (+22 more)
+Cohesion: 0.11
+Nodes (35): Application State Derivation, Case Derivation Rules, CaseSummary, Event Status: confirmed, Event Status: disputed, Event Model And Evidence Lifecycle, event_reviews Carries No Foreign Key To events, event_reviews Append-Only Review Log (+27 more)
 
 ### Community 61 - "Gotcha: manager workflows"
 Cohesion: 0.16
 Nodes (21): Busiest Desk shortcut, currentCaseAssignee recipient resolution, Decisions For You (Manager's queue of overdue cases not yet followed up), Flagged department tasks (persist, notification bell, 30 s refresh), Follow-up responsibility rule (shared by server follow-ups and Waiting On Them), Follow-Ups You Sent, Gotcha: manager workflows, Manager's home is Today (/chase) (+13 more)
 
-### Community 62 - "Snapshot"
-Cohesion: 0.08
-Nodes (21): SOURCE_TAG_LABELS, SOURCE_TAG_TONES, packages_core_src_index_assumption, packages_core_src_index_dataset, packages_core_src_index_forecast, packages_core_src_index_isodate, packages_core_src_index_sourcetag, booking() (+13 more)
+### Community 62 - "forecast-range.test.ts"
+Cohesion: 0.38
+Nodes (5): packages_core_src_index_forecast, booking(), data(), event(), STAGES
 
-### Community 63 - "AppSidebar.tsx"
-Cohesion: 0.13
-Nodes (20): MortarMark(), MortarMarkProps, AppFooter(), FooterLink, FooterLinkItem(), LINK_COLUMNS, AppSidebar(), AppSidebarProps (+12 more)
+### Community 63 - "persona.tsx"
+Cohesion: 0.12
+Nodes (22): AppSidebar(), AppSidebarProps, NavGroup(), NavLink(), PAGE_ICONS, SectionHeading(), renderSidebar(), canPersonaOpen() (+14 more)
 
 ### Community 64 - "jev/package.json"
 Cohesion: 0.10
@@ -579,36 +577,36 @@ Cohesion: 0.18
 Nodes (20): Mortar (product), Do Not Say (Slide 2): Unbilled Sales Are Unsigned Bookings, 2. The Business — A, 1:30, Chang Tze Yoong (Group CEO, Property Division), CHGP Developments: Dawn, Avantro, Crown, Aricia, Ayanna, Botanica Hills, Chin Hin Group Berhad (Wider Group), Chin Hin Group Property Berhad (CHGP), Claim: RM2.2 Billion Unbilled Sales, 30 June 2026 (+12 more)
 
 ### Community 69 - "SalesChartBuilding.tsx"
-Cohesion: 0.10
-Nodes (40): Task 2: Draw The Towers, Task 2: Draw The Site, Architecture, allFrame(), boxCorners(), CameraState, ContextRestore(), fitDistance() (+32 more)
+Cohesion: 0.11
+Nodes (34): Task 2: Draw The Site, Architecture, allFrame(), boxCorners(), CameraState, ContextRestore(), fitDistance(), Framing() (+26 more)
 
 ### Community 70 - "devDependencies"
 Cohesion: 0.17
 Nodes (12): devDependencies, jsdom, tailwindcss, @tailwindcss/vite, @testing-library/react, @types/react, @types/react-dom, @types/three (+4 more)
 
 ### Community 71 - "speak.py"
-Cohesion: 0.16
-Nodes (14): hashlib, chatterbox_cache_path(), chatterbox_runtime(), ChatterboxRenderer, in_chatterbox_venv(), KokoroRenderer, main(), Path (+6 more)
+Cohesion: 0.15
+Nodes (15): hashlib, chatterbox_cache_path(), chatterbox_runtime(), ChatterboxRenderer, in_chatterbox_venv(), KokoroRenderer, main(), Path (+7 more)
 
 ### Community 72 - "Questions To Expect"
-Cohesion: 0.09
-Nodes (39): 10. Technology Second — B, 1 Minute, Do Not Say (Slide 4): 87.5 Percent Or 7/8 Chin Hin Bookings Fail On Financing, 4. Evidence And Assumptions — B, 1:30, 5. Solution Logic — B, 1:30, 9. Adoption — A, 1:30, Inside The Brief's Rules: No New CRM, No Consultant, No Vendor, Archify (Diagramming Tool), Do Not Say: The Forecast Is AI (+31 more)
+Cohesion: 0.11
+Nodes (33): Do Not Say (Slide 4): 87.5 Percent Or 7/8 Chin Hin Bookings Fail On Financing, 4. Evidence And Assumptions — B, 1:30, 9. Adoption — A, 1:30, Inside The Brief's Rules: No New CRM, No Consultant, No Vendor, Do Not Say, Do Not Say: We Increased Conversion, Saved Inventory Days Or Brought Cash Forward, Do Not Say: Receiving A Document Approves A Loan Or Recovers A Sale, Do Not Say: The Forecast Is AI (+25 more)
 
 ### Community 73 - "App Shell"
-Cohesion: 0.14
-Nodes (25): App Shell, Authentication Theatre, Brand Mark (Kigumi Joint), Canvas Dot Grid, Footer Specification, Footer Bottom Bar, Footer Brand Column, Footer Link Columns (+17 more)
+Cohesion: 0.17
+Nodes (21): App Shell, Authentication Theatre, Brand Mark (Kigumi Joint), Canvas Dot Grid, Footer Specification, Footer Bottom Bar, Footer Brand Column, Footer Link Columns (+13 more)
 
-### Community 74 - "units.ts"
-Cohesion: 0.09
-Nodes (35): Task 3: Unit States And Release Review, Task 6: Shared Inventory In Add Bookings, formatUnitRangeDescription(), generateProjectInventoryUnits(), isUnitInRange(), projectInventorySize(), plain, packages_core_src_index_default_unit_models (+27 more)
+### Community 74 - "lib/projectSettings.ts"
+Cohesion: 0.17
+Nodes (20): Task 2: Unique Demo Units, Task 6: Shared Inventory In Add Bookings, formatUnitRangeDescription(), generateProjectInventoryUnits(), isUnitInRange(), projectInventorySize(), plain, packages_core_src_index_default_unit_models (+12 more)
 
 ### Community 75 - "POST /api/assistant"
 Cohesion: 0.15
 Nodes (29): assistant/tools.ts (five read-only tools), find_bookings tool, get_case tool, get_forecast_summary tool, get_my_queue tool, search_playbooks tool, Ask MortarAI (Gemini assistant), Without a key, /api/assistant returns 503 and UI falls back to scripted answers (+21 more)
 
-### Community 76 - "ChartUnit"
-Cohesion: 0.14
-Nodes (20): Review Focus, Rulings Carried From The Spec, Sales Chart Plan 2: The Page And The Grid, Task 1: Chart Helpers, Task 2: The Grid, Task 4: Numbering In Settings, Task 5: Docs, Verification And The Pull Request, Floating Case Panel And Unit Island Implementation Plan (+12 more)
+### Community 76 - "units.ts"
+Cohesion: 0.16
+Nodes (25): Review Focus, Sales Chart Plan 2: The Page And The Grid, Task 1: Chart Helpers, Data Flow, awaitingSpaAppointment(), chartUnits(), heldUnits(), labelNumber() (+17 more)
 
 ### Community 77 - "narrate.sh (Voice + Schedule + Subtitles)"
 Cohesion: 0.09
@@ -618,101 +616,101 @@ Nodes (30): Narration Beat Anchoring, Beat-Keyed Timing, A Beat Marks When a Mom
 Cohesion: 0.11
 Nodes (22): case_overview Beat, /bookings/BK-9001 loan and legal tracks, evidence provenance, 16-bit PCM WAV Requirement, CPU Attention Trap (Silent All-NaN Audio), Recording Writes, Synthetic Data Only, Clean-Seed Check, Delete Demo Data Intentionally Keeps Filming Edits (+14 more)
 
-### Community 79 - "insights.ts"
-Cohesion: 0.18
-Nodes (24): BookingFiltersProps, BallHolder, CaseDataInput, CaseFacts, addDays(), addWorkDays(), diffDays(), fromEpoch() (+16 more)
+### Community 79 - "cases.ts"
+Cohesion: 0.10
+Nodes (41): BallHolder, listOf(), appointmentDay(), CaseDataInput, CaseFacts, deriveApplication(), deriveCase(), DOCUMENT_LABELS (+33 more)
 
 ### Community 80 - "mappers.ts"
 Cohesion: 0.11
 Nodes (29): packages_core_src_index_casedata, packages_core_src_index_simulationmeta, CaseData, SimulationMeta, cached(), createDatabase(), isoDate(), isoDateTime() (+21 more)
 
 ### Community 81 - "Status Language"
-Cohesion: 0.18
-Nodes (23): Booking Row And Table Header, Chart Series Colours, Chase Card, Do And Do Not, Icon Rules (Never Alone, aria-label + Tooltip), Icons, Landing Sample Ledger, Lucide (lucide-react) Icon System (+15 more)
-
-### Community 82 - "Documents Index"
-Cohesion: 0.18
-Nodes (14): Contributing (.github/CONTRIBUTING.md), Design (docs/DESIGN.md), Documents Index, Feature Ideas (docs/research/feature-ideas/README.md), Product Requirements Document (docs/PRD.md), Product Overview (docs/PRODUCT.md), UI Triage (docs/research/ui-triage/README.md), docs/agents/notes.md (+6 more)
-
-### Community 83 - "Non-Functional Requirements"
 Cohesion: 0.15
-Nodes (25): Cache-First GET Routes, Scripted askBrain Fallback, Demo Script As Acceptance, Design Standards Compliance, FR-12 High-Availability Offline Jev Fallback, FR-18 Jev Through A Local Model Proxy, FR-23 Ask MortarAI Grounded Assistant, Gemini-Powered Assistant Service (+17 more)
+Nodes (27): Booking Row And Table Header, Chart Series Colours, Chase Card, Chip Economy, Do And Do Not, Internal Names Stay Internal, Jev (Assistant), Jev Acts, It Does Not Report Status (+19 more)
+
+### Community 82 - "Design: Mortar (Visual Specification)"
+Cohesion: 0.21
+Nodes (12): docs/agents/notes.md, Mortar Agent Notes, Mortar Project Guidelines (AGENTS.md), Design: Mortar (Visual Specification), Mortar Design System In Figma, Icon Rules (Never Alone, aria-label + Tooltip), Icons, Landing Video Pipeline (superseded) (+4 more)
+
+### Community 83 - "chase.ts"
+Cohesion: 0.13
+Nodes (16): NextStep, OWNER_ROLE_LABELS, addDays(), DOCUMENT_LABELS, dueOnForUrgency(), NEXT_ACTION_ICONS, NEXT_ACTION_LABELS, Urgency (+8 more)
 
 ### Community 84 - "generate() Stage-Transition Monte Carlo"
-Cohesion: 0.12
-Nodes (32): Bank Application Chains (1-3 Per Booking), Baseline Bookings BK-0001..BK-0140, Demo Data Add/Delete Retention, Canonical 140 Generated Bookings Demo Seed, Four Demo `meta` Keys, demo_seed Provenance Flag, Document Deficit Loop (~35%), Fixed Reference Time (REFERENCE_DATE = 2026-09-18) (+24 more)
+Cohesion: 0.14
+Nodes (26): Bank Application Chains (1-3 Per Booking), Baseline Bookings BK-0001..BK-0140, Synthetic Names, NRIC And Phone Numbers, Document Deficit Loop (~35%), Fixed Reference Time (REFERENCE_DATE = 2026-09-18), generate() Stage-Transition Monte Carlo, Generator Pipeline Diagram, Math.random Strictly Forbidden (+18 more)
 
 ### Community 85 - "How It Works section"
 Cohesion: 0.10
 Nodes (38): Funnel: booking fee to bank disbursement, @mortar/core domain rules: stage tracking, risk flags, Today queue, risk-weighted forecast, 6 funnel stages tracked, Decisions For You: the Manager's overdue cases, then escalation, Closed Excel export from /bookings, Five named demo profiles behind the four personas, Four personas switched in the header, Funnel stage 1: Booking (small fee) (+30 more)
 
-### Community 86 - "Profile Menu"
+### Community 86 - "Approved Glyph List"
 Cohesion: 0.13
-Nodes (24): Calendar Replacement For Native Date Input, Date Format (19 Sep 2026), Day Cell And Date Picker, Dialog Component, Drop Zone, Drop Zone Hidden File Input Exception, Elevation: Card Hover, Elevation: Overlay (+16 more)
+Nodes (28): ArrowUpRight Glyph, Ask Panel, Calendar Replacement For Native Date Input, ChevronsUpDown Glyph, Day Cell And Date Picker, Dialog Component, Drop Zone, Drop Zone Hidden File Input Exception (+20 more)
 
 ### Community 87 - "closedExport.ts"
 Cohesion: 0.16
 Nodes (12): buildClosedExportRows (pure, no DOM/network), downloadClosedExport (lazy-loads writer), buildClosedExportRows(), ClosedExportRow, closedOnDate(), CLOSING_KIND, downloadClosedExport(), exportBank() (+4 more)
 
 ### Community 88 - "patch_docs.py"
-Cohesion: 0.14
-Nodes (23): argparse, collections, datetime, Agy Worker Doc Patching, New Document Or Large Rewrite Extraction, patch_docs check, patch_docs finish, patch_docs prepare (+15 more)
+Cohesion: 0.15
+Nodes (22): argparse, collections, datetime, Agy Worker Doc Patching, New Document Or Large Rewrite Extraction, patch_docs check, patch_docs finish, patch_docs prepare (+14 more)
 
 ### Community 89 - "Typeface"
 Cohesion: 0.22
 Nodes (11): font-display: Swap, Geist, Geist Mono, Nine Text Styles, No Third Typeface, Body/Default, Display/Page, Eyebrow, Heading/Section (+3 more)
 
-### Community 90 - "core/src/index.ts"
-Cohesion: 0.04
-Nodes (132): Case Summary — Revised WaitingOnPanel, Every Existing Capability Has A Home, Task 3: The Unit Island On The Sales Chart, Manager Decision Row And Support, BookingRow, CaseViews(), LABELS, quickViewRow() (+124 more)
+### Community 90 - "ChasePage.tsx"
+Cohesion: 0.05
+Nodes (97): Task 3: The Page, Route, Navigation And Tour, App(), HomeRedirect(), CASE_VIEWS, CaseView, CaseViews(), LABELS, assignedTasksFor() (+89 more)
 
 ### Community 91 - "Markdown Style Guide"
 Cohesion: 0.05
 Nodes (40): Add Spacing To Headings, ATX-Style Headings, Avoid Relative Paths Unless Within The Same Directory, Better Is Better Than Best, Break Up Dense Text, Capitalization, Capitalization Of Titles And Headers, Character Line Limit (+32 more)
 
 ### Community 92 - "Deployment Workflow"
-Cohesion: 0.14
-Nodes (28): Build And Start Step, bun run check (ESLint + tsc + Vitest), bun run format (Prettier, 80-Column Markdown), CI Gate Before Render Deploys, CI Postgres 17 Service Container, Client Boundary: No VITE_* Tokens, Render Environment-Tab Secrets, Legacy Cloud Run Service (No Longer Receiving Deploys) (+20 more)
+Cohesion: 0.08
+Nodes (47): Architecture Topology Diagram, Build And Start Step, Docker Builder Stage (bun install + frontend build), bun run check (ESLint + tsc + Vitest), bun run format (Prettier, 80-Column Markdown), Bun HTTP Server On Render, CI Gate Before Render Deploys, CI Postgres 17 Service Container (+39 more)
 
 ### Community 93 - "Design Research: Layerhand Landing Page"
-Cohesion: 0.18
-Nodes (16): Design Research Index, Canvas UI: 35 WebGL/WebGPU effects over live HTML, Canvas UI Browser Support and Origin Trial, David Haz, author of Canvas UI and React Bits, html-in-canvas API, Peel Effect, Its Hover layers-icon Component Pattern, Jakub Antalik Portfolio Study (+8 more)
+Cohesion: 0.22
+Nodes (14): Canvas UI: 35 WebGL/WebGPU effects over live HTML, Canvas UI Browser Support and Origin Trial, David Haz, author of Canvas UI and React Bits, html-in-canvas API, Peel Effect, Jakub Antalik Portfolio Study, libraries.dev: UI libraries for AI agents, Restraint: one signature interaction (+6 more)
 
 ### Community 94 - "TourProvider.tsx"
-Cohesion: 0.18
+Cohesion: 0.14
 Nodes (14): frontend_src_lib_persona_persona, Rect, Spotlight(), resolveRoute(), Harness(), mocks, renderTour(), TourContext (+6 more)
 
 ### Community 95 - "frontend/tsconfig.json"
 Cohesion: 0.20
 Nodes (9): compilerOptions, jsx, lib, paths, types, exclude, extends, include (+1 more)
 
-### Community 96 - "Pull Request Template"
-Cohesion: 0.13
-Nodes (22): Answer Every Comment Then Resolve The Thread, Branch Naming Convention <type>/<short-topic>, Check The Live Site After The Deploy, Commit Message Format type(scope): what changed, Delete The Branch After Merging, Merging Into main Deploys To The Live Site, Fill In The Pull Request Template, Green Checks Only (+14 more)
+### Community 96 - "Reviews And Merging"
+Cohesion: 0.14
+Nodes (19): Answer Every Comment Then Resolve The Thread, Branch Naming Convention <type>/<short-topic>, Check The Live Site After The Deploy, Commit Message Format type(scope): what changed, Delete The Branch After Merging, Merging Into main Deploys To The Live Site, Green Checks Only, The Journey Of A Change (+11 more)
 
 ### Community 97 - "core/package.json"
 Cohesion: 0.12
 Nodes (16): dependencies, minisearch, devDependencies, typescript, vitest, exports, typescript, vitest (+8 more)
 
 ### Community 98 - "import.ts"
-Cohesion: 0.07
-Nodes (43): DropZone(), accept(), clear(), readableSize(), readSheetFile(), sheetKind(), SheetReadError, DEFAULTS (+35 more)
+Cohesion: 0.13
+Nodes (28): ageOn(), checkBookingDraft(), DateOrder, detectDateOrder(), EXCEL_EPOCH, findHeader(), HEADER_NAMES, headerCandidates() (+20 more)
 
-### Community 99 - "server/src/index.ts"
-Cohesion: 0.15
-Nodes (10): JevService, ref_node_path, db, fetch(), port, resetEnabled, serveStatic, sql (+2 more)
+### Community 99 - "tourAnchors.test.tsx"
+Cohesion: 0.12
+Nodes (7): PopoverState, BASE, BREADCRUMB, buildTourSnapshot(), confirmed(), PAGE_OF, packages_core_src_index_profileforpersona
 
 ### Community 100 - "assistant.test.ts"
 Cohesion: 0.11
-Nodes (18): packages_core_src_index_isodatetime, App, APPLICATIONS, ask(), BOOKING, chipsFor(), EVENTS, fakeJev() (+10 more)
+Nodes (19): packages_core_src_index_isodatetime, App, MAX_TOOL_ROUNDS, APPLICATIONS, ask(), BOOKING, chipsFor(), EVENTS (+11 more)
 
 ### Community 101 - "record.mjs"
-Cohesion: 0.15
-Nodes (10): css, ref_node_fs, auditCapture(), REQUIRED_BEATS, beats, errors, filmed, OUT (+2 more)
+Cohesion: 0.20
+Nodes (8): auditCapture(), REQUIRED_BEATS, beats, errors, filmed, OUT, require, SHARED_HOSTS
 
 ### Community 102 - "6. Component Specifications"
-Cohesion: 0.06
-Nodes (32): 1. What The Previous Rounds Teach Us, 2. The First Five Seconds, 3. Information Architecture, 4. Layout And Measured Rules, 5. Booking Journey Specification, 6. Component Specifications, 7. Exact DESIGN.md Amendments, 9. Data Integrity And Acceptance (+24 more)
+Cohesion: 0.07
+Nodes (28): 1. What The Previous Rounds Teach Us, 2. The First Five Seconds, 3. Information Architecture, 4. Layout And Measured Rules, 6. Component Specifications, 7. Exact DESIGN.md Amendments, 8. Copy And Branding Audit, 9. Data Integrity And Acceptance (+20 more)
 
 ### Community 103 - "components.json"
 Cohesion: 0.12
@@ -723,8 +721,8 @@ Cohesion: 0.13
 Nodes (16): legal_persona Beat, Legal Admin persona; /legal signing queue, Broadcast-Safe Slide Rendering, Capture Viewport 1440x900, $DEMO_DIR/capture.webm, $DEMO_DIR/demo.mp4, DEMO_DIR ($TMPDIR/mortar-demo), Scratch directory for captures, segments, slides and the MP4 (+8 more)
 
 ### Community 105 - "Case-free project aggregate for historical forecast rates"
-Cohesion: 0.24
-Nodes (13): Backtests train only on evidence available at their cutoff, createDatabase (shared snapshot), demo_seed provenance, DEMO_WEB disposable recording env, Missing history is unavailable, not a supported zero (a measured zero stays valid), Case-free project aggregate for historical forecast rates, meta key forecast_model_v1 (refreshed on next read after seven days), db.forgetSnapshot() (+5 more)
+Cohesion: 0.18
+Nodes (16): Backtests train only on evidence available at their cutoff, .github/workflows/ci.yml, createDatabase (shared snapshot), demo_seed provenance, DEMO_WEB disposable recording env, Missing history is unavailable, not a supported zero (a measured zero stays valid), Case-free project aggregate for historical forecast rates, meta key forecast_model_v1 (refreshed on next read after seven days) (+8 more)
 
 ### Community 106 - "compilerOptions"
 Cohesion: 0.14
@@ -739,8 +737,8 @@ Cohesion: 0.12
 Nodes (17): Music Bed Processing (loop, fade, duck), Bundled Chromium (or DEMO_CHANNEL=chrome), Ducked Music Bed, DEMO_BGM (""), Music file; looped, faded, ducked under the voice when set, DEMO_BGM_GAIN_DB (-20), Music gain before speech-triggered ducking, DEMO_CHANNEL (unset (bundled Chromium)) (+9 more)
 
 ### Community 109 - "The Jev Boundary And Resilience"
-Cohesion: 0.17
-Nodes (26): @mortar/core package, Support For Automation (AI Safe Areas), Where AI Helps And Where People Decide, Aster Heights Fictional Project, Booking BK-9001 Lifecycle, Ask MortarAI, The Ask MortarAI Boundary, Division Of Operational Responsibility (+18 more)
+Cohesion: 0.18
+Nodes (25): Support For Automation (AI Safe Areas), Where AI Helps And Where People Decide, Aster Heights Fictional Project, Booking BK-9001 Lifecycle, Ask MortarAI, The Ask MortarAI Boundary, Division Of Operational Responsibility, Gemini (Google) - Ask MortarAI's Answer Engine (+17 more)
 
 ### Community 110 - "Mortar Notes For Agents"
 Cohesion: 0.15
@@ -751,8 +749,8 @@ Cohesion: 0.21
 Nodes (14): Env var DATABASE_URL, .env.example copied to .env at repo root, Env var TEST_DATABASE_URL (dedicated test Postgres), Getting Started, Installation steps, Local Postgres 17 via docker run (mortar-pg), Neon project mortar-test, Prerequisites: Bun 1.3.14, Postgres 17, desktop browser (+6 more)
 
 ### Community 112 - "UI Triage: The Signed-In App"
-Cohesion: 0.18
-Nodes (17): transitions.dev: UI transitions for AI agents, R7, the Dissenting Expert, UI Triage: The Signed-In App, Copy Rules: the drop and write table, Density Budget, The Desk Lens Becomes a Preset, Not a Banner, Three Stacked Filter Systems With Disagreeing Numbers, Four-Phase Implementation Plan (+9 more)
+Cohesion: 0.23
+Nodes (13): R7, the Dissenting Expert, UI Triage: The Signed-In App, Copy Rules: the drop and write table, Density Budget, The Desk Lens Becomes a Preset, Not a Banner, Three Stacked Filter Systems With Disagreeing Numbers, Four-Phase Implementation Plan, Jargon a Sales Admin Does Not Use (+5 more)
 
 ### Community 113 - "BookingJourney.tsx"
 Cohesion: 0.09
@@ -763,16 +761,16 @@ Cohesion: 0.36
 Nodes (8): Booking Leakage, Evidence From Research And Industry, Inventory Lock, Ranked Causes Of Booking Leakage, Official And Industry Benchmarks, PJD Regency Sdn Bhd v Tribunal Tuntutan Pembeli Rumah (2021), Industry Practitioner Survey (n=8), The Problem And Its Cost
 
 ### Community 115 - "Bug Report Issue Form"
-Cohesion: 0.15
-Nodes (20): Check For Duplicates And Conflicts Before Opening An Issue, Check Open Pull Requests For Overlap, Start With An Issue, Use A Form, Blank Issues Are Off, Area, Bug Report Issue Form, Duplicate And Conflict Check, What You Expected (+12 more)
+Cohesion: 0.13
+Nodes (22): Check For Duplicates And Conflicts Before Opening An Issue, Check Open Pull Requests For Overlap, Start With An Issue, Use A Form, Blank Issues Are Off, Area, Bug Report Issue Form, Duplicate And Conflict Check, What You Expected (+14 more)
 
 ### Community 116 - "Button"
-Cohesion: 0.06
-Nodes (80): Case Page Layout Implementation Plan, Global Constraints, Task 2: Case History, Task 3: Case Details And Latest Message, Task 4: Case Action Sheet And What To Do, Task 5: Case Views And The Page, Task 6: Docs And A Browser Pass, Tasks (+72 more)
+Cohesion: 0.07
+Nodes (55): Case Page Layout Implementation Plan, Global Constraints, Task 2: Case History, Task 3: Case Details And Latest Message, Task 5: Case Views And The Page, Task 6: Docs And A Browser Pass, Tasks, Every User-Facing Jev Occurrence Found In UI Source (+47 more)
 
 ### Community 117 - "Jev (Reading Engine)"
 Cohesion: 0.12
-Nodes (35): Slide 6: How Jev Works, 6. Meet MortarAI — B, 1 Minute, Slide 6: Why It Helps, AI Proposes; People Confirm; Every Blocker Gets An Owner, ChatGPT (Free-Text Chatbot), Chin Hin Earns On Signed SPAs; Stalled Bookings Cost It, Contingency: Jev Is Slow Or Wrong → Use Record An Update, Do Not Say (+27 more)
+Nodes (40): MortarAI (AI layer), 10. Technology Second — B, 1 Minute, 5. Solution Logic — B, 1:30, Slide 6: How Jev Works, 6. Meet MortarAI — B, 1 Minute, Slide 6: Why It Helps, AI Proposes; People Confirm; Every Blocker Gets An Owner, Archify (Diagramming Tool) (+32 more)
 
 ### Community 118 - "test_assemble.py"
 Cohesion: 0.24
@@ -783,28 +781,28 @@ Cohesion: 0.13
 Nodes (15): Acceptance, Access And Peer Visibility, Building, Delivery, Design System Exception, Figures And Filters, Grid, Out Of Scope (+7 more)
 
 ### Community 120 - "Perch Landing Teardown"
-Cohesion: 0.13
-Nodes (20): Layered Card Surface: hairline ring and stacked shadow, better-layout Skill, shadow-border Three-Layer Token, Perch Sign-In Teardown, Authored Disabled States, Perch Fake Auth Flow: no session, no guard, isJoiner Entry-Path Check, Porting Plan: the persona folds into the guest button (+12 more)
+Cohesion: 0.14
+Nodes (19): better-layout Skill, explain-interface Skill, Perch Sign-In Teardown, Authored Disabled States, Perch Fake Auth Flow: no session, no guard, isJoiner Entry-Path Check, Porting Plan: the persona folds into the guest button, Perch Storage Keys: perch.trip.v1, perch.theme.v1, perch.voter.v1 (+11 more)
 
 ### Community 121 - "Checklist"
-Cohesion: 0.10
-Nodes (21): Follow The Design Guide And Shared UI Components, Keep AI Agents On Task, Never Do These, Never Bypass The Checks, Never Force-Push A Shared Branch, No Pushes Straight To main, Never Commit Real Buyer Data, Never Commit Secrets (+13 more)
+Cohesion: 0.16
+Nodes (16): Fill In The Pull Request Template, Follow The Design Guide And Shared UI Components, Never Do These, Never Force-Push A Shared Branch, No Pushes Straight To main, Never Commit Real Buyer Data, Never Commit Secrets, Show UI Changes With Screenshots (+8 more)
 
-### Community 122 - "Architecture And Components"
-Cohesion: 0.08
-Nodes (48): Architecture And Components, Architecture Topology Diagram, Docker Builder Stage (bun install + frontend build), Bun Multi-Package Monorepo, Bun HTTP Server On Render, frontend/src/components/case/CaseQuickView.tsx, Client Snapshot Provider (lazy useSnapshot), packages/core/src/jev.ts MiniSearch Playbook Helpers (+40 more)
+### Community 122 - "server/ Workspace"
+Cohesion: 0.13
+Nodes (27): Bun Multi-Package Monorepo, bun run test (Vitest), Client Snapshot Provider (lazy useSnapshot), packages/core/src/jev.ts MiniSearch Playbook Helpers, packages/core/src/__tests__/, packages/core/src/types.ts Domain Contract, frontend/src/lib/data.tsx Snapshot Context, JEV_REVIEW_THRESHOLD 0.60 -> Needs Review Tag (+19 more)
 
 ### Community 123 - "Import area"
-Cohesion: 0.22
-Nodes (13): booking-sheet-template.xlsx/.csv, checkBookingDraft, DropZone / readSheetFile, Import area, parseCsv, readBookingSheet, Client-Only Spreadsheet Parsing, FR-13 Add Bookings Intake And Validation (+5 more)
+Cohesion: 0.17
+Nodes (15): booking-sheet-template.xlsx/.csv, checkBookingDraft, DropZone / readSheetFile, Import area, parseCsv, readBookingSheet, Client-Only Spreadsheet Parsing, Direct Core ERP Integration (Out Of Scope) (+7 more)
 
-### Community 124 - "FR-2 Case Summarization And Stall Detection"
-Cohesion: 0.14
-Nodes (20): FR-2 Case Summarization And Stall Detection, Goals And Non-Goals, Honest Accounting, Human In The Loop, Independent Loan And Legal Tracks, JTBD: Application Tracking, Metrics, MortarAI (AI Layer With Two Engines) (+12 more)
+### Community 124 - "FR-8 Statistical Conversion Forecasting"
+Cohesion: 0.09
+Nodes (34): Brown, Cai & DasGupta (2001) Wilson Interval, FR-16 Leakage Analysis And Recovery Sizing, FR-2 Case Summarization And Stall Detection, FR-8 Statistical Conversion Forecasting, Goals And Non-Goals, Honest Accounting, Human In The Loop, Independent Loan And Legal Tracks (+26 more)
 
 ### Community 125 - "This Week. What We Need."
-Cohesion: 0.08
-Nodes (37): A1 — Chin Hin's Leaks Follow The Same Order (test: rebuild loss reasons from closed files), A2 — Follow-Up Lifts Stalled Bookings From 20% To 40% Signed (test: assisted cohort vs ordinary follow-up), A3 — Staff Will Paste Banker Messages In Daily (test: one admin, two weeks), A4 — Bookings Can Start From A Spreadsheet Export (test: first upload, week one), BK-9006 (booking), Chin Hin Group Property (CHGP), Kabel DXP, Live Demo — mortar-d18f.onrender.com (+29 more)
+Cohesion: 0.09
+Nodes (36): A1 — Chin Hin's Leaks Follow The Same Order (test: rebuild loss reasons from closed files), A2 — Follow-Up Lifts Stalled Bookings From 20% To 40% Signed (test: assisted cohort vs ordinary follow-up), A3 — Staff Will Paste Banker Messages In Daily (test: one admin, two weeks), A4 — Bookings Can Start From A Spreadsheet Export (test: first upload, week one), BK-9006 (booking), Chin Hin Group Property (CHGP), Kabel DXP, Live Demo — mortar-d18f.onrender.com (+28 more)
 
 ### Community 126 - "Keep It Current"
 Cohesion: 0.20
@@ -819,60 +817,60 @@ Cohesion: 0.16
 Nodes (20): booking_removals, bookings, event_reviews, event_reviews_event_idx, events, events_application_idx, events_booking_idx, events_message_idx (+12 more)
 
 ### Community 130 - "Acceptance Criteria (14)"
-Cohesion: 0.31
-Nodes (9): Acceptance Criteria (14), Calibrated Contrast Ratios, Colour, Light And Dark From One Token Set, Primitives: ink Ramp, Primitives: paper Ramp, Selected Row Ground (--selected), Semantic Colour (Color Collection) (+1 more)
+Cohesion: 0.21
+Nodes (13): Acceptance Criteria (14), Calibrated Contrast Ratios, Colour, Elevation: Card, Flat Ledger Look, Bookings Bulk-Action Glass Island, Light And Dark From One Token Set, Primitives: ink Ramp (+5 more)
 
 ### Community 131 - "sim.ts"
-Cohesion: 0.08
-Nodes (43): Global Constraints, Unit States, canonicalSnapshot(), addFarahOverdueExample(), addSalesTodayOverdueExamples(), backtest(), FUNNEL_STAGES, groupBy() (+35 more)
+Cohesion: 0.06
+Nodes (45): Global Constraints, Unit States, EMPTY, canonicalSnapshot(), packages_core_src_index_backtest, addFarahOverdueExample(), addSalesTodayOverdueExamples(), backtest() (+37 more)
 
 ### Community 132 - "booking-template.mjs"
-Cohesion: 0.18
-Nodes (6): bookings, COLUMNS, howTo, merged(), OUT, SAMPLES
+Cohesion: 0.17
+Nodes (7): bookings, COLUMNS, howTo, merged(), OUT, SAMPLES, ref_node_url
 
-### Community 133 - "Event Model And Evidence Lifecycle"
-Cohesion: 0.19
-Nodes (19): Task Writes Share A Natural-Key Advisory Lock, Event Status: disputed, Event Model And Evidence Lifecycle, event_reviews Carries No Foreign Key To events, event_reviews Append-Only Review Log, JEV_REVIEW_THRESHOLD 0.60 -> Needs Review Tag, Manager Task Creation Under Booking Lock, Three Parallel Tracks: sales / loan / legal (+11 more)
+### Community 133 - "unitOverview.test.ts"
+Cohesion: 0.15
+Nodes (13): Floating Case Panel And Unit Island Implementation Plan, Global Constraints, Review Focus, Task 2: The Unit Overview, Task 3: The Unit Island On The Sales Chart, quickViewRow(), buildSnapshot(), CASES (+5 more)
 
 ### Community 134 - "Gotcha: named profiles define data access"
-Cohesion: 0.23
-Nodes (14): canManageTaskStatus (exact owner name and department, Manager override, booking must be accessible), Gotcha: booking imports require Sales Admin or Manager (#80), Gotcha: named profiles define data access, Gotcha: task status changes require the named assignee or Manager (#81), Hiding the Add Bookings page is not the authorization boundary, A request body claiming another role does not widen access, Import API session-profile gate (403 for Loan and Legal Admin), Profile id header must match the session (+6 more)
+Cohesion: 0.19
+Nodes (16): canManageTaskStatus (exact owner name and department, Manager override, booking must be accessible), Gotcha: booking imports require Sales Admin or Manager (#80), Gotcha: named profiles define data access, Gotcha: profile switches clear the workspace, Gotcha: task status changes require the named assignee or Manager (#81), Hiding the Add Bookings page is not the authorization boundary, A request body claiming another role does not widen access, Import API session-profile gate (403 for Loan and Legal Admin) (+8 more)
 
-### Community 135 - "PersonaProvider"
-Cohesion: 0.11
-Nodes (20): RISK, DirectTableImport(), fakeBuyer(), newEntry(), rowId(), renderAsNamedSalesProfile(), renderImport(), renderCard() (+12 more)
+### Community 135 - "SalesChartPage.test.tsx"
+Cohesion: 0.13
+Nodes (9): unitsForSnapshot(), BASE, CASES, label9001(), Measured, RefreshGrabber(), refreshRef, renderPage() (+1 more)
 
 ### Community 136 - "brain/index.ts"
 Cohesion: 0.10
-Nodes (30): ctx, approvedAnswer(), conversionAnswer(), FORECAST_DOCUMENT_QUESTIONS, formatDay(), formatRm(), insightsFor(), lostAnswer() (+22 more)
+Nodes (31): ctx, approvedAnswer(), conversionAnswer(), FORECAST_ASK_QUESTIONS, FORECAST_DOCUMENT_QUESTIONS, formatDay(), formatRm(), insightsFor() (+23 more)
 
 ### Community 137 - "File Map"
 Cohesion: 0.18
 Nodes (15): ballInCourt (who holds a case), components/case/ball.ts (labels, icons, owners), CaseQuickView.tsx (side sheet), ChartTooltipContent.tsx (recharts shell), createJevService / systemOne surface, createProxySystemOne (Jev proxy client), DateField.tsx (shared Mortar date field), File Map (+7 more)
 
 ### Community 138 - "Gotchas"
-Cohesion: 0.24
-Nodes (11): .env.example (empty-not-commented convention), Gotcha: focus the sheet, not its first control, Gotcha: grid-cols-1 required on every responsive grid, Gotcha: JEV_PROXY_MODEL falls back on || not ??, Gotcha: Radix Popover stalls jsdom (14-24s), Gotcha: Radix popovers need z-[80] to clear a dialog, Gotchas, inlinePopover.tsx test double (+3 more)
+Cohesion: 0.16
+Nodes (16): blockPrefix legacy read alongside blocks, Atomic duplicate-unit protection, .env.example (empty-not-commented convention), Gotcha: focus the sheet, not its first control, Gotcha: grid-cols-1 required on every responsive grid, Gotcha: JEV_PROXY_MODEL falls back on || not ??, Gotcha: Radix Popover stalls jsdom (14-24s), Gotcha: shared settings and inventory (+8 more)
 
 ### Community 139 - "RTK Commands By Workflow"
 Cohesion: 0.14
 Nodes (14): Analysis & Debug (70-90% Savings), Build & Compile (80-90% Savings), Files & Search (60-75% Savings), Git (59-80% Savings), GitHub (26-87% Savings), Golden Rule, Infrastructure (85% Savings), JavaScript/TypeScript Tooling (70-90% Savings) (+6 more)
 
-### Community 140 - "3. The Workflow Today — A, 1:30"
-Cohesion: 0.15
-Nodes (21): 11. This Week — All, 1:45, 1. Cover — A, 45 Seconds, 3. The Workflow Today — A, 1:30, BK-9006 (Demo Booking), Booked Is Not Sold, Signed Is, Decisions For You (Manager's Today), Do Not Say: Mortar Sends WhatsApp Messages, The Gap Is Ownership, Not Information (+13 more)
+### Community 140 - "Step 6: Request Follow-Up From Tan Mei Ling"
+Cohesion: 0.27
+Nodes (11): BK-9006 (Demo Booking), Decisions For You (Manager's Today), Do Not Say: Mortar Sends WhatsApp Messages, Precondition: Legal Has A No-Appointment Row; Manager Has A Suggestion, Q: What Happens When Someone Clicks Create Task?, Legal Admin Desk, Step 5: Record Appointment On BK-9006, Step 6: Request Follow-Up From Tan Mei Ling (+3 more)
 
 ### Community 141 - "Today Rail"
-Cohesion: 0.25
-Nodes (14): Content Canvas, Data Formats, Duration Formats, Empty Values Are Em Dashes, Money Formats, One Focus Per Screen, Progressive Disclosure, Screen Density (+6 more)
+Cohesion: 0.23
+Nodes (15): Content Canvas, Data Formats, Date Format (19 Sep 2026), Duration Formats, Empty Values Are Em Dashes, Money Formats, One Focus Per Screen, Progressive Disclosure (+7 more)
 
-### Community 142 - "FR-8 Statistical Conversion Forecasting"
-Cohesion: 0.14
-Nodes (20): Backtest Caption (Superseded: Engineering Tool Outside /forecast), Brown, Cai & DasGupta (2001) Wilson Interval, Forecast Document Stack (#54), Forecast Documents Panel Removed, FR-16 Leakage Analysis And Recovery Sizing, FR-8 Statistical Conversion Forecasting, FR-9 Historical Forecast Backtesting, Live And Resolved Booking Definitions (+12 more)
+### Community 142 - "Run Of Show"
+Cohesion: 0.19
+Nodes (16): 11. This Week — All, 1:45, 1. Cover — A, 45 Seconds, 3. The Workflow Today — A, 1:30, Chin Hin Earns On Signed SPAs; Stalled Bookings Cost It, Booked Is Not Sold, Signed Is, Kabel DXP Weekly Check-In, 29 September 2026, The Gap Is Ownership, Not Information, Manager Desk (+8 more)
 
-### Community 143 - "sales-chart/README.md"
-Cohesion: 0.18
-Nodes (7): Global Constraints, Review Focus, Sales Chart Plan 3: The Building View, Task 1: Dependencies And Layout, Task 2: The Scene, The Switch And The Fallback, Task 3: The Design Exception, Docs And The Pull Request, canUseWebGL()
+### Community 143 - "Review Focus"
+Cohesion: 0.33
+Nodes (6): Global Constraints, Review Focus, Sales Chart Plan 3: The Building View, Task 1: Dependencies And Layout, Task 2: The Scene, The Switch And The Fallback, Task 3: The Design Exception, Docs And The Pull Request
 
 ### Community 144 - "Project Structure tree"
 Cohesion: 0.10
@@ -883,24 +881,24 @@ Cohesion: 0.11
 Nodes (18): Burned Subtitles, DEMO_FFPROBE (ffprobe on PATH), ffprobe executable, DEMO_MAX_DURATION (300), Reject a deliverable longer than this many seconds, DEMO_MAX_GAP_MS (1000), Max allowed gap between consecutive spoken lines (dead-air rule), DEMO_MIN_DURATION (240) (+10 more)
 
 ### Community 146 - "notificationStore.ts"
-Cohesion: 0.19
-Nodes (11): Notification, emit(), Listener, listeners, loadNotifications(), notifications, profileId, saveNotifications() (+3 more)
+Cohesion: 0.16
+Nodes (15): Gotcha: localStorage access is always wrapped in try/catch, Notification, NotificationPopover(), useNotifications(), emit(), Listener, listeners, loadNotifications() (+7 more)
 
 ### Community 147 - "RecordUpdateForm.test.tsx"
-Cohesion: 0.12
-Nodes (6): PopoverState, BOOKING, CREST, MALAYAN, renderForm(), summary()
+Cohesion: 0.20
+Nodes (5): BOOKING, CREST, MALAYAN, renderForm(), summary()
 
 ### Community 148 - "Agent Skills"
 Cohesion: 0.20
 Nodes (9): Skills (docs/agents/skills.md), Agent Skills, Install And Update, leonxlnx/taste-skill, mattpocock/skills, obra/superpowers, On Windows, pbakaus/impeccable (+1 more)
 
 ### Community 149 - "Functional Requirements"
-Cohesion: 0.17
-Nodes (16): Buyer Signals (responsiveness/hesitation), Assistant Read-Only Tool Set, FR-20 Message Timing And Buyer Response, FR-24 Guided Walkthrough, FR-6 TypeSafe Jev Structured Message Extraction, FR-7 Next Action, Playbook Fit And Buyer Signals, Functional Requirements, JevMeta (source/stale/latencyMs) (+8 more)
+Cohesion: 0.11
+Nodes (33): Ask Mortar Renamed To Ask MortarAI, Buyer Signals (responsiveness/hesitation), Cache-First GET Routes, Scripted askBrain Fallback, Assistant Read-Only Tool Set, FR-12 High-Availability Offline Jev Fallback, FR-18 Jev Through A Local Model Proxy, FR-20 Message Timing And Buyer Response (+25 more)
 
-### Community 150 - "app.test.ts"
-Cohesion: 0.04
-Nodes (19): BookingDraft, packages_core_src_index_bookingdraft, packages_core_src_index_evidencestatus, Task, BookingMovedOnError, EventSettledError, ImportBatch, ImportMovedOnError (+11 more)
+### Community 150 - "CaseEvent"
+Cohesion: 0.03
+Nodes (36): EXTRACTION, MESSAGE, PROPOSAL, EXTRACTION, MESSAGE, PROPOSAL, renderPanel(), BookingDraft (+28 more)
 
 ### Community 151 - "jev/tsconfig.json"
 Cohesion: 0.33
@@ -911,8 +909,8 @@ Cohesion: 0.27
 Nodes (4): NarrateTests, CompletedProcess, Path, write_wav()
 
 ### Community 153 - "Personas"
-Cohesion: 0.29
-Nodes (10): Frontend Stack (React 19 + Vite + Tailwind 4 + shadcn/ui), mortar.persona localStorage key, mortar.profile localStorage key, Personas, Mortar Product Definition, Route Map, Stack (Bun workspaces), Profile Menu (Header Role Switcher) (+2 more)
+Cohesion: 0.23
+Nodes (13): Frontend Stack (React 19 + Vite + Tailwind 4 + shadcn/ui), Manager Persona (Home Route /chase), @mortar/core package, mortar.persona localStorage key, mortar.profile localStorage key, Personas, Mortar Product Definition, Route Map (+5 more)
 
 ### Community 154 - "Tech Stack table"
 Cohesion: 0.16
@@ -923,20 +921,20 @@ Cohesion: 0.14
 Nodes (13): Acceptance, Decisions, Delivery, Design System Amendments, Interaction, Out Of Scope, Sales Chart: Showhouse Model, Testing (+5 more)
 
 ### Community 156 - "See Also"
-Cohesion: 0.19
-Nodes (13): Markdown Style Guide (docs/markdown-style.md), docs/DESIGN.md, Docs, frontend/src/globals.css (@theme tokens from DESIGN.md), docs/PRD.md, docs/PRODUCT.md, docs/TRD.md, docs/ (Non-Package) (+5 more)
+Cohesion: 0.23
+Nodes (12): docs/DESIGN.md, Docs, frontend/src/globals.css (@theme tokens from DESIGN.md), docs/PRD.md, docs/PRODUCT.md, docs/TRD.md, docs/ (Non-Package), research/company-brain/simulation.md Seed Table (+4 more)
 
 ### Community 157 - "Meet MortarAI. One Reads, One Answers."
 Cohesion: 0.08
-Nodes (48): Apex Bank, Ask MortarAI (feature), BK-9001 (booking), By Hand (staff record the update), Cached Answer (asked before, reused), Live Answer (typed, with a confidence), Stale, Marked (shown with a stale tag), Forecast (expected signings with a range — page rebuilt since 20 Sep) (+40 more)
+Nodes (47): Apex Bank, Ask MortarAI (feature), BK-9001 (booking), By Hand (staff record the update), Cached Answer (asked before, reused), Live Answer (typed, with a confidence), Stale, Marked (shown with a stale tag), Forecast (expected signings with a range — page rebuilt since 20 Sep) (+39 more)
 
 ### Community 158 - "Jakub Krehel's Interface Skills"
-Cohesion: 0.19
-Nodes (14): Jakub Krehel's Interface Skills, better-colors Skill, better-interface Skill: orchestrated review, better-typography Skill, better-writing Skill, break Skill, explain-interface Skill, interface-review Skill (+6 more)
+Cohesion: 0.21
+Nodes (13): Jakub Krehel's Interface Skills, better-colors Skill, better-interface Skill: orchestrated review, better-typography Skill, better-writing Skill, break Skill, interface-review Skill, Interfaces Magazine by Jakub Krehel (+5 more)
 
-### Community 159 - "forecast-summary.test.ts"
-Cohesion: 0.17
-Nodes (11): LocationEcho(), renderTasks(), packages_core_src_index_canmanagetaskstatus, packages_core_src_index_profilefor, profileFor(), task, booking(), database (+3 more)
+### Community 159 - "packages_core_src_index_task"
+Cohesion: 0.16
+Nodes (12): LocationEcho(), renderTasks(), packages_core_src_index_canmanagetaskstatus, packages_core_src_index_profilefor, packages_core_src_index_task, profileFor(), task, booking() (+4 more)
 
 ### Community 160 - "server/tsconfig.json"
 Cohesion: 0.33
@@ -947,36 +945,36 @@ Cohesion: 0.25
 Nodes (10): build(), cards(), Builds the burned-in subtitle track from the same lines.json the narration…, Split into lines of similar length, never mid-word. Two things depend on this…, Group wrapped lines into cards of at most MAX_LINES., ts(), wav_ms(), wrap() (+2 more)
 
 ### Community 162 - "Manager (persona)"
-Cohesion: 0.30
-Nodes (17): Manager (persona), Ask Mortar Renamed To Ask MortarAI, FR-14 Persona Navigation And Page Routing, Header Profile Menu, Approved Manager And Ask MortarAI Intake (#60), JTBD: Reading The Desks, Manager Suggestions-First Navigation, Named Profile Access Scoping (+9 more)
+Cohesion: 0.21
+Nodes (22): Manager (persona), Decisions For You (Manager Today Queue), Forecast Document Stack (#54), Forecast Documents Panel Removed, FR-14 Persona Navigation And Page Routing, FR-22 Add Bookings Intake, Header Profile Menu, Approved Manager And Ask MortarAI Intake (#60) (+14 more)
 
-### Community 163 - "tourAnchors.test.tsx"
+### Community 163 - "PersonaProvider"
 Cohesion: 0.09
-Nodes (12): buildSnapshot(), SnapshotProvider(), selectProfile(), renderDetail(), renderImport(), SHEET, BASE, BREADCRUMB (+4 more)
+Nodes (18): LocationEcho(), mocks, renderGuarded(), SnapshotProvider(), PersonaProvider(), readProfile(), selectProfile(), renderDetail() (+10 more)
 
 ### Community 164 - "Ask The Graph First"
-Cohesion: 0.29
-Nodes (8): graphify affected, Ask The Graph First, graphify explain, graphify god-nodes, GRAPH_REPORT.md, graphify path, graphify query, Graph First, Then Grep
+Cohesion: 0.15
+Nodes (14): graphify affected, Ask The Graph First, graphify explain, graphify god-nodes, GRAPH_REPORT.md, graphify path, graphify query, Graph First, Then Grep (+6 more)
 
 ### Community 167 - "scripts"
 Cohesion: 0.29
 Nodes (7): scripts, build, dev, preview, template:bookings, test, typecheck
 
 ### Community 168 - "Landing Page"
-Cohesion: 0.27
-Nodes (12): Landing Page, Landing Card Elevation, Landing Claim, Landing Copy Specification, Landing Feature Cards (.land-desk), Landing Header Row, Landing Type Exceptions, Lead Line Sentence-Case Carve-Out (+4 more)
+Cohesion: 0.22
+Nodes (15): Landing Page, Landing Card Elevation, Landing Chromatic Panel (.land-panel), Landing Claim, Landing Copy Specification, Landing Feature Cards (.land-desk), Landing Header Row, Landing Panel Tokens (+7 more)
 
 ### Community 169 - "Screenshots: the running app on seeded data, not mockups"
 Cohesion: 0.18
 Nodes (14): Settings: demo dataset controls (seed, reference date, record counts), Hand-entry Add Booking (type bookings in directly), Route /import: Add Bookings, Route /settings: demo dataset controls, reset, server health, folded layouts, Row-by-row review on import, Screenshots: the running app on seeded data, not mockups, bun run db:reset (deterministic re-seed), Canonical dataset seeded on first boot (+6 more)
 
-### Community 170 - "scopeSnapshot"
-Cohesion: 0.26
-Nodes (11): Review Focus, Sales Chart Plan 1: Core And Server, Task 1: Numbering And Layout, Task 4: Scoped Units In The Snapshot, Task 5: Server Settings And Demo Reset, Task 7: Docs, Verification And The Pull Request, Data Flow, ReadSheetOptions (+3 more)
+### Community 170 - "src/projectSettings.ts"
+Cohesion: 0.12
+Nodes (15): Global Constraints, Review Focus, Sales Chart Plan 1: Core And Server, Task 1: Numbering And Layout, Task 3: Unit States And Release Review, Task 4: Scoped Units In The Snapshot, Task 7: Docs, Verification And The Pull Request, Task 1: The Tower Model (+7 more)
 
-### Community 172 - "Global Constraints"
-Cohesion: 0.25
-Nodes (7): Global Constraints, Global Constraints, Review Focus, Showhouse Towers Implementation Plan, Task 1: The Tower Model, project(), unit()
+### Community 172 - "Task 2: Draw The Towers"
+Cohesion: 0.20
+Nodes (8): Global Constraints, Review Focus, Showhouse Towers Implementation Plan, Task 2: Draw The Towers, sceneColors, TOKENS, modelKey(), packages_core_src_index_unitstate
 
 ### Community 173 - "askBrain (scripted fallback)"
 Cohesion: 0.29
@@ -986,21 +984,21 @@ Nodes (10): askBrain (scripted fallback), brain/helpers.ts isOpen filter, brain.
 Cohesion: 0.29
 Nodes (6): overrides, printWidth, $schema, semi, singleQuote, trailingComma
 
-### Community 175 - "Agent Rules"
-Cohesion: 0.19
-Nodes (11): Run bun run check Then bun run format, GitHub Issues And Pull Requests (docs/agents/github.md), Read Existing Issues And PRs Rule, Graphify (docs/agents/graphify.md), Ask Graph Before Grepping / Refresh On Last Commit Rule, RTK (docs/agents/rtk.md), RTK Command Prefix Rule, Agent Rules (+3 more)
+### Community 175 - "Documents Index"
+Cohesion: 0.09
+Nodes (26): Run bun run check Then bun run format, Contributing (.github/CONTRIBUTING.md), Design (docs/DESIGN.md), Documents Index, Feature Ideas (docs/research/feature-ideas/README.md), GitHub Issues And Pull Requests (docs/agents/github.md), Read Existing Issues And PRs Rule, Graphify (docs/agents/graphify.md) (+18 more)
 
-### Community 176 - "Tests area"
-Cohesion: 0.25
-Nodes (7): banks.test.ts (reversal, ledger, bank clocks), .github/workflows/ci.yml, Gotcha: DB integration tests require TEST_DATABASE_URL, mortar-test Neon project (team test DB), sim/order.test.ts (same-day event ordering), sim/stage.test.ts (SPA-gated progression), Tests area
+### Community 176 - "readSheetFile.test.ts"
+Cohesion: 0.19
+Nodes (10): readSheetFile(), SheetReadError, DEFAULTS, FIXTURE, TEMPLATE, parseCsv(), packages_core_src_index_parsecsv, packages_core_src_index_readbookingsheet (+2 more)
 
 ### Community 177 - "ChartTooltipContent.tsx"
 Cohesion: 0.28
 Nodes (6): ChartTooltipContentProps, TooltipEntry, currencyFormatter, formatCurrency(), formatTooltipCurrency(), numberFormatter
 
-### Community 178 - "proof.test.mjs"
-Cohesion: 0.19
-Nodes (5): ref_node_assert, ref_node_test, cleanEvents, SEEDED_MESSAGES, WALK_BEATS
+### Community 178 - "ref_node_fs"
+Cohesion: 0.18
+Nodes (6): ref_node_assert, ref_node_fs, ref_node_test, cleanEvents, SEEDED_MESSAGES, WALK_BEATS
 
 ### Community 179 - "core/tsconfig.json"
 Cohesion: 0.50
@@ -1014,73 +1012,65 @@ Nodes (10): scrollDuration(), scrollTarget(), smoothScrollTo(), BUYER_REPLY, fil
 Cohesion: 0.33
 Nodes (3): Path, SubtitleLayoutTests, write_silence()
 
-### Community 182 - "persona.test.tsx"
-Cohesion: 0.25
-Nodes (9): PersonaRoute(), LocationEcho(), mocks, renderGuarded(), canPersonaOpen(), pageAt(), pageLabelFor(), PERSONA_PAGES (+1 more)
+### Community 182 - "5. Booking Journey Specification"
+Cohesion: 0.17
+Nodes (13): 10. Build Plan, 10B. Component Tree, Ownership And Deletions, 10C. Final DESIGN.md Amendment Text, 5. Booking Journey Specification, All States And Precedence, Anatomy — Final Illustrated Roadmap, BK-9002: Exact Stop Details, Exact Visual Assets — Chosen Ink Family (+5 more)
 
 ### Community 183 - "AppLayout.tsx"
 Cohesion: 0.33
 Nodes (5): AppLayout(), AppLayoutProps, AppShell(), Canvas(), useCanvasGlow()
 
-### Community 184 - "db/index.ts"
-Cohesion: 0.05
-Nodes (67): model, journeyOf(), modelFor(), RANKING, renderPanel(), SNAPSHOT, EXTRACTION_9001, EXTRACTION_9001_3 (+59 more)
+### Community 184 - "core/src/index.ts"
+Cohesion: 0.04
+Nodes (67): model, journeyOf(), modelFor(), EVENTS, RANKING, renderPanel(), SNAPSHOT, EXTRACTION_9001 (+59 more)
 
-### Community 185 - "Andrej Karpathy Skills"
-Cohesion: 0.29
-Nodes (7): Andrej Karpathy Skills (docs/agents/andrej-karpathy-skills.md), Think Before Coding / Surgical Changes Rule, 1. Think Before Coding, 2. Simplicity First, 3. Surgical Changes, 4. Goal-Driven Execution, Andrej Karpathy Skills
+### Community 185 - "SiteShell.tsx"
+Cohesion: 0.32
+Nodes (8): MortarMark(), MortarMarkProps, AppFooter(), FooterLink, FooterLinkItem(), LINK_COLUMNS, SiteShell(), renderAt()
 
-### Community 189 - "MotionSites: cinematic landing page prompts"
-Cohesion: 0.21
-Nodes (13): Glass Object (Three.js effect), MotionSites: cinematic landing page prompts, MotionSites Academy Lessons, Layered Parallax Hero: sky, title, foreground, MotionSites MCP Server, Three.js Scroll Scene: multi-view to GLB, tone mapping, No Three.js Yet, Landing Video Pipeline (+5 more)
+### Community 189 - "ChaseCard.test.tsx"
+Cohesion: 0.28
+Nodes (3): booking(), jevMove(), renderCard()
 
 ### Community 199 - "ref_vitest"
-Cohesion: 0.06
-Nodes (14): PipelineCounts, MOCK_COUNTS, SIGNALS, CASES, CASES, EMPTY, LEAKAGE, ScrollToTop() (+6 more)
+Cohesion: 0.07
+Nodes (12): PipelineCounts, MOCK_COUNTS, SIGNALS, mocks, renderAt(), SwitchProfile(), RISK, ForecastDocument (+4 more)
 
-### Community 201 - "Gotcha: shared settings and inventory"
-Cohesion: 0.50
-Nodes (5): blockPrefix legacy read alongside blocks, Atomic duplicate-unit protection, Gotcha: shared settings and inventory, Inventory API (held project/unit pairs, no buyer names), Project settings (server-held, Manager-only)
+### Community 201 - "better-ui Skill: surfaces, icons, motion values"
+Cohesion: 0.29
+Nodes (8): Layered Card Surface: hairline ring and stacked shadow, transitions.dev: UI transitions for AI agents, better-ui Skill: surfaces, icons, motion values, Concentric Radius: outer equals inner plus padding, shadow-border Three-Layer Token, Four Progressive-Disclosure Patterns, The Quick View Becomes the Default Target, The 2,635px Wall With Three Open Forms
 
-### Community 205 - "schedule.py"
+### Community 205 - "forecast-range.acceptance.test.ts"
 Cohesion: 0.47
-Nodes (5): deconflict(), duration_ms(), main(), Prevent narration collisions and reject speech that crosses a visual beat. A…, Push starts later so no line is still speaking when the next begins. Pure so it…
+Nodes (4): booking(), event(), source(), STAGES
 
 ### Community 207 - "frontend/package.json"
 Cohesion: 0.07
-Nodes (28): @mortar/core, typescript, vitest, license, name, private, type, clsx (+20 more)
+Nodes (30): @mortar/core, typescript, vitest, license, name, private, type, class-variance-authority (+22 more)
 
-### Community 216 - "better-ui Skill: surfaces, icons, motion values"
-Cohesion: 0.22
-Nodes (14): Scroll-Driven Effects: Laser, Particle Scroll, Bend, Why Hugeicons Fits, Its Hover Mixed Fill and Stroke Conventions, Bottom Sheet Drawer Recipe, better-ui Skill: surfaces, icons, motion values, Concentric Radius: outer equals inner plus padding, Icon Stroke Scale by Adjacent Text Weight, Interruptible Motion: transitions for toggles, keyframes for entrances (+6 more)
+### Community 216 - "MotionSites: cinematic landing page prompts"
+Cohesion: 0.20
+Nodes (16): Glass Object (Three.js effect), Scroll-Driven Effects: Laser, Particle Scroll, Bend, Bottom Sheet Drawer Recipe, Interruptible Motion: transitions for toggles, keyframes for entrances, Staged Entrances: 100ms block stagger, 80ms per word, MotionSites: cinematic landing page prompts, MotionSites Academy Lessons, data-enter Entrance State Machine (+8 more)
 
-### Community 232 - "useTheme.tsx"
-Cohesion: 0.24
-Nodes (10): renderNav(), getSystemTheme(), resolveTheme(), Theme, ThemeContext, ThemeContextValue, ThemeProvider(), FaqPage() (+2 more)
+### Community 232 - "react-router-dom"
+Cohesion: 0.16
+Nodes (15): ScrollToTop(), renderNav(), renderAt(), frontend_src_globals, getSystemTheme(), resolveTheme(), Theme, ThemeContext (+7 more)
 
 ### Community 233 - "render.mjs"
-Cohesion: 0.20
-Nodes (9): ref_node_module, ref_node_os, ref_node_url, failures, HERE, page, rawSlides, require (+1 more)
+Cohesion: 0.17
+Nodes (10): css, ref_node_module, ref_node_os, ref_node_path, failures, HERE, page, rawSlides (+2 more)
 
-### Community 234 - "Plain Language"
-Cohesion: 0.31
-Nodes (9): Ask Panel, Chip Economy, Internal Names Stay Internal, Jev (Assistant), Jev Acts, It Does Not Report Status, Landing Ledger Is Illustrative, Plain Language, Top Bar (+1 more)
+### Community 234 - "DropZone"
+Cohesion: 0.70
+Nodes (5): DropZone(), accept(), clear(), readableSize(), sheetKind()
 
-### Community 236 - "User Stories Per Screen"
-Cohesion: 0.13
-Nodes (23): Atomic Demo Data Add/Delete, Case Event Schema, FR-11 Database Persistence And Demo Data, FR-15 SPA Execution Desk, FR-19 Record An Update, FR-4 Evidence Log And Multi-Party Verification, JTBD: Closing Out Appointments, NFR-5 Database Reconnection (+15 more)
+### Community 236 - "Non-Functional Requirements"
+Cohesion: 0.10
+Nodes (28): Booking Fee Prohibition (Reg 11(2) 1989), ClosedExport Excel Export, Atomic Demo Data Add/Delete, Design Standards Compliance, Case Event Schema, Event Statuses (confirmed/provisional/disputed/superseded), FR-11 Database Persistence And Demo Data, FR-21 Bookings Active And Closed Views With Export (+20 more)
 
 ### Community 237 - "@mortar/jev: TypeSafe Jev client (server-side key, cache-first)"
 Cohesion: 0.28
 Nodes (9): @mortar/jev: TypeSafe Jev client (server-side key, cache-first), Jev proposes, staff confirm, dispute or dismiss, Verbal Jev readings on the case page, MortarAI (Mortar's AI layer: Jev and Gemini engines), Route /bookings/:id: case page, Screenshot: a single booking case page, Screenshot: Jev proposing a case update on a banker message, Stack: Jev (TypeSafe SDK); Ask MortarAI (Gemini via assistant/) (+1 more)
-
-### Community 238 - "drawer.tsx"
-Cohesion: 0.25
-Nodes (7): DrawerContent, DrawerDescription, DrawerFooter(), DrawerHeader(), DrawerOverlay, DrawerTitle, vaul
-
-### Community 239 - "TaskCell.test.tsx"
-Cohesion: 0.25
-Nodes (4): BOOKING, RISK, SUMMARY, TASK
 
 ### Community 240 - "proof.mjs"
 Cohesion: 0.39
@@ -1095,34 +1085,34 @@ Cohesion: 0.40
 Nodes (3): LocationProbe(), mocks, renderMenu()
 
 ## Ambiguous Edges - Review These
-- `Kabel DXP Weekly Check-In, 29 September 2026` → `Chin Hin Group Property Berhad (CHGP)`  [AMBIGUOUS]
+- `Do Not Say: IFCA Is Chin Hin's System` → `Claim: 7 Of 8 Name Loan Rejection The Biggest Cause`  [AMBIGUOUS]
   docs/demo/pitch-script.md · relation: conceptually_related_to
 - `GET /api/settings` → `meta Key-Value Table`  [AMBIGUOUS]
   docs/TRD.md · relation: references
 - `meta Key-Value Table` → `PUT /api/settings (Manager Only)`  [AMBIGUOUS]
   docs/TRD.md · relation: references
-- `Do Not Say: IFCA Is Chin Hin's System` → `Claim: 7 Of 8 Name Loan Rejection The Biggest Cause`  [AMBIGUOUS]
+- `Chin Hin Group Property Berhad (CHGP)` → `Kabel DXP Weekly Check-In, 29 September 2026`  [AMBIGUOUS]
   docs/demo/pitch-script.md · relation: conceptually_related_to
 
 ## Knowledge Gaps
 - **1077 isolated node(s):** `$schema`, `printWidth`, `singleQuote`, `semi`, `trailingComma` (+1072 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1504 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1506 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **48 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **What is the exact relationship between `Kabel DXP Weekly Check-In, 29 September 2026` and `Chin Hin Group Property Berhad (CHGP)`?**
+- **What is the exact relationship between `Do Not Say: IFCA Is Chin Hin's System` and `Claim: 7 Of 8 Name Loan Rejection The Biggest Cause`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **What is the exact relationship between `GET /api/settings` and `meta Key-Value Table`?**
   _Edge tagged AMBIGUOUS (relation: references) - confidence is low._
 - **What is the exact relationship between `meta Key-Value Table` and `PUT /api/settings (Manager Only)`?**
   _Edge tagged AMBIGUOUS (relation: references) - confidence is low._
-- **What is the exact relationship between `Do Not Say: IFCA Is Chin Hin's System` and `Claim: 7 Of 8 Name Loan Rejection The Biggest Cause`?**
+- **What is the exact relationship between `Chin Hin Group Property Berhad (CHGP)` and `Kabel DXP Weekly Check-In, 29 September 2026`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **Why does `File Map` connect `File Map` to `Assistant area (server/src/assistant/)`, `Case-free project aggregate for historical forecast rates`, `Gotchas`, `Mortar Notes For Agents`, `Tests area`, `PersonaRoute.tsx (route guard)`, `closedExport.ts`, `Tech Stack table`, `Import area`, `See Also`, `Gotcha: manager workflows`?**
-  _High betweenness centrality (0.093) - this node is a cross-community bridge._
-- **Why does `AGENTS.md` connect `Personas` to `Project Structure tree`, `About The Project section`, `Documents Index`, `Agent Rules`?**
-  _High betweenness centrality (0.077) - this node is a cross-community bridge._
-- **Why does `Documents Index` connect `Documents Index` to `Personas`, `Technical Requirements Document: Mortar`, `Mortar Notes For Agents`, `Agent Rules`, `Agent Skills`, `Andrej Karpathy Skills`, `See Also`?**
-  _High betweenness centrality (0.066) - this node is a cross-community bridge._
+- **Why does `AGENTS.md` connect `Personas` to `Project Structure tree`, `About The Project section`, `Documents Index`?**
+  _High betweenness centrality (0.080) - this node is a cross-community bridge._
+- **Why does `Keep It Current` connect `Keep It Current` to `patch_docs.py`, `Checklist`?**
+  _High betweenness centrality (0.075) - this node is a cross-community bridge._
+- **Why does `Documents Index` connect `Documents Index` to `Agent Skills`, `Personas`, `API Reference`, `Mortar Notes For Agents`?**
+  _High betweenness centrality (0.071) - this node is a cross-community bridge._
