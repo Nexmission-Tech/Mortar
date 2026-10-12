@@ -1267,6 +1267,15 @@ personas:
   sketchbook page. It is the one sanctioned pattern in the application. Cards,
   the sidebar, the top bar, popovers and dialogs stay solid over it. The landing
   hero keeps its own larger lattice.
+- **Solid or glass, never see-through:** Every card, tab bar, segmented control,
+  button and label is either solid (an opaque token such as `--card`, `--muted`
+  or `--accent`) or glass (a translucent fill with a backdrop blur, as the unit
+  island and the bulk-action island use). No surface takes a transparent or
+  half-transparent fill without a blur, so the dots never show through a
+  control. Tab bars that sit on the ground, such as Today's and Add Bookings',
+  ride on a card surface. A source test
+  (`frontend/src/__tests__/surfaces.test.ts`) fails on a translucent fill
+  without a blur.
 - **Pointer bloom:** On signed-in pages, as on the landing hero, the dots under
   the pointer brighten inside a soft 280px circle that trails it
   (`useCanvasGlow`, `--canvas-dot-lit`, `--canvas-glow`). It lights only the

@@ -444,7 +444,7 @@ const NAMEPLATE_LABEL =
 const NORTH_LABEL =
   'flex size-6 items-center justify-center rounded-full border border-border bg-card text-[10px] font-semibold text-foreground'
 const BLOCK_LABEL =
-  'rounded-sm border border-border bg-card/90 px-1.5 py-0.5 text-xs font-semibold text-foreground shadow-card'
+  'rounded-sm border border-border bg-card px-1.5 py-0.5 text-xs font-semibold text-foreground shadow-card'
 
 /**
  * A pill above each roof; with a block framed, every fifth floor and the top

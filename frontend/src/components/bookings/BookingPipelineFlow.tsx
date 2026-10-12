@@ -156,8 +156,8 @@ export function BookingPipelineFlow({ counts, selection, onSelect, onClear, clas
                 className={cn(
                   'group relative flex h-auto flex-1 flex-col items-stretch justify-between rounded-md border p-3.5 sm:p-4 text-left whitespace-normal font-normal cursor-pointer transition-colors',
                   isSelected
-                    ? 'border-primary bg-accent/60 ring-2 ring-primary ring-offset-2 ring-offset-background'
-                    : 'border-border bg-card hover:bg-accent/40 hover:border-foreground/25'
+                    ? 'border-primary bg-accent ring-2 ring-primary ring-offset-2 ring-offset-background'
+                    : 'border-border bg-card hover:bg-accent hover:border-foreground/25'
                 )}
               >
                 {/* Top Row: Icon & Title */}
@@ -167,7 +167,7 @@ export function BookingPipelineFlow({ counts, selection, onSelect, onClear, clas
                       'flex size-7 items-center justify-center rounded-md border transition-colors',
                       isSelected
                         ? 'border-primary bg-primary text-primary-foreground'
-                        : 'border-border bg-muted/60 text-muted-foreground group-hover:text-foreground'
+                        : 'border-border bg-muted text-muted-foreground group-hover:text-foreground'
                     )}
                   >
                     <Icon className="size-4" aria-hidden="true" />

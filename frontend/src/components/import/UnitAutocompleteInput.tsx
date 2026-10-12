@@ -152,7 +152,7 @@ export function UnitAutocompleteInput({
       {open && (
         <div className="absolute top-full left-0 z-50 mt-1 max-h-60 w-full min-w-64 overflow-hidden rounded-md border border-border bg-popover shadow-[var(--shadow-overlay)]">
           {/* Header summary */}
-          <div className="flex items-center justify-between border-b border-border/80 bg-muted/60 px-2.5 py-1.5 text-[11px]">
+          <div className="flex items-center justify-between border-b border-border/80 bg-muted px-2.5 py-1.5 text-[11px]">
             <div className="flex items-center gap-1.5 font-medium text-muted-foreground">
               <Search className="size-3 text-primary" />
               <span>{query ? `Matching "${query}"` : 'Unsold Units'}</span>
@@ -186,7 +186,7 @@ export function UnitAutocompleteInput({
                     onClick={() => handleSelectUnit(unit)}
                     className={cn(
                       'flex h-auto w-full items-center justify-between rounded px-2 py-1.5 text-left text-xs font-normal transition-colors cursor-pointer',
-                      isHighlighted ? 'bg-accent text-accent-foreground' : 'hover:bg-accent/60 text-foreground',
+                      isHighlighted ? 'bg-accent text-accent-foreground' : 'hover:bg-accent text-foreground',
                       isSelected && 'font-bold text-primary'
                     )}
                   >
@@ -206,7 +206,7 @@ export function UnitAutocompleteInput({
             )}
 
             {filteredUnits.length > 50 && (
-              <div className="bg-muted/20 p-1.5 text-center text-[10px] text-muted-foreground">
+              <div className="bg-muted p-1.5 text-center text-[10px] text-muted-foreground">
                 + {filteredUnits.length - 50} more units. Type words or numbers to filter.
               </div>
             )}
