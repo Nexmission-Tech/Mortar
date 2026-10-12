@@ -386,9 +386,10 @@ belong only to Full Case Journey and are not a general-purpose icon set.
   eyebrow, never beside the figure. `AlertTriangle` (stalled), `Flame` (high
   risk), `ListChecks` (tasks), `Banknote` (money).
 - **Blocker and action glyphs:** One per chase card blocker line and one per
-  suggested action, chosen by kind, never by severity: `FileWarning` (missing or
-  outstanding document), `Landmark` (bank or financing stall), `Clock` (time or
-  evidence stall); `FileText` (request document), `Phone` (call buyer), `Eye`
+  suggested action, chosen by kind, never by severity: `UserRound` (a buyer's
+  concern), `FileWarning` (missing or outstanding document), `Landmark` (bank or
+  financing stall), `Clock` (time or evidence stall); `FileText` (request
+  document), `Phone` (call buyer), `Calculator` (financing review), `Eye`
   (review), `CalendarCheck` (schedule).
 - **Rules:** Icons never carry meaning or status alone, and never carry a status
   tone as their colour: they render in `currentColor` at the weight of the text
@@ -930,19 +931,30 @@ add a redundant Open Case footer link.
   chip beside the person, {N} Stalled · RM {Compact Value}, and Open Team. There
   is no separate Busiest Desk card.
 - **Scope:** Stalled count follows Risk/Desk and says Matching These Filters.
-  Value At Risk remains accessible-portfolio scoped and says All Accessible
-  Bookings. Manager figures say Across All Desks. Exact money sits in the
-  figure’s title and is read out to screen readers; the explanation is on the
-  (i) beside it. Task creation does not imply a booking is no longer stalled.
+  Stalled Booking Value remains accessible-portfolio scoped and says All
+  Accessible Bookings. Manager figures say Across All Desks. Exact money sits in
+  the figure’s title and is read out to screen readers; the explanation is on
+  the (i) beside it: full booking prices, not a loss estimate. Wherever money
+  sits beside a person's name (Busiest Desk, Team), that definition and "the
+  named person owns the chase, not necessarily the delay" are one hover away;
+  never pair a name with "At Risk". Task creation does not imply a booking is no
+  longer stalled.
 - **Views:** Actions, Your Tasks and Recent Bookings for admins; Decisions and
   Follow-Ups for Manager. Default to Actions/Decisions. Follow-Ups carries the
   Awaiting Reply count. Keep full panel headings, Mine as task default, access
   and completion permissions, queue filters and in-flight work. Lists open in
   full with no Show More. There is no permanent rail.
 - **Supporting Work:** Retain task completion, booking ID, due state, named
-  owner and manager flag. Keep recent intake's real seven-date creation window
-  and follow-up recipient, Awaiting Reply / Answered state. Open Team and the
-  task shortcut stay one click from every view.
+  owner and manager flag. A task's completion circle opens its close-out in
+  place under the task, on a solid muted panel: What Happened (one line), then
+  Recorded An Update or Follow Up On a date (two working days on by default),
+  then Close Task and Cancel. Escape cancels too, and a cancel returns focus to
+  the control that opened it; the panel goes once the task is closed. Keep
+  recent intake's real seven-date creation window and follow-up recipient. A
+  follow-up reads Awaiting Reply while its task is open and Closed, No Update
+  Yet (warning) with its result once closed without a later confirmed update; it
+  never reads Answered from a ticked box. Open Team and the task shortcut stay
+  one click from every view.
 - **Responsive And Access:** At desktop use 24px main block padding, 12px gaps
   after header, figures and tabs, then 8px before the worklist. Below 1024px the
   third figure spans both columns inside the same strip. Below 720px page
@@ -987,6 +999,18 @@ colours remain confined to Role Label and profile avatar.
   missing evidence from zero, and call monetary totals booking value rather than
   revenue or guaranteed recoveries. The deck contains no alternate-data runs,
   placeholder parameters or claims of proven business accuracy.
+- **Accuracy And Cohort:** Signing Outlook's How This Is Counted ends on the
+  accuracy check: one sentence on what the method expected at the cut-off
+  against what happened, the bands where it was over-confident, a four-row band
+  table (Signing Chance, Bookings, Expected, Happened) and "Simulated history;
+  not measured on real bookings." No Brier score. Conversion And Turnaround
+  opens on Cohort Result: Booked From and Booked To date fields, then "N of M
+  signed by booking day 30 (X%)" in medium weight and a definition list
+  (Enrolled, Signed By Day 30, Signed Later, Exited, Still Unsigned) with exits
+  in the count and the estimate out of it. On a Sales Admin's view both say "on
+  your bookings" / "of your bookings"; on a Loan or Legal view, which drops a
+  booking as it signs, each reads "Not shown here" with the reason, instead of a
+  figure.
 
 ### Sales Chart
 
@@ -999,9 +1023,13 @@ colours remain confined to Role Label and profile avatar.
      Action.
   2. Card: `--card` fill, 16px padding, 6px radius (`--radius-md`),
      `Elevation/Card`. It holds the rest of the chart.
-     - Filter bar: three Buttons, each reading its label and count. The active
+     - Filter bar: the Booking Owner select (hint: "Highlights units; the
+       figures keep their current scope."; never Sold By, which reads as a sales
+       result), then three Buttons, each reading its label and count. The active
        filter uses the default variant and the others the outline variant, and
-       each sets `aria-pressed`. Each filter has an [InfoTooltip](#tooltip).
+       each sets `aria-pressed`. Each filter has an [InfoTooltip](#tooltip);
+       Release Review's states its basis and that prices are full booking
+       prices.
      - Legend: beside the filter bar, one item per state: a 10px swatch, the
        state's word and its count.
   3. Readout strip: a single line above the grid on `--muted` with a 6px radius,
@@ -1123,9 +1151,11 @@ surface may use three.js or draw in 3D.
   stays clear; `--card` at 85% with a backdrop blur, 1px `--border`, 6px radius,
   `Elevation/Overlay`, 16px padding. The unit code in Geist Mono semibold, its
   location in words below, a close button top right; the state's swatch and
-  word; for a case on the viewer's desk the Buyer, Price, Loan And SPA and Next
-  Step facts in two columns (on a phone, Loan And SPA and Next Step take a full
-  row each) and Open Case. Facts wrap; nothing truncates.
+  word; for a case on the viewer's desk the Buyer, Booking Price, Booked On,
+  Loan And SPA and Next Step facts in two columns (on a phone, Loan And SPA and
+  Next Step take a full row each) and Open Case. Booking Price is the full
+  booking price, never a loss or cash; Booked On gives the age its clock. Facts
+  wrap; nothing truncates.
 - **States:** a case on the viewer's desk shows its facts and Open Case; a unit
   on another desk reads "Held By {name}'s Desk" with no Open Case; an available
   unit reads "Available · Not Booked".
@@ -1327,7 +1357,10 @@ ledger readable at a glance:
   provenance and generator settings — is stated once on `/settings`, never
   repeated as chrome on every screen or a badge on every row. A report's as-of
   date, access scope and signing horizon remain visible because they change the
-  meaning of its numbers.
+  meaning of its numbers. Playbook review status is the one exception: each
+  playbook no reviewer has validated reads Illustrative, Not Yet Reviewed, even
+  when none is validated, because a playbook is read alone and must not pass for
+  checked guidance.
 - **Tooltip rule:** An explanatory sub-caption under a heading or the second
   line of a metric tile moves into an `InfoTooltip` beside its label: one short
   sentence, never a paragraph, opened on hover or keyboard focus. The heading

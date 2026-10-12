@@ -106,9 +106,10 @@ outstanding documents independently, so that one rejection does not kill the
 deal and slow bankers are flagged after nine working days.
 
 **Job To Be Done 2 (Guidance Retrieval):** When income eligibility or valuation
-shortfalls occur, I want to find approved procedural playbooks with actionable
-limits, so that I can guide the buyer through second-bank submissions or top-up
-arrangements.
+shortfalls occur, I want a Financing Review on my Today the same day and
+procedural playbooks whose action and limits a named reviewer has validated, so
+that I can guide the buyer through second-bank submissions or top-up
+arrangements without following an unchecked rule.
 
 ### Legal Admin
 
@@ -140,18 +141,19 @@ list myself.
 
 **Job To Be Done 2 (Reading The Desks):** When I want to know which desk is
 holding the pipeline, I want one table with a row per staff profile carrying
-what waits on them, what has stalled, what is overdue, the longest wait and the
-value at risk, so that I can see where to push and open the bookings behind any
-row.
+what each person follows up, what has stalled, what is overdue, the longest wait
+and the stalled booking value (full booking prices, never a loss; the named
+person owns the chase, not necessarily the delay), so that I can see where to
+push and open the bookings behind any row.
 
 ## User Stories Per Screen
 
 ### Today (`/chase`)
 
 - **US-1 (View Stalled Bookings):** As a staff member on Today, I want one
-  figures strip (stalled / Need A Move From You, Value At Risk, and my due
-  tasks), evidence-awaiting bookings listed first, and rows stating each blocker
-  in words.
+  figures strip (stalled / Need A Move From You, Stalled Booking Value, and my
+  due tasks), missed SPA appointments then evidence-awaiting bookings listed
+  first, and rows stating each blocker in words.
 - **US-2 (Actionable Next Step And Create Task):** As a staff member, I want
   each row to display one rule-based next step and owner as the default, with
   Mortar AI's suggestion shown as an alternative when it differs, and a Create
@@ -189,19 +191,26 @@ row.
   one to three bank applications per booking with independent status indicators.
 - **US-9 (Four Views And The Whole History):** As an administrator, I want the
   record in four views (Overview, Messages, History, Tasks), with the open view
-  in the link, and History showing every entry with no extra click, narrowed to
-  the Loan, Legal or Sales track when asked.
+  in the link, and History showing every entry, with Occurred On and Recorded On
+  dates and who reported and verified it, with no extra click, narrowed to the
+  Loan, Legal or Sales track when asked.
 - **US-10 (Review Proposed Updates Without Percentages):** As a staff member, I
   want incoming message readings presented in one line in words ("Mortar AI
   Suggests: Documents Received · Payslip · Mortar AI Is Sure") with Confirm,
-  Dispute, and Dismiss buttons, with no probabilities or percentages.
+  Dispute, and Dismiss buttons, with no probabilities or percentages. A loan
+  reading names the bank it will update ("Updates Apex Bank", or "Updates No
+  Bank") beside Confirm, with "Wrong Reading Or Bank? Dismiss It, Then Record An
+  Update." under it.
 - **US-11 (Action Buttons And Message Intake):** As a staff member, I want
   Record An Update, Paste A Message and What To Do to open in the floating case
   panel from explicit buttons, with Mortar AI freshness displayed only when it
   matters.
 - **US-12 (Playbook Knowledge Retrieval):** As a staff member, I want playbooks
   to show the top fit ("Applies" or "May Apply") and the rest behind "Show N
-  More".
+  More". A playbook shows its action and limits, with "Reviewed By <name> ·
+  <date>", only when it is approved with a named reviewer; any other reads
+  "Illustrative, Not Yet Reviewed" and keeps its situation only. The seeded demo
+  playbooks are drafts.
 - **US-13 (Risk In Plain Words):** As a user on any desk, I want to see the risk
   chip in plain words ("Monthly Repayments Compared With Income: 48%") for any
   case within my profile's access scope.
@@ -210,10 +219,19 @@ row.
 
 - **US-14 (Signing Outlook):** As a user on any desk, I want estimated signings
   by each booking's day-30 deadline, an estimated range, the eligible cases and
-  their deadlines, and separate recorded appointment counts.
-- **US-15 (Conversion And Turnaround):** As a user on any desk, I want observed
-  stage-to-signing rates and completed signing durations with sample sizes,
-  evidence dates and access scope, rather than an unsupported accuracy claim.
+  their deadlines, and separate recorded appointment counts. How This Is Counted
+  carries the accuracy check: the same method run 30 days before the report
+  date, what it expected against what happened, and each chance band with its
+  booking count, labelled simulated history. It runs on the Manager's whole view
+  and on a Sales Admin's own bookings ("on your bookings"); a Loan or Legal
+  view, which drops a booking as it signs, says it is not shown there.
+- **US-15 (Conversion And Turnaround):** As a user on any desk, I want a Cohort
+  Result for an intake's booking dates ("N of M signed by booking day 30 (X%)",
+  with signed-later, exited and still-unsigned counts, exits kept in the
+  denominator and the estimate kept out), then observed stage-to-signing rates
+  and completed signing durations with sample sizes, evidence dates and access
+  scope. Cohort Result follows the accuracy check's reach: "of your bookings"
+  for a Sales Admin, and not shown on a Loan or Legal view.
 - **US-16 (Approved, Awaiting SPA):** As a user on any desk, I want approved but
   unsigned bookings ordered by approval wait, with their appointment evidence,
   responsible staff and booked value, without implying verified legal readiness.
@@ -251,8 +269,9 @@ row.
 ### Add Bookings (`/import`) And Site Shell
 
 - **US-22 (Two-Tab Intake):** As a Sales Admin, I want two tabs: Upload A Sheet
-  (default drag-and-drop zone for XLSX/CSV) and Type Them In (submitting to the
-  main project with generated demo IC and income).
+  (the tab the page opens on, a drag-and-drop zone for XLSX/CSV) and Demo Entry
+  (submitting to the main project with generated demo IC and income, and saying
+  so).
 - **US-23 (Persona Pages And Route Guard):** As a user, I want the sidebar and
   route guard driven by `PERSONA_PAGES`, so each persona sees only its allowed
   pages, while `/bookings/:id`, `/app`, `/faq`, and public pages remain
@@ -313,7 +332,12 @@ without storing transient state in database tables.
   that can overlap in time.
 - **AC-2.4:** Outstanding documents must be computed as document kinds requested
   and not yet received (`payslip`, `epf_statement`, `bank_statement`, `ic_copy`,
-  `employment_letter`, `tax_form`).
+  `employment_letter`, `tax_form`). A receipt clears only the requests of the
+  bank it names; a receipt not for one bank clears only requests that are not
+  for one bank, and restarts no bank's decision clock. While more than one bank
+  is deciding, Record An Update and `POST /api/events` require a receipt to name
+  its bank. Once no bank is deciding, Record An Update and Mortar AI's proposal
+  put a document update on the bank that approved, so its request can clear.
 - **AC-2.5:** A live booking with no confirmed event for 10 or more calendar
   days must be assigned `unknown: true`. The UI must display this booking as No
   Update 10+ Days, never as progressing or failed.
@@ -325,8 +349,18 @@ without storing transient state in database tables.
   4. An unresolved disputed event.
   5. A loan approved 10 or more calendar days ago with no SPA appointment on the
      log.
-  6. An SPA appointment recorded 14 or more calendar days ago with no signing
-     against it.
+  6. An SPA appointment whose own date has passed with no signing, from the next
+     working day ("SPA Appointment Missed N Days Ago"), unless the buyer
+     withdrew. A routine note does not reset it. An appointment whose note names
+     no date, or a date before the booking, falls back to 14 calendar days after
+     it was recorded ("SPA Set N Days Ago, Still Unsigned").
+  7. The same day it is confirmed, with the buyer not withdrawn: an unanswered
+     buyer concern (`buyer_hesitant` with no later `buyer_contacted`, withdrawal
+     or SPA appointment: "Buyer Raised A Concern"); a rejection that leaves no
+     bank deciding or approved ("Loan Rejected, No Bank Still Deciding"); or a
+     valuation shortfall not yet settled by a new submission, any approval or
+     that bank's own rejection ("Valuation Shortfall Confirmed"). A shortfall is
+     refused on an application its bank has already decided.
 - **AC-2.7:** Stall detection must apply to every booking that is unsigned and
   not exited, with no upper bound on booking age. The 30-day horizon governs
   what the forecast counts, not what the desks are shown; gating stall reasons
@@ -381,12 +415,14 @@ The system must present stalled live bookings in an actionable queue on Today
 (`/chase`) and support task assignment and completion.
 
 - **AC-5.1:** The Today screen (`/chase`) must title Today with one lead phrase
-  and one figures strip: stalled bookings (or "Need A Move From You"), Value At
-  Risk, and Your Tasks' "N Tasks Due Or Overdue" shortcut. Named views follow:
-  Actions, Your Tasks and Recent Bookings.
-- **AC-5.2:** Bookings with evidence awaiting review must come first, followed
-  by bookings longest without evidence. Every recommended action is listed;
-  nothing folds behind a Show More.
+  and one figures strip: stalled bookings (or "Need A Move From You"), Stalled
+  Booking Value (full booking prices, not a loss estimate), and Your Tasks' "N
+  Tasks Due Or Overdue" shortcut. Named views follow: Actions, Your Tasks and
+  Recent Bookings.
+- **AC-5.2:** Bookings with a missed SPA appointment must come first, then
+  bookings with evidence awaiting review, followed by bookings longest without
+  evidence. Every recommended action is listed; nothing folds behind a Show
+  More.
 - **AC-5.3:** Each worklist row must state the first specific blocker, one next
   step and its owner desk, the Overdue pill when past due (else `Task Open`),
   and an outline Create Task button, with every fact under Details. Clicking a
@@ -403,6 +439,15 @@ The system must present stalled live bookings in an actionable queue on Today
   `dueOn`, `origin`), preventing conflicting duplicate tasks for multiple people
   on one booking. Marking a task complete via `PATCH /api/tasks/:id` must update
   status to `done` and record `completedAt`.
+- **AC-5.7:** Complete opens a close-out in place, in Your Tasks and the case's
+  Tasks view: one line on what happened (`result`, required), then either
+  Recorded An Update or a next date (`followUpOn`, today or later). A next date
+  closes the task and raises the same task again on the same desk for that day,
+  so the booking stays on Today; it defaults to two working days on. A task
+  closes out once: a second close-out is refused. A Manager's follow-up never
+  reads Answered from a closed task: it stands, "Closed, No Update Yet" with its
+  result, until a confirmed update recorded after the Manager sent it, before or
+  after the close-out.
 
 ### FR-6: TypeSafe Jev Structured Message Extraction
 
@@ -485,9 +530,12 @@ The system must evaluate model reliability through historical cut backtesting.
 - **AC-9.3:** The backtest must output overall predicted count, observed count,
   Brier score, and a four-bucket calibration table comparing predicted versus
   observed conversion rates.
-- **AC-9.4:** Backtesting remains an engineering validation tool, not a business
-  document on `/forecast`. Results on synthetic histories must not be presented
-  as evidence of real-world company accuracy.
+- **AC-9.4:** Backtesting is not a business document of its own on `/forecast`.
+  Signing Outlook's How This Is Counted shows it as the accuracy check, in words
+  and without the Brier score: what the method expected at the cut against what
+  happened, each chance band with its booking count, and the bands where it
+  promised at least 10 points more than happened. It is labelled simulated
+  history, never evidence of real-world company accuracy.
 
 ### FR-10: Booking-Backed Forecast Documents
 
@@ -560,12 +608,12 @@ none of its bookings has since taken an update, message, or task; and a date
 column written month first is detected and parsed as month first across the
 whole column, with the row review stating the switch.
 
-- **AC-13.1:** The Add Bookings screen (`/import`) must offer two tabs: Upload A
-  Sheet (default) and Type Them In. Upload A Sheet provides a drag-and-drop zone
-  accepting XLSX and CSV booking spreadsheets.
-- **AC-13.2:** Type Them In must direct typed-in bookings to the main project
+- **AC-13.1:** The Add Bookings screen (`/import`) must offer two tabs and open
+  on the first: Upload A Sheet, then Demo Entry. Upload A Sheet provides a
+  drag-and-drop zone accepting XLSX and CSV booking spreadsheets.
+- **AC-13.2:** Demo Entry must direct typed-in bookings to the main project
   matching Add Booking, explicitly noting that demo IC and gross income are
-  generated.
+  generated. No tab implies real buyer details are entered by hand.
 - **AC-13.3:** The parser must extract unit codes, buyer names, ICs, phone
   numbers, prices, and booking dates, reporting total rows parsed. Parsing must
   occur entirely in the client without transmitting unverified files to
@@ -658,9 +706,10 @@ which is otherwise measured nowhere.
   updates without visiting the case page.
 - **AC-15.3:** An appointment date that has passed without signing must display
   "Was On <date>" in red within the appointment column.
-- **AC-15.4:** Rows tripping a legal stall reason (AC-2.6 conditions 5 and 6)
-  must be visually distinguished on the days-since-approval figure alone. No
-  other column may carry a pill, per the Chip Economy rule in `docs/DESIGN.md`.
+- **AC-15.4:** Rows tripping a legal stall reason (AC-2.6 conditions 5 and 6,
+  including SPA Appointment Missed) must be visually distinguished on the
+  days-since-approval figure alone. No other column may carry a pill, per the
+  Chip Economy rule in `docs/DESIGN.md`.
 - **AC-15.5:** The page must report awaiting count, the number past a stall
   threshold, the longest wait in days, and total value held. Panel load must
   group the queue by `legalFirm` with count, median wait, and value, stating on
@@ -679,15 +728,16 @@ next move, on the bookings ledger and on the case page alike.
 - **AC-17.1:** Every open case must identify the party currently waited on
   (buyer, bank, solicitor, signed, or us), what that party owes, and the next
   move with its owner desk. Next action verbs must follow `nextStep.ts`: Ask For
-  Payslip, Call The Banker, Submit To Another Bank, Call The Buyer, Book The SPA
-  Signing, Ask The Solicitor For A Date, Decide Whether To Release The Unit, or
-  Wait For The Bank.
+  Payslip, Call The Banker, Submit To Another Bank, Hold A Financing Review,
+  Call The Buyer, Book The SPA Signing, Ask The Solicitor For A Date, Decide
+  Whether To Release The Unit, or Wait For The Bank.
 - **AC-17.2:** `/bookings` must feature two metric tiles: Stalled and No Update
   10+ Days. A "Who Holds Each Booking" filter strip must display segment counts:
   Buyer, Bank, Solicitor, Signed, and Us. The strip starts collapsed; opening it
   shows clickable holders. Clicking an item filters the ledger; a second click
-  clears it. The holder selection is preset by persona: Buyer for Sales Admin,
-  Bank for Loan Admin, Solicitor for Legal Admin. Signed counts cases with a
+  clears it. The holder selection is preset by persona: none for Sales Admin,
+  who coordinates every booking, so a search finds a unit wherever it waits;
+  Bank for Loan Admin; Solicitor for Legal Admin. Signed counts cases with a
   signed SPA, summing across the strip to match the Active tab total.
 - **AC-17.3:** The ledger must provide one filter menu for Active and Closed,
   Stage, Risk, No Update 10+ Days and Stalled Only, plus search by unit, buyer,
@@ -705,7 +755,16 @@ next move, on the bookings ledger and on the case page alike.
   3. A buyer withdrawal waits on the developer (Us) for a release decision;
      submitting to a new bank re-engages the case and clears that wait.
   4. Once a bank approves, only that bank's outstanding requirements drive the
-     wait.
+     wait, and while one is open the case waits on the buyer for it ("Payslip
+     From The Buyer"), not on the solicitor.
+  5. An unanswered buyer concern waits on the buyer, with Call The Buyer as the
+     Sales Admin's step, until a later Buyer Contacted records the call's
+     outcome or the buyer agrees an SPA appointment; the banks and the solicitor
+     keep processing alongside, and the desk doing that work keeps the case.
+  6. A rejection that leaves no bank deciding, or an unsettled valuation
+     shortfall, waits on a Financing Review by the Loan Admin, never straight on
+     another bank, and ahead of any document still requested. A Release Review
+     case with two rejections opens on it.
 
 ### FR-18: Jev Through A Local Model Proxy
 
@@ -791,11 +850,13 @@ from the message log.
 
 **Status:** Built.
 
-- **AC-20.1:** `AddMessageForm.tsx` must offer a Sent At date field and a Time
-  field validated against `^([01]?\d|2[0-3]):([0-5]\d)$`; left untouched, both
-  default to the desks' current date and time read afresh at the moment the
-  message is added, and once edited, the exact chosen values are sent as a
-  combined `sentAt` ISO date-time to `POST /api/messages`.
+- **AC-20.1:** `AddMessageForm.tsx` must offer a Message Sent On date field and
+  a Message Sent Time field validated against `^([01]?\d|2[0-3]):([0-5]\d)$`,
+  with the hint "Use The Original Message Time. If The Event Happened Earlier,
+  Dismiss The Proposal And Use Record An Update."; left untouched, both default
+  to the desks' current date and time read afresh at the moment the message is
+  added, and once edited, the exact chosen values are sent as a combined
+  `sentAt` ISO date-time to `POST /api/messages`.
 - **AC-20.2:** The server must validate that `sentAt` is an ISO date-time with a
   UTC offset, clamp a timestamp that falls within a small clock-skew tolerance
   of the future to now, reject one further in the future than that, and reject
@@ -846,7 +907,7 @@ no second creation dialog.
 
 **Status:** Built.
 
-- **AC-22.1:** `/import` offers Upload A Sheet and Type Them In with the same
+- **AC-22.1:** `/import` offers Upload A Sheet and Demo Entry with the same
   booking validation and server import endpoint.
 - **AC-22.2:** A booking date after the reference date is refused.
 - **AC-22.3:** Direct entry uses `readBookingSheet` with the same defaults and
@@ -934,9 +995,11 @@ towards a signed SPA, on one page at `/sales-chart`.
 - **AC-25.4:** Each filter's count must equal the number of units it lights. The
   Loan Approved, No SPA Appointment count must equal the Legal desk's No
   Appointment Yet count for the same viewer.
-- **AC-25.5:** Clicking a unit must raise the unit island with its overview, and
-  Open Case on an openable unit must open `CaseQuickView` for its booking.
-  Recording an update there must change the unit's state without a page reload.
+- **AC-25.5:** Clicking a unit must raise the unit island with its overview —
+  buyer, Booking Price, Booked On, loan line and next step — and Open Case on an
+  openable unit must open `CaseQuickView` for its booking. Recording an update
+  there must change the unit's state without a page reload. The Release Review
+  filter's hint states its basis and that its prices are full booking prices.
 - **AC-25.6:** The grid must work by keyboard: one tab stop, arrow keys between
   cells, and Enter to select.
 - **AC-25.7:** Every state must carry a word in the legend, the readout and each
@@ -945,6 +1008,9 @@ towards a signed SPA, on one page at `/sales-chart`.
   raise the unit island on click (never on a drag), whose Open Case opens the
   same case panel, and fall back to the Grid, with the reason shown, where the
   browser cannot draw WebGL.
+- **AC-25.9:** The picker that lights one recorded owner's units is labelled
+  Booking Owner, with the hint "Highlights units; the figures keep their current
+  scope." It makes no sales-result or agency-conversion claim.
 
 ## Non-Functional Requirements
 
@@ -1014,36 +1080,39 @@ following six-step pitch video script without error or manual intervention:
 
 1.  **Sales Admin Opens Today (`/chase`):**
     - The Sales Admin lands on Today (`/chase`).
-    - Stalled live bookings are listed with stall reasons, financing-risk chips,
-      and recommended next actions from `nextStep.ts`.
-    - Booking `BK-9001` appears at the top: the rule-based next step suggests
-      requesting the buyer's missing payslip ("Ask For Payslip"), owner Sales,
-      due today.
-    - Clicking the action button creates the task with one click. Clicking the
-      unit code opens the `CaseQuickView` case panel.
-2.  **Opens Case `BK-9001`:**
-    - The user navigates to `/bookings/BK-9001`.
-    - The summary names who holds the case and the next step, with the booking
-      journey beneath and "1 Mortar AI Reading To Review".
+    - Stalled live bookings are listed with their blocker, owner desk and next
+      step from `nextStep.ts`; a confirmed buyer concern reads Call The Buyer.
+    - Create Task raises the selected step with one click. Clicking the unit
+      code opens the `CaseQuickView` case panel.
+2.  **Loan Admin Opens Case `BK-9001`:**
+    - The user switches to Loan Admin and navigates to `/bookings/BK-9001`.
+    - The summary names who holds the case (Apex Bank, deciding) and the next
+      step with its owner (Call The Banker, Loan Admin, Tan Mei Ling), with the
+      booking journey beneath and "1 Mortar AI Reading To Review".
     - In Messages, a Manglish banker message regarding the missing payslip
-      displays Mortar AI's extraction proposal in words: "Mortar AI Suggests:
-      Documents Requested · Payslip · Mortar AI Is Sure" with Confirm, Dispute,
-      and Dismiss buttons. No percentages or probabilities appear.
-    - The Sales Admin clicks Confirm. The evidence log updates immediately,
-      displaying who reported and who verified the event.
+      displays Mortar AI's extraction proposal in words, beginning "Mortar AI
+      Suggests: Documents Requested · Payslip" and ending with its certainty in
+      words, with "Updates Apex Bank" beside Confirm, Dispute and Dismiss. No
+      percentages or probabilities appear.
+    - The Loan Admin clicks Confirm. History updates immediately, showing who
+      reported and who verified the event, and Waiting On reads "Payslip From
+      The Buyer".
 3.  **Playbook Guidance:**
     - The user opens What To Do on `BK-9001`.
     - The top fitting playbook ("Missing income documents") is shown as
-      "Applies", with remaining playbooks folded behind "Show N More".
+      "Applies" and "Illustrative, Not Yet Reviewed", with no action or limits
+      until a reviewer validates it; remaining playbooks fold behind "Show N
+      More".
 4.  **The Live AI Moment:**
-    - The Sales Admin clicks the "Paste A Message" button and pastes a new buyer
-      message in Malay: "Salam, saya dah emailkan slip gaji 3 bulan terkini
+    - The Loan Admin clicks the "Paste A Message" button and pastes a new buyer
+      message in Malay, with Message Sent On and Message Sent Time set to when
+      the buyer sent it: "Salam, saya dah emailkan slip gaji 3 bulan terkini
       kepada banker semalam."
     - TypeSafe Jev processes the message live and returns the structured
-      extraction in under three seconds: Documents Received · Payslip · Jev Is
-      Sure.
-    - Once confirmed, the outstanding payslip requirement clears, and the
-      booking's stall condition clears.
+      extraction in under three seconds: Documents Received · Payslip, updating
+      Apex Bank.
+    - Once confirmed, Apex Bank's payslip request clears and the case waits on
+      the bank again.
 5.  **Legal Admin Opens `/forecast`:**
     - The user switches persona to Legal Admin, which navigates to Legal
       (`/legal`), then opens `/forecast`.
@@ -1084,14 +1153,15 @@ of booking, divided by all eligible bookings enrolled.
 
 ### Secondary Operational Metrics
 
-| Metric                   | Measurement Method                                                                | Target Objective                          |
-| ------------------------ | --------------------------------------------------------------------------------- | ----------------------------------------- |
-| Stalled Booking Recovery | Count of stalled bookings transitioned to active stage following task completion  | Set from the pilot baseline               |
-| Case Dwell In Unknown    | Average calendar days bookings remain in `unknown: true` status                   | Set from the pilot baseline               |
-| Forecast Calibration     | Brier score comparing case probabilities against observed 30-day outcomes         | Reported, not targeted, on simulated data |
-| AI Extraction Accuracy   | Proportion of Jev proposals confirmed by staff without modification or dispute    | Set from the pilot baseline               |
-| Live Jev Latency         | End-to-end network roundtrip time for live message extraction                     | Under 3 seconds in the demo               |
-| Fallback Cache Hit Rate  | Percentage of demo requests successfully served from cache during network latency | Every demo step has a cached answer       |
+| Metric                    | Measurement Method                                                                                 | Target Objective                          |
+| ------------------------- | -------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Stalled Booking Recovery  | Count of stalled bookings transitioned to active stage following task completion                   | Set from the pilot baseline               |
+| Case Dwell In Unknown     | Average calendar days bookings remain in `unknown: true` status                                    | Set from the pilot baseline               |
+| Rejection To Resubmission | Calendar days from a confirmed rejection that leaves no bank deciding to the next `loan_submitted` | Set from the pilot baseline               |
+| Forecast Calibration      | Brier score comparing case probabilities against observed 30-day outcomes                          | Reported, not targeted, on simulated data |
+| AI Extraction Accuracy    | Proportion of Jev proposals confirmed by staff without modification or dispute                     | Set from the pilot baseline               |
+| Live Jev Latency          | End-to-end network roundtrip time for live message extraction                                      | Under 3 seconds in the demo               |
+| Fallback Cache Hit Rate   | Percentage of demo requests successfully served from cache during network latency                  | Every demo step has a cached answer       |
 
 ## Assumptions And Constraints
 
@@ -1267,6 +1337,12 @@ again, and are marked below.
   The button identifies that recipient; an external solicitor firm is not an
   internal assignee. Recipients see the manager flag and an in-app notification.
   Existing equivalent open tasks are flagged rather than duplicated.
+- Money beside a person's name reads Stalled Booking Value, the full booking
+  price of the stalled bookings whose next move sits with them, and Team's count
+  column reads Follow-Up Owner, with "the named person owns the chase, not
+  necessarily the delay" one hover away. Team's outlook figure reads Estimated
+  SPAs By Booking Day 30, as Forecast does. **Superseded:** Value At Risk,
+  Waiting On Them and Expected Signings In 30 Days (#75).
 - Today opens on a figures strip and named views: Actions (one ordered worklist
   with its two filters), Your Tasks (on a Mine or Everyone switch) and Recent
   Bookings. There is no rail; each view holds a complete list. Recent Bookings
@@ -1279,9 +1355,11 @@ again, and are marked below.
   disabled for other profiles. Projects support several blocks; booking entry
   shows remaining units filtered by block, excluding held and draft-selected
   units.
-- Type Them In is the first/default Add Bookings tab. Its responsive form keeps
-  buyer, block, unit, layout and price readable. Both entry paths reject unit
-  conflicts without overwriting an existing booking.
+- Upload A Sheet is the first and default Add Bookings tab; direct entry is
+  labelled Demo Entry, because it fills in made-up buyer finances. Its
+  responsive form keeps buyer, block, unit, layout and price readable. Both
+  entry paths reject unit conflicts without overwriting an existing booking.
+  **Superseded:** Type Them In as the default tab (#75).
 - The forecast documents sit in a stack under the headline figures, opened from
   the chips above it. Each opens its document, and Ask MortarAI asks about that
   document. **Superseded:** removal of the forecast documents, reversed by

@@ -111,10 +111,13 @@ Key files within each package include:
 - `packages/core/src/types.ts`: The binding TypeScript domain contract.
 - `packages/core/src/sim.ts`: Deterministic dataset generator, case derivations,
   and Wilson-score forecasting algorithms.
-- `packages/core/src/jev.ts`: Shared MiniSearch playbook search and extraction
-  proposal mapping helpers.
+- `packages/core/src/jev.ts`: Shared MiniSearch playbook search, extraction
+  proposal mapping helpers, and `playbookValidated` (approved with a named
+  reviewer), which gates whether a playbook's action and limits are shown as
+  guidance in What To Do and Ask MortarAI's `search_playbooks`.
 - `packages/core/src/fixtures/`: Canonical story bookings (`stories.ts`) and
-  reviewed knowledge articles (`playbooks.ts`).
+  knowledge articles (`playbooks.ts`), seeded as drafts: synthetic, so
+  illustrative until a named Loan or Legal reviewer validates them.
 - `server/src/index.ts`: Application bootstrap, static file serving, and route
   dispatching.
 - `server/src/assistant/`: Ask MortarAI Gemini service, tools (`tools.ts`),
@@ -218,7 +221,8 @@ storage for nested domain entities:
   `author`, `reviewer`, `reviewed_on date`, `status`, `tags text[]`).
 - `tasks`: Action items assigned to staff members (`id text primary key`,
   `booking_id`, `action`, `title`, `owner_role`, `owner_name`, `due_on date`,
-  `status`, `origin`, `created_at`, `completed_at`).
+  `status`, `origin`, `created_at`, `completed_at`, `manager_flagged_by`, and
+  `result`, the close-out's one line on what happened).
 - `jev_answers`: Historical store of model evaluations
   (`id bigint generated always as identity primary key`, `kind`, `subject_id`,
   `input_hash`, `answer jsonb`, `source`, `latency_ms`, `created_at`). Indexed
@@ -272,27 +276,27 @@ The Bun server exposes a RESTful JSON API. Request bodies and responses conform
 directly to contract types. Validation is implemented with explicit type guards;
 no third-party schema validation libraries are loaded.
 
-| Method   | Path                            | Request Body                                                          | Response Body                                                            | Execution Pattern    |
-| -------- | ------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------ | -------------------- |
-| `GET`    | `/api/health`                   | None                                                                  | `{ ok, db, jev, assistant, jevAnswers, jevLastError, commit }`           | Direct Check         |
-| `GET`    | `/api/snapshot`                 | None                                                                  | `Snapshot`                                                               | Database Query       |
-| `POST`   | `/api/assistant`                | `{ question, persona, bookingId?, history?, image? }`                 | `{ answer, citations }`                                                  | Live Gemini Tool-Use |
-| `POST`   | `/api/assistant/stream`         | Same assistant request                                                | SSE tool progress and answer events                                      | Live Gemini Tool-Use |
-| `POST`   | `/api/messages`                 | `{ bookingId, senderRole, senderName, body }`                         | `{ message: Message, extraction: Extraction, event: CaseEvent \| null }` | Live-First Jev       |
-| `POST`   | `/api/messages/:id/extract`     | None                                                                  | `{ extraction: Extraction, event: CaseEvent \| null }`                   | Live-First Jev       |
-| `POST`   | `/api/events`                   | `{ bookingId, track, kind, document?, note?, reportedBy }`            | `CaseEvent`                                                              | Transaction Write    |
-| `POST`   | `/api/applications`             | `{ bookingId, bank, banker, note?, occurredOn?, reportedBy }`         | `{ application: LoanApplication, event: CaseEvent }`                     | Transaction Write    |
-| `POST`   | `/api/events/:id/review`        | `{ decision: 'confirm' \| 'dispute' \| 'dismiss', reviewer: string }` | `CaseEvent`                                                              | Transaction Write    |
-| `POST`   | `/api/bookings/:id/next-action` | None                                                                  | `NextActionSuggestion`                                                   | Live-First Jev       |
-| `GET`    | `/api/bookings/:id/playbooks`   | Optional Query `q`                                                    | `PlaybookRanking`                                                        | Cache-First Jev      |
-| `GET`    | `/api/bookings/:id/signals`     | None                                                                  | `BuyerSignals`                                                           | Cache-First Jev      |
-| `POST`   | `/api/bookings/import`          | `{ bookings: BookingDraft[], reportedBy, source? }`                   | `{ importId, bookings: Booking[] }`                                      | Transaction Write    |
-| `POST`   | `/api/imports/:id/undo`         | `{ reportedBy }`                                                      | `{ removed: string[] }`                                                  | Transaction Write    |
-| `DELETE` | `/api/bookings/:id`             | `{ reportedBy }`                                                      | `{ removed: string }`                                                    | Retention Checked    |
-| `POST`   | `/api/tasks`                    | `{ bookingId, action, title, ownerRole, ownerName, dueOn, origin }`   | `Task`                                                                   | Database Insert      |
-| `PATCH`  | `/api/tasks/:id`                | `{ status: 'open' \| 'done' \| 'cancelled' }`                         | `Task`                                                                   | Database Update      |
-| `POST`   | `/api/admin/demo/add`           | None                                                                  | `SimulationMeta`                                                         | Seed-Owned Insert    |
-| `POST`   | `/api/admin/demo/delete`        | None                                                                  | `{ ok: true }`                                                           | Seed-Owned Delete    |
+| Method   | Path                            | Request Body                                                          | Response Body                                                                                                                                      | Execution Pattern    |
+| -------- | ------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| `GET`    | `/api/health`                   | None                                                                  | `{ ok, db, jev, assistant, jevAnswers, jevLastError, commit }`                                                                                     | Direct Check         |
+| `GET`    | `/api/snapshot`                 | None                                                                  | `Snapshot`                                                                                                                                         | Database Query       |
+| `POST`   | `/api/assistant`                | `{ question, persona, bookingId?, history?, image? }`                 | `{ answer, citations }`                                                                                                                            | Live Gemini Tool-Use |
+| `POST`   | `/api/assistant/stream`         | Same assistant request                                                | SSE tool progress and answer events                                                                                                                | Live Gemini Tool-Use |
+| `POST`   | `/api/messages`                 | `{ bookingId, senderRole, senderName, body }`                         | `{ message: Message, extraction: Extraction, event: CaseEvent \| null }`                                                                           | Live-First Jev       |
+| `POST`   | `/api/messages/:id/extract`     | None                                                                  | `{ extraction: Extraction, event: CaseEvent \| null }`                                                                                             | Live-First Jev       |
+| `POST`   | `/api/events`                   | `{ bookingId, track, kind, document?, note?, reportedBy }`            | `CaseEvent`                                                                                                                                        | Transaction Write    |
+| `POST`   | `/api/applications`             | `{ bookingId, bank, banker, note?, occurredOn?, reportedBy }`         | `{ application: LoanApplication, event: CaseEvent }`                                                                                               | Transaction Write    |
+| `POST`   | `/api/events/:id/review`        | `{ decision: 'confirm' \| 'dispute' \| 'dismiss', reviewer: string }` | `CaseEvent`                                                                                                                                        | Transaction Write    |
+| `POST`   | `/api/bookings/:id/next-action` | None                                                                  | `NextActionSuggestion`                                                                                                                             | Live-First Jev       |
+| `GET`    | `/api/bookings/:id/playbooks`   | Optional Query `q`                                                    | `PlaybookRanking`                                                                                                                                  | Cache-First Jev      |
+| `GET`    | `/api/bookings/:id/signals`     | None                                                                  | `BuyerSignals`                                                                                                                                     | Cache-First Jev      |
+| `POST`   | `/api/bookings/import`          | `{ bookings: BookingDraft[], reportedBy, source? }`                   | `{ importId, bookings: Booking[] }`                                                                                                                | Transaction Write    |
+| `POST`   | `/api/imports/:id/undo`         | `{ reportedBy }`                                                      | `{ removed: string[] }`                                                                                                                            | Transaction Write    |
+| `DELETE` | `/api/bookings/:id`             | `{ reportedBy }`                                                      | `{ removed: string }`                                                                                                                              | Retention Checked    |
+| `POST`   | `/api/tasks`                    | `{ bookingId, action, title, ownerRole, ownerName, dueOn, origin }`   | `Task`                                                                                                                                             | Database Insert      |
+| `PATCH`  | `/api/tasks/:id`                | `{ status: 'open' \| 'done' \| 'cancelled', result?, followUpOn? }`   | `Task`; with `followUpOn`, the same task raised again for that day, in the same transaction; a close-out of a task already closed is refused (409) | Database Update      |
+| `POST`   | `/api/admin/demo/add`           | None                                                                  | `SimulationMeta`                                                                                                                                   | Seed-Owned Insert    |
+| `POST`   | `/api/admin/demo/delete`        | None                                                                  | `{ ok: true }`                                                                                                                                     | Seed-Owned Delete    |
 
 ### Endpoint Details
 
@@ -511,7 +515,31 @@ Rules governing summary derivation include:
   `'withdrawn'`.
 - **Outstanding Documents:** An item is marked outstanding when a
   `documents_requested` event lacks a subsequent confirmed `documents_received`
-  event for the same document kind.
+  event for the same document kind and scope. A receipt for one bank clears that
+  bank's request and an unscoped one; a receipt not for one bank clears only
+  unscoped requests and restarts no bank's decision clock (`documentLedger`).
+  `POST /api/events` refuses an unscoped receipt (409) while more than one bank
+  is deciding. Once no bank is deciding, Record An Update and
+  `proposalFromExtraction` put a document update on the approving bank.
+- **Unanswered Concern And Shortfall:** `buyerConcern` is a confirmed
+  `buyer_hesitant` with no later `buyer_contacted`, `buyer_withdrew` or
+  `spa_appointment_set`; `valuationShortfall` is a confirmed
+  `valuation_shortfall` with no later `loan_submitted`, `loan_approved`, or
+  `loan_rejected` on the same application. Both are on `CaseSummary`, so
+  `ballInCourt` reads them. `POST /api/events` refuses a shortfall (409) on an
+  application its bank has already decided, where nothing could settle it.
+- **Waiting On (`ballInCourt`):** first match wins: closed or signed (nobody);
+  buyer withdrew (developer, release review); unanswered concern (buyer, Call
+  The Buyer); valuation shortfall (developer, Hold A Financing Review);
+  outstanding documents (buyer), which once a loan is approved covers only the
+  approving bank's requests and unscoped ones, and which is skipped once every
+  bank has declined; approved (solicitor); a bank awaiting documents (buyer); a
+  bank deciding (bank); every bank declined (developer, Hold A Financing
+  Review); otherwise documents to collect. `currentCaseAssignee` gives Call The
+  Buyer to the booking's Sales Admin and a Financing Review to its Loan Admin,
+  whoever holds the case. `canAccessBooking` also lets the Loan or Legal Admin
+  who would hold the case without the concern or shortfall keep it, since the
+  bank and solicitor work carries on.
 - **Unknown Status Flag:** A live booking is marked `unknown = true` when no
   confirmed evidence has been recorded for 10 or more calendar days. Unknown
   cases are rendered explicitly in amber to alert staff of silence.
@@ -524,6 +552,15 @@ Rules governing summary derivation include:
     exceeds the ABM standard SLA.
   - `"Unresolved Disputed Event"`: Staff have contested an update, requiring
     adjudication.
+  - `"Buyer Raised A Concern"`, `"Loan Rejected, No Bank Still Deciding"` and
+    `"Valuation Shortfall Confirmed"`: raised the day the update is confirmed,
+    unless the buyer withdrew, so they need no week of silence first.
+  - `"SPA Appointment Missed N Days Ago"`: counted from the appointment's own
+    date, from the next working day (`SPA_MISSED_AFTER_WORK_DAYS`); a routine
+    note does not reset it, and a withdrawn buyer raises none. Today sorts these
+    first, and `managerSuggestions` flags one at two working days past. An
+    appointment note with no date, or a date before the booking, falls back to
+    `"SPA Set N Days Ago, Still Unsigned"` after 14 days.
 
 ## Forecast And Backtest Method
 
@@ -575,9 +612,27 @@ The engine validates its calibration through temporal backtesting (`backtest`):
 - **Verification Metrics:** Reports the overall Brier score (mean squared
   probability error) and a four-bucket calibration table comparing mean forecast
   probabilities against observed signing proportions.
-- **Use:** Backtests remain an engineering validation tool, outside the business
-  document deck. Synthetic validation demonstrates implementation behavior, not
-  measured accuracy on a developer's real bookings.
+- **Use:** Signing Outlook's How This Is Counted shows the backtest as the
+  accuracy check, run on the viewer's accessible records 30 days before the
+  report date: expected against observed signings, the bands with their booking
+  counts, and the bands where it was over-confident. It never shows the Brier
+  score, and it is labelled simulated history: synthetic validation demonstrates
+  implementation behavior, not measured accuracy on a developer's real bookings.
+  It runs only where the view keeps every booking it ever held (`HistoryReach`
+  in `ForecastReports`): the Manager's, and a Sales Admin's own bookings. A Loan
+  or Legal view loses a booking as it moves on, signed ones first, so it says
+  the check is not shown there.
+
+### Cohort Result
+
+`cohortResult(data, from, to, asOf)` (`packages/core/src/sim/cohort.ts`) reads
+the 30-day verified SPA rate for an intake: every booking dated from `from` to
+`to`, split into signed by booking day 30, signed later, exited (cancelled or
+lapsed) and still unsigned, with how many of those are not yet 30 days old. The
+rate is signed by day 30 over every booking enrolled, exits included. It reads
+confirmed events recorded by `asOf` only, never the forecast. Conversion And
+Turnaround opens it on the four weeks that ended 30 days before the report date,
+with the same reach as the accuracy check.
 
 ### Parameter Assumptions
 

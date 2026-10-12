@@ -147,12 +147,13 @@ In Mortar, Sales Admin Nurul Aina starts her working day on Today (`/chase`).
   clarification).
 - **Task Assignment:** Reviews the rule-based next step and Jev's suggestion,
   creating an assigned follow-up task with one click.
-- **Buyer Outreach:** Uses vetted playbooks to draft targeted buyer requests via
-  existing WhatsApp communication channels.
+- **Buyer Outreach:** Uses staff playbooks, illustrative until a named reviewer
+  validates them, to draft targeted buyer requests via existing WhatsApp
+  communication channels.
 - **Sales Chart:** Opens the Sales Chart (`/sales-chart`) to see each unit in
   the tower by its booking's state. The filters count only her own bookings, so
-  Loan Approved, No SPA Appointment gives her the buyers who need a signing
-  date.
+  Loan Approved, No SPA Appointment gives her the approved buyers with no
+  signing date on record. Whether each is ready to sign is for her to check.
 
 ### Loan Administration
 
@@ -200,7 +201,7 @@ the team view at `/team`.
   the assigned sales, loan, or legal owner with one click.
 - **Sales Chart:** Opens `/sales-chart` to see every unit by its booking's
   state, then clicks a unit to open its case. The Loan Approved, No SPA
-  Appointment filter lists the buyers who need only a signing date.
+  Appointment filter lists the approved bookings with no signing date on record.
 - **Company-Wide Scoping:** Maintains unrestricted access to every booking,
   while individual staff desks remain scoped to assigned cases.
 
@@ -265,7 +266,9 @@ Three filters light the units that need a decision:
 - **Loan Approved, No SPA Appointment:** the closing list. The loan is through
   and no signing date is on record. It uses the same split as the Legal desk's
   No Appointment Yet section.
-- **Release Review:** units whose recovery paths look spent.
+- **Release Review:** units for a person to decide on: the buyer withdrew, or no
+  loan is live after two rejections or 30 days. Two rejections do not prove
+  recovery is exhausted, so a rejected case opens on its financing review.
 
 Release Review is advisory. A person decides whether to cancel and re-release
 the unit, and Mortar never cancels. Clicking a unit raises its overview in the
@@ -316,10 +319,12 @@ interface functions as a digital ledger:
 └───────────────────┴───────────────────┴────────────────────────────────┘
 ```
 
-The system includes a searchable library of reviewed staff playbooks. When a
-booking encounters an obstacle—such as an income shortfall or a slow panel
-banker—Mortar surfaces reviewed guidance tagged with English, Malay, and
-Manglish search terms (`slip gaji`, `LO`, `surat tawaran`).
+The system includes a searchable library of staff playbooks. When a booking
+encounters an obstacle—such as an income shortfall or a slow panel banker—Mortar
+surfaces guidance tagged with English, Malay, and Manglish search terms
+(`slip gaji`, `LO`, `surat tawaran`). A playbook shows its action and limits
+only once a named Loan or Legal reviewer validates it; until then it reads
+Illustrative, Not Yet Reviewed, as every seeded demo playbook does.
 
 ## How It Works In One Flow
 
@@ -333,8 +338,8 @@ spanning initial deposit through to confirmed execution.
      │                                                              │
      ▼                                                              ▼
 [8. Execution] ◄── [7. Live Clear] ◄── [6. Playbook] ◄─── [5. Today Queue]
- SPA executed       Malay message        Staff follows         Stall flagged
- 10% paid           sent & cleared       vetted rules          task created
+ SPA executed       Malay message        Staff consults        Stall flagged
+ 10% paid           sent & cleared       a playbook            task created
 ```
 
 1.  **Deposit And Ingestion:** A buyer reserves Unit A-12-03 in the fictional
@@ -356,18 +361,20 @@ spanning initial deposit through to confirmed execution.
 5.  **Today Queue Activation:** The bank application passes nine working days
     without a decision, so Mortar's stall rule flags the case. It surfaces at
     the top of Today (`/chase`). The rule-based next step leads — Ask For
-    Payslip, owner Sales Admin, due today — with Jev's suggestion displayed
-    alongside if it differs. Sales Admin Nurul Aina clicks Create Task.
-6.  **Playbook Guidance:** Nurul queries the playbooks panel for "slip gaji".
-    Mortar returns the vetted "Missing Income Documents" playbook, which advises
-    asking the buyer for the exact missing month's payslip through the company
-    HR portal and alerting the banker on receipt.
+    Payslip, owner Loan Admin, due today — with Jev's suggestion displayed
+    alongside if it differs. Loan Admin Tan Mei Ling clicks Create Task; Sales
+    Admin Nurul Aina coordinates the booking.
+6.  **Playbook Guidance:** Mei Ling queries the playbooks panel for "slip gaji".
+    Mortar returns the "Missing Income Documents" playbook. Once a named
+    reviewer has validated it, it advises asking the buyer for the exact missing
+    month's payslip through the company HR portal and alerting the banker on
+    receipt; until then it reads Illustrative, Not Yet Reviewed.
 7.  **Live Resolution:** The buyer responds in Malay: "Salam, saya dah emailkan
-    slip gaji 3 bulan terkini kepada banker semalam." Nurul pastes the text into
-    the case message box. Jev analyzes the Malay text live in under three
-    seconds, returning `documents_received` for `payslip`. Nurul confirms the
-    extraction. The outstanding requirement clears, and the stall flag is
-    removed.
+    slip gaji 3 bulan terkini kepada banker semalam." Mei Ling pastes the text
+    into the case message box. Jev analyzes the Malay text live in under three
+    seconds, returning `documents_received` for `payslip`. Mei Ling confirms the
+    extraction, which names the bank it updates. The outstanding requirement
+    clears, and the stall flag is removed.
 8.  **Execution And Forecast:** The bank issues its Letter of Offer, the panel
     solicitor sets the SPA appointment, and the buyer signs the SPA, paying the
     10% sum due on signing less the booking fee. Each milestone lands in the log
@@ -391,7 +398,7 @@ talk to MortarAI, not a third engine.
 | Operational Domain     | AI Role                                                     | Human Or Deterministic Governance                                     |
 | ---------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------- |
 | Message processing     | Extracts candidate dates, document types, and event classes | Staff confirm identity matches and verify material facts              |
-| Staff knowledge        | Retrieves and ranks vetted playbooks by contextual fit      | Experienced managers author, review, and approve playbook text        |
+| Staff knowledge        | Retrieves and ranks playbooks by contextual fit             | Experienced managers author, review, and approve playbook text        |
 | Task coordination      | Proposes next actions and estimates follow-up urgency       | Staff assign responsibilities, execute actions, and manage partners   |
 | Operational inquiries  | Gemini reads the snapshot to answer in Ask MortarAI         | Staff evaluate answers; model never writes or decides                 |
 | Buyer sentiment        | Evaluates message response gaps and hesitation patterns     | Sales agents interpret relationship context and buyer motives         |
