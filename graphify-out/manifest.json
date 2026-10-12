@@ -2736,9 +2736,15 @@
     "semantic_hash": ""
   },
   "docs/research/roast/sales-director.md": {
-    "mtime": 1791801100.6134686,
-    "seen": 1791801106.065209,
+    "mtime": 1791801278.8049312,
+    "seen": 1791802144.492102,
     "ast_hash": "ab6f630240791f39d29c52b34cf4055e",
+    "semantic_hash": ""
+  },
+  "docs/research/roast/finance-controller.md": {
+    "mtime": 1791802139.1595914,
+    "seen": 1791802144.4921007,
+    "ast_hash": "f39c59e0e7185a8e63b605a71b226081",
     "semantic_hash": ""
   }
 }
