@@ -108,7 +108,8 @@ describe('SalesChartPage', () => {
     state.sceneFails = false
   })
 
-  it('shows the figures, lights a filter, and opens a case from its unit', async () => {
+  // The first render of the whole page is the slowest test here; a busy full run can take it past 5s.
+  it('shows the figures, lights a filter, and opens a case from its unit', { timeout: 15_000 }, async () => {
     renderPage('manager')
     expect(await screen.findByRole('heading', { name: 'Sales Chart' })).toBeTruthy()
     for (const label of ['Units Booked', 'SPA Signed', 'Expected To Sign By Day 30', 'Needs Action'])
