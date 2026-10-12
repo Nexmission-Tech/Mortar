@@ -5,9 +5,12 @@ import { buildSnapshot } from '@/components/bookings/__tests__/snapshotFixture'
 import {
   activeUnsigned,
   bookedAndSigned,
+  highlightedUnits,
   legendCounts,
   litUnits,
   matchesFilter,
+  salesOwners,
+  soldByUnits,
   STATE_LABELS,
   unitsForSnapshot,
   UNIT_STATES
@@ -91,5 +94,61 @@ describe('filters and counts', () => {
 
   test('the early booking state reads In Progress, so it never clashes with Units Booked', () => {
     expect(STATE_LABELS.booked).toBe('In Progress')
+  })
+})
+
+describe('Sold By owners', () => {
+  const unitAt = (
+    n: number,
+    state: ChartUnit['state'],
+    bookingId: string | null,
+    heldBy: string | null
+  ): ChartUnit => ({
+    code: `A-03-0${n}`,
+    block: 'A',
+    floor: 3,
+    unit: n,
+    floorLabel: '03',
+    unitLabel: `0${n}`,
+    state,
+    bookingId,
+    heldBy
+  })
+  const units: ChartUnit[] = [
+    unitAt(1, 'signed', 'BK-9001', '  Zara  '),
+    unitAt(2, 'booked', null, 'Amir'),
+    unitAt(3, 'needs_action', null, ' zARA '),
+    unitAt(4, 'available', null, null)
+  ]
+
+  test('sorts owners, counts their codes, and merges trimmed case variants using the first spelling', () => {
+    expect(salesOwners(units)).toEqual([
+      { name: 'Amir', count: 1 },
+      { name: 'Zara', count: 2 }
+    ])
+    expect(salesOwners([])).toEqual([])
+    expect(salesOwners([unitAt(4, 'available', null, null)])).toEqual([])
+    expect(salesOwners([...units, units[0]!])).toEqual(salesOwners(units))
+  })
+
+  test('lights all held codes by owner key, including signed and inaccessible units', () => {
+    expect([...soldByUnits(units, ' ZARA ')]).toEqual(['A-03-01', 'A-03-03'])
+    expect([...soldByUnits(units, 'Amir')]).toEqual(['A-03-02'])
+    expect(soldByUnits(units, 'Missing').size).toBe(0)
+    expect(soldByUnits(units, '').size).toBe(0)
+  })
+
+  test('combines the person set with the unchanged scoped filter set', () => {
+    const held: ChartUnit[] = [
+      unitAt(1, 'needs_action', 'BK-9001', '  Zara  '),
+      unitAt(2, 'needs_action', 'BK-9001', 'Amir'),
+      units[2]!,
+      units[3]!
+    ]
+    expect(highlightedUnits(held, cases, null, null)).toBeNull()
+    expect([...highlightedUnits(held, cases, 'needs_action', null)!]).toEqual(['A-03-01', 'A-03-02'])
+    expect([...highlightedUnits(held, cases, null, 'Zara')!]).toEqual(['A-03-01', 'A-03-03'])
+    expect([...highlightedUnits(held, cases, 'needs_action', 'Zara')!]).toEqual(['A-03-01'])
+    expect(highlightedUnits(held, cases, 'release_review', 'Zara')!.size).toBe(0)
   })
 })
