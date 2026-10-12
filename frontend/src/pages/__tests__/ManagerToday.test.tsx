@@ -90,7 +90,7 @@ describe("The Manager's Today", () => {
     expect(document.body.textContent).not.toMatch(/%/)
     expect(document.body.textContent).not.toMatch(/Mortar AI:/)
 
-    fireEvent.click(within(card).getByRole('button', { name: 'Request Follow-Up' }))
+    fireEvent.click(within(card).getByRole('button', { name: /^Request Follow-Up/ }))
     await waitFor(() =>
       expect(postTask).toHaveBeenCalledWith(
         expect.objectContaining({ ownerRole: 'sales_admin', ownerName: 'Nurul Aina', managerFlaggedBy: 'Robert Khoo' })

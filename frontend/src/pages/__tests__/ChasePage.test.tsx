@@ -240,7 +240,7 @@ describe('ChasePage', () => {
     CASES = [stalledCase('BK-9001', { applications: [{ id: 'APP-1', bank: 'Crestline', status: 'submitted' }] })]
     renderPage()
 
-    fireEvent.click(within(screen.getByTestId('chase-card-BK-9001')).getByRole('button', { name: 'Create Task' }))
+    fireEvent.click(within(screen.getByTestId('chase-card-BK-9001')).getByRole('button', { name: /^Create Task/ }))
 
     await waitFor(() => expect(mocks.postTask).toHaveBeenCalledTimes(1))
     expect(mocks.postTask).toHaveBeenCalledWith(
@@ -255,12 +255,23 @@ describe('ChasePage', () => {
     await waitFor(() => expect(mocks.refresh).toHaveBeenCalled())
   })
 
+  it('hands focus to the next row’s Create Task after a task is created', async () => {
+    mocks.postTask.mockResolvedValue({})
+    renderPage()
+
+    const [first, second] = screen.getAllByTestId(/chase-card-/)
+    fireEvent.click(within(first!).getByRole('button', { name: /^Create Task/ }))
+
+    const next = within(second!).getByRole('button', { name: /^Create Task/ })
+    await waitFor(() => expect(document.activeElement).toBe(next))
+  })
+
   it('raises Jev’s step when the person picks the alternative', async () => {
     mocks.postTask.mockResolvedValue({})
     renderPage()
 
     const card = screen.getByTestId('chase-card-BK-9001')
-    fireEvent.click(within(card).getByRole('button', { name: 'Use This Action' }))
+    fireEvent.click(within(card).getByRole('button', { name: /^Use This Action/ }))
 
     await waitFor(() => expect(mocks.postTask).toHaveBeenCalledTimes(1))
     expect(mocks.postTask).toHaveBeenCalledWith(
@@ -493,7 +504,7 @@ describe('ChasePage', () => {
 
     it('reads another desk in the header, the tile and the cards together', () => {
       renderPage()
-      fireEvent.click(screen.getByRole('combobox', { name: 'Filter by owner' }))
+      fireEvent.click(screen.getByRole('combobox', { name: 'Filter by desk' }))
       fireEvent.click(screen.getByRole('option', { name: 'Loan Admin' }))
 
       expect(screen.getByText('Need A Move From Loan Admin')).toBeTruthy()

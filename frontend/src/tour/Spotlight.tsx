@@ -22,7 +22,17 @@ export function Spotlight({
     let observer: ResizeObserver | undefined
     let observedTarget: Element | null = null
     const measure = () => {
-      const target = document.querySelector(step.target)
+      let target = document.querySelector(step.target)
+      // A target inside an inactive tab panel: open that tab, then measure again.
+      const panel = target?.closest('[role="tabpanel"][data-state="inactive"]')
+      const trigger = panel ? document.getElementById(panel.getAttribute('aria-labelledby') ?? '') : null
+      if (trigger) {
+        trigger.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, button: 0 }))
+        schedule()
+        return
+      }
+      // A hidden target is no target: the caption sits at the bottom instead of boxing the corner.
+      if (target && typeof target.checkVisibility === 'function' && !target.checkVisibility()) target = null
       if (target !== observedTarget) {
         observer?.disconnect()
         observedTarget = target

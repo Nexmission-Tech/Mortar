@@ -148,16 +148,16 @@ row.
 
 ### Today (`/chase`)
 
-- **US-1 (View Stalled Bookings):** As a staff member on Today, I want a single
-  header summary, two stat tiles (stalled / Need A Move From You, and Value At
-  Risk), evidence-awaiting bookings listed first, and cards stating each blocker
+- **US-1 (View Stalled Bookings):** As a staff member on Today, I want one
+  figures strip (stalled / Need A Move From You, Value At Risk, and my due
+  tasks), evidence-awaiting bookings listed first, and rows stating each blocker
   in words.
 - **US-2 (Actionable Next Step And Create Task):** As a staff member, I want
-  each card to display one rule-based next step and owner as the default, with
-  Jev's suggestion shown as an alternative when it differs, and a Create Task
-  button that creates the selected step.
-- **US-3 (Quick View And Card Limits):** As a staff member, I want to view nine
-  cards before "Show N More", and click a card's unit code to open the
+  each row to display one rule-based next step and owner as the default, with
+  Mortar AI's suggestion shown as an alternative when it differs, and a Create
+  Task button that creates the selected step.
+- **US-3 (Quick View And Complete Lists):** As a staff member, I want every
+  recommended action listed, and click a row's unit code to open the
   `CaseQuickView` case panel without leaving the screen.
 - **US-4 (Desk Views):** As a Sales Admin, I want to see every desk's bookings
   and tasks by default; as a Loan Admin or Legal Admin, I want to start on my
@@ -391,9 +391,9 @@ The system must present stalled live bookings in an actionable queue on Today
   step and its owner desk, the Overdue pill when past due (else `Task Open`),
   and an outline Create Task button, with every fact under Details. Clicking a
   row's unit code must open the `CaseQuickView` case panel.
-- **AC-5.4:** Sales Admin sees every desk's bookings and every open task by
-  default. Loan Admin and Legal Admin start on their own desk and tasks
-  ("Mine"), with the ability to switch scope.
+- **AC-5.4:** Sales Admin sees every desk's bookings by default. Every persona's
+  Your Tasks starts on their own tasks ("Mine"), with the ability to switch to
+  Everyone. Loan Admin and Legal Admin start on their own desk.
 - **AC-5.5:** Next steps must derive from `nextStep.ts`, making the rule-based
   move from `ballInCourt` the default everywhere. When Jev's cached suggestion
   differs, the card displays "Jev Suggests: <Step> Instead" with an alternate

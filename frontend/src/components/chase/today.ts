@@ -6,7 +6,7 @@
 
 import { useMemo } from 'react'
 import type { CaseSummary, OwnerRole, Snapshot, StaffProfile, Task } from '@mortar/core'
-import { OWNER_ROLE_LABELS } from '@/components/case/OwnerBadge'
+import { DESK_LABELS, DESK_OF_ROLE } from '@/components/people/RoleLabel'
 import { nextStepFor } from '@/components/case/nextStep'
 import { managerQueue } from '@/components/manager/managerQueue'
 import { useCases, useSnapshot } from '@/lib/data'
@@ -36,10 +36,10 @@ export function headlineFor(ownerFilter: 'all' | OwnerRole, ownDesk: OwnerRole, 
       count,
       sentence: `${count} ${count === 1 ? 'Stalled Booking' : 'Stalled Bookings'}`,
       label: 'Stalled Bookings',
-      info: 'Every booking that has stopped moving, whichever desk holds it.'
+      info: 'Every booking that has stopped moving at the chosen risk level, whichever desk holds it.'
     }
   }
-  const from = ownerFilter === ownDesk ? 'You' : OWNER_ROLE_LABELS[ownerFilter]
+  const from = ownerFilter === ownDesk ? 'You' : DESK_LABELS[DESK_OF_ROLE[ownerFilter]]
   return {
     count,
     sentence: `${count} ${count === 1 ? 'Booking Needs' : 'Bookings Need'} A Move From ${from}`,
@@ -62,11 +62,6 @@ export function assignedTasksFor(openTasks: readonly Task[], profile: StaffProfi
 /** Tasks due on or before the reference date. */
 export function dueTodayCount(tasks: readonly Task[], referenceDate: string): number {
   return tasks.filter((t) => t.dueOn <= referenceDate).length
-}
-
-/** The "N Tasks Due Today" half of the lead line. */
-export function dueTodayPhrase(count: number): string {
-  return `${count} ${count === 1 ? 'Task' : 'Tasks'} Due Today`
 }
 
 /** The Your Tasks shortcut: the count includes overdue tasks, so it says so. */

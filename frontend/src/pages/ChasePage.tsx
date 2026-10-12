@@ -16,8 +16,7 @@
  * as one muted line. Clicking the unit and buyer opens the same case panel a
  * row opens on the ledger.
  */
-import { useMemo, useState, type ReactNode } from 'react'
-import type { Dispatch, SetStateAction } from 'react'
+import { useMemo, useState, type Dispatch, type ReactNode, type SetStateAction } from 'react'
 import { AlertTriangle, Banknote, BellRing, SearchX, SlidersHorizontal, Users } from 'lucide-react'
 import { teamSummary } from '@mortar/core'
 import type { Booking, CaseSummary, EventKind, NextActionSuggestion, OwnerRole, RiskLevel, Task } from '@mortar/core'
@@ -96,6 +95,20 @@ function matchesSuggestedTask(task: Task, booking: Booking, step: NextStep): boo
     task.ownerName === resolveOwnerName(step.ownerRole, booking) &&
     normalizeRole(task.ownerRole) === normalizeRole(step.ownerRole)
   )
+}
+
+/**
+ * After a write removes a row, focus moves to the next row's matching control,
+ * or to the list's heading when no row is left, so a keyboard user keeps
+ * their place instead of starting again at the top of the page.
+ */
+function focusAfterWrite(nextRowTestId: string | null, control: string, headingId: string) {
+  requestAnimationFrame(() => {
+    const row = nextRowTestId ? document.querySelector(`[data-testid="${nextRowTestId}"]`) : null
+    const target =
+      row?.querySelector<HTMLElement>(`button[aria-label^="${control}"]`) ?? document.getElementById(headingId)
+    target?.focus()
+  })
 }
 
 function AdminToday() {
@@ -259,6 +272,8 @@ function AdminToday() {
     if (!booking || !snapshot) return
     if (openTasks.some((task) => matchesSuggestedTask(task, booking, step))) return
     setFlag(setCreating, bookingId, true)
+    const at = recommended.findIndex((c) => c.bookingId === bookingId)
+    const next = recommended[at + 1]?.bookingId ?? null
     try {
       await postTask(
         stepToTask(step, booking, snapshot.meta.referenceDate, {
@@ -268,6 +283,7 @@ function AdminToday() {
       )
       notify.success(`Task created for ${bookingId}: ${step.label}`)
       await refresh()
+      focusAfterWrite(next ? `chase-card-${next}` : null, 'Create Task', 'today-queue-heading')
     } catch (e) {
       notify.error(e instanceof ApiError ? e.message : 'Could Not Create The Task. Try Again.')
     } finally {
@@ -343,6 +359,7 @@ function AdminToday() {
             <section aria-label="Work queue" className="flex flex-col gap-3">
               <ViewHeader
                 title="Recommended Actions"
+                headingId="today-queue-heading"
                 detail={queueDetail}
                 info="Updates awaiting review first, then longest without an update, booking value and age."
               >
@@ -357,7 +374,7 @@ function AdminToday() {
                   />
                   <FilterSelect
                     label="Desk"
-                    ariaLabel="Filter by owner"
+                    ariaLabel="Filter by desk"
                     icon={Users}
                     value={ownerFilter}
                     options={OWNER_OPTIONS}
@@ -540,6 +557,7 @@ function ManagerToday() {
             <section aria-label="Work queue" className="flex flex-col gap-3">
               <ViewHeader
                 title="Decisions For You"
+                headingId="today-queue-heading"
                 detail={`${decisions.length} ${decisions.length === 1 ? 'Case Needs' : 'Cases Need'} A Follow-Up`}
                 info="Cases beyond their expected wait, in the existing priority order."
               >
@@ -594,7 +612,17 @@ function ManagerToday() {
                       item={item}
                       referenceDate={snapshot?.meta.referenceDate ?? ''}
                       managerName={profile.name}
-                      onSent={refresh}
+                      onSent={async (sent) => {
+                        await refresh()
+                        if (sent) {
+                          const next = decisions[i + 1]?.booking.id
+                          focusAfterWrite(
+                            next ? `manager-card-${next}` : null,
+                            'Request Follow-Up',
+                            'today-queue-heading'
+                          )
+                        }
+                      }}
                       onInspect={() => setInspecting(item.booking.id)}
                     />
                   ))}
@@ -648,7 +676,7 @@ function TodayViews<V extends string>({
               key={v.id}
               value={v.id}
               data-tour={v.tourTarget}
-              className="h-full flex-none px-0 text-[13px] md:text-sm"
+              className="h-full flex-none px-0 text-[13px] focus-visible:outline-offset-[-2px] md:text-sm"
             >
               {v.label}
               <span className="text-xs tabular-nums text-muted-foreground">{v.count}</span>

@@ -44,6 +44,7 @@ export function Worklist({ label, children }: { label: string; children: ReactNo
 /** One row: identity, blocker, action group, and Details spanning the row when open. */
 export function WorklistRow({
   testId,
+  label,
   tourTarget,
   identity,
   blocker,
@@ -51,6 +52,8 @@ export function WorklistRow({
   details
 }: {
   testId: string
+  /** The row's accessible name: unit and buyer. */
+  label: string
   tourTarget?: string
   identity: ReactNode
   blocker: ReactNode
@@ -63,6 +66,7 @@ export function WorklistRow({
       <article
         data-testid={testId}
         data-tour={tourTarget}
+        aria-label={label}
         className={cn(ROW_GRID, 'min-h-14 px-3 py-2.5 lg:items-center lg:px-4 lg:py-1.5')}
       >
         <div className="min-w-0">{identity}</div>

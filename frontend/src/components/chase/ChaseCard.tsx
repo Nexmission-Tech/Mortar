@@ -84,6 +84,7 @@ export function ChaseCard({
   return (
     <WorklistRow
       testId={`chase-card-${booking.id}`}
+      label={`${booking.unit} · ${booking.buyer.name}`}
       tourTarget={tourTarget}
       identity={<RowIdentity booking={booking} onInspect={onInspect} tourTarget={quickViewTarget} />}
       blocker={
@@ -135,6 +136,7 @@ export function ChaseCard({
                   variant="outline"
                   size="sm"
                   className="max-md:mr-auto"
+                  aria-label={`Create Task For ${booking.unit}`}
                   disabled={creating}
                   onClick={() => onCreateTask(step)}
                 >
@@ -143,7 +145,7 @@ export function ChaseCard({
                 </Button>
               )}
               <span className="flex items-center gap-1">
-                <AskAgain suggesting={suggesting} onSuggest={onSuggest} />
+                <AskAgain unit={booking.unit} suggesting={suggesting} onSuggest={onSuggest} />
                 {toggle}
               </span>
             </div>
@@ -154,6 +156,7 @@ export function ChaseCard({
               {DESK_LABELS[DESK_OF_ROLE[alternativeStep.ownerRole]]} ·{' '}
               <button
                 type="button"
+                aria-label={`Use This Action For ${booking.unit}`}
                 disabled={creating}
                 onClick={() => onCreateTask(alternativeStep)}
                 className="relative rounded-sm font-medium text-foreground underline underline-offset-4 outline-none after:absolute after:-inset-y-[3px] after:inset-x-0 hover:text-link focus-visible:ring-2 focus-visible:ring-ring disabled:text-disabled-foreground"
@@ -173,7 +176,7 @@ export function ChaseCard({
  * Ask Mortar AI Again as a 32px ghost icon button, with the note on when it
  * last checked in its tooltip rather than on every row.
  */
-function AskAgain({ suggesting, onSuggest }: { suggesting?: boolean; onSuggest: () => void }) {
+function AskAgain({ unit, suggesting, onSuggest }: { unit: string; suggesting?: boolean; onSuggest: () => void }) {
   return (
     <TooltipProvider delayDuration={300}>
       <Tooltip>
@@ -183,7 +186,7 @@ function AskAgain({ suggesting, onSuggest }: { suggesting?: boolean; onSuggest: 
             variant="ghost"
             size="icon"
             className="size-8"
-            aria-label="Ask Mortar AI Again"
+            aria-label={`Ask Mortar AI Again For ${unit}`}
             disabled={suggesting}
             onClick={onSuggest}
           >

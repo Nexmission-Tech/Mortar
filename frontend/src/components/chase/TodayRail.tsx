@@ -66,6 +66,7 @@ export function TodayOverview({ figures, third }: { figures: [TodayFigureCell, T
               )}
             >
               {f.value}
+              {f.exact ? <span className="sr-only">, exactly {f.exact}</span> : null}
             </span>
             <span className={LABEL}>{f.caption}</span>
           </>
@@ -77,7 +78,7 @@ export function TodayOverview({ figures, third }: { figures: [TodayFigureCell, T
         )
         return (
           <div
-            key={f.label}
+            key={i}
             className={cn(
               'flex min-w-0 items-start gap-1 px-4 py-3 sm:px-5',
               i === 0 ? 'border-r border-border' : 'lg:border-r lg:border-border'
@@ -168,11 +169,14 @@ export function BusiestDesk({ row }: { row: TeamRow | undefined }) {
 /** A view's heading: Title Case section title, a muted count line, and controls on the right. */
 export function ViewHeader({
   title,
+  headingId,
   detail,
   info,
   children
 }: {
   title: string
+  /** Lets focus land on the heading when the list under it empties. */
+  headingId?: string
   detail?: string
   info?: string
   children?: ReactNode
@@ -180,7 +184,11 @@ export function ViewHeader({
   return (
     <div className="flex flex-wrap items-end justify-between gap-3">
       <div className="flex min-w-0 flex-col gap-0.5">
-        <h2 className="flex items-center gap-1 text-base font-semibold leading-6 tracking-[-0.01em] text-foreground">
+        <h2
+          id={headingId}
+          tabIndex={headingId ? -1 : undefined}
+          className="flex items-center gap-1 text-base font-semibold leading-6 tracking-[-0.01em] text-foreground outline-none"
+        >
           {title}
           {info ? <InfoTooltip text={info} /> : null}
         </h2>
@@ -230,10 +238,7 @@ export function YourTasks({
   )
   return (
     <section aria-label="Your tasks" className="flex flex-col gap-3">
-      <ViewHeader
-        title="Your Tasks"
-        detail={`${tasks.length} Open · Manager Follow-Ups First, Then Due Date`}
-      >
+      <ViewHeader title="Your Tasks" detail={`${tasks.length} Open · Manager Follow-Ups First, Then Due Date`}>
         <div role="group" aria-label="Whose tasks" className="flex rounded-md bg-muted p-0.5">
           {[
             { label: 'Mine', on: mineOnly, value: true },
@@ -256,9 +261,7 @@ export function YourTasks({
       </ViewHeader>
       {tasks.length === 0 ? (
         <div className={cn(SURFACE, 'px-4 py-6 text-center')}>
-          <p className="text-sm font-medium text-foreground">
-            {mineOnly ? 'No Open Tasks For You' : 'No Open Tasks'}
-          </p>
+          <p className="text-sm font-medium text-foreground">{mineOnly ? 'No Open Tasks For You' : 'No Open Tasks'}</p>
           {mineOnly ? (
             <p className="mt-1 text-[13px] text-muted-foreground">Recommended Actions Are Ready When You Are</p>
           ) : null}

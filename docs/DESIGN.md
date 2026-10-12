@@ -931,9 +931,9 @@ add a redundant Open Case footer link.
   is no separate Busiest Desk card.
 - **Scope:** Stalled count follows Risk/Desk and says Matching These Filters.
   Value At Risk remains accessible-portfolio scoped and says All Accessible
-  Bookings. Manager figures say Across All Desks. Exact money and the value
-  explanation remain available on hover, focus and click. Task creation does not
-  imply a booking is no longer stalled.
+  Bookings. Manager figures say Across All Desks. Exact money sits in the
+  figure’s title and is read out to screen readers; the explanation is on the
+  (i) beside it. Task creation does not imply a booking is no longer stalled.
 - **Views:** Actions, Your Tasks and Recent Bookings for admins; Decisions and
   Follow-Ups for Manager. Default to Actions/Decisions. Follow-Ups carries the
   Awaiting Reply count. Keep full panel headings, Mine as task default, access

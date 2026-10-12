@@ -42,8 +42,8 @@ export function ManagerCard({
   item: ManagerCase
   referenceDate: string
   managerName: string
-  /** Called once the follow-up is saved, to refresh the queue. */
-  onSent: () => Promise<void> | void
+  /** Called after a send, to refresh the queue; `sent` is false when it failed. */
+  onSent: (sent: boolean) => Promise<void> | void
   /** Opens the case's case panel over the worklist. */
   onInspect: () => void
   tourTarget?: string
@@ -52,7 +52,8 @@ export function ManagerCard({
   const [saving, setSaving] = useState(false)
   const headline = headlineBlocker(summary.stallReasons) ?? { text: wait.reason, generic: false }
   const late = overdueBy(wait)
-  const unit = wait.unit === 'working days' ? (late === 1 ? 'Working Day' : 'Working Days') : late === 1 ? 'Day' : 'Days'
+  const unit =
+    wait.unit === 'working days' ? (late === 1 ? 'Working Day' : 'Working Days') : late === 1 ? 'Day' : 'Days'
 
   const send = async () => {
     if (!recipient || saving) return
@@ -65,10 +66,10 @@ export function ManagerCard({
         managerFlaggedBy: managerName
       })
       notify.success(`Follow-up sent to ${recipient.name}.`)
-      await onSent()
+      await onSent(true)
     } catch (e) {
       notify.error(e instanceof Error ? e.message : 'Could not send the follow-up. Try again.')
-      await onSent()
+      await onSent(false)
     } finally {
       setSaving(false)
     }
@@ -91,6 +92,7 @@ export function ManagerCard({
   return (
     <WorklistRow
       testId={`manager-card-${booking.id}`}
+      label={`${booking.unit} · ${booking.buyer.name}`}
       tourTarget={tourTarget}
       identity={<RowIdentity booking={booking} onInspect={onInspect} />}
       blocker={
@@ -130,6 +132,7 @@ export function ManagerCard({
                 variant="outline"
                 size="sm"
                 className="max-md:mr-auto"
+                aria-label={`Request Follow-Up For ${booking.unit}`}
                 disabled={saving}
                 onClick={() => void send()}
               >

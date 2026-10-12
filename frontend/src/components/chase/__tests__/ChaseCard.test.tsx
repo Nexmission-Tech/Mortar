@@ -125,13 +125,13 @@ describe('ChaseCard', () => {
 
     expect(screen.getByText('Task Open')).toBeTruthy()
     expect(screen.getByText('Due 20 Sep 2026 · Tan Mei Ling')).toBeTruthy()
-    expect(screen.queryByRole('button', { name: 'Create Task' })).toBeNull()
+    expect(screen.queryByRole('button', { name: /^Create Task/ })).toBeNull()
   })
 
   it('offers Create Task as an outline button, never solid ink inside the worklist', () => {
     renderCard(null, undefined)
 
-    const create = screen.getByRole('button', { name: 'Create Task' })
+    const create = screen.getByRole('button', { name: /^Create Task/ })
     expect(create.className).toContain('border-input')
     expect(create.className).not.toContain('bg-primary')
     expect(screen.queryByText('Task Open')).toBeNull()
@@ -165,7 +165,7 @@ describe('ChaseCard', () => {
     expect(line.className).toContain('text-muted-foreground')
     expect(line.textContent).toContain('Sales Admin')
 
-    fireEvent.click(within(line).getByRole('button', { name: 'Use This Action' }))
+    fireEvent.click(within(line).getByRole('button', { name: /^Use This Action/ }))
     expect(onCreateTask).toHaveBeenCalledWith(expect.objectContaining({ action: 'call_buyer' }))
   })
 
@@ -237,7 +237,7 @@ describe('ChaseCard', () => {
   it('keeps Ask Mortar AI Again as a 32px icon button carrying its own label', () => {
     renderCard(null)
 
-    const button = screen.getByRole('button', { name: 'Ask Mortar AI Again' })
+    const button = screen.getByRole('button', { name: /^Ask Mortar AI Again/ })
     expect(button.textContent).toBe('')
     expect(button.className).toContain('size-8')
   })
