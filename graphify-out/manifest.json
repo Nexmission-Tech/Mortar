@@ -2730,9 +2730,15 @@
     "semantic_hash": ""
   },
   "docs/research/spa-impact/README.md": {
-    "mtime": 1791800107.016045,
-    "seen": 1791800112.814521,
+    "mtime": 1791800313.2755089,
+    "seen": 1791801106.0652149,
     "ast_hash": "6d694d49ebbbdfa5d4312a9574532c05",
+    "semantic_hash": ""
+  },
+  "docs/research/roast/sales-director.md": {
+    "mtime": 1791801100.6134686,
+    "seen": 1791801106.065209,
+    "ast_hash": "ab6f630240791f39d29c52b34cf4055e",
     "semantic_hash": ""
   }
 }
