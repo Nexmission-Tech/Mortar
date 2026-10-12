@@ -169,23 +169,23 @@ clean recording seed.
   browser storage namespace per profile.
 - **Manager Workflows.** The Manager's home is Today (`/chase`), the same page
   every other persona gets. Its queue is "Decisions For You": the overdue cases
-  not yet followed up, drawn as ordinary Today cards with an "Overdue N d" pill,
-  the blocker sentence, and Open Case and Request Follow-Up. No percentages and
-  no Jev scores appear anywhere. Overdue means at or beyond 150% of the expected
-  duration, using the existing stall-wait assumptions, with working days for
-  bank decisions. The rail carries Overdue Cases, Value At Risk, Follow-Ups You
-  Sent and a Busiest Desk shortcut. `/team` replaces `/manager` (which
-  redirects), with four figures and a desks table, one row per staff profile,
-  whose row opens Bookings filtered to the bookings waiting on that person.
-  "Waiting On Them" uses the same responsibility rule the server uses for
-  follow-ups. Flagged department tasks persist and appear in the recipient's
-  notification bell, refreshed every 30 seconds while visible. The server
-  resolves recipients using `currentCaseAssignee` and revalidates before
-  sending; manager flags reuse equivalent ordinary open tasks. Today leads with
-  the work queue and its two filters, with a right rail carrying the two
-  figures, Your Tasks (a Mine or Everyone switch) and Recent Bookings; below
-  1280px the rail stacks above the queue. Recent Bookings uses
-  `Booking.createdAt`, never `bookingDate`.
+  not yet followed up, drawn as Today worklist rows with an "Overdue N Days"
+  pill, the blocker, and Request Follow-Up; the unit opens the case panel. No
+  percentages and no Jev scores appear anywhere. Overdue means at or beyond 150%
+  of the expected duration, using the existing stall-wait assumptions, with
+  working days for bank decisions. The figures strip carries Overdue Cases,
+  Value At Risk and the Busiest Desk; Follow-Ups You Sent is its own view.
+  `/team` replaces `/manager` (which redirects), with four figures and a desks
+  table, one row per staff profile, whose row opens Bookings filtered to the
+  bookings waiting on that person. "Waiting On Them" uses the same
+  responsibility rule the server uses for follow-ups. Flagged department tasks
+  persist and appear in the recipient's notification bell, refreshed every 30
+  seconds while visible. The server resolves recipients using
+  `currentCaseAssignee` and revalidates before sending; manager flags reuse
+  equivalent ordinary open tasks. Today opens on a figures strip and named views
+  (Actions, Your Tasks, Recent Bookings), with rows built from
+  `components/chase/worklist.tsx`. Recent Bookings uses `Booking.createdAt`,
+  never `bookingDate`.
 - **Forecast Documents Follow The Figures.** `ForecastDocuments` owns selection,
   shuffle motion, the reading dialog and its focus return. Covers and details
   read the same calculated findings. The five report definitions and their

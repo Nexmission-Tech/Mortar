@@ -746,7 +746,9 @@ function FilterSelect({
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger aria-label={ariaLabel} className="w-full bg-card sm:w-44">
           <Icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
-          <SelectValue />
+          <span className="flex-1 truncate text-left">
+            <SelectValue />
+          </span>
         </SelectTrigger>
         <SelectContent>
           {options.map((o) => (

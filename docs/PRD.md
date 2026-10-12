@@ -380,16 +380,17 @@ provide a human verification workflow.
 The system must present stalled live bookings in an actionable queue on Today
 (`/chase`) and support task assignment and completion.
 
-- **AC-5.1:** The Today screen (`/chase`) must title Today with one header
-  sentence (e.g. "26 Stalled Bookings · 3 Tasks Due Today") and two summary
-  tiles: stalled bookings (or "Need A Move From You") and Value At Risk.
+- **AC-5.1:** The Today screen (`/chase`) must title Today with one lead phrase
+  and one figures strip: stalled bookings (or "Need A Move From You"), Value At
+  Risk, and Your Tasks' "N Tasks Due Or Overdue" shortcut. Named views follow:
+  Actions, Your Tasks and Recent Bookings.
 - **AC-5.2:** Bookings with evidence awaiting review must come first, followed
-  by bookings longest without evidence. Nine cards show before a "Show N More"
-  button.
-- **AC-5.3:** Each card must state the blocker in words, one next step and its
-  owner, one status pill (`Overdue` if past due, else `Task Open`), and a Create
-  Task button. Clicking a card's unit code must open the `CaseQuickView` case
-  panel.
+  by bookings longest without evidence. Every recommended action is listed;
+  nothing folds behind a Show More.
+- **AC-5.3:** Each worklist row must state the first specific blocker, one next
+  step and its owner desk, the Overdue pill when past due (else `Task Open`),
+  and an outline Create Task button, with every fact under Details. Clicking a
+  row's unit code must open the `CaseQuickView` case panel.
 - **AC-5.4:** Sales Admin sees every desk's bookings and every open task by
   default. Loan Admin and Legal Admin start on their own desk and tasks
   ("Mine"), with the ability to switch scope.
@@ -1266,12 +1267,12 @@ again, and are marked below.
   The button identifies that recipient; an external solicitor firm is not an
   internal assignee. Recipients see the manager flag and an in-app notification.
   Existing equivalent open tasks are flagged rather than duplicated.
-- Today leads with the work queue and its two filters, with a right-hand rail
-  carrying the two figures, Your Tasks (on a Mine or Everyone switch) and Recent
-  Bookings. On narrow screens the rail stacks above the queue. Recent Bookings
+- Today opens on a figures strip and named views: Actions (one ordered worklist
+  with its two filters), Your Tasks (on a Mine or Everyone switch) and Recent
+  Bookings. There is no rail; each view holds a complete list. Recent Bookings
   uses a seven-day window on creation time, not booking date; unknown legacy
   creation times are excluded. **Superseded:** Today leading with assigned tasks
-  above the recommendations, with Recent Bookings folded.
+  above the recommendations, and later a right-hand rail beside a card wall.
 - Sign In As selects a named demo profile with its department and access scope.
   The header carries a profile menu whose persona card opens the switcher.
 - Project and unit range settings are shared, editable only by Manager, and

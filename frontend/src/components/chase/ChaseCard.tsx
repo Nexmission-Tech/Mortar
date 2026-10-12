@@ -156,7 +156,7 @@ export function ChaseCard({
                 type="button"
                 disabled={creating}
                 onClick={() => onCreateTask(alternativeStep)}
-                className="inline-flex min-h-6 items-center rounded-sm font-medium text-foreground underline underline-offset-4 outline-none hover:text-link focus-visible:ring-2 focus-visible:ring-ring disabled:text-disabled-foreground"
+                className="relative rounded-sm font-medium text-foreground underline underline-offset-4 outline-none after:absolute after:-inset-y-[3px] after:inset-x-0 hover:text-link focus-visible:ring-2 focus-visible:ring-ring disabled:text-disabled-foreground"
               >
                 {creating ? 'Creating…' : 'Use This Action'}
               </button>
