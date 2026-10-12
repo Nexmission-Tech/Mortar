@@ -64,6 +64,8 @@ function summary(applications: CaseSummary['applications'], over: Partial<CaseSu
     applications,
     outstandingDocuments: [],
     buyerWithdrew: false,
+    buyerConcern: false,
+    valuationShortfall: false,
     risk: { level: 'low', loanRm: 0, instalmentRm: 0, debtServiceRatio: 0.2, marginOfFinancing: 0.9, reasons: [] },
     stallReasons: [],
     openTasks: 0,
@@ -156,6 +158,83 @@ describe('RecordUpdateForm', () => {
       expect(vi.mocked(postEvent)).toHaveBeenCalledWith(
         expect.objectContaining({ kind: 'loan_approved', applicationId: 'APP-2' })
       )
+    )
+  })
+
+  // Issue #75: with two banks deciding, a receipt names the bank it reached.
+  it('requires a receipt to name its bank while two banks are deciding', async () => {
+    renderForm(
+      [MALAYAN, CREST],
+      [
+        { id: 'APP-1', bank: 'Malayan Trust Bank', status: 'submitted' },
+        { id: 'APP-2', bank: 'Crestline Bank', status: 'documents_pending' }
+      ]
+    )
+
+    await choose('What Happened', 'Documents Received')
+    expect(screen.getByText('More Than One Bank Is Deciding: Name The Bank That Received It.')).toBeTruthy()
+    await choose('Document', 'Payslip')
+    expect(recordButton().disabled).toBe(true)
+    fireEvent.click(screen.getByRole('combobox', { name: 'Which Bank' }))
+    expect(screen.queryByRole('option', { name: 'Not For One Bank' })).toBeNull()
+    fireEvent.click(await screen.findByRole('option', { name: /Crestline Bank/ }))
+    fireEvent.click(recordButton())
+
+    await waitFor(() =>
+      expect(vi.mocked(postEvent)).toHaveBeenCalledWith(
+        expect.objectContaining({ kind: 'documents_received', applicationId: 'APP-2', document: 'payslip' })
+      )
+    )
+  })
+
+  it('still lets a receipt be recorded not for one bank when only one bank is deciding', async () => {
+    renderForm([MALAYAN], [{ id: 'APP-1', bank: 'Malayan Trust Bank', status: 'submitted' }])
+
+    await choose('What Happened', 'Documents Received')
+    expect(screen.queryByText(/More Than One Bank Is Deciding/)).toBeNull()
+    // The one bank still deciding is the one meant.
+    expect(screen.getByRole('combobox', { name: 'Which Bank' }).textContent).toContain('Malayan Trust Bank')
+    fireEvent.click(screen.getByRole('combobox', { name: 'Which Bank' }))
+    expect(await screen.findByRole('option', { name: 'Not For One Bank' })).toBeTruthy()
+  })
+
+  it('puts a receipt on the approving bank once no bank is deciding, so its request clears', async () => {
+    renderForm(
+      [MALAYAN, CREST],
+      [
+        { id: 'APP-1', bank: 'Malayan Trust Bank', status: 'rejected' },
+        { id: 'APP-2', bank: 'Crestline Bank', status: 'approved' }
+      ],
+      { stage: 'lo_issued', daysSinceLoIssued: 2, outstandingDocuments: ['payslip'] }
+    )
+
+    await choose('What Happened', 'Documents Received')
+    expect(screen.getByRole('combobox', { name: 'Which Bank' }).textContent).toContain('Crestline Bank')
+    await choose('Document', 'Payslip')
+    fireEvent.click(recordButton())
+
+    await waitFor(() =>
+      expect(vi.mocked(postEvent)).toHaveBeenCalledWith(
+        expect.objectContaining({ kind: 'documents_received', applicationId: 'APP-2', document: 'payslip' })
+      )
+    )
+  })
+
+  it('takes a valuation shortfall only on a bank that has not decided', async () => {
+    renderForm(
+      [MALAYAN, CREST],
+      [
+        { id: 'APP-1', bank: 'Malayan Trust Bank', status: 'approved' },
+        { id: 'APP-2', bank: 'Crestline Bank', status: 'submitted' }
+      ]
+    )
+
+    await choose('What Happened', 'Valuation Shortfall')
+    const bank = screen.getByRole('combobox', { name: 'Which Bank' })
+    expect(bank.textContent).toContain('Crestline Bank')
+    fireEvent.click(bank)
+    expect((await screen.findByRole('option', { name: /Malayan Trust Bank/ })).getAttribute('aria-disabled')).toBe(
+      'true'
     )
   })
 

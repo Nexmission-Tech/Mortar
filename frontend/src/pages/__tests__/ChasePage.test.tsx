@@ -309,6 +309,29 @@ describe('ChasePage', () => {
     ])
   })
 
+  // Issue #75: a missed SPA appointment's slot is already lost, so it leads.
+  it('leads with a missed SPA appointment, ahead of evidence waiting to be confirmed', () => {
+    SNAP = snapshot({
+      events: [provisionalEvent('BK-9001', 'EV-1')],
+      bookings: [booking('BK-9001'), booking('BK-0040')],
+      nextActions: []
+    })
+    CASES = [
+      stalledCase('BK-9001', { daysSinceEvidence: 3, applications: [{ id: 'A1', bank: 'B', status: 'submitted' }] }),
+      stalledCase('BK-0040', {
+        daysSinceEvidence: 1,
+        applications: [{ id: 'A2', bank: 'B', status: 'submitted' }],
+        stallReasons: ['SPA Appointment Missed 1 Day Ago']
+      })
+    ]
+    renderPage()
+
+    expect(screen.getAllByTestId(/chase-card-/).map((c) => c.getAttribute('data-testid'))).toEqual([
+      'chase-card-BK-0040',
+      'chase-card-BK-9001'
+    ])
+  })
+
   it('ranks the rest by how long each case has sat still, and pills only the overdue one', () => {
     SNAP = snapshot({
       events: [],

@@ -162,8 +162,8 @@ describe('BookingsPage', () => {
     expect(screen.getByRole('checkbox', { name: 'Closed (8)' })).toBeTruthy()
     ensureFiltersOpen()
 
-    // Under Loan Admin preset (Bank), 13 of 20 bookings match
-    expect(screen.getByText('13 Of 20 Bookings')).toBeTruthy()
+    // Under Loan Admin preset (Bank), 12 of 20 bookings match
+    expect(screen.getByText('12 Of 20 Bookings')).toBeTruthy()
     expect(screen.queryByRole('button', { name: 'Add Booking' })).toBeNull()
   })
 
@@ -497,8 +497,8 @@ describe('BookingsPage', () => {
     renderBookings()
     await screen.findByText('BK-9001')
 
-    // Starts preset on Bank for Loan Admin (13 bookings)
-    expect(screen.getByText('13 Of 20 Bookings')).toBeTruthy()
+    // Starts preset on Bank for Loan Admin (12 bookings; BK-0001's buyer raised a concern, so it waits on the buyer)
+    expect(screen.getByText('12 Of 20 Bookings')).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: /Who Holds Each Booking/i }))
 
     // Second click on Bank clears the filter back to all 20 active bookings
@@ -506,17 +506,17 @@ describe('BookingsPage', () => {
     fireEvent.click(bankStep)
     expect(await screen.findByText('20 Bookings')).toBeTruthy()
 
-    // Clicking Buyer filters to Buyer cases (3 bookings)
+    // Clicking Buyer filters to Buyer cases (4 bookings)
     const buyerStep = screen.getByRole('button', { name: /Filter by Buyer/i })
     fireEvent.click(buyerStep)
-    expect(await screen.findByText('3 Of 20 Bookings')).toBeTruthy()
+    expect(await screen.findByText('4 Of 20 Bookings')).toBeTruthy()
     expect(screen.getByText('BK-0003')).toBeTruthy()
     expect(screen.queryByText('BK-9001')).toBeNull()
   })
 
   it('presets the holder filter to Buyer for Sales Admin and Solicitor for Legal Admin (Change 6)', async () => {
     const { unmount } = renderBookings('sales-admin')
-    expect(await screen.findByText('3 Of 20 Bookings')).toBeTruthy()
+    expect(await screen.findByText('4 Of 20 Bookings')).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: /Who Holds Each Booking/i }))
     expect(screen.getByRole('button', { name: /Filter by Buyer/i }).getAttribute('aria-pressed')).toBe('true')
     unmount()
@@ -531,15 +531,15 @@ describe('BookingsPage', () => {
     renderBookings()
     await screen.findByText('BK-9001')
 
-    // The collapsed strip displays the five holder counts: Buyer (3), Bank (13), Solicitor (1), Signed (1), Us (2)
-    // 3 + 13 + 1 + 1 + 2 = 20, exactly matching Active (20)
-    expect(screen.getByLabelText('Buyer: 3')).toBeTruthy()
-    expect(screen.getByLabelText('Bank: 13')).toBeTruthy()
+    // The collapsed strip displays the five holder counts: Buyer (4), Bank (12), Solicitor (1), Signed (1), Us (2)
+    // 4 + 12 + 1 + 1 + 2 = 20, exactly matching Active (20)
+    expect(screen.getByLabelText('Buyer: 4')).toBeTruthy()
+    expect(screen.getByLabelText('Bank: 12')).toBeTruthy()
     expect(screen.getByLabelText('Solicitor: 1')).toBeTruthy()
     expect(screen.getByLabelText('Signed: 1')).toBeTruthy()
     expect(screen.getByLabelText('Us: 2')).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: /Who Holds Each Booking/i }))
-    expect(screen.getByRole('button', { name: /Filter by Buyer: 3/i })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /Filter by Buyer: 4/i })).toBeTruthy()
   })
 
   it('renders Low Risk as muted text rather than a pill (Change 7)', async () => {

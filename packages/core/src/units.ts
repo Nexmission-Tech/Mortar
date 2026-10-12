@@ -155,9 +155,10 @@ const terminal = (s: CaseSummary) => s.stage === 'cancelled' || s.stage === 'lap
 const liveUnsigned = (s: CaseSummary) => !terminal(s) && !s.spaSigned
 
 /**
- * Advisory: a live, unsigned booking whose recovery paths look spent, so an
- * authorised person should decide whether to cancel and re-release the unit.
- * Mortar never cancels.
+ * Advisory: a live, unsigned booking for an authorised person to decide on,
+ * cancel and re-release or keep: the buyer withdrew, or no loan is live after
+ * two rejections or 30 days. Two rejections do not prove recovery is spent,
+ * so the case itself opens on its financing review. Mortar never cancels.
  */
 export function releaseReview(summary: CaseSummary): boolean {
   if (!liveUnsigned(summary)) return false

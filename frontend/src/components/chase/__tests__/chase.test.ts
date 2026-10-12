@@ -1,6 +1,17 @@
 import { describe, expect, it } from 'vitest'
 import type { NextActionSuggestion } from '@mortar/core'
-import { NEXT_ACTION_LABELS, addDays, documentStepLabel, dueOnForUrgency, urgencyFor } from '../chase'
+import { Calculator, FileWarning, Landmark, UserRound } from 'lucide-react'
+import { STORIES } from '@mortar/core'
+import {
+  NEXT_ACTION_LABELS,
+  actionIcon,
+  addDays,
+  blockerIcon,
+  documentStepLabel,
+  dueOnForUrgency,
+  taskTitle,
+  urgencyFor
+} from '../chase'
 
 function suggestion(urgencyScore: number): NextActionSuggestion {
   return {
@@ -61,5 +72,22 @@ describe('documentStepLabel', () => {
 
   it('leaves every other step alone', () => {
     expect(documentStepLabel(NEXT_ACTION_LABELS.chase_banker, 'payslip')).toBe('Call The Banker')
+  })
+})
+
+// Issue #75: the loan desk's review after a rejection or a shortfall, and the buyer's concern.
+describe('a financing review and a buyer concern', () => {
+  const booking = STORIES[0]!.booking
+
+  it('names the financing review as a step, a task and a glyph of its own', () => {
+    expect(NEXT_ACTION_LABELS.review_financing).toBe('Hold A Financing Review')
+    expect(taskTitle('review_financing', booking)).toBe(`Hold A Financing Review For ${booking.buyer.name}`)
+    expect(actionIcon('review_financing')).toBe(Calculator)
+  })
+
+  it('draws the blocker by what blocks: the concern first, then a document, then the bank', () => {
+    expect(blockerIcon(['Buyer Raised A Concern', 'Payslip Still Outstanding After 6 Days'])).toBe(UserRound)
+    expect(blockerIcon(['Payslip Still Outstanding After 6 Days'])).toBe(FileWarning)
+    expect(blockerIcon(['Valuation Shortfall Confirmed'])).toBe(Landmark)
   })
 })

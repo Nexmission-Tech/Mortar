@@ -144,6 +144,7 @@ const NEXT_ACTIONS: readonly NextAction[] = [
   'request_document',
   'chase_banker',
   'submit_another_bank',
+  'review_financing',
   'call_buyer',
   'schedule_spa',
   'escalate_legal',
@@ -208,11 +209,20 @@ function isClosed(summary: CaseSummary): boolean {
  */
 function caseRuleProblem(summary: CaseSummary, kind: EventKind, applicationId: string | null): string | null {
   if (isClosed(summary)) return `This booking is ${summary.stage}, so it takes no more updates.`
-  if (kind === 'loan_approved' || kind === 'loan_rejected') {
+  // A bank decides an application once, and a valuation shortfall is part of
+  // that decision: after it, neither changes anything, and a shortfall left on
+  // a decided application could never be settled.
+  if (kind === 'loan_approved' || kind === 'loan_rejected' || kind === 'valuation_shortfall') {
     const application = summary.applications.find((a) => a.id === applicationId)
     if (application && (application.status === 'approved' || application.status === 'rejected')) {
       return `${application.bank} has already ${application.status} this application.`
     }
+  }
+  // One bank's receipt is not another's: with two banks still deciding, a
+  // receipt names the bank it reached, or no bank's request would clear.
+  if (kind === 'documents_received' && applicationId === null) {
+    const deciding = summary.applications.filter((a) => a.status === 'submitted' || a.status === 'documents_pending')
+    if (deciding.length > 1) return 'More than one bank is deciding. Say which bank received the document.'
   }
   return null
 }

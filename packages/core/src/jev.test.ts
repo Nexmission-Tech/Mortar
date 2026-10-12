@@ -59,6 +59,8 @@ const summary = (overrides: Partial<CaseSummary> = {}): CaseSummary => ({
   ],
   outstandingDocuments: ['payslip'],
   buyerWithdrew: false,
+  buyerConcern: false,
+  valuationShortfall: false,
   risk: {
     level: 'low',
     loanRm: 450000,
@@ -175,5 +177,21 @@ describe('proposalFromExtraction', () => {
   it('leaves the document null when none was identified', () => {
     const e = extraction({ document: { value: 'none', probabilities: {}, confidence: 0.5 } })
     expect(proposalFromExtraction(e, message(), summary())?.document).toBeNull()
+  })
+
+  // Issue #75: once approved, the approving bank's request clears only with a receipt that names it.
+  it('puts a document update on the approving bank once no bank is deciding', () => {
+    const approvedOnly = summary({
+      applications: [
+        { id: 'LA-1', bank: 'Bank A', status: 'approved' },
+        { id: 'LA-2', bank: 'Bank B', status: 'rejected' }
+      ]
+    })
+    expect(proposalFromExtraction(extraction(), message(), approvedOnly)?.applicationId).toBe('LA-1')
+    // A decision is never guessed onto a bank that has already decided.
+    const decision = extraction({
+      event: { value: 'loan_approved', probabilities: { loan_approved: 0.9 }, confidence: 0.9 }
+    })
+    expect(proposalFromExtraction(decision, message(), approvedOnly)?.applicationId).toBeNull()
   })
 })

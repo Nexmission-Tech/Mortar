@@ -315,12 +315,13 @@ export const ASK_QUESTIONS: AskQuestion[] = [
       return {
         text:
           `${count(cases.length, 'booking')} were turned down with nothing else in flight, ` +
-          `${rmCompact(value)} in all. One rejection does not fail a booking — another panel bank can still take it.`,
+          `${rmCompact(value)} in all. One rejection does not fail a booking — a financing review decides whether ` +
+          'another panel bank can still take it.',
         citations,
         action: {
-          label: `Submit All ${citations.length} Elsewhere`,
+          label: `Hold All ${citations.length} Financing Reviews`,
           bookingIds: citations,
-          action: 'submit_another_bank',
+          action: 'review_financing',
           ownerRole: 'loan_admin'
         }
       }

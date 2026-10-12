@@ -51,6 +51,8 @@ export function stalledCase(id: string, overrides: Partial<CaseSummary> = {}): C
     applications: [],
     outstandingDocuments: [],
     buyerWithdrew: false,
+    buyerConcern: false,
+    valuationShortfall: false,
     risk: {
       level: 'low' satisfies RiskLevel,
       loanRm: 495000,

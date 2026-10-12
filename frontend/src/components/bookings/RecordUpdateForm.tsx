@@ -9,7 +9,9 @@
  *   submission (`POST /api/applications`); every other update is one event
  *   (`POST /api/events`).
  * - A bank's decision names the application it decides, so the right bank
- *   shows approved or rejected.
+ *   shows approved or rejected. Documents Received names its bank too while
+ *   more than one bank is deciding: a receipt not for one bank clears no
+ *   bank's own request.
  * - SPA Appointment Set writes its note as `Appointment On YYYY-MM-DD`, the
  *   form the Legal desk and the SPA stall rule read the appointment date from.
  * - Loan Agreement Signed and Disbursed are offered only once the SPA is
@@ -119,8 +121,11 @@ const BANK_REQUIRED: ReadonlySet<UpdateKind> = new Set(['loan_approved', 'loan_r
 const BANK_OPTIONAL: ReadonlySet<UpdateKind> = new Set(['documents_requested', 'documents_received'])
 /** Updates that stand on a signed SPA: offered only once one is on the case, and refused by the server before. */
 const AFTER_SPA: ReadonlySet<UpdateKind> = new Set(['loan_agreement_signed', 'disbursed'])
-/** A bank decides an application once; a second decision on it would change nothing. */
-const DECISIONS: ReadonlySet<UpdateKind> = new Set(['loan_approved', 'loan_rejected'])
+/**
+ * A bank decides an application once; a second decision on it would change
+ * nothing, and a valuation shortfall after it could never be settled.
+ */
+const DECISIONS: ReadonlySet<UpdateKind> = new Set(['loan_approved', 'loan_rejected', 'valuation_shortfall'])
 const DECIDED: ReadonlySet<ApplicationStatus> = new Set(['approved', 'rejected'])
 const STILL_OPEN: ReadonlySet<ApplicationStatus> = new Set(['submitted', 'documents_pending'])
 
@@ -209,9 +214,23 @@ export function RecordUpdateForm({
 
   const statusOf = new Map(summary.applications.map((a) => [a.id, a.status]))
   const status = (app: UpdateApplication): ApplicationStatus => statusOf.get(app.id) ?? 'submitted'
-  const bankRequired = kind !== '' && BANK_REQUIRED.has(kind)
-  const bankOptional = kind !== '' && BANK_OPTIONAL.has(kind)
-  const takesDocument = bankOptional
+  const stillOpen = applications.filter((a) => STILL_OPEN.has(status(a)))
+  /**
+   * The bank a document update is for when the reader names none: the one
+   * still deciding, or, once none is, the one that approved. Its request
+   * clears only with a receipt that names it.
+   */
+  const approved = applications.filter((a) => status(a) === 'approved')
+  const documentsBank =
+    stillOpen.length === 1 ? stillOpen[0] : stillOpen.length === 0 && approved.length === 1 ? approved[0] : null
+  /**
+   * With two banks still deciding, a receipt names the bank it reached: the
+   * buyer handing a document to us is not each bank having it.
+   */
+  const receiptNeedsBank = kind === 'documents_received' && stillOpen.length > 1
+  const bankRequired = kind !== '' && (BANK_REQUIRED.has(kind) || receiptNeedsBank)
+  const bankOptional = kind !== '' && BANK_OPTIONAL.has(kind) && !receiptNeedsBank
+  const takesDocument = kind !== '' && BANK_OPTIONAL.has(kind)
   const decision = kind !== '' && DECISIONS.has(kind)
   const confirmation = kind === '' ? undefined : CONFIRM[kind]
   const offered = (value: UpdateKind) => summary.spaSigned || !AFTER_SPA.has(value)
@@ -222,10 +241,14 @@ export function RecordUpdateForm({
     setAppointmentOn('')
     setBank('')
     setBanker('')
-    // One application still with a bank is the one meant; otherwise the reader picks.
-    const open = applications.filter((a) => STILL_OPEN.has(status(a)))
-    if (BANK_REQUIRED.has(next)) setApplicationId(open.length === 1 ? open[0].id : '')
-    else if (BANK_OPTIONAL.has(next)) setApplicationId(open.length === 1 ? open[0].id : NO_BANK)
+    // One application still with a bank is the one meant (for documents, the
+    // approving bank once none is deciding); otherwise the reader picks, and a
+    // receipt with two banks deciding has no "not for one bank".
+    if (BANK_REQUIRED.has(next)) setApplicationId(stillOpen.length === 1 ? stillOpen[0].id : '')
+    else if (BANK_OPTIONAL.has(next))
+      setApplicationId(
+        documentsBank ? documentsBank.id : next === 'documents_received' && stillOpen.length > 1 ? '' : NO_BANK
+      )
     else setApplicationId('')
   }
 
@@ -244,7 +267,7 @@ export function RecordUpdateForm({
     kind === '' ||
     !occurredOn ||
     (kind === 'loan_submitted' && (!bank.trim() || !banker.trim())) ||
-    (bankRequired && !applicationId) ||
+    (bankRequired && (!applicationId || applicationId === NO_BANK)) ||
     (takesDocument && !documentKind) ||
     (kind === 'spa_appointment_set' && !appointmentOn)
 
@@ -389,6 +412,11 @@ export function RecordUpdateForm({
                   ))}
                 </SelectContent>
               </Select>
+              {receiptNeedsBank ? (
+                <p className="text-[13px] text-muted-foreground">
+                  More Than One Bank Is Deciding: Name The Bank That Received It.
+                </p>
+              ) : null}
             </div>
           ) : null}
           {takesDocument && (

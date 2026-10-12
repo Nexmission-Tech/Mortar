@@ -49,6 +49,8 @@ function summary(risk: RiskLevel): CaseSummary {
     applications: [{ id: 'APP-1', bank: 'Crestline Bank', status: 'submitted' }],
     outstandingDocuments: [],
     buyerWithdrew: false,
+    buyerConcern: false,
+    valuationShortfall: false,
     risk: {
       level: risk,
       loanRm: 495000,

@@ -72,9 +72,15 @@ export function proposalFromExtraction(
   const openApplications = summary.applications.filter(
     (application) => application.status === 'submitted' || application.status === 'documents_pending'
   )
+  // Once no bank is deciding, a document still moves for the bank that
+  // approved: its request clears only with a receipt that names it.
+  const approved = summary.applications.filter((application) => application.status === 'approved')
+  const forDocuments = target.kind === 'documents_requested' || target.kind === 'documents_received'
+  const application =
+    openApplications[openApplications.length - 1] ?? (forDocuments ? approved[approved.length - 1] : undefined)
   return {
     bookingId: message.bookingId,
-    applicationId: target.track === 'loan' ? (openApplications[openApplications.length - 1]?.id ?? null) : null,
+    applicationId: target.track === 'loan' ? (application?.id ?? null) : null,
     track: target.track,
     kind: target.kind,
     occurredAt: message.sentAt,

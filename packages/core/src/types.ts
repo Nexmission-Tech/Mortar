@@ -138,6 +138,7 @@ export type NextAction =
   | 'request_document'
   | 'chase_banker'
   | 'submit_another_bank'
+  | 'review_financing'
   | 'call_buyer'
   | 'schedule_spa'
   | 'escalate_legal'
@@ -196,6 +197,18 @@ export interface CaseSummary {
    * the banks decided, with no bank submitted on a later day.
    */
   buyerWithdrew: boolean
+  /**
+   * A confirmed `buyer_hesitant` with no later call outcome (`buyer_contacted`),
+   * withdrawal or SPA appointment: the buyer raised a concern nobody has
+   * answered yet.
+   */
+  buyerConcern: boolean
+  /**
+   * A confirmed `valuation_shortfall` with no later submission, approval or
+   * rejection by the same bank: the funding gap waits on the loan desk's
+   * financing review.
+   */
+  valuationShortfall: boolean
   risk: FinancingRisk
   /** Why the stall rule flagged this booking; empty when it is not stalled. */
   stallReasons: string[]

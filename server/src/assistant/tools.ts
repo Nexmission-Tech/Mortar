@@ -138,12 +138,13 @@ export const TOOL_DECLARATIONS = [
 /**
  * Which move belongs to which desk, copied from `MOVE_OWNER`
  * (`frontend/src/components/case/ball.ts`) rather than imported: the server does
- * not depend on the frontend, and the mapping is nine lines of fact.
+ * not depend on the frontend, and the mapping is ten lines of fact.
  */
 export const MOVE_OWNER: Record<string, 'sales' | 'sales_admin' | 'loan_admin' | 'legal'> = {
   request_document: 'loan_admin',
   chase_banker: 'loan_admin',
   submit_another_bank: 'loan_admin',
+  review_financing: 'loan_admin',
   call_buyer: 'sales',
   schedule_spa: 'legal',
   escalate_legal: 'legal',

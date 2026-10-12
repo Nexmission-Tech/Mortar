@@ -38,7 +38,7 @@ const FAQS: { question: string; answer: string[] }[] = [
   {
     question: 'When Does A Booking Land On Today?',
     answer: [
-      'When it stalls. Mortar states the reason in plain words: no confirmed evidence for seven days, a requested document outstanding for five, an application undecided past the industry’s two-to-nine-working-day decision window (Association of Banks in Malaysia, 2017), or a disputed event still awaiting review.',
+      'When it stalls. Mortar states the reason in plain words: no confirmed evidence for seven days, a requested document outstanding for five, an application undecided past the industry’s two-to-nine-working-day decision window (Association of Banks in Malaysia, 2017), or a disputed event still awaiting review. Some cannot wait a week: a confirmed buyer concern, a rejection that leaves no bank deciding and a confirmed valuation shortfall land the same day, and an SPA appointment that passes unsigned lands the next working day.',
       'The limits are defaults listed on the forecast page’s assumptions panel — placeholders to calibrate on company data. Mortar AI suggests the next action and owner for each stalled booking.'
     ]
   },

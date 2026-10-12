@@ -80,4 +80,26 @@ describe('manager waiting suggestions', () => {
       []
     )
   })
+  // Issue #75: a missed appointment counts from its own day, not the day it was recorded.
+  it('counts a missed SPA appointment from its own day, as Today does', () => {
+    const approvedAndSet = [
+      event('loan_approved', '2026-09-03', { track: 'loan' }),
+      event('spa_appointment_set', '2026-09-07', { track: 'legal', note: 'Appointment On 2026-09-16' })
+    ]
+    // Recorded on Monday 7 Sep for Wednesday 16 Sep: nothing before the day, nor the day after it.
+    expect(managerSuggestions(snapshot('2026-09-16', approvedAndSet), assumptions)).toEqual([])
+    expect(managerSuggestions(snapshot('2026-09-17', approvedAndSet), assumptions)).toEqual([])
+    // Two working days past it, half as long again as the one-day grace Today gives it.
+    expect(managerSuggestions(snapshot('2026-09-18', approvedAndSet), assumptions)[0]).toMatchObject({
+      reason: 'SPA Appointment Missed',
+      elapsed: 2,
+      expected: 1,
+      unit: 'working days'
+    })
+    // A buyer who withdrew has no signing to miss.
+    const withdrawn = [...approvedAndSet, event('buyer_withdrew', '2026-09-17')]
+    expect(
+      managerSuggestions(snapshot('2026-09-18', withdrawn), assumptions).map((suggestion) => suggestion.reason)
+    ).not.toContain('SPA Appointment Missed')
+  })
 })

@@ -27,6 +27,8 @@ const SUMMARY: realCore.CaseSummary = {
   applications: [{ id: 'APP-9001-1', bank: 'Apex Bank', status: 'documents_pending' }],
   outstandingDocuments: ['payslip'],
   buyerWithdrew: false,
+  buyerConcern: false,
+  valuationShortfall: false,
   risk: {
     level: 'medium',
     loanRm: 495000,
@@ -1222,8 +1224,9 @@ describe('createApp', () => {
       test.each([
         ['loan_approved', 'approved'],
         ['loan_rejected', 'rejected']
-      ] as const)('refuses a second decision on an application already %s', async (first, word) => {
-        for (const second of ['loan_approved', 'loan_rejected']) {
+      ] as const)('refuses a second decision, or a shortfall, on an application already %s', async (first, word) => {
+        // A shortfall left on a decided application could never be settled (#75).
+        for (const second of ['loan_approved', 'loan_rejected', 'valuation_shortfall']) {
           const db = new FakeDb()
           db.events.push(
             staffEvent('EV-SUB', 'loan_submitted', 'APP-9001-1'),
@@ -1238,6 +1241,25 @@ describe('createApp', () => {
           expect(await errorOf(res)).toBe(`Apex Bank has already ${word} this application.`)
           expect(db.events).toHaveLength(2)
         }
+      })
+
+      // Issue #75: with two banks deciding, a receipt names the bank it reached.
+      test('refuses a receipt not for one bank while two banks are deciding, and takes one that names its bank', async () => {
+        const db = new FakeDb()
+        db.applications.push({ id: 'APP-9001-2', bookingId: 'BK-9001', bank: 'Crestline Bank', banker: 'Aida Rahman' })
+        db.events.push(
+          staffEvent('EV-SUB-1', 'loan_submitted', 'APP-9001-1'),
+          staffEvent('EV-SUB-2', 'loan_submitted', 'APP-9001-2')
+        )
+        const app = makeApp(db)
+        const receipt = { ...valid, kind: 'documents_received', document: 'payslip' }
+        const unnamed = await call(app, '/api/events', post(receipt))
+        expect(unnamed?.status).toBe(409)
+        expect(await errorOf(unnamed)).toBe('More than one bank is deciding. Say which bank received the document.')
+        expect(db.events).toHaveLength(2)
+        const named = await call(app, '/api/events', post({ ...receipt, applicationId: 'APP-9001-2' }))
+        expect(named?.status).toBe(200)
+        expect(db.events).toHaveLength(3)
       })
 
       test('takes a decision on another bank still deciding, and other updates on a decided one', async () => {

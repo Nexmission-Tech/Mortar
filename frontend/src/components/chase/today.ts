@@ -5,6 +5,7 @@
  */
 
 import { useMemo } from 'react'
+import { SPA_APPOINTMENT_MISSED } from '@mortar/core'
 import type { CaseSummary, OwnerRole, Snapshot, StaffProfile, Task } from '@mortar/core'
 import { DESK_LABELS, DESK_OF_ROLE } from '@/components/people/RoleLabel'
 import { nextStepFor } from '@/components/case/nextStep'
@@ -70,6 +71,11 @@ export function dueOrOverduePhrase(count: number): string {
 }
 
 const GENERIC_STALL = /^No Update For \d+ Days?$/
+
+/** A stall reason saying an SPA appointment passed unsigned: Today leads with these. */
+export function missedAppointment(reasons: readonly string[]): boolean {
+  return reasons.some((reason) => reason.startsWith(SPA_APPOINTMENT_MISSED))
+}
 
 /**
  * The one blocker a worklist row leads with: the first specific reason, since
