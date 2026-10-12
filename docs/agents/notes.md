@@ -173,19 +173,20 @@ clean recording seed.
   pill, the blocker, and Request Follow-Up; the unit opens the case panel. No
   percentages and no Jev scores appear anywhere. Overdue means at or beyond 150%
   of the expected duration, using the existing stall-wait assumptions, with
-  working days for bank decisions. The figures strip carries Overdue Cases,
-  Value At Risk and the Busiest Desk; Follow-Ups You Sent is its own view.
-  `/team` replaces `/manager` (which redirects), with four figures and a desks
-  table, one row per staff profile, whose row opens Bookings filtered to the
-  bookings waiting on that person. "Waiting On Them" uses the same
-  responsibility rule the server uses for follow-ups. Flagged department tasks
-  persist and appear in the recipient's notification bell, refreshed every 30
-  seconds while visible. The server resolves recipients using
-  `currentCaseAssignee` and revalidates before sending; manager flags reuse
-  equivalent ordinary open tasks. Today opens on a figures strip and named views
-  (Actions, Your Tasks, Recent Bookings), with rows built from
-  `components/chase/worklist.tsx`. Recent Bookings uses `Booking.createdAt`,
-  never `bookingDate`.
+  working days for bank decisions; a missed SPA appointment counts from its own
+  date against a one-working-day grace (`SPA_MISSED_AFTER_WORK_DAYS`). The
+  figures strip carries Overdue Cases, Value At Risk and the Busiest Desk;
+  Follow-Ups You Sent is its own view. `/team` replaces `/manager` (which
+  redirects), with four figures and a desks table, one row per staff profile,
+  whose row opens Bookings filtered to the bookings waiting on that person.
+  "Waiting On Them" uses the same responsibility rule the server uses for
+  follow-ups. Flagged department tasks persist and appear in the recipient's
+  notification bell, refreshed every 30 seconds while visible. The server
+  resolves recipients using `currentCaseAssignee` and revalidates before
+  sending; manager flags reuse equivalent ordinary open tasks. Today opens on a
+  figures strip and named views (Actions, Your Tasks, Recent Bookings), with
+  rows built from `components/chase/worklist.tsx`. Recent Bookings uses
+  `Booking.createdAt`, never `bookingDate`.
 - **Forecast Documents Follow The Figures.** `ForecastDocuments` owns selection,
   shuffle motion, the reading dialog and its focus return. Covers and details
   read the same calculated findings. The five report definitions and their
@@ -212,6 +213,21 @@ clean recording seed.
   line displays "Jev Suggests: <Step> Instead". Create Task and Add Task buttons
   always raise the step the person selected, avoiding duplicate tasks across
   staff.
+- **Some Stalls Cannot Wait A Week (#75).** A confirmed buyer concern, a
+  rejection that leaves no bank deciding and a valuation shortfall stall the day
+  they are confirmed (`buyerConcern` and `valuationShortfall` on `CaseSummary`);
+  a missed SPA appointment stalls from the next working day, counted from the
+  appointment's own date. `ballInCourt` makes the concern a Call The Buyer and
+  the other two a `review_financing` step, and `currentCaseAssignee` gives those
+  moves to the booking's Sales Admin and Loan Admin whoever holds the case.
+  Access follows the assignee, so `canAccessBooking` also checks who would hold
+  the case without the concern or shortfall: the Loan or Legal Admin doing the
+  bank or solicitor work keeps it meanwhile. A later Buyer Contacted, withdrawal
+  or SPA appointment answers a concern; a submission, any approval or that
+  bank's own rejection settles a shortfall. A receipt not for one bank clears no
+  bank's request (`documentLedger`); with two banks deciding, a receipt must
+  name one, and once none is deciding the form and Mortar AI put it on the
+  approving bank.
 - **Database Integration Tests Require `TEST_DATABASE_URL`.**
   `server/db/__tests__/integration.test.ts` reads
   `process.env.TEST_DATABASE_URL` and skips entirely when unset; it never reads

@@ -511,7 +511,31 @@ Rules governing summary derivation include:
   `'withdrawn'`.
 - **Outstanding Documents:** An item is marked outstanding when a
   `documents_requested` event lacks a subsequent confirmed `documents_received`
-  event for the same document kind.
+  event for the same document kind and scope. A receipt for one bank clears that
+  bank's request and an unscoped one; a receipt not for one bank clears only
+  unscoped requests and restarts no bank's decision clock (`documentLedger`).
+  `POST /api/events` refuses an unscoped receipt (409) while more than one bank
+  is deciding. Once no bank is deciding, Record An Update and
+  `proposalFromExtraction` put a document update on the approving bank.
+- **Unanswered Concern And Shortfall:** `buyerConcern` is a confirmed
+  `buyer_hesitant` with no later `buyer_contacted`, `buyer_withdrew` or
+  `spa_appointment_set`; `valuationShortfall` is a confirmed
+  `valuation_shortfall` with no later `loan_submitted`, `loan_approved`, or
+  `loan_rejected` on the same application. Both are on `CaseSummary`, so
+  `ballInCourt` reads them. `POST /api/events` refuses a shortfall (409) on an
+  application its bank has already decided, where nothing could settle it.
+- **Waiting On (`ballInCourt`):** first match wins: closed or signed (nobody);
+  buyer withdrew (developer, release review); unanswered concern (buyer, Call
+  The Buyer); valuation shortfall (developer, Hold A Financing Review);
+  outstanding documents (buyer), which once a loan is approved covers only the
+  approving bank's requests and unscoped ones, and which is skipped once every
+  bank has declined; approved (solicitor); a bank awaiting documents (buyer); a
+  bank deciding (bank); every bank declined (developer, Hold A Financing
+  Review); otherwise documents to collect. `currentCaseAssignee` gives Call The
+  Buyer to the booking's Sales Admin and a Financing Review to its Loan Admin,
+  whoever holds the case. `canAccessBooking` also lets the Loan or Legal Admin
+  who would hold the case without the concern or shortfall keep it, since the
+  bank and solicitor work carries on.
 - **Unknown Status Flag:** A live booking is marked `unknown = true` when no
   confirmed evidence has been recorded for 10 or more calendar days. Unknown
   cases are rendered explicitly in amber to alert staff of silence.
@@ -524,6 +548,15 @@ Rules governing summary derivation include:
     exceeds the ABM standard SLA.
   - `"Unresolved Disputed Event"`: Staff have contested an update, requiring
     adjudication.
+  - `"Buyer Raised A Concern"`, `"Loan Rejected, No Bank Still Deciding"` and
+    `"Valuation Shortfall Confirmed"`: raised the day the update is confirmed,
+    unless the buyer withdrew, so they need no week of silence first.
+  - `"SPA Appointment Missed N Days Ago"`: counted from the appointment's own
+    date, from the next working day (`SPA_MISSED_AFTER_WORK_DAYS`); a routine
+    note does not reset it, and a withdrawn buyer raises none. Today sorts these
+    first, and `managerSuggestions` flags one at two working days past. An
+    appointment note with no date, or a date before the booking, falls back to
+    `"SPA Set N Days Ago, Still Unsigned"` after 14 days.
 
 ## Forecast And Backtest Method
 
