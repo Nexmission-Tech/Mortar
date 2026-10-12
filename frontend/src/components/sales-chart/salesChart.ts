@@ -85,6 +85,43 @@ export function litUnits(units: ChartUnit[], cases: CaseSummary[], filter: Chart
   return lit
 }
 
+/** Sales owners across all desks, with their held-unit counts and first spelling. */
+export function salesOwners(units: ChartUnit[]): { name: string; count: number }[] {
+  const owners = new Map<string, { name: string; codes: Set<string> }>()
+  for (const unit of units) {
+    if (unit.heldBy === null) continue
+    const name = unit.heldBy.trim()
+    const key = name.toLowerCase()
+    const owner = owners.get(key) ?? { name, codes: new Set<string>() }
+    owner.codes.add(unit.code)
+    owners.set(key, owner)
+  }
+  return [...owners.values()]
+    .map(({ name, codes }) => ({ name, count: codes.size }))
+    .sort((a, b) => a.name.localeCompare(b.name))
+}
+
+/** Held codes for one owner, regardless of whether this viewer may open the case. */
+export function soldByUnits(units: ChartUnit[], name: string): Set<string> {
+  const key = name.trim().toLowerCase()
+  return new Set(
+    units.filter((unit) => unit.heldBy !== null && unit.heldBy.trim().toLowerCase() === key).map((unit) => unit.code)
+  )
+}
+
+/** One highlight shared by both views: a person, a scoped filter, or their intersection. */
+export function highlightedUnits(
+  units: ChartUnit[],
+  cases: CaseSummary[],
+  filter: ChartFilter | null,
+  soldBy: string | null
+): Set<string> | null {
+  const filtered = filter ? litUnits(units, cases, filter) : null
+  if (soldBy === null) return filtered
+  const owned = soldByUnits(units, soldBy)
+  return filtered ? new Set([...owned].filter((code) => filtered.has(code))) : owned
+}
+
 export function legendCounts(units: ChartUnit[]): Record<UnitState, number> {
   const counts = Object.fromEntries(UNIT_STATES.map((state) => [state, 0])) as Record<UnitState, number>
   for (const unit of units) counts[unit.state] += 1

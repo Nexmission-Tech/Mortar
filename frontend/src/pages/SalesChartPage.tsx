@@ -16,6 +16,8 @@ import { PageContainer } from '@/components/layout/PageContainer'
 import { PageHeaderCard } from '@/components/layout/PageHeaderCard'
 import { StatCard } from '@/components/StatCard'
 import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { InfoTooltip } from '@/components/ui/InfoTooltip'
 import { RefreshErrorBanner } from '@/components/ui/RefreshErrorBanner'
@@ -27,8 +29,10 @@ import { SalesChartGrid } from '@/components/sales-chart/SalesChartGrid'
 import {
   bookedAndSigned,
   CHART_FILTERS,
+  highlightedUnits,
   legendCounts,
   litUnits,
+  salesOwners,
   STATE_LABELS,
   UNIT_STATES,
   unitsForSnapshot,
@@ -94,7 +98,22 @@ export function SalesChartPage() {
     )
   const toggle = (id: ChartFilter) => setFilter(filter === id ? null : id)
 
+  const setSoldBy = (name: string | null) =>
+    setParams(
+      (current) => {
+        const copy = new URLSearchParams(current)
+        if (name !== null) copy.set('soldBy', name)
+        else copy.delete('soldBy')
+        return copy
+      },
+      { replace: true }
+    )
+
   const units = useMemo(() => (snapshot ? unitsForSnapshot(snapshot, cases) : []), [snapshot, cases])
+  const owners = useMemo(() => salesOwners(units), [units])
+  // Keep unknown owners in the URL: loading, refresh or a desk switch can make them available again.
+  const ownerKey = params.get('soldBy')?.trim().toLowerCase()
+  const soldBy = owners.find((owner) => owner.name.toLowerCase() === ownerKey)?.name ?? null
   const counts = useMemo(
     () =>
       Object.fromEntries(CHART_FILTERS.map((f) => [f.id, litUnits(units, cases, f.id).size])) as Record<
@@ -103,7 +122,7 @@ export function SalesChartPage() {
       >,
     [units, cases]
   )
-  const lit = useMemo(() => (filter ? litUnits(units, cases, filter) : null), [units, cases, filter])
+  const lit = useMemo(() => highlightedUnits(units, cases, filter, soldBy), [units, cases, filter, soldBy])
   const legend = useMemo(() => legendCounts(units), [units])
   const outlook = useMemo(
     () =>
@@ -256,6 +275,27 @@ export function SalesChartPage() {
                 {!webgl ? <InfoTooltip text="This Browser Cannot Draw 3D. The Grid Shows The Same Units." /> : null}
               </div>
               <div role="group" aria-label="Filter units" className="flex flex-wrap items-center gap-2">
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="sales-chart-sold-by">Sold By</Label>
+                  <Select
+                    value={soldBy === null ? 'everyone' : `owner:${soldBy.toLowerCase()}`}
+                    onValueChange={(value) =>
+                      setSoldBy(owners.find((owner) => `owner:${owner.name.toLowerCase()}` === value)?.name ?? null)
+                    }
+                  >
+                    <SelectTrigger id="sales-chart-sold-by" size="sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="everyone">Everyone</SelectItem>
+                      {owners.map((owner) => (
+                        <SelectItem key={owner.name.toLowerCase()} value={`owner:${owner.name.toLowerCase()}`}>
+                          {owner.name} · {owner.count}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 {CHART_FILTERS.map((f) => (
                   <span key={f.id} className="inline-flex items-center gap-1">
                     <Button
@@ -291,9 +331,13 @@ export function SalesChartPage() {
             ) : null}
             {lit && lit.size === 0 ? (
               <p role="status" className="mt-3 text-sm text-muted-foreground">
-                {persona === 'manager'
-                  ? 'No Units Match This Filter.'
-                  : 'None Of Your Bookings Match This Filter. Other Desks’ Units Stay Grey.'}
+                {soldBy !== null
+                  ? persona === 'manager'
+                    ? `None Of ${soldBy}’s Units Match This Filter.`
+                    : `None Of ${soldBy}’s Units You Can Open Match This Filter.`
+                  : persona === 'manager'
+                    ? 'No Units Match This Filter.'
+                    : 'None Of Your Bookings Match This Filter. Other Desks’ Units Stay Grey.'}
               </p>
             ) : null}
 

@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import { summarizeCases, type Snapshot } from '@mortar/core'
+import { MemoryRouter, Route, Routes, useLocation, useNavigationType } from 'react-router-dom'
+import { DEFAULT_PROJECT_SETTINGS, summarizeCases, type Snapshot } from '@mortar/core'
 import { PersonaProvider, type Persona } from '@/lib/persona'
 import { SnapshotProvider, useSnapshot } from '@/lib/data'
 import { buildSnapshot } from '@/components/bookings/__tests__/snapshotFixture'
@@ -16,16 +16,18 @@ vi.mock('@/components/sales-chart/webgl', () => ({ canUseWebGL: () => state.webg
 vi.mock('@/components/sales-chart/SalesChartBuilding', () => ({
   default: ({
     units,
+    lit,
     onSelect,
     onExpandedChange
   }: {
     units: { code: string }[]
+    lit: Set<string> | null
     onSelect: (unit: { code: string }) => void
     onExpandedChange?: (expanded: boolean) => void
   }) => {
     if (state.sceneFails) throw new Error('Error creating WebGL context.')
     return (
-      <div data-testid="building">
+      <div data-testid="building" data-lit={JSON.stringify(lit === null ? null : [...lit].sort())}>
         <button type="button" onClick={() => onExpandedChange?.(true)}>
           Expand The Model
         </button>
@@ -56,6 +58,8 @@ for (const observer of ['ResizeObserver', 'IntersectionObserver'] as const) {
   )
 }
 Element.prototype.scrollIntoView = vi.fn()
+Element.prototype.hasPointerCapture = () => false
+Element.prototype.releasePointerCapture = () => {}
 
 const BASE = buildSnapshot()
 const CASES = summarizeCases(BASE, BASE.meta.referenceDate)
@@ -74,13 +78,20 @@ function RefreshGrabber() {
   return null
 }
 
-function renderPage(persona: Persona, patch: Partial<Snapshot> = {}) {
+function LocationProbe() {
+  const { search } = useLocation()
+  const navigation = useNavigationType()
+  return <div data-testid="location" data-search={search} data-navigation={navigation} />
+}
+
+function renderPage(persona: Persona, patch: Partial<Snapshot> = {}, entry = '/sales-chart') {
   state.snapshot = { ...BASE, ...patch }
   return render(
-    <MemoryRouter initialEntries={['/sales-chart']}>
+    <MemoryRouter initialEntries={[entry]}>
       <PersonaProvider initialPersona={persona}>
         <SnapshotProvider>
           <RefreshGrabber />
+          <LocationProbe />
           <Routes>
             <Route path="/sales-chart" element={<SalesChartPage />} />
           </Routes>
@@ -334,5 +345,186 @@ describe('SalesChartPage', () => {
     close.focus()
     fireEvent.click(close)
     expect(document.activeElement?.getAttribute('aria-label')).toBe('A-03-02, Available')
+  })
+})
+
+const OWNER_UNITS: NonNullable<Snapshot['units']> = [
+  { code: 'A-03-01', state: 'needs_action', bookingId: 'BK-9001', heldBy: 'Zara' },
+  { code: 'A-03-02', state: 'signed', bookingId: null, heldBy: ' zARA ' },
+  { code: 'A-03-03', state: 'needs_action', bookingId: 'BK-9001', heldBy: 'Amir' }
+]
+const OWNER_PATCH: Partial<Snapshot> = {
+  projectSettings: { ...DEFAULT_PROJECT_SETTINGS, blocks: ['A'], minFloor: 3, maxFloor: 3, unitsPerFloor: 4 },
+  units: OWNER_UNITS
+}
+const urlParams = () => new URLSearchParams(screen.getByTestId('location').getAttribute('data-search')!)
+const gridCodes = () =>
+  [...document.querySelectorAll('[data-lit="true"]')]
+    .map((cell) => cell.getAttribute('aria-label')!.split(',')[0]!)
+    .sort()
+
+async function chooseSoldBy(option: string) {
+  fireEvent.click(screen.getByRole('combobox', { name: 'Sold By' }))
+  fireEvent.click(await screen.findByRole('option', { name: option }))
+}
+
+async function expectBothViews(codes: string[] | null) {
+  if (codes === null) expect(document.querySelector('[data-lit]')).toBeNull()
+  else expect(gridCodes()).toEqual(codes)
+  const views = screen.getByRole('group', { name: 'Chart view' })
+  fireEvent.click(within(views).getByRole('button', { name: 'Building' }))
+  expect((await screen.findByTestId('building')).getAttribute('data-lit')).toBe(JSON.stringify(codes))
+  fireEvent.click(within(views).getByRole('button', { name: 'Grid' }))
+}
+
+describe('Sales Chart Sold By', () => {
+  beforeEach(() => {
+    window.localStorage.clear()
+    window.localStorage.setItem('mortar.salesChart.view', 'grid')
+    state.webgl = true
+    state.sceneFails = false
+  })
+
+  it.each(['manager', 'sales-admin', 'loan-admin', 'legal-admin'] as const)(
+    'lets %s pick sorted owners with merged counts and lights the same codes in both views',
+    async (persona) => {
+      renderPage(persona, OWNER_PATCH)
+      const toolbar = await screen.findByRole('group', { name: 'Filter units' })
+      const picker = within(toolbar).getByRole('combobox', { name: 'Sold By' })
+      expect(picker.tagName).toBe('BUTTON')
+      expect(picker.textContent).toContain('Everyone')
+      await expectBothViews(null)
+      fireEvent.click(picker)
+      expect(screen.getAllByRole('option').map((option) => option.textContent)).toEqual([
+        'Everyone',
+        'Amir · 1',
+        'Zara · 2'
+      ])
+      fireEvent.click(screen.getByRole('option', { name: 'Zara · 2' }))
+      expect(urlParams().get('soldBy')).toBe('Zara')
+      expect(screen.getByTestId('location').getAttribute('data-navigation')).toBe('REPLACE')
+      await expectBothViews(['A-03-01', 'A-03-02'])
+    }
+  )
+
+  it('intersects a Manager’s person and filter, preserves params, and Everyone restores the filter', async () => {
+    renderPage('manager', OWNER_PATCH, '/sales-chart?filter=needs_action&view=detail')
+    await screen.findByRole('combobox', { name: 'Sold By' })
+    await expectBothViews(['A-03-01', 'A-03-03'])
+    await chooseSoldBy('Zara · 2')
+    await expectBothViews(['A-03-01'])
+    expect(urlParams().get('filter')).toBe('needs_action')
+    expect(urlParams().get('view')).toBe('detail')
+    fireEvent.click(screen.getByRole('button', { name: /Release Review ·/ }))
+    expect(screen.getByRole('status').textContent).toBe('None Of Zara’s Units Match This Filter.')
+    await expectBothViews([])
+    await chooseSoldBy('Everyone')
+    expect(urlParams().has('soldBy')).toBe(false)
+    expect(urlParams().get('filter')).toBe('release_review')
+    expect(urlParams().get('view')).toBe('detail')
+    expect(screen.getByTestId('location').getAttribute('data-navigation')).toBe('REPLACE')
+    expect(screen.getByRole('status').textContent).toBe('No Units Match This Filter.')
+    fireEvent.click(screen.getByRole('button', { name: /Release Review ·/ }))
+    await expectBothViews(null)
+  })
+
+  it('lights another Sales desk’s inaccessible units with person only and explains an empty intersection', async () => {
+    renderPage('sales-admin', {
+      ...OWNER_PATCH,
+      units: OWNER_UNITS.map((unit) => (unit.heldBy === 'Amir' ? unit : { ...unit, bookingId: null }))
+    })
+    await screen.findByRole('combobox', { name: 'Sold By' })
+    await chooseSoldBy('Zara · 2')
+    await expectBothViews(['A-03-01', 'A-03-02'])
+    fireEvent.click(screen.getByRole('button', { name: /Needs Action ·/ }))
+    await expectBothViews([])
+    expect(screen.getAllByRole('status')).toHaveLength(1)
+    expect(screen.getByRole('status').textContent).toBe('None Of Zara’s Units You Can Open Match This Filter.')
+    await chooseSoldBy('Everyone')
+    await expectBothViews(['A-03-03'])
+  })
+
+  it('opens a deep link by trimmed owner key and keeps it when a filter changes', async () => {
+    renderPage('manager', OWNER_PATCH, '/sales-chart?soldBy=%20zARA%20')
+    expect((await screen.findByRole('combobox', { name: 'Sold By' })).textContent).toContain('Zara · 2')
+    await expectBothViews(['A-03-01', 'A-03-02'])
+    fireEvent.click(screen.getByRole('button', { name: /Needs Action ·/ }))
+    expect(urlParams().get('soldBy')).toBe(' zARA ')
+    await expectBothViews(['A-03-01'])
+  })
+
+  it.each(['', '&filter=needs_action'])(
+    'ignores an unknown owner, retains its URL value, and applies the remaining constraint (%s)',
+    async (filter) => {
+      renderPage('manager', OWNER_PATCH, `/sales-chart?soldBy=Missing${filter}`)
+      expect((await screen.findByRole('combobox', { name: 'Sold By' })).textContent).toContain('Everyone')
+      expect(urlParams().get('soldBy')).toBe('Missing')
+      expect(screen.queryByRole('status')).toBeNull()
+      await expectBothViews(filter ? ['A-03-01', 'A-03-03'] : null)
+      expect(urlParams().get('soldBy')).toBe('Missing')
+    }
+  )
+
+  it('round-trips ampersands, plus signs and non-ASCII names through the URL', async () => {
+    const name = 'Éva & Ali + Co'
+    const patch = { ...OWNER_PATCH, units: [{ ...OWNER_UNITS[0]!, heldBy: name }] }
+    const first = renderPage('manager', patch, '/sales-chart?filter=needs_action')
+    await screen.findByRole('combobox', { name: 'Sold By' })
+    await chooseSoldBy(`${name} · 1`)
+    expect(urlParams().get('soldBy')).toBe(name)
+    expect(urlParams().get('filter')).toBe('needs_action')
+    const entry = `/sales-chart${screen.getByTestId('location').getAttribute('data-search')}`
+    first.unmount()
+    renderPage('manager', patch, entry)
+    expect((await screen.findByRole('combobox', { name: 'Sold By' })).textContent).toContain(`${name} · 1`)
+    await expectBothViews(['A-03-01'])
+  })
+
+  it('keeps a deep link throughout loading and activates it when the snapshot arrives', async () => {
+    const { fetchSnapshot } = await import('@/lib/api')
+    let resolve!: (snapshot: Snapshot) => void
+    vi.mocked(fetchSnapshot).mockImplementationOnce(
+      () =>
+        new Promise<Snapshot>((done) => {
+          resolve = done
+        })
+    )
+    renderPage('manager', OWNER_PATCH, '/sales-chart?soldBy=Zara')
+    expect(urlParams().get('soldBy')).toBe('Zara')
+    await waitFor(() => expect(screen.queryByRole('group', { name: 'Filter units' })).toBeNull())
+    expect(urlParams().get('soldBy')).toBe('Zara')
+    await act(async () => resolve(state.snapshot!))
+    expect((await screen.findByRole('combobox', { name: 'Sold By' })).textContent).toContain('Zara · 2')
+    await expectBothViews(['A-03-01', 'A-03-02'])
+  })
+
+  it('retains a freed owner’s URL across refreshes and reselects them when they hold a unit again', async () => {
+    renderPage('manager', OWNER_PATCH, '/sales-chart?soldBy=Zara')
+    expect((await screen.findByRole('combobox', { name: 'Sold By' })).textContent).toContain('Zara · 2')
+    state.snapshot = { ...state.snapshot!, units: [OWNER_UNITS[2]!] }
+    await act(async () => {
+      await refreshRef.current?.()
+    })
+    expect(screen.getByRole('combobox', { name: 'Sold By' }).textContent).toContain('Everyone')
+    expect(urlParams().get('soldBy')).toBe('Zara')
+    await expectBothViews(null)
+    state.snapshot = { ...state.snapshot!, units: [OWNER_UNITS[0]!] }
+    await act(async () => {
+      await refreshRef.current?.()
+    })
+    expect(screen.getByRole('combobox', { name: 'Sold By' }).textContent).toContain('Zara · 1')
+    expect(urlParams().get('soldBy')).toBe('Zara')
+    await expectBothViews(['A-03-01'])
+  })
+
+  it.each(['__everyone__', 'everyone'])('selects an owner named %s without colliding with Everyone', async (name) => {
+    renderPage('manager', { ...OWNER_PATCH, units: [{ ...OWNER_UNITS[0]!, heldBy: name }] })
+    await screen.findByRole('combobox', { name: 'Sold By' })
+    await chooseSoldBy(`${name} · 1`)
+    expect(urlParams().get('soldBy')).toBe(name)
+    await expectBothViews(['A-03-01'])
+    await chooseSoldBy('Everyone')
+    expect(urlParams().has('soldBy')).toBe(false)
+    await expectBothViews(null)
   })
 })
