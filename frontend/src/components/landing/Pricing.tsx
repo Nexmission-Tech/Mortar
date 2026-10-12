@@ -14,7 +14,7 @@ import { cn } from '@/lib/utils'
 const FREE_FEATURES = [
   'The three desks — Chase, Bookings, Forecast',
   'Mortar AI proposals, each confirmed by a person',
-  'The backtested 30-day SPA forecast',
+  'The 30-day SPA forecast, with its accuracy check',
   'Simulated data, resettable in one click'
 ]
 

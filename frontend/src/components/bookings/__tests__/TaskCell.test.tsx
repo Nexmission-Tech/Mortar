@@ -55,6 +55,8 @@ const SUMMARY: CaseSummary = {
   applications: [],
   outstandingDocuments: [],
   buyerWithdrew: false,
+  buyerConcern: false,
+  valuationShortfall: false,
   risk: RISK,
   stallReasons: [],
   openTasks: 1

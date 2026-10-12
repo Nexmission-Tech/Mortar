@@ -292,12 +292,13 @@ export function BookingDetailPage() {
                     messages={data.messages}
                     extractions={data.extractions}
                     events={data.events}
+                    applications={data.applications}
                     reviewer={reviewer}
                     onChanged={onChanged}
                   />
                 ),
                 history: <CaseHistory events={data.events} track={track} onTrackChange={(t) => show('history', t)} />,
-                tasks: <TasksPanel tasks={data.tasks} onChanged={onChanged} />
+                tasks: <TasksPanel tasks={data.tasks} referenceDate={referenceDate} onChanged={onChanged} />
               }}
             />
           </div>

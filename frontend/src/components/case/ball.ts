@@ -29,6 +29,7 @@ export const MOVE_OWNER: Record<NextAction, OwnerRole> = {
   request_document: 'loan_admin',
   chase_banker: 'loan_admin',
   submit_another_bank: 'loan_admin',
+  review_financing: 'loan_admin',
   call_buyer: 'sales',
   schedule_spa: 'legal',
   escalate_legal: 'legal',

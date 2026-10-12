@@ -119,6 +119,9 @@ const CURRENT: Partial<Record<NextAction, JourneyStopId>> = {
   request_document: 'documents',
   chase_banker: 'loan_approved',
   submit_another_bank: 'loan_submitted',
+  // Whether to resubmit, top up or release is the review's to decide: the case
+  // waits at the approval it has not got, not at a submission already made.
+  review_financing: 'loan_approved',
   schedule_spa: 'spa_signed',
   escalate_legal: 'spa_signed'
 }
@@ -325,9 +328,11 @@ export function bookingJourney({
           ? 'Documents Outstanding'
           : 'Collecting Documents'
         : id === 'loan_approved'
-          ? live.length > 1
-            ? `${live.length} Banks Reviewing`
-            : 'Awaiting Decision'
+          ? ball.nextMove === 'review_financing'
+            ? 'Financing Review'
+            : live.length > 1
+              ? `${live.length} Banks Reviewing`
+              : 'Awaiting Decision'
           : id === 'loan_submitted'
             ? 'Another Bank Needed'
             : ball.nextMove === 'schedule_spa'

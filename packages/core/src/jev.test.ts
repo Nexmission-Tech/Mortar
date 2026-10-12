@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { JEV_REVIEW_THRESHOLD, proposalFromExtraction, searchPlaybooks } from './jev'
+import { JEV_REVIEW_THRESHOLD, playbookValidated, proposalFromExtraction, searchPlaybooks } from './jev'
+import { PLAYBOOKS as SEEDED_PLAYBOOKS } from './fixtures/playbooks'
 import type { CaseSummary, Extraction, Message, Playbook } from './types'
 
 const playbook = (overrides: Partial<Playbook>): Playbook => ({
@@ -59,6 +60,8 @@ const summary = (overrides: Partial<CaseSummary> = {}): CaseSummary => ({
   ],
   outstandingDocuments: ['payslip'],
   buyerWithdrew: false,
+  buyerConcern: false,
+  valuationShortfall: false,
   risk: {
     level: 'low',
     loanRm: 450000,
@@ -130,6 +133,22 @@ describe('searchPlaybooks', () => {
   })
 })
 
+// Issue #75: guidance shows its action and limits only once a named reviewer approves it.
+describe('playbookValidated', () => {
+  it('takes an approved playbook with a named reviewer, and nothing short of that', () => {
+    const base = PLAYBOOKS[0]!
+    expect(playbookValidated({ ...base, status: 'approved', reviewer: 'Arvind Raj' })).toBe(true)
+    expect(playbookValidated({ ...base, status: 'approved', reviewer: '  ' })).toBe(false)
+    for (const status of ['draft', 'superseded', 'retired'] as const)
+      expect(playbookValidated({ ...base, status, reviewer: 'Arvind Raj' })).toBe(false)
+  })
+
+  it('keeps every seeded demo playbook illustrative until a real reviewer approves it', () => {
+    expect(SEEDED_PLAYBOOKS.length).toBeGreaterThan(0)
+    expect(SEEDED_PLAYBOOKS.filter(playbookValidated)).toEqual([])
+  })
+})
+
 describe('proposalFromExtraction', () => {
   it('returns null for no_update', () => {
     const e = extraction({ event: { value: 'no_update', probabilities: { no_update: 0.9 }, confidence: 0.9 } })
@@ -175,5 +194,21 @@ describe('proposalFromExtraction', () => {
   it('leaves the document null when none was identified', () => {
     const e = extraction({ document: { value: 'none', probabilities: {}, confidence: 0.5 } })
     expect(proposalFromExtraction(e, message(), summary())?.document).toBeNull()
+  })
+
+  // Issue #75: once approved, the approving bank's request clears only with a receipt that names it.
+  it('puts a document update on the approving bank once no bank is deciding', () => {
+    const approvedOnly = summary({
+      applications: [
+        { id: 'LA-1', bank: 'Bank A', status: 'approved' },
+        { id: 'LA-2', bank: 'Bank B', status: 'rejected' }
+      ]
+    })
+    expect(proposalFromExtraction(extraction(), message(), approvedOnly)?.applicationId).toBe('LA-1')
+    // A decision is never guessed onto a bank that has already decided.
+    const decision = extraction({
+      event: { value: 'loan_approved', probabilities: { loan_approved: 0.9 }, confidence: 0.9 }
+    })
+    expect(proposalFromExtraction(decision, message(), approvedOnly)?.applicationId).toBeNull()
   })
 })

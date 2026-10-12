@@ -1,8 +1,9 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
-import type { ForecastInsights, InsightBooking } from '@mortar/core'
-import { ForecastReports } from '../ForecastReports'
+import { DEFAULT_SEED, REFERENCE_DATE, STORIES, generate } from '@mortar/core'
+import type { Booking, CaseEvent, Dataset, EventKind, ForecastInsights, InsightBooking } from '@mortar/core'
+import { ForecastReports, type HistoryReach } from '../ForecastReports'
 
 function row(bookingId: string, overrides: Partial<InsightBooking> = {}): InsightBooking {
   return {
@@ -382,5 +383,120 @@ describe('ForecastReports', () => {
     const conversionDialog = openDocument('Conversion And Turnaround')
     expect(conversionDialog.textContent).toContain('Median Booking-To-SPANo completed sample.')
     expect(conversionDialog.textContent).toContain('Median Approval-To-SPANo completed sample.')
+  })
+})
+
+// Issue #75: the sponsor's one number, and "how often were you right?", answered on screen.
+describe('ForecastReports with the bookings behind them', () => {
+  const booking = (id: string, bookingDate: string): Booking => ({
+    id,
+    project: 'Residensi Ujian',
+    unit: `A-01-${id.slice(-2)}`,
+    priceRm: 500000,
+    bookingDate,
+    buyer: {
+      name: 'Test Buyer',
+      ic: '000000-00-0000',
+      phone: '+60 00-000 0000',
+      age: 30,
+      grossMonthlyIncomeRm: 10000,
+      monthlyCommitmentsRm: 0,
+      propertiesOwned: 0
+    },
+    salesOwner: 'Nurul Aina',
+    loanOwner: 'Tan Mei Ling',
+    legalFirm: 'Test Chambers'
+  })
+  const event = (bookingId: string, kind: EventKind, on: string): CaseEvent => ({
+    id: `EV-${bookingId}-${kind}`,
+    bookingId,
+    applicationId: null,
+    track: 'sales',
+    kind,
+    occurredAt: `${on}T12:00:00+08:00`,
+    recordedAt: `${on}T18:00:00+08:00`,
+    reportedBy: 'Test',
+    verifiedBy: 'Test',
+    status: 'confirmed',
+    source: 'staff',
+    messageId: null,
+    document: null,
+    note: null
+  })
+
+  function renderWith(insights: ForecastInsights, dataset: Dataset, reach: HistoryReach = 'all') {
+    return render(
+      <MemoryRouter>
+        <ForecastReports insights={insights} dataset={dataset} reach={reach} />
+      </MemoryRouter>
+    )
+  }
+
+  it('reports the latest final four-week intake as N of M signed by day 30, exits kept in the count', () => {
+    const bookings = [
+      booking('BK-01', '2026-08-20'),
+      booking('BK-02', '2026-08-25'),
+      booking('BK-03', '2026-09-01'),
+      booking('BK-04', '2026-09-05'),
+      booking('BK-05', '2026-07-01')
+    ]
+    const events = [
+      ...bookings.map((b) => event(b.id, 'booked', b.bookingDate)),
+      event('BK-01', 'spa_signed', '2026-09-05'),
+      event('BK-02', 'cancelled', '2026-09-10'),
+      event('BK-04', 'spa_signed', '2026-10-10'),
+      event('BK-05', 'spa_signed', '2026-07-20')
+    ]
+    renderWith(INSIGHTS, { bookings, applications: [], events })
+    const dialog = openDocument('Conversion And Turnaround')
+    const cohort = within(dialog).getByRole('heading', { name: 'Cohort Result' }).closest('section')!
+
+    expect(within(cohort).getByLabelText('Booked From, 15 Aug 2026')).toBeTruthy()
+    expect(within(cohort).getByLabelText('Booked To, 11 Sep 2026')).toBeTruthy()
+    expect(within(cohort).getByText('1 of 4 signed by booking day 30 (25%).')).toBeTruthy()
+    expect(cohort.textContent).toContain('1 cancellation or lapse, kept in the count.')
+    expect(cohort.textContent).toContain('1 booking signed after day 30')
+    expect(cohort.textContent).toContain('this result is final')
+    expect(cohort.textContent).toContain('the booking-day-30 estimate is not part of it')
+  })
+
+  it('shows the accuracy check in How This Is Counted, including where the method was over-confident', () => {
+    const generated = generate({ seed: DEFAULT_SEED, referenceDate: REFERENCE_DATE, bookings: 140 })
+    const dataset: Dataset = {
+      bookings: [...generated.bookings, ...STORIES.map((s) => s.booking)],
+      applications: [...generated.applications, ...STORIES.flatMap((s) => s.applications)],
+      events: [...generated.events, ...STORIES.flatMap((s) => s.events)]
+    }
+    renderWith({ ...INSIGHTS, asOf: REFERENCE_DATE }, dataset)
+    const dialog = openDocument('Signing Outlook')
+    fireEvent.click(within(dialog).getByRole('button', { name: 'How This Is Counted' }))
+
+    expect(dialog.textContent).toContain(
+      'Accuracy check: at 19 Aug 2026, the method expected 9.9 signings by booking day 30; 10 happened.'
+    )
+    expect(dialog.textContent).toContain(
+      'It was over-confident in the 50–75% band (54% expected, 40% happened, 10 bookings).'
+    )
+    expect(within(dialog).getByText('Simulated history; not measured on real bookings.')).toBeTruthy()
+    expect(dialog.textContent).not.toMatch(/Brier|backtest/i)
+  })
+
+  // A Loan or Legal view drops a booking as it signs, so a check on it would count only what is left.
+  it('names a Sales Admin’s own bookings, and shows neither check on a view that keeps only assigned bookings', () => {
+    const bookings = [booking('BK-01', '2026-08-20'), booking('BK-02', '2026-08-25')]
+    const events = [
+      ...bookings.map((b) => event(b.id, 'booked', b.bookingDate)),
+      event('BK-01', 'spa_signed', '2026-09-05')
+    ]
+    const own = renderWith(INSIGHTS, { bookings, applications: [], events }, 'own')
+    const dialog = openDocument('Conversion And Turnaround')
+    expect(within(dialog).getByText('1 of 2 of your bookings signed by booking day 30 (50%).')).toBeTruthy()
+    own.unmount()
+
+    renderWith(INSIGHTS, { bookings, applications: [], events }, 'assigned')
+    const assigned = openDocument('Conversion And Turnaround')
+    const cohort = within(assigned).getByRole('heading', { name: 'Cohort Result' }).closest('section')!
+    expect(cohort.textContent).toContain('Not shown here.')
+    expect(cohort.textContent).not.toMatch(/signed by booking day 30 \(/)
   })
 })

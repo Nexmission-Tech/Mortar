@@ -384,6 +384,34 @@ describe.skipIf(!TEST_DATABASE_URL)('database integration', () => {
     expect(await db.updateTaskStatus('W2TEST-NONE', 'done', null)).toBeNull()
   })
 
+  // Issue #75: the close-out's result and its follow-up land together.
+  test('updateTaskStatus closes a task out with its result and raises the follow-up in one write', async () => {
+    const task = {
+      id: 'W2TEST-TSK-CLOSE',
+      bookingId: 'W2TEST-BK',
+      action: 'chase_banker',
+      title: 'Call The Banker',
+      ownerRole: 'loan_admin',
+      ownerName: 'Tan Mei Ling',
+      dueOn: '2026-09-18',
+      status: 'open',
+      origin: 'staff',
+      createdAt: '2026-09-18T09:00:00+08:00',
+      completedAt: null
+    } as const
+    await db.insertTask(task)
+    const closed = await db.updateTaskStatus(task.id, 'done', '2026-09-18T12:00:00+08:00', 'No answer, try Tuesday', {
+      ...task,
+      id: 'W2TEST-TSK-NEXT',
+      dueOn: '2026-09-22',
+      createdAt: '2026-09-18T12:00:00+08:00',
+      managerFlaggedBy: null
+    })
+    expect(closed).toMatchObject({ status: 'done', result: 'No answer, try Tuesday' })
+    const next = (await db.snapshot()).tasks.find((t) => t.id === 'W2TEST-TSK-NEXT')
+    expect(next).toMatchObject({ status: 'open', dueOn: '2026-09-22', ownerName: 'Tan Mei Ling', result: null })
+  })
+
   test('jevGet serves the exact hash then the latest for the subject as stale', async () => {
     await db.jevPut({
       kind: 'signals',

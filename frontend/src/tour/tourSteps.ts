@@ -21,7 +21,7 @@ export const TOUR_STEPS: Record<Persona, TourStep[]> = {
       label: 'Team',
       route: '/team',
       target: '[data-tour="team-header"]',
-      caption: 'Team shows who each booking is waiting on, desk by desk, and where it is stuck.'
+      caption: 'Team shows who owns each booking’s follow-up, desk by desk, and where it is stuck.'
     },
     {
       label: 'Ask Mortar AI',
@@ -80,7 +80,7 @@ export const TOUR_STEPS: Record<Persona, TourStep[]> = {
       label: 'Add Bookings',
       route: '/import',
       target: '[data-tour="import-header"]',
-      caption: 'Add bookings by uploading a sheet or entering them directly.'
+      caption: 'Add bookings by uploading a sheet. Demo Entry fills in made-up buyer details, for trying Mortar only.'
     },
     {
       label: 'Ask Mortar AI',

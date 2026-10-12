@@ -144,6 +144,8 @@ const summary = (patch: Partial<CaseSummary> = {}): CaseSummary => ({
   applications: [{ id: 'LA-1', bank: 'Apex Bank', status: 'submitted' }],
   outstandingDocuments: [],
   buyerWithdrew: false,
+  buyerConcern: false,
+  valuationShortfall: false,
   risk: {
     level: 'low',
     loanRm: 432_000,

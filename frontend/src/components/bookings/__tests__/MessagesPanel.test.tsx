@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import type { CaseEvent, Extraction, Message } from '@mortar/core'
+import type { CaseEvent, Extraction, LoanApplication, Message } from '@mortar/core'
 import { MessagesPanel } from '@/components/bookings/MessagesPanel'
 import { ApiError, reviewEvent } from '@/lib/api'
 import { notify } from '@/components/ui/toastConfig'
@@ -54,6 +54,11 @@ const PROPOSAL: CaseEvent = {
   note: '94% Probability'
 }
 
+const APPLICATIONS: LoanApplication[] = [
+  { id: 'APP-9001-1', bookingId: 'BK-9001', bank: 'Apex Bank', banker: 'Kelvin Teo' },
+  { id: 'APP-9001-2', bookingId: 'BK-9001', bank: 'Crestline Bank', banker: 'Aida Rahman' }
+]
+
 function renderPanel() {
   const onChanged = vi.fn(async () => {})
   render(
@@ -61,6 +66,7 @@ function renderPanel() {
       messages={[MESSAGE]}
       extractions={new Map([[MESSAGE.id, EXTRACTION]])}
       events={[PROPOSAL]}
+      applications={APPLICATIONS}
       reviewer="Nurul Aina"
       onChanged={onChanged}
     />
@@ -96,6 +102,75 @@ describe('MessagesPanel review', () => {
     expect(notify.error).toHaveBeenCalledWith('This update was already reviewed and confirmed.')
     expect(notify.success).not.toHaveBeenCalled()
   })
+
+  // Issue #75: with two banks deciding, the proposal names the bank it will update before anyone confirms.
+  it('names the bank a loan proposal will update beside Confirm, and how to correct it', () => {
+    const crestline: CaseEvent = { ...PROPOSAL, kind: 'loan_approved', document: null, applicationId: 'APP-9001-2' }
+    const { container } = render(
+      <MessagesPanel
+        messages={[{ ...MESSAGE, body: 'Crestline approved' }]}
+        extractions={
+          new Map([
+            [
+              MESSAGE.id,
+              {
+                ...EXTRACTION,
+                event: { value: 'loan_approved', probabilities: { loan_approved: 0.9 }, confidence: 0.9 },
+                document: { value: 'none', probabilities: { none: 0.9 }, confidence: 0.9 }
+              }
+            ]
+          ])
+        }
+        events={[crestline]}
+        applications={APPLICATIONS}
+        reviewer="Nurul Aina"
+        onChanged={vi.fn(async () => {})}
+      />
+    )
+    const actions = screen.getByRole('button', { name: 'Confirm' }).parentElement!
+    expect(actions.textContent).toContain('Updates Crestline Bank')
+    expect(container.textContent).toContain('Wrong Reading Or Bank? Dismiss It, Then Record An Update.')
+  })
+
+  it('says No Bank when a loan proposal is tied to none', () => {
+    render(
+      <MessagesPanel
+        messages={[MESSAGE]}
+        extractions={new Map([[MESSAGE.id, EXTRACTION]])}
+        events={[{ ...PROPOSAL, applicationId: null }]}
+        applications={APPLICATIONS}
+        reviewer="Nurul Aina"
+        onChanged={vi.fn(async () => {})}
+      />
+    )
+    expect(screen.getByRole('button', { name: 'Confirm' }).parentElement!.textContent).toContain('Updates No Bank')
+  })
+
+  it('names no bank on a sales or legal proposal, and asks only about the reading', () => {
+    const { container } = render(
+      <MessagesPanel
+        messages={[{ ...MESSAGE, body: 'Not sure we can go ahead.' }]}
+        extractions={
+          new Map([
+            [
+              MESSAGE.id,
+              {
+                ...EXTRACTION,
+                event: { value: 'buyer_hesitant', probabilities: { buyer_hesitant: 0.9 }, confidence: 0.9 },
+                document: { value: 'none', probabilities: { none: 0.9 }, confidence: 0.9 }
+              }
+            ]
+          ])
+        }
+        events={[{ ...PROPOSAL, track: 'sales', kind: 'buyer_hesitant', document: null, applicationId: null }]}
+        applications={APPLICATIONS}
+        reviewer="Nurul Aina"
+        onChanged={vi.fn(async () => {})}
+      />
+    )
+    expect(container.textContent).not.toContain('Updates')
+    expect(container.textContent).toContain('Wrong Reading? Dismiss It, Then Record An Update.')
+  })
 })
 
 describe('MessagesPanel Jev line', () => {
@@ -110,6 +185,7 @@ describe('MessagesPanel Jev line', () => {
         messages={[MESSAGE]}
         extractions={new Map([[MESSAGE.id, { ...EXTRACTION, event: { ...EXTRACTION.event, confidence } }]])}
         events={[PROPOSAL]}
+        applications={APPLICATIONS}
         reviewer="Nurul Aina"
         onChanged={vi.fn(async () => {})}
       />

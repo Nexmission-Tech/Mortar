@@ -80,9 +80,13 @@ const STAGES_BY_VIEW: Record<View, Stage[]> = {
 
 type Row = BookingRow & { stalled: boolean; live: boolean; closed: boolean }
 
-/** Default holder filter in the pipeline strip based on active persona. */
-function defaultHolderForPersona(persona: Persona): PipelineStageId {
-  if (persona === 'sales-admin') return 'buyer'
+/**
+ * Default holder filter in the pipeline strip based on active persona. Sales
+ * Admin coordinates every booking to a signed SPA, so their ledger opens on
+ * every holder: a search for a unit now with the solicitor must find it.
+ */
+function defaultHolderForPersona(persona: Persona): PipelineStageId | null {
+  if (persona === 'sales-admin') return null
   if (persona === 'legal-admin') return 'solicitor'
   return 'bank'
 }
@@ -470,7 +474,7 @@ export function BookingsPage() {
 
           {waitingOn ? (
             <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
-              <span className="text-muted-foreground">Waiting On</span>
+              <span className="text-muted-foreground">Follow-Up Owner</span>
               <RoleLabel desk={DESK_OF_PERSONA[waitingOn.persona]} />
               <span className="font-medium">{waitingOn.name}</span>
               <Button type="button" variant="ghost" size="sm" onClick={clearWaitingOn}>

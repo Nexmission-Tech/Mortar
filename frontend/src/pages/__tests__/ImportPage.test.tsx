@@ -141,11 +141,21 @@ describe('ImportPage', () => {
     expect(screen.queryByText(/Import Made-Up Buyers Only/)).toBeNull()
   })
 
+  // Issue #75: the sheet is the first screen; hand entry is labelled as the demo route it is.
+  it('opens on the sheet upload, with direct entry labelled Demo Entry', async () => {
+    renderImport()
+    await screen.findByRole('heading', { name: 'Add Bookings' })
+    expect(screen.getByRole('tab', { name: 'Upload A Sheet' }).getAttribute('aria-selected')).toBe('true')
+    expect(screen.getByRole('tab', { name: 'Demo Entry' }).getAttribute('aria-selected')).toBe('false')
+    expect(screen.queryByRole('tab', { name: 'Type Them In' })).toBeNull()
+    expect(await screen.findByRole('heading', { name: 'What The Sheet Needs' })).toBeTruthy()
+  })
+
   it('shows the type form and booking settings after the inventory loads', async () => {
     renderImport()
     await screen.findByRole('heading', { name: 'Add Bookings' })
-    fireEvent.mouseDown(screen.getByRole('tab', { name: 'Type Them In' }), { button: 0 })
-    fireEvent.click(screen.getByRole('tab', { name: 'Type Them In' }))
+    fireEvent.mouseDown(screen.getByRole('tab', { name: 'Demo Entry' }), { button: 0 })
+    fireEvent.click(screen.getByRole('tab', { name: 'Demo Entry' }))
     expect(await screen.findByText(/Enter Buyer Names And Choose Available Units/)).toBeTruthy()
   }, 10_000)
 

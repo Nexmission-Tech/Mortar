@@ -12,13 +12,19 @@
  *
  * Only the top fit shows; every other playbook, fitted or not, folds behind a
  * single control that names their count.
+ *
+ * A playbook's action and limits show only once it is validated: approved,
+ * with a named reviewer. Any other reads "Illustrative, Not Yet Reviewed" and
+ * keeps its situation, so nobody follows a bank or legal rule no reviewer has
+ * checked.
  */
 
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronDown, Search } from 'lucide-react'
 import type { CaseSummary, Playbook, PlaybookRanking, ScoreAnswer } from '@mortar/core'
-import { searchPlaybooks } from '@mortar/core'
+import { playbookValidated, searchPlaybooks } from '@mortar/core'
 import { JevTag } from '@/components/case/JevTag'
+import { formatDate } from '@/components/case/format'
 import { fetchPlaybooks } from '@/lib/api'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -33,9 +39,10 @@ const FIT_PRESENTATION: Record<number, { tone: 'positive' | 'warning' | 'neutral
   0: { tone: 'neutral', label: 'Does Not Apply' }
 }
 
+/** A draft reads as illustrative instead; only a playbook no longer in use says so here. */
 const STATUS_BADGES: Record<Playbook['status'], string | null> = {
   approved: null,
-  draft: 'Draft',
+  draft: null,
   superseded: 'Superseded',
   retired: 'Retired'
 }
@@ -171,6 +178,7 @@ export function PlaybooksPanel({
               : { tone: 'neutral' as const, label: 'Unscored' }
             const expanded = expandedId === playbook.id
             const statusBadge = STATUS_BADGES[playbook.status]
+            const validated = playbookValidated(playbook)
             return (
               <li key={playbook.id} className="rounded-md border border-border p-3">
                 <button
@@ -189,6 +197,13 @@ export function PlaybooksPanel({
                 </button>
                 <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
                   <StatusPill tone={fitView.tone}>{fitView.label}</StatusPill>
+                  {validated ? (
+                    <span className="text-xs text-muted-foreground">
+                      Reviewed By {playbook.reviewer} · {formatDate(playbook.reviewedOn)}
+                    </span>
+                  ) : (
+                    <StatusPill tone="warning">Illustrative, Not Yet Reviewed</StatusPill>
+                  )}
                   {statusBadge && <Badge variant="secondary">{statusBadge}</Badge>}
                 </div>
                 {expanded && (
@@ -197,14 +212,20 @@ export function PlaybooksPanel({
                       <span className="font-medium text-foreground">Situation: </span>
                       {playbook.situation}
                     </p>
-                    <p>
-                      <span className="font-medium text-foreground">Action: </span>
-                      {playbook.action}
-                    </p>
-                    <p>
-                      <span className="font-medium text-foreground">Limits: </span>
-                      {playbook.limits}
-                    </p>
+                    {validated ? (
+                      <>
+                        <p>
+                          <span className="font-medium text-foreground">Action: </span>
+                          {playbook.action}
+                        </p>
+                        <p>
+                          <span className="font-medium text-foreground">Limits: </span>
+                          {playbook.limits}
+                        </p>
+                      </>
+                    ) : (
+                      <p>Its Action And Limits Show Once A Loan Or Legal Reviewer Validates It.</p>
+                    )}
                   </div>
                 )}
               </li>

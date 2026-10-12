@@ -148,16 +148,56 @@ describe('the SPA signing stall', () => {
     expect(legalReasons(out.stallReasons)).toEqual([])
   })
 
-  it('waits for an appointment set weeks ahead to pass', () => {
+  it('waits for an appointment set weeks ahead to pass, then calls it missed the next working day', () => {
     const events = [booked, submitted, early, set('2026-09-01', '2026-10-20')]
     expect(summarize(events).daysSinceSpaSet).toBe(17)
     expect(legalReasons(summarize(events).stallReasons)).toEqual([])
     expect(legalReasons(summarize(events, '2026-10-20').stallReasons)).toEqual([])
-    expect(legalReasons(summarize(events, '2026-10-21').stallReasons)).toEqual(['SPA Set 50 Days Ago, Still Unsigned'])
+    expect(legalReasons(summarize(events, '2026-10-21').stallReasons)).toEqual(['SPA Appointment Missed 1 Day Ago'])
+  })
+
+  // Issue #75's success check: an appointment yesterday, no signing, on Legal's Today today.
+  it('counts from the appointment day, not the day it was recorded', () => {
+    const out = summarize([booked, submitted, early, set('2026-09-14', '2026-09-17')])
+    expect(out.daysSinceSpaSet).toBe(4)
+    expect(legalReasons(out.stallReasons)).toEqual(['SPA Appointment Missed 1 Day Ago'])
+    expect(ballInCourt(out)).toMatchObject({ holder: 'solicitor', nextMove: 'escalate_legal' })
+  })
+
+  it('waits for the next working day after a Friday appointment', () => {
+    const events = [booked, submitted, early, set('2026-09-01', '2026-09-11')]
+    expect(legalReasons(summarize(events, '2026-09-12').stallReasons)).toEqual([])
+    expect(legalReasons(summarize(events, '2026-09-13').stallReasons)).toEqual([])
+    expect(legalReasons(summarize(events, '2026-09-14').stallReasons)).toEqual(['SPA Appointment Missed 3 Days Ago'])
+  })
+
+  it('keeps a missed appointment missed through a routine note', () => {
+    const note = ev('buyer_contacted', '2026-09-18', { track: 'sales' })
+    const out = summarize([booked, submitted, early, set('2026-09-14', '2026-09-16'), note])
+    expect(out.daysSinceEvidence).toBe(0)
+    expect(legalReasons(out.stallReasons)).toEqual(['SPA Appointment Missed 2 Days Ago'])
   })
 
   it('still stalls an appointment whose note names no day, once it has sat past the threshold', () => {
     const out = summarize([booked, submitted, early, ev('spa_appointment_set', '2026-09-01', { track: 'legal' })])
     expect(legalReasons(out.stallReasons)).toEqual(['SPA Set 17 Days Ago, Still Unsigned'])
+  })
+
+  it('reads a day before the booking as no day named, so a typo cannot date a signing centuries back', () => {
+    const out = summarize([booked, submitted, early, set('2026-09-01', '0100-01-01')])
+    expect(facts([booked, submitted, early, set('2026-09-01', '0100-01-01')]).spaAppointmentOn).toBeNull()
+    expect(legalReasons(out.stallReasons)).toEqual(['SPA Set 17 Days Ago, Still Unsigned'])
+  })
+
+  it('raises no missed appointment once the buyer has withdrawn', () => {
+    const out = summarize([
+      booked,
+      submitted,
+      early,
+      set('2026-09-01', '2026-09-10'),
+      ev('buyer_withdrew', '2026-09-11', { track: 'sales' })
+    ])
+    expect(legalReasons(out.stallReasons)).toEqual([])
+    expect(ballInCourt(out).nextMove).toBe('review_release')
   })
 })

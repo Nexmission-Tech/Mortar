@@ -17,6 +17,8 @@ function summary(overrides: Partial<CaseSummary> = {}): CaseSummary {
     applications: [],
     outstandingDocuments: [],
     buyerWithdrew: false,
+    buyerConcern: false,
+    valuationShortfall: false,
     risk: { level: 'low', loanRm: 0, instalmentRm: 0, debtServiceRatio: 0.2, marginOfFinancing: 0.9, reasons: [] },
     stallReasons: [],
     openTasks: 0,
@@ -75,11 +77,56 @@ describe('ballInCourt', () => {
     })
   })
 
-  it('gives a case every bank declined back to the developer to resubmit', () => {
+  it('gives a case every bank declined to the loan desk for a financing review, not straight to another bank', () => {
     const ball = ballInCourt(
       summary({ stage: 'loan_applied', applications: [{ id: 'A', bank: 'Apex Bank', status: 'rejected' }] })
     )
-    expect(ball).toMatchObject({ holder: 'developer', nextMove: 'submit_another_bank' })
+    expect(ball).toMatchObject({
+      holder: 'developer',
+      waitingFor: 'A Financing Review After The Rejection',
+      nextMove: 'review_financing'
+    })
+  })
+
+  it('reviews the financing after a valuation shortfall, even while the bank still holds the application', () => {
+    const ball = ballInCourt(
+      summary({
+        stage: 'loan_applied',
+        applications: [{ id: 'A', bank: 'Apex Bank', status: 'submitted' }],
+        valuationShortfall: true
+      })
+    )
+    expect(ball).toMatchObject({ holder: 'developer', nextMove: 'review_financing' })
+  })
+
+  it('makes a confirmed buyer concern a call to the buyer, ahead of the bank and the solicitor', () => {
+    for (const stage of ['loan_applied', 'lo_issued'] as const) {
+      const ball = ballInCourt(
+        summary({
+          stage,
+          daysSinceLoIssued: stage === 'lo_issued' ? 3 : null,
+          applications: [{ id: 'A', bank: 'Apex Bank', status: stage === 'lo_issued' ? 'approved' : 'submitted' }],
+          buyerConcern: true
+        })
+      )
+      expect(ball).toMatchObject({
+        holder: 'buyer',
+        waitingFor: 'The Buyer To Settle Their Concern',
+        nextMove: 'call_buyer'
+      })
+    }
+  })
+
+  it('keeps an approved loan with the buyer while the approving bank still wants a document', () => {
+    const ball = ballInCourt(
+      summary({
+        stage: 'lo_issued',
+        daysSinceLoIssued: 2,
+        applications: [{ id: 'A', bank: 'Apex Bank', status: 'approved' }],
+        outstandingDocuments: ['payslip']
+      })
+    )
+    expect(ball).toMatchObject({ holder: 'buyer', waitingFor: 'Payslip From The Buyer', nextMove: 'request_document' })
   })
 
   it('gives a withdrawn buyer to the developer to release, ahead of documents they still owe', () => {

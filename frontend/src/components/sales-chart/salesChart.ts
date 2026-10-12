@@ -50,7 +50,7 @@ export const CHART_FILTERS: readonly { id: ChartFilter; label: string; info: str
   {
     id: 'release_review',
     label: 'Release Review',
-    info: 'Every Recovery Path Looks Spent. A Person Decides Whether To Release The Unit; Mortar Never Cancels.'
+    info: 'For A Person To Decide: The Buyer Withdrew, Or No Loan Is Live After Two Rejections Or 30 Days. A Rejected Case Opens On Its Financing Review. Prices Are Full Booking Prices; Mortar Never Cancels.'
   }
 ]
 

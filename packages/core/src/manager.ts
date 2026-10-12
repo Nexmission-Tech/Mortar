@@ -1,6 +1,7 @@
 import type { Assumption, Snapshot } from './types'
 import { DEFAULT_ASSUMPTIONS, assumptionValue } from './sim/assumptions'
 import { deriveCase } from './sim/cases'
+import { SPA_MISSED_AFTER_WORK_DAYS } from './sim/constants'
 import { diffDays, workDaysBetween } from './sim/dates'
 
 export interface WaitingSuggestion {
@@ -28,16 +29,27 @@ export function managerSuggestions(
     )
     if (!facts.open) continue
     const waits: WaitingSuggestion[] = []
-    const add = (reason: string, elapsed: number, key: string, unit: WaitingSuggestion['unit'] = 'days') => {
-      const expected = assumptionValue(assumptions, key)
+    const against = (reason: string, elapsed: number, expected: number, unit: WaitingSuggestion['unit']) => {
       if (expected > 0 && elapsed >= expected * minimumWaitRatio)
         waits.push({ bookingId: booking.id, reason, elapsed, expected, unit })
     }
+    const add = (reason: string, elapsed: number, key: string, unit: WaitingSuggestion['unit'] = 'days') =>
+      against(reason, elapsed, assumptionValue(assumptions, key), unit)
     add('No Confirmed Update', facts.daysSinceEvidence, 'staleEvidenceDays')
     if (facts.loIssuedOn !== null) {
       if (facts.spaAppointmentSetOn !== null) {
-        if (facts.spaAppointmentOn === null || facts.spaAppointmentOn < today)
-          add('Signing Still Outstanding', diffDays(facts.spaAppointmentSetOn, today), 'spaSigningStallDays')
+        // The appointment's own day, as Today counts it: a missed signing was
+        // due to be noticed the next working day, and runs late from there. A
+        // buyer who withdrew has no signing to miss.
+        if (facts.spaAppointmentOn !== null) {
+          if (!facts.buyerWithdrew)
+            against(
+              'SPA Appointment Missed',
+              workDaysBetween(facts.spaAppointmentOn, today),
+              SPA_MISSED_AFTER_WORK_DAYS,
+              'working days'
+            )
+        } else add('Signing Still Outstanding', diffDays(facts.spaAppointmentSetOn, today), 'spaSigningStallDays')
       } else add('Signing Appointment Needed', diffDays(facts.loIssuedOn, today), 'spaSchedulingStallDays')
     } else {
       for (const document of facts.outstandingDocuments)
