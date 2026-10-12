@@ -77,15 +77,16 @@ describe("The Manager's Today", () => {
     })
   })
 
-  it('draws an overdue case as a Today card, with no percentage or Jev score, and routes the follow-up', async () => {
+  it('draws an overdue case as a worklist row, with no percentage or AI score, and routes the follow-up', async () => {
     show()
-    expect(screen.getByText('1 Overdue Case · 0 Follow-Ups Awaiting Reply')).toBeTruthy()
+    expect(screen.getByText('Unblock The Cases Waiting On Your Team')).toBeTruthy()
+    expect(screen.getByRole('tab', { name: 'Follow-Ups 0 Awaiting Reply' })).toBeTruthy()
 
     const card = screen.getByTestId('manager-card-BK-9001')
-    expect(within(card).getByText('Overdue 8 d')).toBeTruthy()
-    expect(within(card).getByText('Waiting On')).toBeTruthy()
+    expect(within(card).getByText('Overdue 8 Days')).toBeTruthy()
     expect(within(card).getByText('Nurul Aina')).toBeTruthy()
-    expect(within(card).getByRole('link', { name: 'Open Case' }).getAttribute('href')).toBe('/bookings/BK-9001')
+    // The unit opens the case panel; the full case is one more click from there.
+    expect(within(card).getByRole('button', { name: /^Quick View BK-9001|^Quick View .*BK-9001/ })).toBeTruthy()
     expect(document.body.textContent).not.toMatch(/%/)
     expect(document.body.textContent).not.toMatch(/Mortar AI:/)
 
@@ -103,9 +104,9 @@ describe("The Manager's Today", () => {
 
     expect(screen.queryByTestId('manager-card-BK-9001')).toBeNull()
     expect(screen.getByText('Every Overdue Case Already Has A Follow-Up.')).toBeTruthy()
+    fireEvent.mouseDown(screen.getByRole('tab', { name: 'Follow-Ups 1 Awaiting Reply' }))
     const sent = screen.getByRole('region', { name: 'Follow-ups you sent' })
     expect(within(sent).getByText('Awaiting Reply')).toBeTruthy()
-    expect(screen.getByText('1 Overdue Case · 1 Follow-Up Awaiting Reply')).toBeTruthy()
   })
 
   it('keeps a completed follow-up there, answered, until new evidence arrives', () => {
@@ -119,8 +120,9 @@ describe("The Manager's Today", () => {
 
   it('points to the busiest desk on Team', () => {
     show()
-    const busiest = screen.getByRole('link', { name: /Busiest Desk/ })
-    expect(busiest.getAttribute('href')).toBe('/team')
-    expect(within(busiest).getByText('Nurul Aina')).toBeTruthy()
+    const figures = screen.getByRole('region', { name: "Today's figures" })
+    expect(within(figures).getByText('Busiest Desk')).toBeTruthy()
+    expect(within(figures).getByText('Nurul Aina')).toBeTruthy()
+    expect(within(figures).getByRole('link', { name: 'Open Team' }).getAttribute('href')).toBe('/team')
   })
 })

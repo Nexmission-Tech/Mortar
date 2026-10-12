@@ -81,7 +81,7 @@ describe('ProfileMenu', () => {
     expect(within(panel).getByText('Signed In As')).toBeTruthy()
     const card = within(panel).getByRole('button', { name: 'Nurul Aina, Sales Admin. Switch profile' })
     expect(within(card).getByText('Stalled Bookings').nextElementSibling?.textContent).toBe('2')
-    expect(within(card).getByText('Due Today').nextElementSibling?.textContent).toBe('1')
+    expect(within(card).getByText('Due Or Overdue').nextElementSibling?.textContent).toBe('1')
     expect(screen.getByRole('button', { name: 'Nurul Aina, Sales Admin. Close profile menu' })).toBeTruthy()
 
     fireEvent.click(within(panel).getByRole('button', { name: 'Sign Out' }))

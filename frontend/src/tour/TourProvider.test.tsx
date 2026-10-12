@@ -138,7 +138,9 @@ describe('TourProvider', () => {
   it('keeps the caption available when a step has no matching target', () => {
     renderTour('/chase', 'sales-admin', true)
     fireEvent.click(screen.getByRole('button', { name: 'Start tour' }))
-    expect(screen.getByText('Today shows the bookings that need a move and the tasks due today.')).toBeTruthy()
+    expect(
+      screen.getByText('Today lists the bookings that need a move, with the next step and its desk on each row.')
+    ).toBeTruthy()
     expect(screen.getByRole('alert').className).toContain('bottom-5')
   })
 

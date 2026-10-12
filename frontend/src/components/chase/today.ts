@@ -128,7 +128,10 @@ export function useTodayFigures(): [TodayFigure, TodayFigure] | null {
     const openTasks = snapshot.tasks.filter((t) => t.status === 'open')
     return [
       { label: headline.label, value: headline.count },
-      { label: 'Due Today', value: dueTodayCount(assignedTasksFor(openTasks, profile), snapshot.meta.referenceDate) }
+      {
+        label: 'Due Or Overdue',
+        value: dueTodayCount(assignedTasksFor(openTasks, profile), snapshot.meta.referenceDate)
+      }
     ]
   }, [snapshot, cases, profile])
 }

@@ -129,8 +129,11 @@ describe('ChasePage', () => {
 
     // The Sales Administration Executive coordinates every booking to a
     // signed SPA, so their home is the whole queue, not one desk of it.
-    expect(screen.getByText('2 Stalled Bookings · 0 Tasks Due Today')).toBeTruthy()
-    expect(screen.getByText('Stalled Bookings')).toBeTruthy()
+    expect(screen.getByText('Move Bookings Towards A Signed SPA')).toBeTruthy()
+    const figures = screen.getByRole('region', { name: "Today's figures" })
+    expect(within(figures).getByText('Stalled Bookings')).toBeTruthy()
+    expect(within(figures).getByText('2')).toBeTruthy()
+    expect(within(figures).getByText('0 Tasks Due Or Overdue')).toBeTruthy()
     expect(screen.getAllByTestId(/chase-card-/)).toHaveLength(2)
   })
 
@@ -147,8 +150,9 @@ describe('ChasePage', () => {
 
     expect(screen.getByTestId('route-location').textContent).toBe('/chase')
     expect(screen.getByRole('heading', { level: 1, name: 'Today' })).toBeTruthy()
-    expect(screen.getByRole('heading', { name: /^Decisions For You · \d+/ })).toBeTruthy()
-    expect(screen.getByRole('complementary', { name: 'Your overview' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: /^Decisions For You/ })).toBeTruthy()
+    expect(screen.getByRole('tab', { name: /^Decisions/ })).toBeTruthy()
+    expect(screen.getByRole('tab', { name: /^Follow-Ups/ })).toBeTruthy()
     expect(screen.queryByRole('region', { name: 'Your tasks' })).toBeNull()
     expect(screen.queryByRole('tab', { name: 'Overview' })).toBeNull()
   })
@@ -168,7 +172,8 @@ describe('ChasePage', () => {
     renderPage()
 
     expect(screen.queryByTestId('chase-card-BK-9001')).toBeNull()
-    expect(screen.getByText('Open Tasks Already Cover These Recommended Actions.')).toBeTruthy()
+    expect(screen.getByText('All Recommended Actions Have Tasks')).toBeTruthy()
+    expect(screen.getByText('0 Actions To Assign · 1 Already Covered By An Open Task')).toBeTruthy()
   })
 
   it('keeps the recommendation when the same action is assigned to another recipient', () => {
@@ -195,15 +200,14 @@ describe('ChasePage', () => {
     CASES = []
     renderPage()
 
+    fireEvent.mouseDown(screen.getByRole('tab', { name: /^Recent Bookings/ }))
     const recent = screen.getByRole('region', { name: 'Recent bookings' })
-    expect(within(recent).queryByText('BK-TODAY')).toBeNull()
-    fireEvent.click(within(recent).getByRole('button', { name: 'Show' }))
     expect(within(recent).getByText('BK-TODAY')).toBeTruthy()
     expect(within(recent).getByText('BK-FIRST-DAY')).toBeTruthy()
     expect(within(recent).queryByText('BK-OLD')).toBeNull()
     expect(within(recent).queryByText('BK-FUTURE')).toBeNull()
     expect(within(recent).queryByText('BK-UNKNOWN')).toBeNull()
-    expect(within(recent).getByText('Recent Bookings · 2')).toBeTruthy()
+    expect(screen.getByRole('tab', { name: 'Recent Bookings 2' })).toBeTruthy()
   })
 
   it('lists a card leading with the rule-based move, with Jev’s differing move beneath it', () => {
@@ -213,10 +217,10 @@ describe('ChasePage', () => {
     expect(card.textContent).toContain('Call The Banker')
     expect(card.textContent).toContain('Application Undecided For 10 Working Days')
     // The rule-based move is the default; Jev's differs and rides one line under it.
-    expect(card.textContent).toContain('Mortar AI Suggests: Ask For The Missing Document')
+    expect(card.textContent).toContain('Mortar AI Suggests Ask For The Missing Document')
   })
 
-  it('names the desk that owns a card’s next step, and leaves it out on that desk', () => {
+  it('names the desk that owns a row’s next step, on every desk including its own', () => {
     // Sales Admin reads every desk's stalled bookings, so a move they cannot
     // make says whose move it is.
     renderPage()
@@ -227,7 +231,7 @@ describe('ChasePage', () => {
     window.localStorage.setItem(PERSONA_STORAGE_KEY, 'loan-admin')
     cleanup()
     renderPage()
-    expect(within(screen.getByTestId('chase-card-BK-9001')).queryByText('Loan Admin')).toBeNull()
+    expect(within(screen.getByTestId('chase-card-BK-9001')).getByText('Loan Admin')).toBeTruthy()
   })
 
   it('creates the default step’s task with one click, not Jev’s', async () => {
@@ -323,40 +327,36 @@ describe('ChasePage', () => {
     ])
 
     // Due Today is the norm, so it carries no pill; an overdue card does.
-    expect(screen.getByTestId('chase-card-BK-OD').textContent).toContain('Overdue 14 d')
+    expect(screen.getByTestId('chase-card-BK-OD').textContent).toContain('Overdue 14 Days')
     expect(screen.getByTestId('chase-card-BK-9001').textContent).not.toContain('Overdue')
   })
 
-  it('previews eight cards and unfolds the rest behind one counted control', () => {
+  it('lists every recommended action, with no Show More to unfold', () => {
     const ids = Array.from({ length: 12 }, (_, i) => `BK-${String(i + 1).padStart(4, '0')}`)
     SNAP = snapshot({ bookings: ids.map((id) => booking(id)) })
     CASES = ids.map((id) => stalledCase(id, { daysSinceEvidence: 3 }))
     renderPage()
 
-    expect(screen.getAllByTestId(/chase-card-/)).toHaveLength(8)
-
-    fireEvent.click(screen.getByRole('button', { name: 'Show 4 More' }))
     expect(screen.getAllByTestId(/chase-card-/)).toHaveLength(12)
-
-    fireEvent.click(screen.getByRole('button', { name: 'Show Fewer' }))
-    expect(screen.getAllByTestId(/chase-card-/)).toHaveLength(8)
+    expect(screen.queryByRole('button', { name: /Show \d+ More/ })).toBeNull()
   })
 
   it('shows the empty state when filters match nothing', () => {
     renderPage()
     fireEvent.click(screen.getByRole('combobox', { name: 'Filter by risk' }))
     fireEvent.click(screen.getByRole('option', { name: 'High Risk' }))
-    expect(screen.getByText('Nothing To Chase')).toBeTruthy()
-    expect(screen.getByText('No Stalled Booking Matches These Filters.')).toBeTruthy()
+    expect(screen.getByText('No Bookings Match These Filters')).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: 'Clear Filters' }))
+    expect(screen.getAllByTestId(/chase-card-/).length).toBeGreaterThan(0)
   })
 
-  it('keeps the queue grid to one column below sm so cards cannot force sideways scroll (issue H5)', () => {
+  it('keeps each row to one column below md so rows cannot force sideways scroll (issue H5)', () => {
     SNAP = snapshot({ bookings: SNAP.bookings, nextActions: [] })
     CASES = [stalledCase('BK-9001', { applications: [{ id: 'A1', bank: 'B', status: 'submitted' }] })]
     renderPage()
 
-    const grid = screen.getByTestId('chase-card-BK-9001').parentElement!
-    expect(grid.className).toContain('grid-cols-1')
+    const row = screen.getByTestId('chase-card-BK-9001')
+    expect(row.className).toContain('grid-cols-1')
   })
 
   describe('the case panel', () => {
@@ -476,7 +476,8 @@ describe('ChasePage', () => {
       })
       renderPage()
 
-      expect(screen.getByText('2 Stalled Bookings · 1 Task Due Today')).toBeTruthy()
+      // Your Tasks' shortcut counts due and overdue tasks, and says so.
+      expect(screen.getByText('1 Task Due Or Overdue')).toBeTruthy()
     })
   })
 
@@ -485,7 +486,8 @@ describe('ChasePage', () => {
       window.localStorage.setItem(PERSONA_STORAGE_KEY, 'loan-admin')
       renderPage()
 
-      expect(screen.getByText('2 Bookings Need A Move From You · 0 Tasks Due Today')).toBeTruthy()
+      const figures = screen.getByRole('region', { name: "Today's figures" })
+      expect(within(figures).getByText('Need A Move From You')).toBeTruthy()
       expect(screen.getAllByTestId(/chase-card-/)).toHaveLength(2)
     })
 
@@ -494,8 +496,8 @@ describe('ChasePage', () => {
       fireEvent.click(screen.getByRole('combobox', { name: 'Filter by owner' }))
       fireEvent.click(screen.getByRole('option', { name: 'Loan Admin' }))
 
-      expect(screen.getByText('2 Bookings Need A Move From Loan Admin · 0 Tasks Due Today')).toBeTruthy()
       expect(screen.getByText('Need A Move From Loan Admin')).toBeTruthy()
+      expect(screen.getByText('2 Actions To Assign')).toBeTruthy()
       expect(screen.getAllByTestId(/chase-card-/)).toHaveLength(2)
     })
 
@@ -504,7 +506,6 @@ describe('ChasePage', () => {
       renderPage()
 
       expect(screen.getByText('Need A Move From You')).toBeTruthy()
-      expect(screen.getByText('2 Bookings Need A Move From You · 0 Tasks Due Today')).toBeTruthy()
     })
 
     it('reads one stalled booking in the singular over all desks', () => {
@@ -512,7 +513,7 @@ describe('ChasePage', () => {
       CASES = [stalledCase('BK-9001', { applications: [{ id: 'A1', bank: 'B', status: 'submitted' }] })]
       renderPage()
 
-      expect(screen.getByText('1 Stalled Booking · 0 Tasks Due Today')).toBeTruthy()
+      expect(screen.getByText('1 Action To Assign')).toBeTruthy()
     })
 
     it('says a lone case on a desk in the singular too', () => {
@@ -523,7 +524,7 @@ describe('ChasePage', () => {
 
       // The tile drops the subject and the count, which the figure carries.
       expect(screen.getByText('Needs A Move From You')).toBeTruthy()
-      expect(screen.getByText('1 Booking Needs A Move From You · 0 Tasks Due Today')).toBeTruthy()
+      expect(screen.getByText('1 Action To Assign')).toBeTruthy()
     })
   })
 })

@@ -1,21 +1,20 @@
 /**
- * Today (`/chase`) — every persona's home desk, the Manager's included. The
- * lead line answers the only question the page opens with: how many bookings
- * are stalled, and how many tasks are due today. The work queue comes first;
- * a rail beside it (stacked above it below 1280px) holds the two figures,
- * Your Tasks and Recent Bookings, and stays in view while the queue scrolls.
+ * Today (`/chase`) — every persona's home desk, the Manager's included. One
+ * strip of figures, then named views: Actions, Your Tasks and Recent Bookings
+ * (Decisions and Follow-Ups for the Manager). Actions is one ordered worklist,
+ * a row per booking, read across as which booking, what blocks it, and what
+ * to do next. Every list is complete; nothing folds behind a Show More.
  *
  * Sales Admin coordinates every booking to a signed SPA, so their home opens
  * on the whole chase — every desk, every owner. Loan Admin and Legal Admin open
- * on their own desk. The header sentence and the first tile follow the owner
- * filter rather than the persona, so choosing a desk relabels them instead of
- * leaving one sentence describing a different list from the one on screen.
+ * on their own desk. The first figure follows the desk filter rather than the
+ * persona, so choosing a desk relabels it with the list it counts.
  *
- * Each card names the blocker in plain words and the one next step, which is
- * the rule-based move from `ballInCourt` — the same move Waiting On and the
- * table's Task column raise, so one click anywhere creates one task. Jev's
- * cached answer appears only where it differs, as a single extra line. Clicking
- * the unit and buyer opens the same case panel a row opens on the ledger.
+ * Each row's next step is the rule-based move from `ballInCourt` — the same
+ * move Waiting On and the table's Task column raise, so one click anywhere
+ * creates one task. Mortar AI's cached answer appears only where it differs,
+ * as one muted line. Clicking the unit and buyer opens the same case panel a
+ * row opens on the ledger.
  */
 import { useMemo, useState, type ReactNode } from 'react'
 import type { Dispatch, SetStateAction } from 'react'
@@ -573,7 +572,10 @@ function ManagerToday() {
                       onAction={() => setView('followups')}
                     />
                   ) : (
-                    <QueueEmpty title="No Decisions Waiting" description="No Case Has Reached The Follow-Up Threshold" />
+                    <QueueEmpty
+                      title="No Decisions Waiting"
+                      description="No Case Has Reached The Follow-Up Threshold"
+                    />
                   )
                 ) : (
                   <QueueEmpty
@@ -636,7 +638,11 @@ function TodayViews<V extends string>({
   return (
     <Tabs value={value} onValueChange={(v) => onValueChange(v as V)} className="gap-0">
       <div className="border-b border-border">
-        <TabsList variant="line" aria-label="Today Views" className="h-12 w-full justify-start gap-5 overflow-x-auto md:gap-7">
+        <TabsList
+          variant="line"
+          aria-label="Today Views"
+          className="h-12 w-full justify-start gap-5 overflow-x-auto md:gap-7"
+        >
           {views.map((v) => (
             <TabsTrigger
               key={v.id}
