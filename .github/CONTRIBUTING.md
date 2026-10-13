@@ -50,6 +50,10 @@ Issue ──► Branch ──► Commits ──► Pull Request ──► Review
   and closed issues and pull requests with `gh`. Comment on a duplicate instead
   of opening another, and link any issue that overlaps or conflicts with yours.
   See [GitHub Issues And Pull Requests](/docs/agents/github.md).
+- **Ideas Go In #75:** post a rough idea as one comment in the suggestions
+  issue, #75. Anyone who triages or fixes one follows
+  [Suggestions Issue](/docs/agents/suggestions.md), including posting an update
+  in #75 when its pull request opens.
 
 ## Branches
 
