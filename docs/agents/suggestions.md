@@ -59,7 +59,7 @@ Contents:
 
 ```bash
 gh issue view 75 --comments
-gh api repos/NexTechnologies-MY/Mortar/issues/75/comments --paginate \
+gh api repos/Nexmission-Tech/Mortar/issues/75/comments --paginate \
   --jq '.[] | {id, user: .user.login, created_at, updated_at, html_url, body}'
 ```
 
@@ -150,8 +150,8 @@ Fill in the template. For a suggestion pull request, also:
   same persona, page, booking and seeded demo data. Commit them under
   `docs/verification/<issue-or-topic>/` before the Graphify refresh commit, and
   embed them with
-  `https://github.com/NexTechnologies-MY/Mortar/blob/<branch>/<path>?raw=true`.
-  For a docs-only change, show the changed slide or section instead, or say "No
+  `https://github.com/Nexmission-Tech/Mortar/blob/<branch>/<path>?raw=true`. For
+  a docs-only change, show the changed slide or section instead, or say "No
   visible change."
 - **Not Done:** anything the suggestion asked for that this pull request leaves
   out, with the reason and the follow-up issue.
@@ -226,4 +226,4 @@ Source comments read up to <latest updated_at, UTC>.
 - [ ] A Fix Update is posted in #75 for every pull request I opened.
 - [ ] #75 is still open.
 
-[i75]: https://github.com/NexTechnologies-MY/Mortar/issues/75
+[i75]: https://github.com/Nexmission-Tech/Mortar/issues/75
