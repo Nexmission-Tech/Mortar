@@ -48,6 +48,13 @@ intake). ESLint flat config at the root, Prettier, husky + lint-staged.
   open and closed, and check that yours neither duplicates nor conflicts with
   them; link any that overlap. Details:
   [GitHub Issues And Pull Requests](docs/agents/github.md).
+- When a task touches a suggestion from issue #75 (triage, a fix, or a pull
+  request for one), follow the procedure in
+  [Suggestions Issue](docs/agents/suggestions.md): number it, record its outcome
+  in #75, and give each accepted suggestion its own issue and pull request with
+  before and after screenshots. As soon as a pull request for a suggestion is
+  opened, post a Fix Update comment in #75 that names the suggestion, the issue
+  and the pull request; the work is not done until it is posted. Keep #75 open.
 - Ask the Graphify graph before grepping or reading file after file, and refresh
   it as the last commit of every pull request so `main` always carries the
   current graph. Details: [Graphify](docs/agents/graphify.md).
@@ -71,4 +78,5 @@ intake). ESLint flat config at the root, Prettier, husky + lint-staged.
 | Deleting data, or deploying with real buyer data                | [Data Retention](docs/TRD.md#data-retention)                    |
 | Branching, committing, or opening an issue or pull request      | [Contributing](.github/CONTRIBUTING.md)                         |
 | Checking a new issue or pull request against existing ones      | [GitHub Issues And Pull Requests](docs/agents/github.md)        |
+| Triaging, fixing or reporting on a suggestion from issue #75    | [Suggestions Issue](docs/agents/suggestions.md)                 |
 | Finding code, or tracing how parts of Mortar connect            | [Graphify](docs/agents/graphify.md)                             |
