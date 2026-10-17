@@ -44,7 +44,13 @@ import {
   YourTasks
 } from '@/components/chase/TodayRail'
 import { Worklist } from '@/components/chase/worklist'
-import { assignedTasksFor, defaultOwnerFilter, dueTodayCount, headlineFor } from '@/components/chase/today'
+import {
+  assignedTasksFor,
+  defaultOwnerFilter,
+  dueTodayCount,
+  headlineFor,
+  missedAppointment
+} from '@/components/chase/today'
 import { ManagerCard } from '@/components/manager/ManagerCard'
 import { managerQueue } from '@/components/manager/managerQueue'
 import { NEXT_ACTION_LABELS, ownerName as resolveOwnerName } from '@/components/chase/chase'
@@ -156,10 +162,11 @@ function AdminToday() {
     [snapshot]
   )
 
-  /** The queue ranks by what clears a stall soonest: evidence awaiting review
-   * first, then how long each case has sat still, then by value at risk, then
-   * by age. Jev's urgency score is not in it — asking Jev must never move a
-   * card, or the queue reshuffles under the person reading it. */
+  /** The queue ranks by what clears a stall soonest: a missed SPA appointment
+   * first, since its slot is already lost, then evidence awaiting review, then
+   * how long each case has sat still, then by booking price, then by age.
+   * Jev's urgency score is not in it — asking Jev must never move a card, or
+   * the queue reshuffles under the person reading it. */
   const stalled = useMemo(() => {
     // The owner filter's match for a case is the desk that makes its next step.
     const ownerFor = (c: CaseSummary): OwnerRole | undefined => steps.get(c.bookingId)?.defaultStep.ownerRole
@@ -169,6 +176,7 @@ function AdminToday() {
       .filter((c) => ownerFilter === 'all' || ownerFor(c) === ownerFilter)
       .sort(
         (a, b) =>
+          Number(missedAppointment(b.stallReasons)) - Number(missedAppointment(a.stallReasons)) ||
           Number(awaitingReview.has(b.bookingId)) - Number(awaitingReview.has(a.bookingId)) ||
           b.daysSinceEvidence - a.daysSinceEvidence ||
           (bookings.get(b.bookingId)?.priceRm ?? 0) - (bookings.get(a.bookingId)?.priceRm ?? 0) ||
@@ -361,7 +369,7 @@ function AdminToday() {
                 title="Recommended Actions"
                 headingId="today-queue-heading"
                 detail={queueDetail}
-                info="Updates awaiting review first, then longest without an update, booking value and age."
+                info="Missed SPA appointments first, then updates awaiting review, then longest without an update, booking value and age."
               >
                 <Filters>
                   <FilterSelect

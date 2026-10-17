@@ -55,6 +55,8 @@ function summary(overrides: Partial<CaseSummary> = {}): CaseSummary {
     applications: [{ id: 'APP-1', bank: 'Crestline Bank', status: 'submitted' }],
     outstandingDocuments: [],
     buyerWithdrew: false,
+    buyerConcern: false,
+    valuationShortfall: false,
     risk: {
       level: 'low',
       loanRm: 495000,

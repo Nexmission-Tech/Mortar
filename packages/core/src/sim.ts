@@ -26,7 +26,7 @@ import { addDays } from './sim/dates'
 export { DEFAULT_SEED, REFERENCE_DATE, HORIZON_DAYS, PERSONA_STAFF } from './sim/constants'
 export { PROJECT_NAME } from './sim/names'
 export { leakage } from './sim/leakage'
-export { byOccurred } from './sim/cases'
+export { byOccurred, SPA_APPOINTMENT_MISSED } from './sim/cases'
 export { FUNNEL_STAGES } from './sim/cases'
 export type { Leakage, LeakageCause, RecoveryEstimate } from './sim/leakage'
 export { DEFAULT_ASSUMPTIONS }
@@ -65,7 +65,11 @@ function addFarahOverdueExample(dataset: Dataset, referenceDate: IsoDate): Datas
   }
 }
 
-/** Keep three sales-held Today cards with an Overdue pill for each admin in the canonical seed. */
+/**
+ * Age a few cases in the canonical seed so Today shows Overdue pills. Since
+ * #75 a rejection is the loan desk's financing review, so some of these now
+ * land on Loan Admin's Today rather than a Sales Admin's.
+ */
 function addSalesTodayOverdueExamples(dataset: Dataset, referenceDate: IsoDate): Dataset {
   const overdueDate = addDays(referenceDate, -10)
   const shiftDate = (dateTime: IsoDateTime, days: number) =>

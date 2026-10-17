@@ -35,20 +35,23 @@ export function defaultProfileForPersona(persona: Persona): StaffProfile {
   return profileForPersona(persona)
 }
 
-/** Resolve the internal assignee implied by the currently confirmed case state. */
+/**
+ * Resolve the internal assignee implied by the currently confirmed case state:
+ * the person who makes the next move. Calling the buyer is always the sales
+ * desk's and a financing review always the loan desk's, whoever holds the case;
+ * otherwise the holder decides.
+ */
 export function currentCaseAssignee(booking: Booking, summary: CaseSummary): StaffProfile | null {
-  const holder = ballInCourt(summary).holder
-  if (holder === 'buyer' || holder === 'bank') {
-    return (
-      DEMO_PROFILES.find((profile) => profile.persona === 'loan-admin' && profile.name === booking.loanOwner) ?? null
-    )
-  }
+  const { holder, nextMove } = ballInCourt(summary)
+  const loanAdmin = () =>
+    DEMO_PROFILES.find((profile) => profile.persona === 'loan-admin' && profile.name === booking.loanOwner) ?? null
+  const salesAdmin = () =>
+    DEMO_PROFILES.find((profile) => profile.persona === 'sales-admin' && profile.name === booking.salesOwner) ?? null
+  if (nextMove === 'call_buyer') return salesAdmin()
+  if (nextMove === 'review_financing') return loanAdmin()
+  if (holder === 'buyer' || holder === 'bank') return loanAdmin()
   if (holder === 'solicitor') return profileFor('legal-admin')
-  if (holder === 'developer') {
-    return (
-      DEMO_PROFILES.find((profile) => profile.persona === 'sales-admin' && profile.name === booking.salesOwner) ?? null
-    )
-  }
+  if (holder === 'developer') return salesAdmin()
   return null
 }
 
@@ -63,8 +66,16 @@ export function canAccessBooking(booking: Booking, profile: StaffProfile, contex
     case 'legal-admin': {
       if (!context) return false
       const summary = context.summaries.find((candidate) => candidate.bookingId === booking.id)
-      const assignee = summary ? currentCaseAssignee(booking, summary) : null
-      if (assignee?.id === profile.id && assignee.persona === profile.persona) return true
+      // A buyer's concern or a valuation shortfall hands the next move to a
+      // desk, but the bank or solicitor work carries on alongside it, so the
+      // desk that holds the case without them keeps it too.
+      const assignees = summary
+        ? [
+            currentCaseAssignee(booking, summary),
+            currentCaseAssignee(booking, { ...summary, buyerConcern: false, valuationShortfall: false })
+          ]
+        : []
+      if (assignees.some((assignee) => assignee?.id === profile.id && assignee.persona === profile.persona)) return true
 
       const expectedRole = profile.persona === 'loan-admin' ? 'loan_admin' : 'legal'
       return context.tasks.some(

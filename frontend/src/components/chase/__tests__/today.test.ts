@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { dueOrOverduePhrase, headlineBlocker } from '@/components/chase/today'
+import { dueOrOverduePhrase, headlineBlocker, missedAppointment } from '@/components/chase/today'
+
+describe('missedAppointment', () => {
+  it('spots a missed SPA appointment, and nothing else', () => {
+    expect(missedAppointment(['No Update For 9 Days', 'SPA Appointment Missed 1 Day Ago'])).toBe(true)
+    expect(missedAppointment(['SPA Set 21 Days Ago, Still Unsigned', 'SPA Not Scheduled 12 Days After LO'])).toBe(false)
+    expect(missedAppointment([])).toBe(false)
+  })
+})
 
 describe('headlineBlocker', () => {
   it('leads with the first specific reason over the generic no-update one', () => {

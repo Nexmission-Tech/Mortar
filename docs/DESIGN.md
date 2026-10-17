@@ -386,9 +386,10 @@ belong only to Full Case Journey and are not a general-purpose icon set.
   eyebrow, never beside the figure. `AlertTriangle` (stalled), `Flame` (high
   risk), `ListChecks` (tasks), `Banknote` (money).
 - **Blocker and action glyphs:** One per chase card blocker line and one per
-  suggested action, chosen by kind, never by severity: `FileWarning` (missing or
-  outstanding document), `Landmark` (bank or financing stall), `Clock` (time or
-  evidence stall); `FileText` (request document), `Phone` (call buyer), `Eye`
+  suggested action, chosen by kind, never by severity: `UserRound` (a buyer's
+  concern), `FileWarning` (missing or outstanding document), `Landmark` (bank or
+  financing stall), `Clock` (time or evidence stall); `FileText` (request
+  document), `Phone` (call buyer), `Calculator` (financing review), `Eye`
   (review), `CalendarCheck` (schedule).
 - **Rules:** Icons never carry meaning or status alone, and never carry a status
   tone as their colour: they render in `currentColor` at the weight of the text

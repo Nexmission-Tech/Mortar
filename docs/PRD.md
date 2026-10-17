@@ -106,9 +106,9 @@ outstanding documents independently, so that one rejection does not kill the
 deal and slow bankers are flagged after nine working days.
 
 **Job To Be Done 2 (Guidance Retrieval):** When income eligibility or valuation
-shortfalls occur, I want to find approved procedural playbooks with actionable
-limits, so that I can guide the buyer through second-bank submissions or top-up
-arrangements.
+shortfalls occur, I want a Financing Review on my Today the same day and
+approved procedural playbooks with actionable limits, so that I can guide the
+buyer through second-bank submissions or top-up arrangements.
 
 ### Legal Admin
 
@@ -313,7 +313,15 @@ without storing transient state in database tables.
   that can overlap in time.
 - **AC-2.4:** Outstanding documents must be computed as document kinds requested
   and not yet received (`payslip`, `epf_statement`, `bank_statement`, `ic_copy`,
-  `employment_letter`, `tax_form`).
+  `employment_letter`, `tax_form`). A receipt clears only the requests of the
+  bank it names; while two or more banks are deciding, a receipt not for one
+  bank clears only requests that are not for one bank, and restarts no bank's
+  decision clock. With fewer deciding it is unambiguous, so it also clears the
+  matching requests banks made and restarts those banks' clocks. While more than
+  one bank is deciding, Record An Update and `POST /api/events` require a
+  receipt to name its bank. Once no bank is deciding, Record An Update and
+  Mortar AI's proposal put a document update on the bank that approved, so its
+  request can clear.
 - **AC-2.5:** A live booking with no confirmed event for 10 or more calendar
   days must be assigned `unknown: true`. The UI must display this booking as No
   Update 10+ Days, never as progressing or failed.
@@ -325,8 +333,18 @@ without storing transient state in database tables.
   4. An unresolved disputed event.
   5. A loan approved 10 or more calendar days ago with no SPA appointment on the
      log.
-  6. An SPA appointment recorded 14 or more calendar days ago with no signing
-     against it.
+  6. An SPA appointment whose own date has passed with no signing, from the next
+     working day ("SPA Appointment Missed N Days Ago"), unless the buyer
+     withdrew. A routine note does not reset it. An appointment whose note names
+     no date, or a date before the booking, falls back to 14 calendar days after
+     it was recorded ("SPA Set N Days Ago, Still Unsigned").
+  7. The same day it is confirmed, with the buyer not withdrawn: an unanswered
+     buyer concern (`buyer_hesitant` with no later `buyer_contacted`, withdrawal
+     or SPA appointment: "Buyer Raised A Concern"); a rejection that leaves no
+     bank deciding or approved ("Loan Rejected, No Bank Still Deciding"); or a
+     valuation shortfall not yet settled by a new submission, any approval or
+     that bank's own rejection ("Valuation Shortfall Confirmed"). A shortfall is
+     refused on an application its bank has already decided.
 - **AC-2.7:** Stall detection must apply to every booking that is unsigned and
   not exited, with no upper bound on booking age. The 30-day horizon governs
   what the forecast counts, not what the desks are shown; gating stall reasons
@@ -384,9 +402,10 @@ The system must present stalled live bookings in an actionable queue on Today
   and one figures strip: stalled bookings (or "Need A Move From You"), Value At
   Risk, and Your Tasks' "N Tasks Due Or Overdue" shortcut. Named views follow:
   Actions, Your Tasks and Recent Bookings.
-- **AC-5.2:** Bookings with evidence awaiting review must come first, followed
-  by bookings longest without evidence. Every recommended action is listed;
-  nothing folds behind a Show More.
+- **AC-5.2:** Bookings with a missed SPA appointment must come first, then
+  bookings with evidence awaiting review, followed by bookings longest without
+  evidence. Every recommended action is listed; nothing folds behind a Show
+  More.
 - **AC-5.3:** Each worklist row must state the first specific blocker, one next
   step and its owner desk, the Overdue pill when past due (else `Task Open`),
   and an outline Create Task button, with every fact under Details. Clicking a
@@ -658,9 +677,10 @@ which is otherwise measured nowhere.
   updates without visiting the case page.
 - **AC-15.3:** An appointment date that has passed without signing must display
   "Was On <date>" in red within the appointment column.
-- **AC-15.4:** Rows tripping a legal stall reason (AC-2.6 conditions 5 and 6)
-  must be visually distinguished on the days-since-approval figure alone. No
-  other column may carry a pill, per the Chip Economy rule in `docs/DESIGN.md`.
+- **AC-15.4:** Rows tripping a legal stall reason (AC-2.6 conditions 5 and 6,
+  including SPA Appointment Missed) must be visually distinguished on the
+  days-since-approval figure alone. No other column may carry a pill, per the
+  Chip Economy rule in `docs/DESIGN.md`.
 - **AC-15.5:** The page must report awaiting count, the number past a stall
   threshold, the longest wait in days, and total value held. Panel load must
   group the queue by `legalFirm` with count, median wait, and value, stating on
@@ -679,15 +699,16 @@ next move, on the bookings ledger and on the case page alike.
 - **AC-17.1:** Every open case must identify the party currently waited on
   (buyer, bank, solicitor, signed, or us), what that party owes, and the next
   move with its owner desk. Next action verbs must follow `nextStep.ts`: Ask For
-  Payslip, Call The Banker, Submit To Another Bank, Call The Buyer, Book The SPA
-  Signing, Ask The Solicitor For A Date, Decide Whether To Release The Unit, or
-  Wait For The Bank.
+  Payslip, Call The Banker, Submit To Another Bank, Hold A Financing Review,
+  Call The Buyer, Book The SPA Signing, Ask The Solicitor For A Date, Decide
+  Whether To Release The Unit, or Wait For The Bank.
 - **AC-17.2:** `/bookings` must feature two metric tiles: Stalled and No Update
   10+ Days. A "Who Holds Each Booking" filter strip must display segment counts:
   Buyer, Bank, Solicitor, Signed, and Us. The strip starts collapsed; opening it
   shows clickable holders. Clicking an item filters the ledger; a second click
-  clears it. The holder selection is preset by persona: Buyer for Sales Admin,
-  Bank for Loan Admin, Solicitor for Legal Admin. Signed counts cases with a
+  clears it. The holder selection is preset by persona: none for Sales Admin,
+  who coordinates every booking, so a search finds a unit wherever it waits;
+  Bank for Loan Admin; Solicitor for Legal Admin. Signed counts cases with a
   signed SPA, summing across the strip to match the Active tab total.
 - **AC-17.3:** The ledger must provide one filter menu for Active and Closed,
   Stage, Risk, No Update 10+ Days and Stalled Only, plus search by unit, buyer,
@@ -705,7 +726,16 @@ next move, on the bookings ledger and on the case page alike.
   3. A buyer withdrawal waits on the developer (Us) for a release decision;
      submitting to a new bank re-engages the case and clears that wait.
   4. Once a bank approves, only that bank's outstanding requirements drive the
-     wait.
+     wait, and while one is open the case waits on the buyer for it ("Payslip
+     From The Buyer"), not on the solicitor.
+  5. An unanswered buyer concern waits on the buyer, with Call The Buyer as the
+     Sales Admin's step, until a later Buyer Contacted records the call's
+     outcome or the buyer agrees an SPA appointment; the banks and the solicitor
+     keep processing alongside, and the desk doing that work keeps the case.
+  6. A rejection that leaves no bank deciding, or an unsettled valuation
+     shortfall, waits on a Financing Review by the Loan Admin, never straight on
+     another bank, and ahead of any document still requested. A Release Review
+     case with two rejections opens on it.
 
 ### FR-18: Jev Through A Local Model Proxy
 
@@ -1084,14 +1114,15 @@ of booking, divided by all eligible bookings enrolled.
 
 ### Secondary Operational Metrics
 
-| Metric                   | Measurement Method                                                                | Target Objective                          |
-| ------------------------ | --------------------------------------------------------------------------------- | ----------------------------------------- |
-| Stalled Booking Recovery | Count of stalled bookings transitioned to active stage following task completion  | Set from the pilot baseline               |
-| Case Dwell In Unknown    | Average calendar days bookings remain in `unknown: true` status                   | Set from the pilot baseline               |
-| Forecast Calibration     | Brier score comparing case probabilities against observed 30-day outcomes         | Reported, not targeted, on simulated data |
-| AI Extraction Accuracy   | Proportion of Jev proposals confirmed by staff without modification or dispute    | Set from the pilot baseline               |
-| Live Jev Latency         | End-to-end network roundtrip time for live message extraction                     | Under 3 seconds in the demo               |
-| Fallback Cache Hit Rate  | Percentage of demo requests successfully served from cache during network latency | Every demo step has a cached answer       |
+| Metric                    | Measurement Method                                                                                 | Target Objective                          |
+| ------------------------- | -------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Stalled Booking Recovery  | Count of stalled bookings transitioned to active stage following task completion                   | Set from the pilot baseline               |
+| Case Dwell In Unknown     | Average calendar days bookings remain in `unknown: true` status                                    | Set from the pilot baseline               |
+| Rejection To Resubmission | Calendar days from a confirmed rejection that leaves no bank deciding to the next `loan_submitted` | Set from the pilot baseline               |
+| Forecast Calibration      | Brier score comparing case probabilities against observed 30-day outcomes                          | Reported, not targeted, on simulated data |
+| AI Extraction Accuracy    | Proportion of Jev proposals confirmed by staff without modification or dispute                     | Set from the pilot baseline               |
+| Live Jev Latency          | End-to-end network roundtrip time for live message extraction                                      | Under 3 seconds in the demo               |
+| Fallback Cache Hit Rate   | Percentage of demo requests successfully served from cache during network latency                  | Every demo step has a cached answer       |
 
 ## Assumptions And Constraints
 

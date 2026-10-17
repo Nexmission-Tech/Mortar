@@ -165,6 +165,21 @@ describe('bookingJourney', () => {
     expect(stop(model, 'loan_approved').current).toBe(true)
   })
 
+  // Issue #75: a rejection or a shortfall is reviewed first; the journey does not decide for the review.
+  it('waits at the approval for a financing review, after a rejection or a valuation shortfall', () => {
+    const a = app('APP-1', 'Apex Bank')
+    const submitted = [ev('booked', '2026-09-01'), ev('loan_submitted', '2026-09-03', { applicationId: a.id })]
+    for (const last of [
+      ev('loan_rejected', '2026-09-17', { applicationId: a.id }),
+      ev('valuation_shortfall', '2026-09-17', { applicationId: a.id })
+    ]) {
+      const model = journeyOf(story.booking, [a], [...submitted, last])
+      expect(stop(model, 'loan_approved')).toMatchObject({ current: true, caption: 'Financing Review' })
+      expect(stop(model, 'loan_submitted')).toMatchObject({ state: 'done', current: false })
+      expect(model.stops.map((s) => s.caption)).not.toContain('Another Bank Needed')
+    }
+  })
+
   it('reopens Documents when a request follows a receipt', () => {
     const a = app('APP-1', 'Apex Bank')
     const events = [

@@ -14,8 +14,8 @@ import type {
 } from '../types'
 import { assumptionValue } from './assumptions'
 import { computeFinancingRisk } from './risk'
-import { dateOf, diffDays, workDaysBetween } from './dates'
-import { HORIZON_DAYS } from './constants'
+import { dateOf, diffDays, fromEpoch, toEpoch, workDaysBetween } from './dates'
+import { HORIZON_DAYS, SPA_MISSED_AFTER_WORK_DAYS } from './constants'
 
 export const FUNNEL_STAGES: Stage[] = [
   'booked',
@@ -68,8 +68,10 @@ const KIND_RANK: Record<EventKind, number | null> = {
 /** The day an appointment is for, as its note carries it: `Appointment On 2026-09-25`. */
 const APPOINTMENT_ON = /Appointment On (\d{4}-\d{2}-\d{2})/
 
+/** The day the note names, or `null` when it names none or no real calendar day (`2026-13-45`). */
 function appointmentDay(note: string | null): IsoDate | null {
-  return APPOINTMENT_ON.exec(note ?? '')?.[1] ?? null
+  const day = APPOINTMENT_ON.exec(note ?? '')?.[1] ?? null
+  return day !== null && fromEpoch(toEpoch(day)) === day ? day : null
 }
 
 export const DOCUMENT_LABELS: Record<DocumentKind, string> = {
@@ -82,6 +84,12 @@ export const DOCUMENT_LABELS: Record<DocumentKind, string> = {
 }
 
 const INCOME_DOCUMENTS: DocumentKind[] = ['payslip', 'epf_statement', 'bank_statement', 'employment_letter', 'tax_form']
+
+/** An application a bank is still deciding, or one it approved. */
+const LIVE_OR_APPROVED: ReadonlySet<ApplicationStatus> = new Set(['submitted', 'documents_pending', 'approved'])
+
+/** How a missed-appointment stall reason begins, so a queue can lead with it. */
+export const SPA_APPOINTMENT_MISSED = 'SPA Appointment Missed'
 
 /**
  * Case order: by `occurredAt`, equal times in the order the rows were stored
@@ -142,6 +150,13 @@ export interface CaseFacts {
    */
   buyerWithdrew: boolean
   /**
+   * The buyer's last word is a concern: a confirmed `buyer_hesitant` with no
+   * later call outcome (`buyer_contacted`) or withdrawal.
+   */
+  buyerConcern: boolean
+  /** A confirmed `valuation_shortfall` with no later submission or bank decision. */
+  valuationShortfall: boolean
+  /**
    * Still in play: booked, not signed, not exited. Unlike `live` there is no
    * age ceiling, so a case that has sat past the horizon stays visible. Stall
    * rules read this; the forecast reads `live`.
@@ -173,27 +188,44 @@ interface DocumentLedger {
  * request opens its key once. A receipt clears, by its scope:
  * - one bank, one document: that bank's request for it and a request for it not for one bank;
  * - one bank, all outstanding: every request that bank made, and nothing else;
- * - not for one bank, one document: that document on every bank and on none;
- * - not for one bank, all outstanding: everything.
- * A named receipt never clears an unnamed request. Documents reach a bank with
- * any receipt for it, or a receipt not for one bank that cleared one of its requests.
+ * - not for one bank, one document: that document's request not for one bank;
+ * - not for one bank, all outstanding: every request not for one bank.
+ * "The buyer gave it to us" is not "each bank has it": with two or more banks
+ * deciding, a receipt not for one bank never clears a bank's own request. With
+ * fewer it is unambiguous (the server takes it only then), so it also clears
+ * the matching requests banks made, as receipts saved before #75 expect, and
+ * the documents reach those banks. A named receipt never clears an unnamed request.
  */
 function documentLedger(events: CaseEvent[]): DocumentLedger {
   const open = new Map<string, OpenRequest>()
   const receivedOn = new Map<string, IsoDate>()
+  // Who is deciding when each receipt lands, read as deriveApplication reads it.
+  const submittedOn = new Map<string, IsoDate>()
+  const decided = new Set<string>()
+  let withdrewOn: IsoDate | null = null
   for (const e of events) {
     const day = dateOf(e.occurredAt)
-    if (e.kind === 'documents_requested') {
+    if (e.kind === 'loan_submitted' && e.applicationId !== null) {
+      if (!submittedOn.has(e.applicationId)) submittedOn.set(e.applicationId, day)
+    } else if ((e.kind === 'loan_approved' || e.kind === 'loan_rejected') && e.applicationId !== null) {
+      decided.add(e.applicationId)
+    } else if (e.kind === 'buyer_withdrew') {
+      withdrewOn = day
+    } else if (e.kind === 'documents_requested') {
       const key = `${e.applicationId ?? ''}|${e.document ?? ''}`
       if (!open.has(key)) open.set(key, { applicationId: e.applicationId, document: e.document, since: day })
     } else if (e.kind === 'documents_received') {
       if (e.applicationId !== null) receivedOn.set(e.applicationId, day)
+      const deciding = [...submittedOn].filter(
+        ([id, on]) => !decided.has(id) && (withdrewOn === null || on > withdrewOn)
+      )
+      const unambiguous = deciding.length < 2
       for (const [key, r] of open) {
         const sameDocument = e.document === null || r.document === e.document
         const sameBank =
-          e.applicationId === null ||
-          r.applicationId === e.applicationId ||
-          (r.applicationId === null && e.document !== null)
+          e.applicationId === null
+            ? r.applicationId === null || unambiguous
+            : r.applicationId === e.applicationId || (r.applicationId === null && e.document !== null)
         if (!sameDocument || !sameBank) continue
         open.delete(key)
         if (e.applicationId === null && r.applicationId !== null) receivedOn.set(r.applicationId, day)
@@ -202,6 +234,40 @@ function documentLedger(events: CaseEvent[]): DocumentLedger {
   }
   return { open: [...open.values()], receivedOn }
 }
+
+/**
+ * Whether the latest confirmed `concern` still stands: no later event answers
+ * it on the log. `false` when there is no such concern.
+ */
+function unanswered(
+  events: CaseEvent[],
+  concern: EventKind,
+  answers: (event: CaseEvent, concern: CaseEvent) => boolean
+): boolean {
+  let open: CaseEvent | null = null
+  for (const e of events) {
+    if (e.kind === concern) open = e
+    else if (open !== null && answers(e, open)) open = null
+  }
+  return open !== null
+}
+
+/**
+ * What answers a buyer's concern: the call outcome, the buyer walking away, or
+ * the buyer agreeing a signing date after it.
+ */
+const CONCERN_ANSWERS: ReadonlySet<EventKind> = new Set(['buyer_contacted', 'buyer_withdrew', 'spa_appointment_set'])
+const answersConcern = (e: CaseEvent) => CONCERN_ANSWERS.has(e.kind)
+
+/**
+ * What settles a valuation shortfall: a fresh submission, any approval, or the
+ * short bank's own rejection. Another bank turning the buyer down leaves this
+ * bank's funding gap where it was.
+ */
+const settlesShortfall = (e: CaseEvent, shortfall: CaseEvent) =>
+  e.kind === 'loan_submitted' ||
+  e.kind === 'loan_approved' ||
+  (e.kind === 'loan_rejected' && e.applicationId === shortfall.applicationId)
 
 function deriveApplication(
   app: LoanApplication,
@@ -316,7 +382,9 @@ export function deriveCase(
     if (e.kind === 'loan_approved' && loIssuedOn === null) loIssuedOn = day
     if (e.kind === 'spa_appointment_set') {
       spaAppointmentSetOn = day
-      spaAppointmentOn = appointmentDay(e.note)
+      // A day before the booking is a typo, not an appointment: it counts as no day named.
+      const on = appointmentDay(e.note)
+      spaAppointmentOn = on !== null && on >= booking.bookingDate ? on : null
     }
     if ((e.kind === 'cancelled' || e.kind === 'lapsed') && terminal === null) {
       terminal = e.kind
@@ -331,6 +399,8 @@ export function deriveCase(
   const withdrewOn = lastDayOf(confirmed, 'buyer_withdrew')
   const lastSubmittedOn = lastDayOf(confirmed, 'loan_submitted')
   const buyerWithdrew = withdrewOn !== null && (lastSubmittedOn === null || lastSubmittedOn <= withdrewOn)
+  const buyerConcern = unanswered(confirmed, 'buyer_hesitant', answersConcern)
+  const valuationShortfall = unanswered(confirmed, 'valuation_shortfall', settlesShortfall)
   const ledger = documentLedger(confirmed)
   const applicationFacts = applications.map((app) =>
     deriveApplication(app, confirmed, ledger, terminal !== null, withdrewOn)
@@ -357,6 +427,8 @@ export function deriveCase(
     exists,
     live,
     buyerWithdrew,
+    buyerConcern,
+    valuationShortfall,
     open,
     resolved,
     signedWithinHorizon,
@@ -394,6 +466,16 @@ export function summarizeCases(data: CaseDataInput, asOf: IsoDate, assumptions: 
       if (facts.daysSinceEvidence >= staleDays) {
         stallReasons.push(`No Update For ${facts.daysSinceEvidence} Days`)
       }
+      // A buyer's concern, a rejection that leaves no bank deciding and a
+      // valuation shortfall each need a person the same day, not after a week of
+      // silence: the update that records them is what resets that silence.
+      if (!facts.buyerWithdrew) {
+        if (facts.buyerConcern) stallReasons.push('Buyer Raised A Concern')
+        const rejected = facts.applications.some((a) => a.status === 'rejected')
+        const inPlay = facts.applications.some((a) => LIVE_OR_APPROVED.has(a.status))
+        if (rejected && !inPlay) stallReasons.push('Loan Rejected, No Bank Still Deciding')
+        if (facts.valuationShortfall) stallReasons.push('Valuation Shortfall Confirmed')
+      }
       for (const d of facts.outstandingDocuments) {
         if (d.sinceDays >= docStallDays) {
           stallReasons.push(`${DOCUMENT_LABELS[d.document]} Still Outstanding After ${d.sinceDays} Days`)
@@ -407,13 +489,22 @@ export function summarizeCases(data: CaseDataInput, asOf: IsoDate, assumptions: 
         }
       }
       // The legal waiting room: approved, unsigned, and either never scheduled
-      // or scheduled and left sitting. The latest appointment counts, and not
-      // before its own day: a reschedule restarts the wait, and one booked
-      // weeks ahead is not late until that day has passed.
+      // or scheduled and left sitting. The latest appointment counts, and from
+      // its own day, not the day it was recorded: a reschedule restarts the
+      // wait, one booked weeks ahead is not late until that day has passed, and
+      // one that passed unsigned is missed from the next working day. A routine
+      // note does not move it, and a buyer who withdrew has no signing to miss.
+      // An appointment whose note names no day falls back to the time since it
+      // was recorded.
       if (facts.stage === 'lo_issued') {
         if (daysSinceSpaSet !== null) {
-          const passed = facts.spaAppointmentOn === null || facts.spaAppointmentOn < asOf
-          if (passed && daysSinceSpaSet >= spaSignDays) {
+          const appointmentOn = facts.spaAppointmentOn
+          if (appointmentOn !== null) {
+            if (!facts.buyerWithdrew && workDaysBetween(appointmentOn, asOf) >= SPA_MISSED_AFTER_WORK_DAYS) {
+              const days = diffDays(appointmentOn, asOf)
+              stallReasons.push(`${SPA_APPOINTMENT_MISSED} ${days} ${days === 1 ? 'Day' : 'Days'} Ago`)
+            }
+          } else if (daysSinceSpaSet >= spaSignDays) {
             stallReasons.push(`SPA Set ${daysSinceSpaSet} Days Ago, Still Unsigned`)
           }
         } else if (daysSinceLoIssued !== null && daysSinceLoIssued >= spaScheduleDays) {
@@ -448,6 +539,8 @@ export function summarizeCases(data: CaseDataInput, asOf: IsoDate, assumptions: 
       applications: facts.applications.map((a) => ({ id: a.id, bank: a.bank, status: a.status })),
       outstandingDocuments: facts.outstandingDocuments.map((d) => d.document),
       buyerWithdrew: facts.buyerWithdrew,
+      buyerConcern: facts.buyerConcern,
+      valuationShortfall: facts.valuationShortfall,
       risk,
       stallReasons,
       openTasks: openTasks.get(booking.id) ?? 0

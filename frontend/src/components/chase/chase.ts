@@ -4,7 +4,19 @@
  * for a booking. Kept component-free so cards and tests share them.
  */
 import type { LucideIcon } from 'lucide-react'
-import { CalendarCheck, Clock, Eye, FileSignature, FileText, FileWarning, Landmark, Phone, Scale } from 'lucide-react'
+import {
+  Calculator,
+  CalendarCheck,
+  Clock,
+  Eye,
+  FileSignature,
+  FileText,
+  FileWarning,
+  Landmark,
+  Phone,
+  Scale,
+  UserRound
+} from 'lucide-react'
 import type { Booking, DocumentKind, NextAction, NextActionSuggestion, OwnerRole } from '@mortar/core'
 import { profileForPersona } from '@mortar/core'
 import { OWNER_ROLE_LABELS } from '@/components/case'
@@ -22,6 +34,7 @@ export const NEXT_ACTION_LABELS: Record<NextAction, string> = {
   request_document: 'Ask For The Missing Document',
   chase_banker: 'Call The Banker',
   submit_another_bank: 'Submit To Another Bank',
+  review_financing: 'Hold A Financing Review',
   call_buyer: 'Call The Buyer',
   schedule_spa: 'Book The SPA Signing',
   escalate_legal: 'Ask The Solicitor For A Date',
@@ -109,6 +122,8 @@ export function taskTitle(action: NextAction, booking: Booking, document?: Docum
       return `Call The Banker About ${booking.unit}`
     case 'submit_another_bank':
       return `Submit ${buyer} To Another Bank`
+    case 'review_financing':
+      return `Hold A Financing Review For ${buyer}`
     case 'call_buyer':
       return `Call ${buyer}`
     case 'schedule_spa':
@@ -135,6 +150,7 @@ export const NEXT_ACTION_ICONS: Record<NextAction, LucideIcon> = {
   request_document: FileText,
   chase_banker: Landmark,
   submit_another_bank: Landmark,
+  review_financing: Calculator,
   call_buyer: Phone,
   schedule_spa: CalendarCheck,
   escalate_legal: Scale,
@@ -148,14 +164,17 @@ export function actionIcon(action: NextAction): LucideIcon {
 
 /**
  * Glyph for the blocker sentence, picked from what is actually blocking:
- * an outstanding document, a bank that has not moved, an SPA that has not been
- * scheduled or signed, otherwise elapsed time.
+ * a buyer's concern, an outstanding document, a bank that has not moved or a
+ * financing problem, an SPA that has not been scheduled or signed, otherwise
+ * elapsed time.
  */
 export function blockerIcon(stallReasons: readonly string[], document?: DocumentKind): LucideIcon {
-  if (document) return FileWarning
   const text = stallReasons.join(' ').toLowerCase()
+  if (text.includes('concern')) return UserRound
+  if (document) return FileWarning
   if (text.includes('document') || text.includes('payslip') || text.includes('outstanding')) return FileWarning
-  if (text.includes('bank') || text.includes('application') || text.includes('undecided')) return Landmark
+  if (text.includes('bank') || text.includes('application') || text.includes('undecided') || text.includes('valuation'))
+    return Landmark
   if (text.includes('spa') || text.includes('appointment')) return FileSignature
   return Clock
 }

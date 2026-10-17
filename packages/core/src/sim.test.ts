@@ -97,7 +97,7 @@ describe('generate', () => {
     expect(owned('Farah Izzati')).toBe(71)
   })
 
-  it('seeds three overdue Today cards per Sales Admin and keeps the Manager queue stable', () => {
+  it('seeds overdue Today cards for each Sales Admin and keeps the Manager queue stable', () => {
     const dataset = withStories(DEFAULT_SEED)
     const seededSnapshot: Snapshot = {
       meta: { seed: DEFAULT_SEED, referenceDate: REFERENCE_DATE, resetAt: null },
@@ -114,8 +114,9 @@ describe('generate', () => {
     const team = teamSummary(seededSnapshot, summaries)
 
     const expected = {
-      'Nurul Aina': { todayCards: 21, overdueToday: 3 },
-      'Farah Izzati': { todayCards: 9, overdueToday: 3 }
+      // Buyer concerns are the sales desk's calls; rejections are the loan desk's financing reviews (#75).
+      'Nurul Aina': { todayCards: 21, overdueToday: 4, teamOverdue: 2 },
+      'Farah Izzati': { todayCards: 10, overdueToday: 2, teamOverdue: 1 }
     }
 
     for (const [name, counts] of Object.entries(expected)) {
@@ -133,7 +134,7 @@ describe('generate', () => {
 
       expect(todayCards).toHaveLength(counts.todayCards)
       expect(overdueToday).toHaveLength(counts.overdueToday)
-      expect(team.rows.find((row) => row.name === name)?.overdue).toBe(1)
+      expect(team.rows.find((row) => row.name === name)?.overdue).toBe(counts.teamOverdue)
     }
 
     expect(managerSuggestions(seededSnapshot)).toHaveLength(10)

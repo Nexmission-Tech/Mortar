@@ -51,6 +51,8 @@ function summary(overrides: Partial<CaseSummary> = {}): CaseSummary {
     applications: [],
     outstandingDocuments: [],
     buyerWithdrew: false,
+    buyerConcern: false,
+    valuationShortfall: false,
     risk: RISK,
     stallReasons: [],
     openTasks: 0,

@@ -60,6 +60,7 @@ export const NEXT_ACTION_LABELS: Record<NextAction, string> = {
   request_document: 'Request Document',
   chase_banker: 'Chase Banker',
   submit_another_bank: 'Submit Another Bank',
+  review_financing: 'Financing Review',
   call_buyer: 'Call Buyer',
   schedule_spa: 'Schedule SPA',
   escalate_legal: 'Escalate Legal',

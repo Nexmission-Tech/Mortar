@@ -48,6 +48,8 @@ const AWAITING_DOCUMENTS: CaseSummary = {
   applications: [{ id: 'APP-TEST-1', bank: 'Test Bank', status: 'documents_pending' }],
   outstandingDocuments: ['payslip'],
   buyerWithdrew: false,
+  buyerConcern: false,
+  valuationShortfall: false,
   risk: RISK,
   stallReasons: [],
   openTasks: 0

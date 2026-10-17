@@ -46,6 +46,8 @@ function summary(overrides: Partial<CaseSummary> = {}): CaseSummary {
     applications: [],
     outstandingDocuments: [],
     buyerWithdrew: false,
+    buyerConcern: false,
+    valuationShortfall: false,
     risk: RISK,
     stallReasons: ['Bank Has Not Decided After 9 Working Days'],
     openTasks: 0,
