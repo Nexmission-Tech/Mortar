@@ -171,14 +171,15 @@ still decides the loan."
 
 **Say:** "Adoption starts small, and your launch queue does not change. Keep
 taking bookings through your existing process. Admins import them into Mortar
-once the sheet's required fields are there; Mortar never blocks a booking, and
-the financing-risk flag only advises follow-up. Day one, upload the booking
-sheet: seven columns, matched loosely to whatever exports it today. Each desk
-opens its own queue, and bankers and lawyers change nothing because staff paste
-their messages in. Then twelve weeks on one project with one Sales Admin: a
-baseline, one admin, a live cohort beside ordinary follow-up, and an audit with
-Legal. One number judges it: the 30-day verified SPA rate, with cancellations
-kept in the count."
+once the sheet's required fields are there. A row missing one, like gross
+monthly income, is held back until it is filled in. Mortar never stops you
+taking a booking, and the financing-risk flag only advises follow-up. Day one,
+upload the booking sheet: seven columns, matched loosely to whatever exports it
+today. Each desk opens its own queue, and bankers and lawyers change nothing
+because staff paste their messages in. Then twelve weeks on one project with one
+Sales Admin: a baseline, one admin, a live cohort beside ordinary follow-up, and
+an audit with Legal. One number judges it: the 30-day verified SPA rate, with
+cancellations kept in the count."
 
 **Show, Once:** switch to the app as Nurul Aina and open **Add Bookings**. It
 opens on **Upload A Sheet**; point at **What The Sheet Needs**, including gross
@@ -186,7 +187,7 @@ monthly income, then switch back. **Demo Entry**, the other tab, fills in
 made-up buyer details and is for demos only.
 
 **Land:** inside the brief's rules: no new CRM, no consultant, no vendor, and no
-gate in front of a booking.
+gate in front of taking a booking.
 
 ### 10. Technology Second — B, 1 Minute
 
