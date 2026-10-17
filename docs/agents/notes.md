@@ -225,9 +225,11 @@ clean recording seed.
   bank or solicitor work keeps it meanwhile. A later Buyer Contacted, withdrawal
   or SPA appointment answers a concern; a submission, any approval or that
   bank's own rejection settles a shortfall. A receipt not for one bank clears no
-  bank's request (`documentLedger`); with two banks deciding, a receipt must
-  name one, and once none is deciding the form and Mortar AI put it on the
-  approving bank.
+  bank's request while two or more banks are deciding at its time
+  (`documentLedger`); with fewer it clears the matching bank requests, as
+  receipts saved before #75 expect. With two banks deciding, a receipt must name
+  one, and once none is deciding the form and Mortar AI put it on the approving
+  bank.
 - **Database Integration Tests Require `TEST_DATABASE_URL`.**
   `server/db/__tests__/integration.test.ts` reads
   `process.env.TEST_DATABASE_URL` and skips entirely when unset; it never reads

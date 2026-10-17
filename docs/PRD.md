@@ -314,11 +314,14 @@ without storing transient state in database tables.
 - **AC-2.4:** Outstanding documents must be computed as document kinds requested
   and not yet received (`payslip`, `epf_statement`, `bank_statement`, `ic_copy`,
   `employment_letter`, `tax_form`). A receipt clears only the requests of the
-  bank it names; a receipt not for one bank clears only requests that are not
-  for one bank, and restarts no bank's decision clock. While more than one bank
-  is deciding, Record An Update and `POST /api/events` require a receipt to name
-  its bank. Once no bank is deciding, Record An Update and Mortar AI's proposal
-  put a document update on the bank that approved, so its request can clear.
+  bank it names; while two or more banks are deciding, a receipt not for one
+  bank clears only requests that are not for one bank, and restarts no bank's
+  decision clock. With fewer deciding it is unambiguous, so it also clears the
+  matching requests banks made and restarts those banks' clocks. While more than
+  one bank is deciding, Record An Update and `POST /api/events` require a
+  receipt to name its bank. Once no bank is deciding, Record An Update and
+  Mortar AI's proposal put a document update on the bank that approved, so its
+  request can clear.
 - **AC-2.5:** A live booking with no confirmed event for 10 or more calendar
   days must be assigned `unknown: true`. The UI must display this booking as No
   Update 10+ Days, never as progressing or failed.

@@ -190,27 +190,45 @@ interface DocumentLedger {
  * - one bank, all outstanding: every request that bank made, and nothing else;
  * - not for one bank, one document: that document's request not for one bank;
  * - not for one bank, all outstanding: every request not for one bank.
- * "The buyer gave it to us" is not "each bank has it": a receipt not for one
- * bank never clears a bank's own request, and a named receipt never clears an
- * unnamed request. Documents reach a bank only with a receipt for that bank.
+ * "The buyer gave it to us" is not "each bank has it": with two or more banks
+ * deciding, a receipt not for one bank never clears a bank's own request. With
+ * fewer it is unambiguous (the server takes it only then), so it also clears
+ * the matching requests banks made, as receipts saved before #75 expect, and
+ * the documents reach those banks. A named receipt never clears an unnamed request.
  */
 function documentLedger(events: CaseEvent[]): DocumentLedger {
   const open = new Map<string, OpenRequest>()
   const receivedOn = new Map<string, IsoDate>()
+  // Who is deciding when each receipt lands, read as deriveApplication reads it.
+  const submittedOn = new Map<string, IsoDate>()
+  const decided = new Set<string>()
+  let withdrewOn: IsoDate | null = null
   for (const e of events) {
     const day = dateOf(e.occurredAt)
-    if (e.kind === 'documents_requested') {
+    if (e.kind === 'loan_submitted' && e.applicationId !== null) {
+      if (!submittedOn.has(e.applicationId)) submittedOn.set(e.applicationId, day)
+    } else if ((e.kind === 'loan_approved' || e.kind === 'loan_rejected') && e.applicationId !== null) {
+      decided.add(e.applicationId)
+    } else if (e.kind === 'buyer_withdrew') {
+      withdrewOn = day
+    } else if (e.kind === 'documents_requested') {
       const key = `${e.applicationId ?? ''}|${e.document ?? ''}`
       if (!open.has(key)) open.set(key, { applicationId: e.applicationId, document: e.document, since: day })
     } else if (e.kind === 'documents_received') {
       if (e.applicationId !== null) receivedOn.set(e.applicationId, day)
+      const deciding = [...submittedOn].filter(
+        ([id, on]) => !decided.has(id) && (withdrewOn === null || on > withdrewOn)
+      )
+      const unambiguous = deciding.length < 2
       for (const [key, r] of open) {
         const sameDocument = e.document === null || r.document === e.document
         const sameBank =
           e.applicationId === null
-            ? r.applicationId === null
+            ? r.applicationId === null || unambiguous
             : r.applicationId === e.applicationId || (r.applicationId === null && e.document !== null)
-        if (sameDocument && sameBank) open.delete(key)
+        if (!sameDocument || !sameBank) continue
+        open.delete(key)
+        if (e.applicationId === null && r.applicationId !== null) receivedOn.set(r.applicationId, day)
       }
     }
   }

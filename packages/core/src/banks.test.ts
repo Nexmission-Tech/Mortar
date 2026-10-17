@@ -370,20 +370,57 @@ describe('a financing problem or a buyer concern', () => {
 
 describe('one document ledger for the case and each bank', () => {
   // Issue #75: "the buyer gave it to us" is not "each bank has it".
-  it('leaves a bank’s request open, and its clock stopped, with a receipt recorded not for one bank', () => {
+  // With one bank deciding, a receipt not for one bank can only be for it.
+  it('clears the one deciding bank’s request with a receipt not for one bank, restarting its clock', () => {
+    const events = [
+      booked,
+      submitted(A, '2026-08-27'),
+      requested(A, 'payslip', '2026-08-28'),
+      received(null, 'payslip', '2026-09-16')
+    ]
+    const s = summarize([A], events)
+    expect(statuses(s)).toEqual(['Apex Bank: submitted'])
+    expect(s.outstandingDocuments).toEqual([])
+    expect(bankStalls(s)).toEqual([])
+    expect(ballInCourt(s)).toMatchObject({ holder: 'bank', waitingFor: 'Apex Bank To Decide On The Loan' })
+    expect(deriveCase(b, [A], events, REFERENCE_DATE).applications[0].pendingSince).toBe('2026-09-16')
+  })
+
+  // Receipts saved with no bank once none was deciding, as the form and Jev did before #75.
+  it('clears the approving bank’s request with a receipt not for one bank once no bank is deciding', () => {
     const s = summarize(
       [A],
       [
         booked,
         submitted(A, '2026-08-27'),
-        requested(A, 'payslip', '2026-08-28'),
-        received(null, 'payslip', '2026-09-02')
+        requested(A, 'payslip', '2026-09-03'),
+        approved(A, '2026-09-08'),
+        received(null, 'payslip', '2026-09-10')
       ]
     )
-    expect(statuses(s)).toEqual(['Apex Bank: documents_pending'])
+    expect(s.outstandingDocuments).toEqual([])
+    expect(documentStalls(s)).toEqual([])
+    expect(ballInCourt(s)).toMatchObject({ holder: 'solicitor', nextMove: 'schedule_spa' })
+    const access = canAccessBooking(b, profileFor('legal-admin')!, { summaries: [s], tasks: [] })
+    expect(access).toBe(true)
+  })
+
+  it('leaves both banks’ requests open after a receipt not for one bank sent while both were deciding', () => {
+    const s = summarize(
+      [A, B],
+      [
+        booked,
+        submitted(A, '2026-08-27'),
+        submitted(B, '2026-08-27'),
+        requested(A, 'payslip', '2026-08-28'),
+        requested(B, 'payslip', '2026-08-29'),
+        received(null, 'payslip', '2026-09-02'),
+        rejected(B, '2026-09-04')
+      ]
+    )
+    // Bumi's later rejection does not make the earlier receipt Apex's.
+    expect(statuses(s)).toEqual(['Apex Bank: documents_pending', 'Bumi Bank: rejected'])
     expect(s.outstandingDocuments).toEqual(['payslip'])
-    expect(bankStalls(s)).toEqual([])
-    expect(ballInCourt(s)).toMatchObject({ holder: 'buyer', waitingFor: 'Payslip From The Buyer' })
   })
 
   it('clears neither bank’s request with one receipt not for one bank', () => {

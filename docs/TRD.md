@@ -513,10 +513,13 @@ Rules governing summary derivation include:
   `documents_requested` event lacks a subsequent confirmed `documents_received`
   event for the same document kind and scope. A receipt for one bank clears that
   bank's request and an unscoped one; a receipt not for one bank clears only
-  unscoped requests and restarts no bank's decision clock (`documentLedger`).
-  `POST /api/events` refuses an unscoped receipt (409) while more than one bank
-  is deciding. Once no bank is deciding, Record An Update and
-  `proposalFromExtraction` put a document update on the approving bank.
+  unscoped requests and restarts no bank's decision clock (`documentLedger`)
+  while two or more banks are deciding at its `occurredAt`. With fewer it also
+  clears the matching bank requests and restarts those banks' clocks, so
+  unscoped receipts saved before #75 still clear. `POST /api/events` refuses an
+  unscoped receipt (409) while more than one bank is deciding. Once no bank is
+  deciding, Record An Update and `proposalFromExtraction` put a document update
+  on the approving bank.
 - **Unanswered Concern And Shortfall:** `buyerConcern` is a confirmed
   `buyer_hesitant` with no later `buyer_contacted`, `buyer_withdrew` or
   `spa_appointment_set`; `valuationShortfall` is a confirmed
