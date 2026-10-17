@@ -22,6 +22,7 @@ import {
   OpenApplicationError,
   UnitHeldError,
   TaskAssignmentChangedError,
+  TaskClosedError,
   createDatabase
 } from '../index'
 import { addDemoData, applySchema, deleteDemoData } from '../reset'
@@ -110,12 +111,21 @@ describe.skipIf(!TEST_DATABASE_URL)('database integration', () => {
     try {
       const ordinary = await db.insertTask({ ...task, managerFlaggedBy: null })
       const [first, duplicate] = await Promise.all([
-        db.flagManagerTask({ ...task, id: 'W2TEST-FLAG-2', title: 'Flag existing ordinary task' }),
+        db.flagManagerTask({
+          ...task,
+          id: 'W2TEST-FLAG-2',
+          title: 'Flag existing ordinary task',
+          createdAt: '2026-09-18T12:30:00+08:00'
+        }),
         db.insertTask({ ...task, id: 'W2TEST-FLAG-3', managerFlaggedBy: null })
       ])
       expect(first.id).toBe(ordinary.id)
       expect(duplicate.id).toBe(first.id)
       expect(first.managerFlaggedBy).toBe('Robert Khoo')
+      // The reused task keeps its own creation time; the flag carries when the Manager sent it.
+      expect(ordinary.managerFlaggedAt).toBeNull()
+      expect(first.createdAt).toBe(ordinary.createdAt)
+      expect(first.managerFlaggedAt).toBe('2026-09-18T12:30:00+08:00')
       await db.updateTaskStatus(first.id, 'done', '2026-09-18T13:00:00+08:00')
       expect((await db.snapshot()).tasks.find((candidate) => candidate.id === first.id)?.managerFlaggedBy).toBe(
         'Robert Khoo'
@@ -382,6 +392,76 @@ describe.skipIf(!TEST_DATABASE_URL)('database integration', () => {
     const done = await db.updateTaskStatus('W2TEST-TSK', 'done', '2026-09-18T12:00:00+08:00')
     expect(done?.completedAt).toBe('2026-09-18T12:00:00+08:00')
     expect(await db.updateTaskStatus('W2TEST-NONE', 'done', null)).toBeNull()
+  })
+
+  // Issue #75: the close-out's result and its follow-up land together.
+  test('updateTaskStatus closes a task out with its result and raises the follow-up in one write', async () => {
+    const task = {
+      id: 'W2TEST-TSK-CLOSE',
+      bookingId: 'W2TEST-BK',
+      action: 'chase_banker',
+      title: 'Call The Banker',
+      ownerRole: 'loan_admin',
+      ownerName: 'Tan Mei Ling',
+      dueOn: '2026-09-18',
+      status: 'open',
+      origin: 'staff',
+      createdAt: '2026-09-18T09:00:00+08:00',
+      completedAt: null
+    } as const
+    await db.insertTask(task)
+    const closed = await db.updateTaskStatus(task.id, 'done', '2026-09-18T12:00:00+08:00', 'No answer, try Tuesday', {
+      ...task,
+      id: 'W2TEST-TSK-NEXT',
+      dueOn: '2026-09-22',
+      createdAt: '2026-09-18T12:00:00+08:00',
+      managerFlaggedBy: null
+    })
+    expect(closed).toMatchObject({ status: 'done', result: 'No answer, try Tuesday' })
+    const next = (await db.snapshot()).tasks.find((t) => t.id === 'W2TEST-TSK-NEXT')
+    expect(next).toMatchObject({ status: 'open', dueOn: '2026-09-22', ownerName: 'Tan Mei Ling', result: null })
+  })
+
+  // Issue #75: two close-outs at once must not both land; the first result stands.
+  test('updateTaskStatus closes a task out once, even when two close-outs race', async () => {
+    const task = {
+      id: 'W2TEST-TSK-RACE',
+      bookingId: 'W2TEST-BK',
+      action: 'chase_banker',
+      title: 'Call The Banker',
+      ownerRole: 'loan_admin',
+      ownerName: 'Lim Siew Wen',
+      dueOn: '2026-09-18',
+      status: 'open',
+      origin: 'staff',
+      createdAt: '2026-09-18T09:00:00+08:00',
+      completedAt: null
+    } as const
+    // Its own owner, so the insert is not folded into the open follow-up above.
+    expect((await db.insertTask(task)).id).toBe(task.id)
+    const closeOut = (result: string, dueOn: string) =>
+      db.updateTaskStatus(task.id, 'done', '2026-09-18T12:00:00+08:00', result, {
+        ...task,
+        id: `W2TEST-TSK-RACE-${dueOn}`,
+        dueOn,
+        createdAt: '2026-09-18T12:00:00+08:00',
+        managerFlaggedBy: null
+      })
+    const outcomes = await Promise.allSettled([
+      closeOut('No answer, try Tuesday', '2026-09-22'),
+      closeOut('Buyer confirmed', '2026-09-23')
+    ])
+    const landed = outcomes.flatMap((o) => (o.status === 'fulfilled' ? [o.value] : []))
+    const refused = outcomes.flatMap((o) => (o.status === 'rejected' ? [o.reason] : []))
+    expect(landed).toHaveLength(1)
+    expect(refused).toHaveLength(1)
+    expect(refused[0]).toBeInstanceOf(TaskClosedError)
+    const tasks = (await db.snapshot()).tasks
+    expect(tasks.find((t) => t.id === task.id)?.result).toBe(landed[0]?.result)
+    expect(tasks.filter((t) => t.id.startsWith('W2TEST-TSK-RACE-'))).toHaveLength(1)
+
+    await expect(closeOut('Banker approved', '2026-09-24')).rejects.toBeInstanceOf(TaskClosedError)
+    expect((await db.snapshot()).tasks.find((t) => t.id === task.id)?.result).toBe(landed[0]?.result)
   })
 
   test('jevGet serves the exact hash then the latest for the subject as stale', async () => {

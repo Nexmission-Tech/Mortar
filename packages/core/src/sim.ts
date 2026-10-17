@@ -27,6 +27,7 @@ export { DEFAULT_SEED, REFERENCE_DATE, HORIZON_DAYS, PERSONA_STAFF } from './sim
 export { PROJECT_NAME } from './sim/names'
 export { leakage } from './sim/leakage'
 export { byOccurred, SPA_APPOINTMENT_MISSED } from './sim/cases'
+export { addWorkDays } from './sim/dates'
 export { FUNNEL_STAGES } from './sim/cases'
 export type { Leakage, LeakageCause, RecoveryEstimate } from './sim/leakage'
 export { DEFAULT_ASSUMPTIONS }

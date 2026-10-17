@@ -422,6 +422,15 @@ The system must present stalled live bookings in an actionable queue on Today
   `dueOn`, `origin`), preventing conflicting duplicate tasks for multiple people
   on one booking. Marking a task complete via `PATCH /api/tasks/:id` must update
   status to `done` and record `completedAt`.
+- **AC-5.7:** Complete opens a close-out in place, in Your Tasks and the case's
+  Tasks view: one line on what happened (`result`, required), then either
+  Recorded An Update or a next date (`followUpOn`, today or later). A next date
+  closes the task and raises the same task again on the same desk for that day,
+  so the booking stays on Today; it defaults to two working days on. A task
+  closes out once: a second close-out is refused. A Manager's follow-up never
+  reads Answered from a closed task: it stands, "Closed, No Update Yet" with its
+  result, until a confirmed update recorded after the Manager sent it, before or
+  after the close-out.
 
 ### FR-6: TypeSafe Jev Structured Message Extraction
 

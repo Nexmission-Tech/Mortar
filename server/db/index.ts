@@ -142,7 +142,20 @@ export interface Database {
   canUndoImport(id: string, profile: StaffProfile): Promise<boolean>
   /** Removes a single untouched booking and records its minimal retention trace. */
   deleteBooking(id: string, removedBy: string, removedAt: IsoDateTime): Promise<boolean>
-  updateTaskStatus(id: string, status: Task['status'], completedAt: IsoDateTime | null): Promise<Task | null>
+  /**
+   * Sets a task's status and completion time, and the close-out's one-line
+   * `result` (cleared unless given). With `followUp`, raises that open task in
+   * the same transaction, deduplicated as `insertTask` does. A close-out (a
+   * `result` or `followUp`) writes only while the task is still open, and
+   * throws `TaskClosedError` when it no longer is.
+   */
+  updateTaskStatus(
+    id: string,
+    status: Task['status'],
+    completedAt: IsoDateTime | null,
+    result?: string | null,
+    followUp?: Task | null
+  ): Promise<Task | null>
   /** Latest `jev_answers` rows for `extract`, `next_action` and `signals`, for the snapshot. */
   latestJevAnswers(): Promise<JevAnswerRow[]>
   /** Total stored `jev_answers` rows — the real count behind the settings figure. */
@@ -200,6 +213,13 @@ export class BookingMovedOnError extends Error {
 export class TaskAssignmentChangedError extends Error {
   constructor() {
     super('Case responsibility changed. Refresh the case before sending this follow-up.')
+  }
+}
+
+/** A close-out reached a task that is no longer open, so it keeps the first one. */
+export class TaskClosedError extends Error {
+  constructor() {
+    super('This task is already closed. Refresh to see its close-out.')
   }
 }
 
@@ -451,6 +471,67 @@ export function createDatabase(sql: SQL, clock: () => Date = () => new Date()): 
   }
   const snapshots = cacheSnapshot(assembleSnapshot, SNAPSHOT_TTL_MS)
 
+  /**
+   * Writes one open task inside `tx`, serialised per booking, action and owner,
+   * or returns the open task it would duplicate. A manager flag is checked
+   * against the case first and marks the duplicate instead; see `flagManagerTask`.
+   */
+  const writeTask = async (tx: SQL, task: Task): Promise<Task> => {
+    const roleKey = task.ownerRole === 'sales' ? 'sales_admin' : task.ownerRole
+    await tx`select pg_advisory_xact_lock(20260927, hashtext(${`${task.bookingId}:${task.action}:${roleKey}:${task.ownerName}`}))`
+    if (task.managerFlaggedBy) {
+      const rows = await tx`select * from bookings where id = ${task.bookingId} for update`
+      if (!rows.length) throw new TaskAssignmentChangedError()
+      const booking = rowToBooking(rows[0])
+      const applications = (await tx`select * from loan_applications where booking_id = ${task.bookingId}`).map(
+        rowToApplication
+      )
+      const events = (await tx`select * from events where booking_id = ${task.bookingId} order by seq`).map(rowToEvent)
+      const summary = summarizeCases({ bookings: [booking], applications, events, tasks: [] }, REFERENCE_DATE)[0]
+      const recipient = summary ? currentCaseAssignee(booking, summary) : null
+      const expectedRole =
+        recipient?.persona === 'legal-admin'
+          ? 'legal'
+          : recipient?.persona === 'loan-admin'
+            ? 'loan_admin'
+            : 'sales_admin'
+      if (
+        !recipient ||
+        recipient.name !== task.ownerName ||
+        expectedRole !== roleKey ||
+        ballInCourt(summary).nextMove !== task.action
+      )
+        throw new TaskAssignmentChangedError()
+    }
+    const existing = await tx`select * from tasks where booking_id = ${task.bookingId}
+      and action = ${task.action} and (owner_role = ${task.ownerRole} or (${roleKey === 'sales_admin'} and owner_role in ('sales', 'sales_admin')))
+      and owner_name = ${task.ownerName} and status = 'open' order by created_at, id limit 1 for update`
+    if (existing.length) {
+      if (!task.managerFlaggedBy || existing[0].manager_flagged_by) return rowToTask(existing[0]!)
+      // The reused task keeps its own created_at; the flag's time is when the Manager sent it.
+      const updated = await tx`update tasks set manager_flagged_by = ${task.managerFlaggedBy},
+        manager_flagged_at = ${task.createdAt}, due_on = least(due_on, ${task.dueOn}::date)
+        where id = ${existing[0].id} returning *`
+      return rowToTask(updated[0]!)
+    }
+    const rows = await tx`insert into tasks ${tx({
+      id: task.id,
+      booking_id: task.bookingId,
+      action: task.action,
+      title: task.title,
+      owner_role: task.ownerRole,
+      owner_name: task.ownerName,
+      due_on: task.dueOn,
+      status: task.status,
+      origin: task.origin,
+      created_at: task.createdAt,
+      completed_at: task.completedAt,
+      manager_flagged_by: task.managerFlaggedBy ?? null,
+      manager_flagged_at: task.managerFlaggedBy ? task.createdAt : null
+    })} returning *`
+    return rowToTask(rows[0]!)
+  }
+
   const database: Database = {
     async ping() {
       await sql`select 1`
@@ -612,60 +693,7 @@ export function createDatabase(sql: SQL, clock: () => Date = () => new Date()): 
     },
 
     async flagManagerTask(task) {
-      return sql.begin(async (tx) => {
-        const roleKey = task.ownerRole === 'sales' ? 'sales_admin' : task.ownerRole
-        await tx`select pg_advisory_xact_lock(20260927, hashtext(${`${task.bookingId}:${task.action}:${roleKey}:${task.ownerName}`}))`
-        if (task.managerFlaggedBy) {
-          const rows = await tx`select * from bookings where id = ${task.bookingId} for update`
-          if (!rows.length) throw new TaskAssignmentChangedError()
-          const booking = rowToBooking(rows[0])
-          const applications = (await tx`select * from loan_applications where booking_id = ${task.bookingId}`).map(
-            rowToApplication
-          )
-          const events = (await tx`select * from events where booking_id = ${task.bookingId} order by seq`).map(
-            rowToEvent
-          )
-          const summary = summarizeCases({ bookings: [booking], applications, events, tasks: [] }, REFERENCE_DATE)[0]
-          const recipient = summary ? currentCaseAssignee(booking, summary) : null
-          const expectedRole =
-            recipient?.persona === 'legal-admin'
-              ? 'legal'
-              : recipient?.persona === 'loan-admin'
-                ? 'loan_admin'
-                : 'sales_admin'
-          if (
-            !recipient ||
-            recipient.name !== task.ownerName ||
-            expectedRole !== roleKey ||
-            ballInCourt(summary).nextMove !== task.action
-          )
-            throw new TaskAssignmentChangedError()
-        }
-        const existing = await tx`select * from tasks where booking_id = ${task.bookingId}
-          and action = ${task.action} and (owner_role = ${task.ownerRole} or (${roleKey === 'sales_admin'} and owner_role in ('sales', 'sales_admin')))
-          and owner_name = ${task.ownerName} and status = 'open' order by created_at, id limit 1 for update`
-        if (existing.length) {
-          if (!task.managerFlaggedBy || existing[0].manager_flagged_by) return rowToTask(existing[0]!)
-          const updated = await tx`update tasks set manager_flagged_by = ${task.managerFlaggedBy},
-            due_on = least(due_on, ${task.dueOn}::date) where id = ${existing[0].id} returning *`
-          return rowToTask(updated[0]!)
-        }
-        const rows = await tx`insert into tasks ${tx({
-          id: task.id,
-          booking_id: task.bookingId,
-          action: task.action,
-          title: task.title,
-          owner_role: task.ownerRole,
-          owner_name: task.ownerName,
-          due_on: task.dueOn,
-          status: task.status,
-          origin: task.origin,
-          created_at: task.createdAt,
-          completed_at: task.completedAt,
-          manager_flagged_by: task.managerFlaggedBy ?? null
-        })} returning *`
-        return rowToTask(rows[0]!)
-      })
+      return sql.begin((tx) => writeTask(tx, task))
     },
 
     async importBookings(batch, drafts, bookedEvent) {
@@ -832,10 +860,23 @@ export function createDatabase(sql: SQL, clock: () => Date = () => new Date()): 
       })
     },
 
-    async updateTaskStatus(id, status, completedAt) {
-      const rows = await sql`update tasks set status = ${status}, completed_at = ${completedAt}
-        where id = ${id} returning *`
-      return rows.length ? rowToTask(rows[0]) : null
+    async updateTaskStatus(id, status, completedAt, result = null, followUp = null) {
+      const closeOut = result != null || followUp != null
+      return sql.begin(async (tx) => {
+        // The open check sits in the update itself: a second close-out waits
+        // on the first one's row lock, then finds the task closed and changes
+        // nothing, so the first result and its one follow-up stand.
+        const rows = await tx`update tasks set status = ${status}, completed_at = ${completedAt}, result = ${result}
+          where id = ${id} and (${!closeOut} or status = 'open') returning *`
+        if (!rows.length) {
+          if (closeOut && (await tx`select 1 from tasks where id = ${id}`).length) throw new TaskClosedError()
+          return null
+        }
+        // The follow-up lands with the close-out or not at all, so a failed
+        // write never leaves a closed task with no next date.
+        if (followUp) await writeTask(tx, followUp)
+        return rowToTask(rows[0])
+      })
     },
 
     async jevGet(kind, subjectId, inputHash) {

@@ -80,6 +80,7 @@ import {
   EventSettledError,
   ImportMovedOnError,
   OpenApplicationError,
+  TaskClosedError,
   UnitHeldError,
   type Database,
   type ImportBatch
@@ -306,11 +307,15 @@ class FakeDb implements Database {
         candidate.ownerName === task.ownerName
     )
     if (existing) {
-      existing.managerFlaggedBy ??= task.managerFlaggedBy
+      if (!existing.managerFlaggedBy && task.managerFlaggedBy) {
+        existing.managerFlaggedBy = task.managerFlaggedBy
+        existing.managerFlaggedAt = task.createdAt
+      }
       return existing
     }
-    this.tasks.push(task)
-    return task
+    const stored = { ...task, managerFlaggedAt: task.managerFlaggedBy ? task.createdAt : null }
+    this.tasks.push(stored)
+    return stored
   }
   imports = new Map<string, { ids: string[]; undoneBy: string | null; undoneAt: string | null }>()
   removals: { id: string; removedBy: string; removedAt: string }[] = []
@@ -376,9 +381,22 @@ class FakeDb implements Database {
     this.events = this.events.filter((e) => e.bookingId !== id)
     return true
   }
-  async updateTaskStatus(id: string, status: Task['status'], completedAt: string | null) {
-    const task = this.tasks.find((t) => t.id === id)
-    return task ? { ...task, status, completedAt } : null
+  async updateTaskStatus(
+    id: string,
+    status: Task['status'],
+    completedAt: string | null,
+    result: string | null = null,
+    followUp: Task | null = null
+  ) {
+    const index = this.tasks.findIndex((t) => t.id === id)
+    if (index < 0) return null
+    // Mirrors the update's open guard: a close-out never lands on a closed task.
+    if ((result != null || followUp != null) && this.tasks[index]!.status !== 'open') throw new TaskClosedError()
+    // A new object, so a fixture task pushed by reference is never changed under another test.
+    const task = { ...this.tasks[index]!, status, completedAt, result }
+    this.tasks[index] = task
+    if (followUp) await this.insertTask(followUp)
+    return task
   }
   async latestJevAnswers(): Promise<JevAnswerRow[]> {
     return []
@@ -2045,6 +2063,103 @@ describe('createApp', () => {
       const task = (await res?.json()) as Task
       expect(task.status).toBe('done')
       expect(task.completedAt).toBe('2026-09-18T12:00:00+08:00')
+      expect(task.result).toBeNull()
+    })
+
+    // Issue #75: "called the banker, no answer" and "banker confirmed approval" must not look identical.
+    test('a close-out records what happened and raises a dated follow-up on the same desk', async () => {
+      const db = new FakeDb()
+      db.tasks.push({ ...open, action: 'chase_banker', title: 'Call The Banker About A-12-03' })
+      const res = await call(makeApp(db), '/api/tasks/TSK-1', {
+        method: 'PATCH',
+        body: JSON.stringify({ status: 'done', result: ' No answer, try Tuesday ', followUpOn: '2026-09-22' })
+      })
+      expect(res?.status).toBe(200)
+      expect(((await res?.json()) as Task).result).toBe('No answer, try Tuesday')
+      expect(db.tasks).toHaveLength(2)
+      expect(db.tasks[1]).toMatchObject({
+        bookingId: 'BK-9001',
+        action: 'chase_banker',
+        title: 'Call The Banker About A-12-03',
+        ownerRole: 'sales',
+        ownerName: 'Nurul Aina',
+        dueOn: '2026-09-22',
+        status: 'open',
+        origin: 'staff',
+        managerFlaggedBy: null
+      })
+    })
+
+    test('closes out without a follow-up when the update was recorded', async () => {
+      const db = new FakeDb()
+      db.tasks.push(open)
+      const res = await call(makeApp(db), '/api/tasks/TSK-1', {
+        method: 'PATCH',
+        body: JSON.stringify({ status: 'done', result: 'Buyer confirmed, update recorded' })
+      })
+      expect(res?.status).toBe(200)
+      expect(db.tasks).toHaveLength(1)
+      expect(db.tasks[0]?.result).toBe('Buyer confirmed, update recorded')
+    })
+
+    test('closes a task out once: a second close-out is refused and a repeated done keeps the first', async () => {
+      const db = new FakeDb()
+      const closed = { ...open, status: 'done', completedAt: '2026-09-18T10:00:00+08:00', result: 'No answer' } as const
+      db.tasks.push(closed)
+      const again = await call(makeApp(db), '/api/tasks/TSK-1', {
+        method: 'PATCH',
+        body: JSON.stringify({ status: 'done', result: 'No answer again', followUpOn: '2026-09-22' })
+      })
+      expect(again?.status).toBe(409)
+      expect(db.tasks).toEqual([closed])
+
+      const repeated = await call(makeApp(db), '/api/tasks/TSK-1', {
+        method: 'PATCH',
+        body: JSON.stringify({ status: 'done' })
+      })
+      expect(repeated?.status).toBe(200)
+      expect(await repeated?.json()).toEqual(closed)
+      expect(db.tasks).toEqual([closed])
+    })
+
+    // Two close-outs at once both read the task open; the write must still refuse the second.
+    test('a close-out that read the task open before another closed it is refused and keeps the first', async () => {
+      const db = new FakeDb()
+      db.tasks.push(open)
+      const staleRead = await db.snapshot()
+      db.snapshot = async () => ({ ...staleRead, tasks: [open] })
+      const app = makeApp(db)
+      const first = await call(app, '/api/tasks/TSK-1', {
+        method: 'PATCH',
+        body: JSON.stringify({ status: 'done', result: 'No answer, try Tuesday', followUpOn: '2026-09-22' })
+      })
+      expect(first?.status).toBe(200)
+      const second = await call(app, '/api/tasks/TSK-1', {
+        method: 'PATCH',
+        body: JSON.stringify({ status: 'done', result: 'Buyer confirmed', followUpOn: '2026-09-23' })
+      })
+      expect(second?.status).toBe(409)
+      expect(await errorOf(second)).toContain('already closed')
+      expect(db.tasks).toHaveLength(2)
+      expect(db.tasks[0]).toMatchObject({ status: 'done', result: 'No answer, try Tuesday' })
+      expect(db.tasks[1]?.dueOn).toBe('2026-09-22')
+    })
+
+    test.each([
+      [{ status: 'open', result: 'Reopened' }, 'need status done'],
+      [{ status: 'cancelled', followUpOn: '2026-09-22' }, 'need status done'],
+      [{ status: 'done', result: '   ' }, 'result must be'],
+      [{ status: 'done', result: 'x'.repeat(301) }, 'result'],
+      [{ status: 'done', followUpOn: '22/09/2026' }, 'followUpOn must be'],
+      [{ status: 'done', followUpOn: '2026-09-17' }, 'cannot be before today']
+    ])('refuses a close-out it cannot keep: %j', async (patch, message) => {
+      const db = new FakeDb()
+      db.tasks.push(open)
+      const res = await call(makeApp(db), '/api/tasks/TSK-1', { method: 'PATCH', body: JSON.stringify(patch) })
+      expect(res?.status).toBe(400)
+      expect(await errorOf(res)).toContain(message)
+      expect(db.tasks).toHaveLength(1)
+      expect(db.tasks[0]?.status).toBe('open')
     })
 
     test('only the matching named department owner or a manager can change status', async () => {

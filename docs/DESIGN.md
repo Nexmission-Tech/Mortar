@@ -941,9 +941,16 @@ add a redundant Open Case footer link.
   and completion permissions, queue filters and in-flight work. Lists open in
   full with no Show More. There is no permanent rail.
 - **Supporting Work:** Retain task completion, booking ID, due state, named
-  owner and manager flag. Keep recent intake's real seven-date creation window
-  and follow-up recipient, Awaiting Reply / Answered state. Open Team and the
-  task shortcut stay one click from every view.
+  owner and manager flag. A task's completion circle opens its close-out in
+  place under the task, on a solid muted panel: What Happened (one line), then
+  Recorded An Update or Follow Up On a date (two working days on by default),
+  then Close Task and Cancel. Escape cancels too, and a cancel returns focus to
+  the control that opened it; the panel goes once the task is closed. Keep
+  recent intake's real seven-date creation window and follow-up recipient. A
+  follow-up reads Awaiting Reply while its task is open and Closed, No Update
+  Yet (warning) with its result once closed without a later confirmed update; it
+  never reads Answered from a ticked box. Open Team and the task shortcut stay
+  one click from every view.
 - **Responsive And Access:** At desktop use 24px main block padding, 12px gaps
   after header, figures and tabs, then 8px before the worklist. Below 1024px the
   third figure spans both columns inside the same strip. Below 720px page

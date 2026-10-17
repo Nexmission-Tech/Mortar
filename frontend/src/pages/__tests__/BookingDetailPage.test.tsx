@@ -63,6 +63,14 @@ async function pickDay(label: string, day: string) {
   fireEvent.click(await screen.findByLabelText(day, { selector: 'button' }))
 }
 
+/** Completes the open task through its close-out: what happened, then Recorded An Update. */
+function closeOutTask(result = 'Payslips received, update recorded') {
+  fireEvent.click(screen.getByRole('button', { name: 'Complete' }))
+  fireEvent.change(screen.getByLabelText('What Happened'), { target: { value: result } })
+  fireEvent.click(screen.getByRole('radio', { name: 'Recorded An Update' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Close Task' }))
+}
+
 /** Opens Record An Update in the case panel, which the page keeps closed until asked. */
 async function openRecordUpdate() {
   fireEvent.click(await screen.findByRole('button', { name: 'Record An Update' }))
@@ -161,9 +169,13 @@ describe('BookingDetailPage', () => {
     renderDetail()
 
     expect(await screen.findByText('Request Latest Three Months Payslips From Buyer')).toBeTruthy()
-    fireEvent.click(screen.getByRole('button', { name: 'Complete' }))
+    closeOutTask()
 
-    await waitFor(() => expect(vi.mocked(updateTask)).toHaveBeenCalledWith('TSK-9001-1', 'done'))
+    await waitFor(() =>
+      expect(vi.mocked(updateTask)).toHaveBeenCalledWith('TSK-9001-1', 'done', {
+        result: 'Payslips received, update recorded'
+      })
+    )
   })
 
   it('keeps the case on screen with a Try Again notice when the save lands but the refresh after it fails', async () => {
@@ -172,7 +184,7 @@ describe('BookingDetailPage', () => {
     expect(await screen.findByText('Request Latest Three Months Payslips From Buyer')).toBeTruthy()
     // The task update itself succeeds; only the follow-up snapshot read fails.
     vi.mocked(fetchSnapshot).mockRejectedValueOnce(new Error('network down'))
-    fireEvent.click(screen.getByRole('button', { name: 'Complete' }))
+    closeOutTask()
 
     expect(await screen.findByText('Could Not Refresh. Showing The Last Loaded Data.')).toBeTruthy()
     // The case stays on screen — it does not vanish behind a blocking error.

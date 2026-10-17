@@ -123,10 +123,16 @@ create table if not exists tasks (
   created_at timestamptz not null,
   completed_at timestamptz,
   manager_flagged_by text,
+  manager_flagged_at timestamptz,
+  result text,
   demo_seed boolean not null default false
 );
 alter table tasks add column if not exists demo_seed boolean not null default false;
 alter table tasks add column if not exists manager_flagged_by text;
+-- When the Manager flagged the task: a flag can reuse an open task created earlier.
+alter table tasks add column if not exists manager_flagged_at timestamptz;
+-- What a task's close-out recorded, in one line: "No answer, try Tuesday".
+alter table tasks add column if not exists result text;
 create index if not exists tasks_booking_idx on tasks (booking_id);
 
 -- One row per spreadsheet import, so a batch can be undone as a whole while

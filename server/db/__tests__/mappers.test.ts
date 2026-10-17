@@ -161,6 +161,25 @@ test('rowToTask keeps a null completed_at', () => {
   })
   expect(task.completedAt).toBeNull()
   expect(task.dueOn).toBe('2026-09-19')
+  expect(task.result).toBeNull()
+})
+
+test('rowToTask reads the close-out result', () => {
+  const task = rowToTask({
+    id: 'TSK-2',
+    booking_id: 'BK-9001',
+    action: 'chase_banker',
+    title: 'Call The Banker',
+    owner_role: 'loan_admin',
+    owner_name: 'Tan Mei Ling',
+    due_on: '2026-09-19',
+    status: 'done',
+    origin: 'staff',
+    created_at: '2026-09-18T09:00:00+08:00',
+    completed_at: '2026-09-18T12:00:00+08:00',
+    result: 'No answer, try Tuesday'
+  })
+  expect(task.result).toBe('No answer, try Tuesday')
 })
 
 test('rowToJevAnswer parses the answer payload and keeps the input hash', () => {

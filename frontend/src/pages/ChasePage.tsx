@@ -21,7 +21,7 @@ import { AlertTriangle, Banknote, BellRing, SearchX, SlidersHorizontal, Users } 
 import { teamSummary } from '@mortar/core'
 import type { Booking, CaseSummary, EventKind, NextActionSuggestion, OwnerRole, RiskLevel, Task } from '@mortar/core'
 import { useCases, useSnapshot } from '@/lib/data'
-import { ApiError, fetchNextAction, postTask, updateTask } from '@/lib/api'
+import { ApiError, fetchNextAction, postTask, updateTask, type TaskCloseOut } from '@/lib/api'
 import { notify } from '@/components/ui/toastConfig'
 import { PageContainer } from '@/components/layout/PageContainer'
 import { PageHeaderCard } from '@/components/layout/PageHeaderCard'
@@ -54,7 +54,7 @@ import {
 import { ManagerCard } from '@/components/manager/ManagerCard'
 import { managerQueue } from '@/components/manager/managerQueue'
 import { NEXT_ACTION_LABELS, ownerName as resolveOwnerName } from '@/components/chase/chase'
-import { formatRm, formatRmCompact } from '@/components/case'
+import { formatDate, formatRm, formatRmCompact } from '@/components/case'
 import { nextStepFor, stepToTask, type NextStep } from '@/components/case/nextStep'
 import { PERSONA_DESK_ROLE, usePersona } from '@/lib/persona'
 
@@ -299,14 +299,21 @@ function AdminToday() {
     }
   }
 
-  const completeTask = async (task: Task) => {
+  /** `true` once the task is closed, even if the refresh after it fails, so its close-out goes. */
+  const completeTask = async (task: Task, closeOut: TaskCloseOut): Promise<boolean> => {
     setFlag(setCompleting, task.id, true)
     try {
-      await updateTask(task.id, 'done')
-      notify.success(`Completed: ${task.title}`)
+      await updateTask(task.id, 'done', closeOut)
+      notify.success(
+        closeOut.followUpOn
+          ? `Completed: ${task.title}. Follow-up due ${formatDate(closeOut.followUpOn)}.`
+          : `Completed: ${task.title}`
+      )
       await refresh()
+      return true
     } catch (e) {
       notify.error(e instanceof ApiError ? e.message : 'Could Not Complete The Task. Try Again.')
+      return false
     } finally {
       setFlag(setCompleting, task.id, false)
     }
@@ -452,7 +459,7 @@ function AdminToday() {
               profile={profile}
               referenceDate={snapshot?.meta.referenceDate ?? ''}
               completing={completing}
-              onComplete={(t) => void completeTask(t)}
+              onComplete={completeTask}
             />
           ),
           recent: (

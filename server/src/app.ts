@@ -56,6 +56,7 @@ import {
   OpenApplicationError,
   UnitHeldError,
   TaskAssignmentChangedError,
+  TaskClosedError,
   type Database
 } from '../db/index'
 import { isoDateTime, withMaskedContact } from '../db/mappers'
@@ -983,8 +984,54 @@ export function createApp(options: AppOptions): App {
         const b = await body(req)
         if (!b) return error(400, 'expected a JSON object body')
         if (!isOneOf(b.status, TASK_STATUSES)) return error(400, `status must be one of: ${TASK_STATUSES.join(', ')}`)
-        const completedAt = b.status === 'done' ? simNow(REFERENCE_DATE) : null
-        const task = await db.updateTaskStatus(params.id, b.status, completedAt)
+        // The close-out: what happened, in one line, and a next date when the
+        // chase goes on. Both belong to completing a task, never to the others.
+        if ((b.result != null || b.followUpOn != null) && b.status !== 'done')
+          return error(400, 'result and followUpOn close out a task, so they need status done')
+        if (b.result != null && !isString(b.result)) return error(400, 'result must be a non-empty string')
+        if (typeof b.result === 'string') {
+          const resultTooLong = tooLong('result', b.result, MAX_NAME)
+          if (resultTooLong) return resultTooLong
+        }
+        if (b.followUpOn != null && !isIsoDate(b.followUpOn)) return error(400, 'followUpOn must be a YYYY-MM-DD date')
+        if (typeof b.followUpOn === 'string' && b.followUpOn < REFERENCE_DATE)
+          return error(400, `followUpOn cannot be before today (${REFERENCE_DATE})`)
+        // A task closes out once: a second close-out would raise a second
+        // follow-up, and a repeated done would wipe what the first one said.
+        if ((b.result != null || b.followUpOn != null) && current.status !== 'open')
+          return error(409, 'This task is already closed. Refresh to see its close-out.')
+        if (b.status === 'done' && current.status === 'done') return json(current)
+        const now = simNow(REFERENCE_DATE)
+        const completedAt = b.status === 'done' ? now : null
+        const result = typeof b.result === 'string' ? b.result.trim() : null
+        // A chase that produced nothing stays a dated task on the same desk, so
+        // the booking stays on its owner's Today rather than dropping off it.
+        const followUp: Task | null =
+          typeof b.followUpOn === 'string'
+            ? {
+                id: newId('TSK'),
+                bookingId: current.bookingId,
+                action: current.action,
+                title: current.title,
+                ownerRole: current.ownerRole,
+                ownerName: current.ownerName,
+                dueOn: b.followUpOn,
+                status: 'open',
+                origin: 'staff',
+                createdAt: now,
+                completedAt: null,
+                managerFlaggedBy: null
+              }
+            : null
+        // The check above read the task before this write; another close-out
+        // may have landed since, and the database refuses it then.
+        let task: Task | null
+        try {
+          task = await db.updateTaskStatus(params.id, b.status, completedAt, result, followUp)
+        } catch (e) {
+          if (e instanceof TaskClosedError) return error(409, e.message)
+          throw e
+        }
         if (!task) return error(404, `task ${params.id} not found`)
         return json(task)
       }

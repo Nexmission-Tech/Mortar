@@ -113,7 +113,13 @@ export function TourProvider({ children }: { children: ReactNode }) {
     if (!active) return
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target instanceof Element ? event.target : null
-      if (target?.closest('input, textarea, select, [contenteditable="true"], [role="combobox"], [role="dialog"]'))
+      // A control that reads the arrows itself keeps them: a radio group moves
+      // between its options, as a task's close-out does.
+      if (
+        target?.closest(
+          'input, textarea, select, [contenteditable="true"], [role="combobox"], [role="dialog"], [role="radiogroup"]'
+        )
+      )
         return
       if (event.key === 'Escape') {
         event.preventDefault()

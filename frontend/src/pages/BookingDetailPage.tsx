@@ -297,7 +297,7 @@ export function BookingDetailPage() {
                   />
                 ),
                 history: <CaseHistory events={data.events} track={track} onTrackChange={(t) => show('history', t)} />,
-                tasks: <TasksPanel tasks={data.tasks} onChanged={onChanged} />
+                tasks: <TasksPanel tasks={data.tasks} referenceDate={referenceDate} onChanged={onChanged} />
               }}
             />
           </div>

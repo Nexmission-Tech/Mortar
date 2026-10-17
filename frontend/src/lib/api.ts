@@ -187,8 +187,15 @@ export const postTask = (input: {
   managerFlaggedBy?: string
 }) => post<Task>('/api/tasks', input)
 
-export const updateTask = (taskId: string, status: Task['status']) =>
-  request<Task>(`/api/tasks/${taskId}`, { method: 'PATCH', body: JSON.stringify({ status }) })
+/** What closing a task out records: what happened, and a next date when the chase goes on. */
+export type TaskCloseOut = { result: string; followUpOn?: string }
+
+/**
+ * Changes a task's status. Completing one with a `closeOut` records its result,
+ * and a `followUpOn` date raises the same task again on the same desk for that day.
+ */
+export const updateTask = (taskId: string, status: Task['status'], closeOut?: TaskCloseOut) =>
+  request<Task>(`/api/tasks/${taskId}`, { method: 'PATCH', body: JSON.stringify({ status, ...closeOut }) })
 
 /**
  * Stores the rows a person chose from a booking sheet; `source` is the file

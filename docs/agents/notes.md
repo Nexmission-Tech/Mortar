@@ -176,17 +176,20 @@ clean recording seed.
   working days for bank decisions; a missed SPA appointment counts from its own
   date against a one-working-day grace (`SPA_MISSED_AFTER_WORK_DAYS`). The
   figures strip carries Overdue Cases, Value At Risk and the Busiest Desk;
-  Follow-Ups You Sent is its own view. `/team` replaces `/manager` (which
-  redirects), with four figures and a desks table, one row per staff profile,
-  whose row opens Bookings filtered to the bookings waiting on that person.
-  "Waiting On Them" uses the same responsibility rule the server uses for
-  follow-ups. Flagged department tasks persist and appear in the recipient's
-  notification bell, refreshed every 30 seconds while visible. The server
-  resolves recipients using `currentCaseAssignee` and revalidates before
-  sending; manager flags reuse equivalent ordinary open tasks. Today opens on a
-  figures strip and named views (Actions, Your Tasks, Recent Bookings), with
-  rows built from `components/chase/worklist.tsx`. Recent Bookings uses
-  `Booking.createdAt`, never `bookingDate`.
+  Follow-Ups You Sent is its own view, where a closed follow-up reads Closed, No
+  Update Yet, never Answered, until a confirmed update recorded after the
+  Manager sent it (`managerQueue.ts`), so one recorded just before the close-out
+  counts. `/team` replaces `/manager` (which redirects), with four figures and a
+  desks table, one row per staff profile, whose row opens Bookings filtered to
+  the bookings waiting on that person. "Waiting On Them" uses the same
+  responsibility rule the server uses for follow-ups. Flagged department tasks
+  persist and appear in the recipient's notification bell, refreshed every 30
+  seconds while visible. The server resolves recipients using
+  `currentCaseAssignee` and revalidates before sending; manager flags reuse
+  equivalent ordinary open tasks. Today opens on a figures strip and named views
+  (Actions, Your Tasks, Recent Bookings), with rows built from
+  `components/chase/worklist.tsx`. Recent Bookings uses `Booking.createdAt`,
+  never `bookingDate`.
 - **Forecast Documents Follow The Figures.** `ForecastDocuments` owns selection,
   shuffle motion, the reading dialog and its focus return. Covers and details
   read the same calculated findings. The five report definitions and their
@@ -230,6 +233,15 @@ clean recording seed.
   receipts saved before #75 expect. With two banks deciding, a receipt must name
   one, and once none is deciding the form and Mortar AI put it on the approving
   bank.
+- **Closing A Task Records What Happened.** `PATCH /api/tasks/:id` takes
+  `result` and `followUpOn` with `status: 'done'`; a `followUpOn` raises the
+  same task again for that day, in the same transaction (`updateTaskStatus`'s
+  `followUp`). A task closes out once (409 after), and a repeated plain `done`
+  returns it unchanged. `TaskCloseOut` is the one form for Your Tasks and the
+  case's Tasks view; `YourTasks.onComplete` resolves `true` once closed, so the
+  form goes even if the refresh fails. Radix's radio group needs
+  `ResizeObserver`, so a test that opens it stubs one, and the tour leaves arrow
+  keys alone inside `[role="radiogroup"]`.
 - **Database Integration Tests Require `TEST_DATABASE_URL`.**
   `server/db/__tests__/integration.test.ts` reads
   `process.env.TEST_DATABASE_URL` and skips entirely when unset; it never reads

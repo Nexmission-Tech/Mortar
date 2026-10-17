@@ -109,13 +109,78 @@ describe("The Manager's Today", () => {
     expect(within(sent).getByText('Awaiting Reply')).toBeTruthy()
   })
 
-  it('keeps a completed follow-up there, answered, until new evidence arrives', () => {
-    data.tasks = [followUp({ status: 'done', completedAt: '2026-09-18T10:00:00+08:00' })]
+  // Issue #75: a closed task is not an answer; only a later confirmed update is.
+  it('keeps a completed follow-up there, never Answered, with its result, until new evidence arrives', () => {
+    data.tasks = [
+      followUp({ status: 'done', completedAt: '2026-09-18T10:00:00+08:00', result: 'No answer, try Tuesday' })
+    ]
     show()
 
     const sent = screen.getByRole('region', { name: 'Follow-ups you sent' })
-    expect(within(sent).getByText('Answered')).toBeTruthy()
+    expect(within(sent).getByText('Closed, No Update Yet')).toBeTruthy()
+    expect(within(sent).queryByText('Answered')).toBeNull()
+    expect(within(sent).getByText('No answer, try Tuesday')).toBeTruthy()
     expect(screen.queryByTestId('manager-card-BK-9001')).toBeNull()
+  })
+
+  // Recorded An Update means the update comes first, then the close-out.
+  it('takes an update recorded just before the close-out as the answer', () => {
+    const base = data.events[0]!
+    data.events = [
+      base,
+      { ...base, id: 'EV-2', track: 'loan', kind: 'documents_requested', document: 'payslip' },
+      {
+        ...base,
+        id: 'EV-3',
+        kind: 'buyer_contacted',
+        occurredAt: '2026-09-18T09:30:00+08:00',
+        recordedAt: '2026-09-18T09:30:00+08:00'
+      }
+    ]
+    data.tasks = [
+      followUp({
+        ownerRole: 'loan_admin',
+        ownerName: 'Tan Mei Ling',
+        status: 'done',
+        completedAt: '2026-09-18T10:00:00+08:00',
+        result: 'Buyer reached, update recorded'
+      })
+    ]
+    show()
+
+    // The payslip is still overdue, so the case is the Manager's again, not a follow-up still waiting.
+    expect(screen.getByTestId('manager-card-BK-9001')).toBeTruthy()
+    expect(screen.queryByText('Closed, No Update Yet')).toBeNull()
+  })
+
+  // A flag reuses an ordinary open task, so the task can be older than the follow-up.
+  it('counts an update as the answer only from when the Manager flagged a reused task', () => {
+    const base = data.events[0]!
+    data.events = [
+      base,
+      {
+        ...base,
+        id: 'EV-2',
+        kind: 'buyer_contacted',
+        occurredAt: '2026-09-05T09:00:00+08:00',
+        recordedAt: '2026-09-05T09:00:00+08:00'
+      }
+    ]
+    data.tasks = [
+      followUp({
+        createdAt: '2026-09-04T09:00:00+08:00',
+        managerFlaggedAt: '2026-09-12T09:00:00+08:00',
+        status: 'done',
+        completedAt: '2026-09-13T10:00:00+08:00',
+        result: 'No answer'
+      })
+    ]
+    show()
+
+    expect(screen.queryByTestId('manager-card-BK-9001')).toBeNull()
+    const sent = screen.getByRole('region', { name: 'Follow-ups you sent' })
+    expect(within(sent).getByText('Closed, No Update Yet')).toBeTruthy()
+    expect(within(sent).getByText('No answer')).toBeTruthy()
   })
 
   it('points to the busiest desk on Team', () => {
