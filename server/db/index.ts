@@ -508,8 +508,10 @@ export function createDatabase(sql: SQL, clock: () => Date = () => new Date()): 
       and owner_name = ${task.ownerName} and status = 'open' order by created_at, id limit 1 for update`
     if (existing.length) {
       if (!task.managerFlaggedBy || existing[0].manager_flagged_by) return rowToTask(existing[0]!)
+      // The reused task keeps its own created_at; the flag's time is when the Manager sent it.
       const updated = await tx`update tasks set manager_flagged_by = ${task.managerFlaggedBy},
-        due_on = least(due_on, ${task.dueOn}::date) where id = ${existing[0].id} returning *`
+        manager_flagged_at = ${task.createdAt}, due_on = least(due_on, ${task.dueOn}::date)
+        where id = ${existing[0].id} returning *`
       return rowToTask(updated[0]!)
     }
     const rows = await tx`insert into tasks ${tx({
@@ -524,7 +526,8 @@ export function createDatabase(sql: SQL, clock: () => Date = () => new Date()): 
       origin: task.origin,
       created_at: task.createdAt,
       completed_at: task.completedAt,
-      manager_flagged_by: task.managerFlaggedBy ?? null
+      manager_flagged_by: task.managerFlaggedBy ?? null,
+      manager_flagged_at: task.managerFlaggedBy ? task.createdAt : null
     })} returning *`
     return rowToTask(rows[0]!)
   }

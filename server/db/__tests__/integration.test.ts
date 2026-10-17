@@ -111,12 +111,21 @@ describe.skipIf(!TEST_DATABASE_URL)('database integration', () => {
     try {
       const ordinary = await db.insertTask({ ...task, managerFlaggedBy: null })
       const [first, duplicate] = await Promise.all([
-        db.flagManagerTask({ ...task, id: 'W2TEST-FLAG-2', title: 'Flag existing ordinary task' }),
+        db.flagManagerTask({
+          ...task,
+          id: 'W2TEST-FLAG-2',
+          title: 'Flag existing ordinary task',
+          createdAt: '2026-09-18T12:30:00+08:00'
+        }),
         db.insertTask({ ...task, id: 'W2TEST-FLAG-3', managerFlaggedBy: null })
       ])
       expect(first.id).toBe(ordinary.id)
       expect(duplicate.id).toBe(first.id)
       expect(first.managerFlaggedBy).toBe('Robert Khoo')
+      // The reused task keeps its own creation time; the flag carries when the Manager sent it.
+      expect(ordinary.managerFlaggedAt).toBeNull()
+      expect(first.createdAt).toBe(ordinary.createdAt)
+      expect(first.managerFlaggedAt).toBe('2026-09-18T12:30:00+08:00')
       await db.updateTaskStatus(first.id, 'done', '2026-09-18T13:00:00+08:00')
       expect((await db.snapshot()).tasks.find((candidate) => candidate.id === first.id)?.managerFlaggedBy).toBe(
         'Robert Khoo'

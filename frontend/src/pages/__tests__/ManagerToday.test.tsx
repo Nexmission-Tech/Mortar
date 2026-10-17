@@ -153,6 +153,36 @@ describe("The Manager's Today", () => {
     expect(screen.queryByText('Closed, No Update Yet')).toBeNull()
   })
 
+  // A flag reuses an ordinary open task, so the task can be older than the follow-up.
+  it('counts an update as the answer only from when the Manager flagged a reused task', () => {
+    const base = data.events[0]!
+    data.events = [
+      base,
+      {
+        ...base,
+        id: 'EV-2',
+        kind: 'buyer_contacted',
+        occurredAt: '2026-09-05T09:00:00+08:00',
+        recordedAt: '2026-09-05T09:00:00+08:00'
+      }
+    ]
+    data.tasks = [
+      followUp({
+        createdAt: '2026-09-04T09:00:00+08:00',
+        managerFlaggedAt: '2026-09-12T09:00:00+08:00',
+        status: 'done',
+        completedAt: '2026-09-13T10:00:00+08:00',
+        result: 'No answer'
+      })
+    ]
+    show()
+
+    expect(screen.queryByTestId('manager-card-BK-9001')).toBeNull()
+    const sent = screen.getByRole('region', { name: 'Follow-ups you sent' })
+    expect(within(sent).getByText('Closed, No Update Yet')).toBeTruthy()
+    expect(within(sent).getByText('No answer')).toBeTruthy()
+  })
+
   it('points to the busiest desk on Team', () => {
     show()
     const figures = screen.getByRole('region', { name: "Today's figures" })

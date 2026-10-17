@@ -218,8 +218,9 @@ storage for nested domain entities:
   `author`, `reviewer`, `reviewed_on date`, `status`, `tags text[]`).
 - `tasks`: Action items assigned to staff members (`id text primary key`,
   `booking_id`, `action`, `title`, `owner_role`, `owner_name`, `due_on date`,
-  `status`, `origin`, `created_at`, `completed_at`, `manager_flagged_by`, and
-  `result`, the close-out's one line on what happened).
+  `status`, `origin`, `created_at`, `completed_at`, `manager_flagged_by`,
+  `manager_flagged_at` (when the Manager flagged it, since a flag can reuse an
+  older open task), and `result`, the close-out's one line on what happened).
 - `jev_answers`: Historical store of model evaluations
   (`id bigint generated always as identity primary key`, `kind`, `subject_id`,
   `input_hash`, `answer jsonb`, `source`, `latency_ms`, `created_at`). Indexed

@@ -47,6 +47,8 @@ export function recipientRole(recipient: StaffProfile | null): OwnerRole {
  * recorded since the Manager sent it: finishing the task without new evidence
  * does not take the case back off the Manager's hands. An update recorded just
  * before the close-out (Recorded An Update) answers it as well as one after.
+ * A flag can reuse an older open task, so it counts from `managerFlaggedAt`;
+ * tasks flagged before that column existed fall back to `createdAt`.
  */
 function standingFollowUp(snapshot: Snapshot, booking: Booking, recipient: StaffProfile | null, step: NextStep) {
   return (
@@ -59,7 +61,10 @@ function standingFollowUp(snapshot: Snapshot, booking: Booking, recipient: Staff
         (t.status === 'open' ||
           (t.status === 'done' &&
             !snapshot.events.some(
-              (e) => e.bookingId === booking.id && e.status === 'confirmed' && e.recordedAt > t.createdAt
+              (e) =>
+                e.bookingId === booking.id &&
+                e.status === 'confirmed' &&
+                e.recordedAt > (t.managerFlaggedAt ?? t.createdAt)
             )))
     ) ?? null
   )

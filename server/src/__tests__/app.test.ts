@@ -307,11 +307,15 @@ class FakeDb implements Database {
         candidate.ownerName === task.ownerName
     )
     if (existing) {
-      existing.managerFlaggedBy ??= task.managerFlaggedBy
+      if (!existing.managerFlaggedBy && task.managerFlaggedBy) {
+        existing.managerFlaggedBy = task.managerFlaggedBy
+        existing.managerFlaggedAt = task.createdAt
+      }
       return existing
     }
-    this.tasks.push(task)
-    return task
+    const stored = { ...task, managerFlaggedAt: task.managerFlaggedBy ? task.createdAt : null }
+    this.tasks.push(stored)
+    return stored
   }
   imports = new Map<string, { ids: string[]; undoneBy: string | null; undoneAt: string | null }>()
   removals: { id: string; removedBy: string; removedAt: string }[] = []
