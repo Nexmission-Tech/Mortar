@@ -80,6 +80,7 @@ import {
   EventSettledError,
   ImportMovedOnError,
   OpenApplicationError,
+  TaskClosedError,
   UnitHeldError,
   type Database,
   type ImportBatch
@@ -385,6 +386,8 @@ class FakeDb implements Database {
   ) {
     const index = this.tasks.findIndex((t) => t.id === id)
     if (index < 0) return null
+    // Mirrors the update's open guard: a close-out never lands on a closed task.
+    if ((result != null || followUp != null) && this.tasks[index]!.status !== 'open') throw new TaskClosedError()
     // A new object, so a fixture task pushed by reference is never changed under another test.
     const task = { ...this.tasks[index]!, status, completedAt, result }
     this.tasks[index] = task
@@ -2113,6 +2116,29 @@ describe('createApp', () => {
       expect(repeated?.status).toBe(200)
       expect(await repeated?.json()).toEqual(closed)
       expect(db.tasks).toEqual([closed])
+    })
+
+    // Two close-outs at once both read the task open; the write must still refuse the second.
+    test('a close-out that read the task open before another closed it is refused and keeps the first', async () => {
+      const db = new FakeDb()
+      db.tasks.push(open)
+      const staleRead = await db.snapshot()
+      db.snapshot = async () => ({ ...staleRead, tasks: [open] })
+      const app = makeApp(db)
+      const first = await call(app, '/api/tasks/TSK-1', {
+        method: 'PATCH',
+        body: JSON.stringify({ status: 'done', result: 'No answer, try Tuesday', followUpOn: '2026-09-22' })
+      })
+      expect(first?.status).toBe(200)
+      const second = await call(app, '/api/tasks/TSK-1', {
+        method: 'PATCH',
+        body: JSON.stringify({ status: 'done', result: 'Buyer confirmed', followUpOn: '2026-09-23' })
+      })
+      expect(second?.status).toBe(409)
+      expect(await errorOf(second)).toContain('already closed')
+      expect(db.tasks).toHaveLength(2)
+      expect(db.tasks[0]).toMatchObject({ status: 'done', result: 'No answer, try Tuesday' })
+      expect(db.tasks[1]?.dueOn).toBe('2026-09-22')
     })
 
     test.each([

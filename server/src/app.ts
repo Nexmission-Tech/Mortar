@@ -56,6 +56,7 @@ import {
   OpenApplicationError,
   UnitHeldError,
   TaskAssignmentChangedError,
+  TaskClosedError,
   type Database
 } from '../db/index'
 import { isoDateTime, withMaskedContact } from '../db/mappers'
@@ -1022,7 +1023,15 @@ export function createApp(options: AppOptions): App {
                 managerFlaggedBy: null
               }
             : null
-        const task = await db.updateTaskStatus(params.id, b.status, completedAt, result, followUp)
+        // The check above read the task before this write; another close-out
+        // may have landed since, and the database refuses it then.
+        let task: Task | null
+        try {
+          task = await db.updateTaskStatus(params.id, b.status, completedAt, result, followUp)
+        } catch (e) {
+          if (e instanceof TaskClosedError) return error(409, e.message)
+          throw e
+        }
         if (!task) return error(404, `task ${params.id} not found`)
         return json(task)
       }

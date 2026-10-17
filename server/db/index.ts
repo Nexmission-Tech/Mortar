@@ -145,7 +145,9 @@ export interface Database {
   /**
    * Sets a task's status and completion time, and the close-out's one-line
    * `result` (cleared unless given). With `followUp`, raises that open task in
-   * the same transaction, deduplicated as `insertTask` does.
+   * the same transaction, deduplicated as `insertTask` does. A close-out (a
+   * `result` or `followUp`) writes only while the task is still open, and
+   * throws `TaskClosedError` when it no longer is.
    */
   updateTaskStatus(
     id: string,
@@ -211,6 +213,13 @@ export class BookingMovedOnError extends Error {
 export class TaskAssignmentChangedError extends Error {
   constructor() {
     super('Case responsibility changed. Refresh the case before sending this follow-up.')
+  }
+}
+
+/** A close-out reached a task that is no longer open, so it keeps the first one. */
+export class TaskClosedError extends Error {
+  constructor() {
+    super('This task is already closed. Refresh to see its close-out.')
   }
 }
 
@@ -849,10 +858,17 @@ export function createDatabase(sql: SQL, clock: () => Date = () => new Date()): 
     },
 
     async updateTaskStatus(id, status, completedAt, result = null, followUp = null) {
+      const closeOut = result != null || followUp != null
       return sql.begin(async (tx) => {
+        // The open check sits in the update itself: a second close-out waits
+        // on the first one's row lock, then finds the task closed and changes
+        // nothing, so the first result and its one follow-up stand.
         const rows = await tx`update tasks set status = ${status}, completed_at = ${completedAt}, result = ${result}
-          where id = ${id} returning *`
-        if (!rows.length) return null
+          where id = ${id} and (${!closeOut} or status = 'open') returning *`
+        if (!rows.length) {
+          if (closeOut && (await tx`select 1 from tasks where id = ${id}`).length) throw new TaskClosedError()
+          return null
+        }
         // The follow-up lands with the close-out or not at all, so a failed
         // write never leaves a closed task with no next date.
         if (followUp) await writeTask(tx, followUp)
