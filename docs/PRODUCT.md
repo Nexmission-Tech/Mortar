@@ -361,18 +361,20 @@ spanning initial deposit through to confirmed execution.
 5.  **Today Queue Activation:** The bank application passes nine working days
     without a decision, so Mortar's stall rule flags the case. It surfaces at
     the top of Today (`/chase`). The rule-based next step leads — Ask For
-    Payslip, owner Sales Admin, due today — with Jev's suggestion displayed
-    alongside if it differs. Sales Admin Nurul Aina clicks Create Task.
-6.  **Playbook Guidance:** Nurul queries the playbooks panel for "slip gaji".
-    Mortar returns the vetted "Missing Income Documents" playbook, which advises
-    asking the buyer for the exact missing month's payslip through the company
-    HR portal and alerting the banker on receipt.
+    Payslip, owner Loan Admin, due today — with Jev's suggestion displayed
+    alongside if it differs. Loan Admin Tan Mei Ling clicks Create Task; Sales
+    Admin Nurul Aina coordinates the booking.
+6.  **Playbook Guidance:** Mei Ling queries the playbooks panel for "slip gaji".
+    Mortar returns the "Missing Income Documents" playbook. Once a named
+    reviewer has validated it, it advises asking the buyer for the exact missing
+    month's payslip through the company HR portal and alerting the banker on
+    receipt; until then it reads Illustrative, Not Yet Reviewed.
 7.  **Live Resolution:** The buyer responds in Malay: "Salam, saya dah emailkan
-    slip gaji 3 bulan terkini kepada banker semalam." Nurul pastes the text into
-    the case message box. Jev analyzes the Malay text live in under three
-    seconds, returning `documents_received` for `payslip`. Nurul confirms the
-    extraction. The outstanding requirement clears, and the stall flag is
-    removed.
+    slip gaji 3 bulan terkini kepada banker semalam." Mei Ling pastes the text
+    into the case message box. Jev analyzes the Malay text live in under three
+    seconds, returning `documents_received` for `payslip`. Mei Ling confirms the
+    extraction, which names the bank it updates. The outstanding requirement
+    clears, and the stall flag is removed.
 8.  **Execution And Forecast:** The bank issues its Letter of Offer, the panel
     solicitor sets the SPA appointment, and the buyer signs the SPA, paying the
     10% sum due on signing less the booking fee. Each milestone lands in the log
