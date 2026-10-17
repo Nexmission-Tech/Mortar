@@ -1983,7 +1983,7 @@
       "file_type": "code",
       "norm_label": "casedatainput",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L423"
+      "source_location": "L441"
     },
     {
       "id": "packages_core_src_sim_cases_casefacts",
@@ -10210,7 +10210,7 @@
       "file_type": "code",
       "norm_label": "answersconcern()",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L242"
+      "source_location": "L260"
     },
     {
       "id": "packages_core_src_sim_cases_appointmentday",
@@ -10234,7 +10234,7 @@
       "file_type": "code",
       "norm_label": "deriveapplication()",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L254"
+      "source_location": "L272"
     },
     {
       "id": "packages_core_src_sim_cases_derivecase",
@@ -10246,7 +10246,7 @@
       "file_type": "code",
       "norm_label": "derivecase()",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L325"
+      "source_location": "L343"
     },
     {
       "id": "packages_core_src_sim_cases_groupby",
@@ -10258,7 +10258,7 @@
       "file_type": "code",
       "norm_label": "groupby()",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L533"
+      "source_location": "L551"
     },
     {
       "id": "packages_core_src_sim_cases_lastdayof",
@@ -10270,7 +10270,7 @@
       "file_type": "code",
       "norm_label": "lastdayof()",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L315"
+      "source_location": "L333"
     },
     {
       "id": "packages_core_src_sim_cases_outstandingdocs",
@@ -10282,7 +10282,7 @@
       "file_type": "code",
       "norm_label": "outstandingdocs()",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L291"
+      "source_location": "L309"
     },
     {
       "id": "packages_core_src_sim_cases_settlesshortfall",
@@ -10294,7 +10294,7 @@
       "file_type": "code",
       "norm_label": "settlesshortfall()",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L249"
+      "source_location": "L267"
     },
     {
       "id": "packages_core_src_sim_cases_summarizecases",
@@ -10306,7 +10306,7 @@
       "file_type": "code",
       "norm_label": "summarizecases()",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L426"
+      "source_location": "L444"
     },
     {
       "id": "packages_core_src_sim_cases_unanswered",
@@ -10318,7 +10318,7 @@
       "file_type": "code",
       "norm_label": "unanswered()",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L224"
+      "source_location": "L242"
     },
     {
       "id": "packages_core_src_sim_dates_adddays",
@@ -26606,7 +26606,7 @@
       "file_type": "code",
       "norm_label": "concern_answers",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L241"
+      "source_location": "L259"
     },
     {
       "id": "packages_core_src_sim_cases_income_documents",
@@ -67376,6 +67376,18 @@
       "type": "external"
     },
     {
+      "id": "packages_core_src_sim_generate",
+      "label": "packages_core_src_sim_generate",
+      "_origin": "semantic",
+      "community": 184,
+      "community_name": "ref_vitest",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "packages_core_src_sim_generate",
+      "source_file": "",
+      "type": "external"
+    },
+    {
       "id": "ref_vitest",
       "label": "ref_vitest",
       "_origin": "semantic",
@@ -68648,6 +68660,18 @@
       "type": "external"
     },
     {
+      "id": "packages_core_src_sim_forecast",
+      "label": "packages_core_src_sim_forecast",
+      "_origin": "semantic",
+      "community": 90,
+      "community_name": "SalesChartPage.tsx",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "packages_core_src_sim_forecast",
+      "source_file": "",
+      "type": "external"
+    },
+    {
       "id": "packages_core_src_index_currentcaseassignee",
       "label": "packages_core_src_index_currentcaseassignee",
       "_origin": "semantic",
@@ -68776,28 +68800,6 @@
       "external": true,
       "file_type": "concept",
       "norm_label": "packages_core_src_index_sheetcell",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "packages_core_src_sim_generate",
-      "label": "packages_core_src_sim_generate",
-      "community": 184,
-      "community_name": "ref_vitest",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "packages_core_src_sim_generate",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "packages_core_src_sim_forecast",
-      "label": "packages_core_src_sim_forecast",
-      "community": 90,
-      "community_name": "SalesChartPage.tsx",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "packages_core_src_sim_forecast",
       "source_file": "",
       "type": "external"
     }
@@ -81441,6 +81443,18 @@
     },
     {
       "source": "frontend_src_pages_bookingdetailpage_bookingdetailpage",
+      "target": "frontend_src_components_bookings_bookingjourney_tsx_frontend_src_components_bookings_bookingjourney_bookingjourney",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "frontend/src/pages/BookingDetailPage.tsx",
+      "source_location": "L262",
+      "weight": 1.0
+    },
+    {
+      "source": "frontend_src_pages_bookingdetailpage_bookingdetailpage",
       "target": "frontend_src_components_bookings_caseviews_caseviews",
       "relation": "calls",
       "_origin": "ast",
@@ -86524,7 +86538,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L265",
+      "source_location": "L283",
       "weight": 1.0
     },
     {
@@ -86536,7 +86550,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L333",
+      "source_location": "L351",
       "weight": 1.0
     },
     {
@@ -86548,7 +86562,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L359",
+      "source_location": "L377",
       "weight": 1.0
     },
     {
@@ -86560,7 +86574,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L368",
+      "source_location": "L386",
       "weight": 1.0
     },
     {
@@ -86572,7 +86586,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L381",
+      "source_location": "L399",
       "weight": 1.0
     },
     {
@@ -86584,7 +86598,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L384",
+      "source_location": "L402",
       "weight": 1.0
     },
     {
@@ -86596,7 +86610,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L388",
+      "source_location": "L406",
       "weight": 1.0
     },
     {
@@ -86608,7 +86622,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L418",
+      "source_location": "L436",
       "weight": 1.0
     },
     {
@@ -86620,7 +86634,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L201",
+      "source_location": "L207",
       "weight": 1.0
     },
     {
@@ -86632,7 +86646,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L318",
+      "source_location": "L336",
       "weight": 1.0
     },
     {
@@ -86644,7 +86658,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L310",
+      "source_location": "L328",
       "weight": 1.0
     },
     {
@@ -86656,7 +86670,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L427",
+      "source_location": "L445",
       "weight": 1.0
     },
     {
@@ -86668,7 +86682,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L433",
+      "source_location": "L451",
       "weight": 1.0
     },
     {
@@ -86680,7 +86694,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L441",
+      "source_location": "L459",
       "weight": 1.0
     },
     {
@@ -86692,7 +86706,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L442",
+      "source_location": "L460",
       "weight": 1.0
     },
     {
@@ -86704,7 +86718,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L469",
+      "source_location": "L487",
       "weight": 1.0
     },
     {
@@ -86716,7 +86730,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L498",
+      "source_location": "L516",
       "weight": 1.0
     },
     {
@@ -102015,6 +102029,18 @@
     {
       "source": "frontend_src_components_bookings_tests_bookingjourney_test_tsx_frontend_src_components_bookings_tests_bookingjourney_test",
       "target": "frontend_src_components_bookings_bookingjourney_ts_frontend_src_components_bookings_bookingjourney_bookingjourney",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "frontend/src/components/bookings/__tests__/BookingJourney.test.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "frontend_src_components_bookings_tests_bookingjourney_test_tsx_frontend_src_components_bookings_tests_bookingjourney_test",
+      "target": "frontend_src_components_bookings_bookingjourney_tsx_frontend_src_components_bookings_bookingjourney_bookingjourney",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -117490,6 +117516,18 @@
       "context": "import",
       "source_file": "frontend/src/pages/BookingDetailPage.tsx",
       "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "frontend_src_pages_bookingdetailpage",
+      "target": "frontend_src_components_bookings_bookingjourney_tsx_frontend_src_components_bookings_bookingjourney_bookingjourney",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "frontend/src/pages/BookingDetailPage.tsx",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -139165,6 +139203,18 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "frontend/src/components/bookings/__tests__/BookingJourney.test.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "frontend_src_components_bookings_tests_bookingjourney_test_tsx_frontend_src_components_bookings_tests_bookingjourney_test",
+      "target": "frontend_src_components_bookings_bookingjourney_tsx_frontend_src_components_bookings_bookingjourney",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "frontend/src/components/bookings/__tests__/BookingJourney.test.tsx",
       "source_location": "L5",
       "weight": 1.0
     },
@@ -148820,6 +148870,18 @@
       "context": "import",
       "source_file": "frontend/src/pages/BookingDetailPage.tsx",
       "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "frontend_src_pages_bookingdetailpage",
+      "target": "frontend_src_components_bookings_bookingjourney_tsx_frontend_src_components_bookings_bookingjourney",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "frontend/src/pages/BookingDetailPage.tsx",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -175262,7 +175324,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L197",
+      "source_location": "L199",
       "weight": 1.0
     },
     {
@@ -175284,7 +175346,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L224",
+      "source_location": "L242",
       "weight": 1.0
     },
     {
@@ -175295,7 +175357,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L241",
+      "source_location": "L259",
       "weight": 1.0
     },
     {
@@ -175306,7 +175368,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L242",
+      "source_location": "L260",
       "weight": 1.0
     },
     {
@@ -175317,7 +175379,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L249",
+      "source_location": "L267",
       "weight": 1.0
     },
     {
@@ -175328,7 +175390,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L254",
+      "source_location": "L272",
       "weight": 1.0
     },
     {
@@ -175350,7 +175412,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L291",
+      "source_location": "L309",
       "weight": 1.0
     },
     {
@@ -175361,7 +175423,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L315",
+      "source_location": "L333",
       "weight": 1.0
     },
     {
@@ -175372,7 +175434,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L325",
+      "source_location": "L343",
       "weight": 1.0
     },
     {
@@ -175383,7 +175445,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L423",
+      "source_location": "L441",
       "weight": 1.0
     },
     {
@@ -175394,7 +175456,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L426",
+      "source_location": "L444",
       "weight": 1.0
     },
     {
@@ -175416,7 +175478,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L533",
+      "source_location": "L551",
       "weight": 1.0
     },
     {
@@ -185092,7 +185154,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L334",
+      "source_location": "L352",
       "weight": 1.0
     },
     {
@@ -185104,7 +185166,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L384",
+      "source_location": "L402",
       "weight": 1.0
     },
     {
@@ -185116,7 +185178,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L385",
+      "source_location": "L403",
       "weight": 1.0
     },
     {
@@ -237658,5 +237720,5 @@
       "source_file": ".github/workflows/ci.yml"
     }
   ],
-  "built_at_commit": "e25df653ef1faf361f7ffc8a7e31137000049aba"
+  "built_at_commit": "e8d941b2656ff5097d06d88b1014d7e5e29999e4"
 }

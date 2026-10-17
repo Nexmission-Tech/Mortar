@@ -1,17 +1,17 @@
-# Graph Report - Mortar  (2026-10-13)
+# Graph Report - pr122  (2026-10-17)
 
 ## Corpus Check
-- 449 files · ~477,297 words
+- 449 files · ~477,682 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 15 file(s) not represented in the graph (top: (none) 8, .css 4, .example 1)
+- Unclassified: 16 file(s) not represented in the graph (top: (none) 9, .css 4, .example 1)
 
 ## Summary
-- 5232 nodes · 14569 edges · 239 communities (184 shown, 55 thin omitted)
+- 5232 nodes · 14574 edges · 239 communities (184 shown, 55 thin omitted)
 - Extraction: 92% EXTRACTED · 8% INFERRED · 0% AMBIGUOUS · INFERRED: 1150 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e25df653`
+- Built from commit: `e8d941b2`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -1041,12 +1041,12 @@ Nodes (7): First Impression, Mortar: A Sales Administration Executive’s Roast,
 ## Ambiguous Edges - Review These
 - `Kabel DXP Weekly Check-In, 29 September 2026` → `Chin Hin Group Property Berhad (CHGP)`  [AMBIGUOUS]
   docs/demo/pitch-script.md · relation: conceptually_related_to
+- `Claim: 7 Of 8 Name Loan Rejection The Biggest Cause` → `Do Not Say: IFCA Is Chin Hin's System`  [AMBIGUOUS]
+  docs/demo/pitch-script.md · relation: conceptually_related_to
 - `GET /api/settings` → `meta Key-Value Table`  [AMBIGUOUS]
   docs/TRD.md · relation: references
 - `meta Key-Value Table` → `PUT /api/settings (Manager Only)`  [AMBIGUOUS]
   docs/TRD.md · relation: references
-- `Do Not Say: IFCA Is Chin Hin's System` → `Claim: 7 Of 8 Name Loan Rejection The Biggest Cause`  [AMBIGUOUS]
-  docs/demo/pitch-script.md · relation: conceptually_related_to
 
 ## Knowledge Gaps
 - **1109 isolated node(s):** `$schema`, `printWidth`, `singleQuote`, `semi`, `trailingComma` (+1104 more)
@@ -1058,15 +1058,15 @@ _Questions this graph is uniquely positioned to answer:_
 
 - **What is the exact relationship between `Kabel DXP Weekly Check-In, 29 September 2026` and `Chin Hin Group Property Berhad (CHGP)`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
+- **What is the exact relationship between `Claim: 7 Of 8 Name Loan Rejection The Biggest Cause` and `Do Not Say: IFCA Is Chin Hin's System`?**
+  _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **What is the exact relationship between `GET /api/settings` and `meta Key-Value Table`?**
   _Edge tagged AMBIGUOUS (relation: references) - confidence is low._
 - **What is the exact relationship between `meta Key-Value Table` and `PUT /api/settings (Manager Only)`?**
   _Edge tagged AMBIGUOUS (relation: references) - confidence is low._
-- **What is the exact relationship between `Do Not Say: IFCA Is Chin Hin's System` and `Claim: 7 Of 8 Name Loan Rejection The Biggest Cause`?**
-  _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **Why does `AGENTS.md` connect `Personas` to `Project Structure tree`, `About The Project section`, `Documents Index`, `Ask The Graph First`?**
-  _High betweenness centrality (0.082) - this node is a cross-community bridge._
+  _High betweenness centrality (0.075) - this node is a cross-community bridge._
 - **Why does `Documents Index` connect `Documents Index` to `Ask The Graph First`, `Andrej Karpathy Skills`, `Mortar Notes For Agents`, `Personas`, `Markdown Style Guide`, `Technical Requirements Document: Mortar`?**
-  _High betweenness centrality (0.066) - this node is a cross-community bridge._
-- **Why does `Keep It Current` connect `Keep It Current` to `patch_docs.py`, `Checklist`?**
-  _High betweenness centrality (0.058) - this node is a cross-community bridge._
+  _High betweenness centrality (0.064) - this node is a cross-community bridge._
+- **Why does `Graphify (docs/agents/graphify.md)` connect `Ask The Graph First` to `Documents Index`, `Keep It Current`?**
+  _High betweenness centrality (0.054) - this node is a cross-community bridge._
