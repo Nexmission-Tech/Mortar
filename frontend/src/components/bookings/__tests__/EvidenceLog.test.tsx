@@ -57,7 +57,7 @@ describe('EvidenceLog', () => {
     const { container } = render(<EvidenceLog events={EVENTS} />)
     fireEvent.click(screen.getByRole('button', { name: 'Show Full History (3)' }))
 
-    const rows = [...container.querySelectorAll('tbody tr')].map((row) => row.children[2]?.textContent)
+    const rows = [...container.querySelectorAll('tbody tr')].map((row) => row.children[3]?.textContent)
     expect(rows).toEqual(['Documents Received · Payslip', 'Documents Requested · Payslip', 'Buyer Contacted · Payslip'])
   })
 
@@ -73,7 +73,7 @@ describe('EvidenceLog', () => {
     )
     fireEvent.click(screen.getByRole('button', { name: 'Show Full History (3)' }))
 
-    const sources = [...container.querySelectorAll('tbody tr')].map((row) => row.children[6]?.textContent)
+    const sources = [...container.querySelectorAll('tbody tr')].map((row) => row.children[7]?.textContent)
     expect(sources).toEqual(['Mortar AI', 'Demo', 'Demo'])
   })
 
@@ -89,7 +89,7 @@ describe('EvidenceLog', () => {
     const { container } = render(<EvidenceLog events={[event({ id: 'EV-1', note })]} />)
     fireEvent.click(screen.getByRole('button', { name: 'Show Full History (1)' }))
 
-    expect(container.querySelector('tbody tr')!.children[3]?.textContent).toBe(certainty)
+    expect(container.querySelector('tbody tr')!.children[4]?.textContent).toBe(certainty)
     expect(container.textContent).not.toContain('Probability')
   })
 
@@ -99,10 +99,39 @@ describe('EvidenceLog', () => {
     )
     fireEvent.click(screen.getByRole('button', { name: 'Show Full History (1)' }))
 
-    expect(container.querySelector('tbody tr')!.children[3]?.textContent).toBe(
+    expect(container.querySelector('tbody tr')!.children[4]?.textContent).toBe(
       'Firm Confirmed 29 Jul, Awaiting Signature'
     )
   })
+  // Issue #75: a month-end cut-off needs when it happened and when it was recorded.
+  it('shows when each update occurred and when it was recorded, with who reported and confirmed it', () => {
+    const { container } = render(
+      <EvidenceLog
+        events={[
+          event({
+            id: 'EV-SPA',
+            kind: 'spa_signed',
+            track: 'legal',
+            document: null,
+            occurredAt: '2026-09-30T12:00:00+08:00',
+            recordedAt: '2026-10-03T09:15:00+08:00',
+            reportedBy: 'Arvind Raj',
+            verifiedBy: 'Arvind Raj'
+          })
+        ]}
+      />
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Show Full History (1)' }))
+
+    const headers = screen.getAllByRole('columnheader').map((h) => h.textContent)
+    expect(headers.slice(0, 2)).toEqual(['Occurred On', 'Recorded On'])
+    expect(headers).toEqual(expect.arrayContaining(['Reported By', 'Verified By']))
+    expect(headers).not.toContain('When')
+    const cells = [...container.querySelector('tbody tr')!.children].map((cell) => cell.textContent)
+    expect(cells[0]).toBe('30 Sep 2026 · 12:00')
+    expect(cells[1]).toBe('3 Oct 2026 · 09:15')
+  })
+
   it('names Mortar AI as the reporter of an event the AI proposed, whatever name is stored', () => {
     render(<EvidenceLog events={[event({ id: 'EV-AI', reportedBy: 'Jev', source: 'jev' })]} />)
     fireEvent.click(screen.getByRole('button', { name: /Show Full History/ }))

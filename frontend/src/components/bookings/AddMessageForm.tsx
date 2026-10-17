@@ -3,10 +3,12 @@
  * when it was sent, body). Posting runs Jev live-first; the reply panel shows
  * the extraction and its source tag once the snapshot refreshes.
  *
- * Sent At is when the message was sent, not when it was pasted in: Jev reads
- * the buyer's reply speed from the gaps between messages, and a proposal it
- * makes is dated from it. It defaults to now (the desks' today, at the current
- * Malaysia time); left untouched, it is read afresh when the message is added.
+ * Sent At (labelled Message Sent On and Message Sent Time) is when the message
+ * was sent, not when it was pasted in: Jev reads the buyer's reply speed from
+ * the gaps between messages, and a proposal it makes is dated from it, whatever
+ * day the message's words name. It defaults to now (the desks' today, at the
+ * current Malaysia time); left untouched, it is read afresh when the message is
+ * added. A hint under it says so, and points an earlier event to Record An Update.
  *
  * `collapsible` opens the form closed behind a "Paste A Message" button, so
  * the case page does not carry three forms expanded on load.
@@ -164,12 +166,12 @@ export function AddMessageForm({
           <Input id="add-message-name" value={name} onChange={(e) => setName(e.target.value)} />
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-[180px_120px]">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-[180px_140px]">
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="add-message-sent-on">Sent At</Label>
+          <Label htmlFor="add-message-sent-on">Message Sent On</Label>
           <DateField
             id="add-message-sent-on"
-            label="Sent At"
+            label="Message Sent On"
             value={sentOn}
             onChange={(next) => {
               setSentOn(next)
@@ -182,7 +184,7 @@ export function AddMessageForm({
           />
         </div>
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="add-message-sent-time">Time</Label>
+          <Label htmlFor="add-message-sent-time">Message Sent Time</Label>
           <Input
             id="add-message-sent-time"
             value={sentTime}
@@ -196,7 +198,7 @@ export function AddMessageForm({
             maxLength={5}
             placeholder="HH:MM"
             aria-invalid={timeError !== null || (sentAtChosen && time === null) || undefined}
-            aria-describedby={timeError ? 'add-message-sent-error' : undefined}
+            aria-describedby={timeError ? 'add-message-sent-error add-message-sent-hint' : 'add-message-sent-hint'}
             className="tabular-nums"
           />
         </div>
@@ -205,6 +207,9 @@ export function AddMessageForm({
             {timeError}
           </p>
         )}
+        <p id="add-message-sent-hint" className="text-[13px] text-muted-foreground sm:col-span-2">
+          Use The Original Message Time. If The Event Happened Earlier, Dismiss The Proposal And Use Record An Update.
+        </p>
       </div>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="add-message-body">Message</Label>

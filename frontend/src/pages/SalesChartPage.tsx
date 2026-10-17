@@ -276,7 +276,11 @@ export function SalesChartPage() {
               </div>
               <div role="group" aria-label="Filter units" className="flex flex-wrap items-center gap-2">
                 <div className="flex items-center gap-2">
-                  <Label htmlFor="sales-chart-sold-by">Sold By</Label>
+                  {/* Not "Sold By": the picker lights one recorded owner's units; it is not a sales result or an agency table. */}
+                  <span className="flex items-center">
+                    <Label htmlFor="sales-chart-sold-by">Booking Owner</Label>
+                    <InfoTooltip text="Highlights units; the figures keep their current scope." />
+                  </span>
                   <Select
                     value={soldBy === null ? 'everyone' : `owner:${soldBy.toLowerCase()}`}
                     onValueChange={(value) =>

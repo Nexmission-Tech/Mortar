@@ -76,13 +76,19 @@ export function EvidenceLog({
   )
 }
 
-/** The history table, newest first: when, track, event, note, reporter, verifier, source and status. */
+/**
+ * The history table, newest first: when it happened and when Mortar learned of
+ * it, track, event, note, reporter, verifier, source and status. Both dates
+ * show because a month-end cut-off needs both: an SPA signed on the 30th but
+ * recorded on the 3rd changes the earlier month after the fact.
+ */
 function EvidenceTable({ events, wrapNotes = false }: { events: CaseEvent[]; wrapNotes?: boolean }) {
   return (
     <Table id="case-history-table">
       <TableHeader>
         <TableRow>
-          <TableHead>When</TableHead>
+          <TableHead>Occurred On</TableHead>
+          <TableHead>Recorded On</TableHead>
           <TableHead>Track</TableHead>
           <TableHead>Event</TableHead>
           <TableHead>Note</TableHead>
@@ -97,6 +103,9 @@ function EvidenceTable({ events, wrapNotes = false }: { events: CaseEvent[]; wra
           <TableRow key={event.id}>
             <TableCell className="whitespace-nowrap text-[13px] tabular-nums">
               {formatDateTime(event.occurredAt)}
+            </TableCell>
+            <TableCell className="whitespace-nowrap text-[13px] tabular-nums text-muted-foreground">
+              {formatDateTime(event.recordedAt)}
             </TableCell>
             <TableCell className="text-[13px]">{TRACK_LABELS[event.track]}</TableCell>
             <TableCell>

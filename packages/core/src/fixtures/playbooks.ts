@@ -1,6 +1,12 @@
 import type { Playbook } from '../types'
 
-/** Reviewed staff playbooks in the concept's knowledge-record shape (lane W4). */
+/**
+ * Staff playbooks in the concept's knowledge-record shape (lane W4). They are
+ * synthetic: their outcomes, figures and bank or legal rules are illustrative,
+ * so each stays a draft, shown as "Illustrative, Not Yet Reviewed", until a
+ * named Loan or Legal reviewer validates it against the actual panel policy and
+ * approves it (`playbookValidated`). The reviewer named is who would review it.
+ */
 export const PLAYBOOKS: Playbook[] = [
   {
     id: 'PB-001',
@@ -20,7 +26,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Tan Mei Ling',
     reviewer: 'Nurul Aina',
     reviewedOn: '2026-07-02',
-    status: 'approved',
+    status: 'draft',
     tags: [
       'slip gaji',
       'payslip',
@@ -51,7 +57,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Tan Mei Ling',
     reviewer: 'Arvind Raj',
     reviewedOn: '2026-06-10',
-    status: 'approved',
+    status: 'draft',
     tags: [
       'penyata bank',
       'bank statement',
@@ -79,7 +85,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Farhan Malik',
     reviewer: 'Tan Mei Ling',
     reviewedOn: '2026-08-15',
-    status: 'approved',
+    status: 'draft',
     tags: ['komisen', 'elaun', 'overtime', 'OT', 'variable income', 'gaji bersih', 'pendapatan berubah']
   },
   {
@@ -98,7 +104,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Tan Mei Ling',
     reviewer: 'Nurul Aina',
     reviewedOn: '2026-07-25',
-    status: 'approved',
+    status: 'draft',
     tags: [
       'second bank',
       'bank reject',
@@ -125,7 +131,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Chloe Tan',
     reviewer: 'Tan Mei Ling',
     reviewedOn: '2026-07-01',
-    status: 'approved',
+    status: 'draft',
     tags: ['joint applicant', 'nama bersama', 'suami isteri', 'gabung gaji', 'combined income', 'DSR', 'penjamin']
   },
   {
@@ -146,7 +152,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Tan Mei Ling',
     reviewer: 'Nurul Aina',
     reviewedOn: '2026-05-15',
-    status: 'approved',
+    status: 'draft',
     tags: ['dual submission', 'dua bank', 'permohonan serentak', 'borderline DSR', 'fast track', 'panel banker']
   },
   {
@@ -165,7 +171,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Farhan Malik',
     reviewer: 'Arvind Raj',
     reviewedOn: '2026-08-30',
-    status: 'approved',
+    status: 'draft',
     tags: [
       'penilaian',
       'valuation shortfall',
@@ -193,7 +199,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Tan Mei Ling',
     reviewer: 'Arvind Raj',
     reviewedOn: '2026-06-15',
-    status: 'approved',
+    status: 'draft',
     tags: ['rayuan penilaian', 'valuation appeal', 'NAPIC', 'JPPH', 'harga pasaran', 'valuer revaluation']
   },
   {
@@ -214,7 +220,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Nurul Aina',
     reviewer: 'Farhan Malik',
     reviewedOn: '2026-08-10',
-    status: 'approved',
+    status: 'draft',
     tags: [
       'buyer hesitant',
       'ragu-ragu',
@@ -241,7 +247,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Nurul Aina',
     reviewer: 'Tan Mei Ling',
     reviewedOn: '2026-06-01',
-    status: 'approved',
+    status: 'draft',
     tags: [
       'pembeli senyap',
       'tangguh tandatangan',
@@ -287,7 +293,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Nurul Aina',
     reviewer: 'Arvind Raj',
     reviewedOn: '2026-08-20',
-    status: 'approved',
+    status: 'draft',
     tags: [
       'tarik diri',
       'withdrawal',
@@ -316,7 +322,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Arvind Raj',
     reviewer: 'Nurul Aina',
     reviewedOn: '2026-06-20',
-    status: 'approved',
+    status: 'draft',
     tags: [
       'refund',
       'pulangan wang',
@@ -343,7 +349,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Nurul Aina',
     reviewer: 'Arvind Raj',
     reviewedOn: '2026-05-10',
-    status: 'approved',
+    status: 'draft',
     tags: ['forfeiture', 'hangus', 'batal suka rela', 'admin fee', 'pelepasan unit', 'cancellation terms']
   },
   {
@@ -363,7 +369,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Tan Mei Ling',
     reviewer: 'Arvind Raj',
     reviewedOn: '2026-07-15',
-    status: 'approved',
+    status: 'draft',
     tags: [
       'Schedule H',
       'klausa 5(3)',
@@ -391,7 +397,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Tan Mei Ling',
     reviewer: 'Arvind Raj',
     reviewedOn: '2026-08-25',
-    status: 'approved',
+    status: 'draft',
     tags: ['third home', 'rumah ketiga', 'margin 70%', 'MOF', 'BNM cap', 'CCRIS properties', 'wang beza 30%']
   },
   {
@@ -411,7 +417,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Tan Mei Ling',
     reviewer: 'Nurul Aina',
     reviewedOn: '2026-07-01',
-    status: 'approved',
+    status: 'draft',
     tags: ['CCRIS', 'eCCRIS', 'semakan kredit', 'existing loan', 'kemudahan perumahan', 'penyata liabiliti']
   },
   {
@@ -432,7 +438,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Tan Mei Ling',
     reviewer: 'Arvind Raj',
     reviewedOn: '2026-08-01',
-    status: 'approved',
+    status: 'draft',
     tags: [
       'DSR',
       'debt service ratio',
@@ -478,7 +484,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Tan Mei Ling',
     reviewer: 'Nurul Aina',
     reviewedOn: '2026-07-10',
-    status: 'approved',
+    status: 'draft',
     tags: ['KWSP', 'EPF statement', 'penyata KWSP', 'caruman majikan', 'gaji bersih', 'pengesahan pendapatan', 'LHDN']
   },
   {
@@ -499,7 +505,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Tan Mei Ling',
     reviewer: 'Nurul Aina',
     reviewedOn: '2026-07-01',
-    status: 'approved',
+    status: 'draft',
     tags: [
       'banker lambat',
       'slow banker',
@@ -526,7 +532,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Nurul Aina',
     reviewer: 'Tan Mei Ling',
     reviewedOn: '2026-07-28',
-    status: 'approved',
+    status: 'draft',
     tags: ['tukar banker', 'reassign banker', 'gallery banker', 'unresponsive', 'pegawai bank', 'ambil alih kes']
   },
   {
@@ -546,7 +552,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Nurul Aina',
     reviewer: 'Tan Mei Ling',
     reviewedOn: '2026-08-22',
-    status: 'approved',
+    status: 'draft',
     tags: [
       'LO',
       'surat tawaran',
@@ -575,7 +581,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Nurul Aina',
     reviewer: 'Arvind Raj',
     reviewedOn: '2026-08-15',
-    status: 'approved',
+    status: 'draft',
     tags: [
       'outstation buyer',
       'overseas',
@@ -623,7 +629,7 @@ export const PLAYBOOKS: Playbook[] = [
     author: 'Arvind Raj',
     reviewer: 'Nurul Aina',
     reviewedOn: '2026-07-05',
-    status: 'approved',
+    status: 'draft',
     tags: [
       'Regulation 11(2)',
       'HDA',

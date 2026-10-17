@@ -46,7 +46,7 @@ const FAQS: { question: string; answer: string[] }[] = [
     question: 'What Is The Sales Chart?',
     answer: [
       'Every unit of the project on one page, coloured by how far its booking has got: Available, In Progress, Loan Approved, Needs Action, Release Review or SPA Signed. It is the floor-by-unit chart a sales gallery keeps, joined to the loan and legal evidence Mortar holds. The figures above it read Units Booked beside SPA Signed, because booked is not sold.',
-      'The Building view stands the blocks up in 3D; the Grid lays them out flat and works by keyboard. Loan Approved, No SPA Appointment lights the buyers who only need a signing date. Clicking a unit shows its overview, and Open Case opens a unit on your own desk; a unit on another desk names whose desk to ask. Release Review is a flag for a person: Mortar never cancels a booking.'
+      'The Building view stands the blocks up in 3D; the Grid lays them out flat and works by keyboard. Loan Approved, No SPA Appointment lights the bookings with a recorded loan approval and no appointment; Legal checks what still blocks signing. Clicking a unit shows its overview, and Open Case opens a unit on your own desk; a unit on another desk names whose desk to ask. Release Review is a flag for a person: Mortar never cancels a booking.'
     ]
   },
   {
@@ -68,7 +68,7 @@ const FAQS: { question: string; answer: string[] }[] = [
     question: 'How Does The Forecast Work?',
     answer: [
       'It counts signed SPAs, not bookings. A booking is a promise; only a signed SPA — with 10% of the price due on signing — makes the unit sold. The headline is expected signings within 30 days of booking, with a range around it.',
-      'Each live booking gets a probability from how resolved bookings at the same stage actually converted, and the probabilities sum to the headline. The backtest on the page checks the method against the simulated history — it proves the method works, not that the business behaves this way.'
+      'Each live booking gets a chance of signing from how resolved bookings at the same stage actually converted, and the chances add up to the headline. The accuracy check under How This Is Counted runs the same method 30 days back and sets what it expected beside what happened, including where it was over-confident. It runs on simulated history, so it tests the method, not how the business behaves.'
     ]
   },
   {

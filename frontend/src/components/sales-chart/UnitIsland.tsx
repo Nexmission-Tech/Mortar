@@ -107,7 +107,8 @@ export function UnitIsland({
             <Fact term="Buyer">
               {overview.buyer} · {overview.bookingId}
             </Fact>
-            <Fact term="Price">{overview.price}</Fact>
+            <Fact term="Booking Price">{overview.price}</Fact>
+            <Fact term="Booked On">{overview.bookedOn}</Fact>
             <Fact term="Loan And SPA" wide>
               {overview.position}
             </Fact>

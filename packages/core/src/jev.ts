@@ -10,6 +10,16 @@ export const JEV_REVIEW_THRESHOLD = 0.6
 
 const STATUS_RANK: Record<Playbook['status'], number> = { approved: 0, draft: 1, superseded: 2, retired: 3 }
 
+/**
+ * Whether a playbook's action and limits may be shown as guidance: approved,
+ * with a named reviewer. Anything else is illustrative, not yet reviewed,
+ * until a Loan or Legal reviewer checks it against the actual panel policy;
+ * one wrong bank or legal claim in front of a solicitor discredits the rest.
+ */
+export function playbookValidated(playbook: Playbook): boolean {
+  return playbook.status === 'approved' && playbook.reviewer.trim() !== ''
+}
+
 /** Keyword search over playbooks, including Malay and Manglish synonyms in `tags`. */
 export function searchPlaybooks(
   playbooks: Playbook[],

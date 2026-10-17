@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 import { SearchX } from 'lucide-react'
-import { forecastInsights } from '@mortar/core'
+import { forecastInsights, type Persona } from '@mortar/core'
 import { datasetFor } from '@/components/forecast/forecast'
-import { ForecastReports } from '@/components/forecast/ForecastReports'
+import { ForecastReports, type HistoryReach } from '@/components/forecast/ForecastReports'
 import { PageContainer } from '@/components/layout/PageContainer'
 import { PageHeaderCard } from '@/components/layout/PageHeaderCard'
 import { StatCard } from '@/components/StatCard'
@@ -12,14 +12,25 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { formatDate } from '@/components/case/format'
 import { useSnapshot } from '@/lib/data'
+import { usePersonaSafe } from '@/lib/persona'
+
+/** The Manager sees every booking and a Sales Admin keeps their own; Loan and Legal hold a booking only while it is theirs to move. */
+const REACH: Record<Persona, HistoryReach> = {
+  manager: 'all',
+  'sales-admin': 'own',
+  'loan-admin': 'assigned',
+  'legal-admin': 'assigned'
+}
 
 export function ForecastPage() {
   const { snapshot, loading, error, refresh } = useSnapshot()
+  const { persona } = usePersonaSafe()
 
+  const dataset = useMemo(() => (snapshot ? datasetFor(snapshot) : null), [snapshot])
   const insights = useMemo(() => {
-    if (!snapshot) return null
-    return forecastInsights(datasetFor(snapshot), snapshot.meta.referenceDate, { model: snapshot.forecastModel })
-  }, [snapshot])
+    if (!snapshot || !dataset) return null
+    return forecastInsights(dataset, snapshot.meta.referenceDate, { model: snapshot.forecastModel })
+  }, [snapshot, dataset])
 
   return (
     <PageContainer>
@@ -97,7 +108,7 @@ export function ForecastPage() {
             ) : null}
           </section>
 
-          <ForecastReports insights={insights} />
+          <ForecastReports insights={insights} dataset={dataset} reach={REACH[persona]} />
 
           {insights.history.scope === 'project' ? (
             <p className="mt-3 text-[13px] text-muted-foreground">

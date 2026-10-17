@@ -199,21 +199,21 @@ personas: two Sales Admins, one Loan Admin, one Legal Admin and one Manager.
 | Legal Admin | `/legal`    | Works the queue of unsigned SPAs by how long they have sat |
 | Manager     | `/chase`    | Works Decisions For You: the overdue cases, then escalates |
 
-| Route           | Purpose                                                                                                                              |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `/`             | Public landing page                                                                                                                  |
-| `/sign-in`      | Named demo profile picker and signed session cookie, no password                                                                     |
-| `/app`          | Redirects to the active persona's home                                                                                               |
-| `/chase`        | Today: who to chase today, with rule-based next steps, Mortar AI's alternative, blocker reasons and one-click tasks                  |
-| `/team`         | Team: every desk's load side by side, most overdue first, with Open Bookings, Overdue Cases, Value At Risk and Expected Signings     |
-| `/bookings`     | Bookings: unit pipeline, Who Holds Each Booking filter, and case panel quick view; hand-entry Add Booking and closed Excel export    |
-| `/bookings/:id` | Case page: who holds the case and the next step, the illustrated booking journey, then Overview, Messages, History and Tasks         |
-| `/legal`        | Legal: SPA execution queue with No Appointment Yet and Appointment Set, Not Signed sections, with inline appointment/signing dialogs |
-| `/forecast`     | Forecast: estimated SPAs by booking day 30 with a range, and five reports as a document stack                                        |
-| `/sales-chart`  | Sales Chart: every unit by its booking-to-SPA state, as a 3D showhouse model or a grid, with the closing list as a filter            |
-| `/import`       | Add Bookings: upload a spreadsheet or type bookings in directly, with row-by-row review                                              |
-| `/faq`          | FAQ                                                                                                                                  |
-| `/settings`     | Settings: demo dataset controls, reset, server health, and folded layouts                                                            |
+| Route           | Purpose                                                                                                                               |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`             | Public landing page                                                                                                                   |
+| `/sign-in`      | Named demo profile picker and signed session cookie, no password                                                                      |
+| `/app`          | Redirects to the active persona's home                                                                                                |
+| `/chase`        | Today: who to chase today, with rule-based next steps, Mortar AI's alternative, blocker reasons and one-click tasks                   |
+| `/team`         | Team: every desk's load side by side, most overdue first, with Open Bookings, Overdue Cases, Stalled Booking Value and Estimated SPAs |
+| `/bookings`     | Bookings: unit pipeline, Who Holds Each Booking filter, and case panel quick view; hand-entry Add Booking and closed Excel export     |
+| `/bookings/:id` | Case page: who holds the case and the next step, the illustrated booking journey, then Overview, Messages, History and Tasks          |
+| `/legal`        | Legal: SPA execution queue with No Appointment Yet and Appointment Set, Not Signed sections, with inline appointment/signing dialogs  |
+| `/forecast`     | Forecast: estimated SPAs by booking day 30 with a range, and five reports as a document stack                                         |
+| `/sales-chart`  | Sales Chart: every unit by its booking-to-SPA state, as a 3D showhouse model or a grid, with the closing list as a filter             |
+| `/import`       | Add Bookings: upload a spreadsheet (the default) or type demo bookings in, with row-by-row review                                     |
+| `/faq`          | FAQ                                                                                                                                   |
+| `/settings`     | Settings: demo dataset controls, reset, server health, and folded layouts                                                             |
 
 <p align="right"><a href="#readme-top">&uarr;</a></p>
 

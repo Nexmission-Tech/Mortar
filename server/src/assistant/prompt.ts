@@ -63,6 +63,6 @@ WHAT YOU WILL NOT DO
 
 WHAT TO REACH FOR
 
-- search_playbooks is the team's own written guidance. Read it before you say what to do about a stall, and follow it.
+- search_playbooks is the team's own written guidance. Read it before you say what to do about a stall, and follow a playbook that says who reviewed it. One marked illustrative, not yet reviewed, has no validated action: say so, and do not present it as policy.
 - A stalled case has a named blocker and a next step; give both, and the days it has been sitting there.`
 }

@@ -111,10 +111,13 @@ Key files within each package include:
 - `packages/core/src/types.ts`: The binding TypeScript domain contract.
 - `packages/core/src/sim.ts`: Deterministic dataset generator, case derivations,
   and Wilson-score forecasting algorithms.
-- `packages/core/src/jev.ts`: Shared MiniSearch playbook search and extraction
-  proposal mapping helpers.
+- `packages/core/src/jev.ts`: Shared MiniSearch playbook search, extraction
+  proposal mapping helpers, and `playbookValidated` (approved with a named
+  reviewer), which gates whether a playbook's action and limits are shown as
+  guidance in What To Do and Ask MortarAI's `search_playbooks`.
 - `packages/core/src/fixtures/`: Canonical story bookings (`stories.ts`) and
-  reviewed knowledge articles (`playbooks.ts`).
+  knowledge articles (`playbooks.ts`), seeded as drafts: synthetic, so
+  illustrative until a named Loan or Legal reviewer validates them.
 - `server/src/index.ts`: Application bootstrap, static file serving, and route
   dispatching.
 - `server/src/assistant/`: Ask MortarAI Gemini service, tools (`tools.ts`),
@@ -613,9 +616,27 @@ The engine validates its calibration through temporal backtesting (`backtest`):
 - **Verification Metrics:** Reports the overall Brier score (mean squared
   probability error) and a four-bucket calibration table comparing mean forecast
   probabilities against observed signing proportions.
-- **Use:** Backtests remain an engineering validation tool, outside the business
-  document deck. Synthetic validation demonstrates implementation behavior, not
-  measured accuracy on a developer's real bookings.
+- **Use:** Signing Outlook's How This Is Counted shows the backtest as the
+  accuracy check, run on the viewer's accessible records 30 days before the
+  report date: expected against observed signings, the bands with their booking
+  counts, and the bands where it was over-confident. It never shows the Brier
+  score, and it is labelled simulated history: synthetic validation demonstrates
+  implementation behavior, not measured accuracy on a developer's real bookings.
+  It runs only where the view keeps every booking it ever held (`HistoryReach`
+  in `ForecastReports`): the Manager's, and a Sales Admin's own bookings. A Loan
+  or Legal view loses a booking as it moves on, signed ones first, so it says
+  the check is not shown there.
+
+### Cohort Result
+
+`cohortResult(data, from, to, asOf)` (`packages/core/src/sim/cohort.ts`) reads
+the 30-day verified SPA rate for an intake: every booking dated from `from` to
+`to`, split into signed by booking day 30, signed later, exited (cancelled or
+lapsed) and still unsigned, with how many of those are not yet 30 days old. The
+rate is signed by day 30 over every booking enrolled, exits included. It reads
+confirmed events recorded by `asOf` only, never the forecast. Conversion And
+Turnaround opens it on the four weeks that ended 30 days before the report date,
+with the same reach as the accuracy check.
 
 ### Parameter Assumptions
 

@@ -3,7 +3,8 @@
  * on one line: what Jev suggests, the document and who it lands on, and how
  * sure Jev is in words, with the Needs Review marker under the 0.6 threshold,
  * the JevTag source line, and Confirm, Dispute and Dismiss actions on the
- * pending proposal event. A `no_update` read collapses to one muted line; the
+ * pending proposal event. A loan proposal names the bank it will update (or
+ * No Bank) beside Confirm. A `no_update` read collapses to one muted line; the
  * full panel is reserved for proposals that need a decision. Ask Jev Again
  * re-reads any message live and supersedes the old proposal. A review the
  * server refuses, because someone settled the proposal first, shows its
@@ -12,7 +13,7 @@
 
 import { useState, type ReactNode } from 'react'
 import { Check } from 'lucide-react'
-import type { CaseEvent, EventKind, Extraction, ExtractedEvent, Message } from '@mortar/core'
+import type { CaseEvent, EventKind, Extraction, ExtractedEvent, LoanApplication, Message } from '@mortar/core'
 import { JEV_REVIEW_THRESHOLD } from '@mortar/core'
 import { JevTag } from '@/components/case/JevTag'
 import { EvidencePill } from '@/components/case/EvidencePill'
@@ -94,14 +95,27 @@ export function readingsToReview(
   }).length
 }
 
+/**
+ * The bank a loan proposal will update once confirmed, named before Confirm:
+ * with two banks deciding, a hurried Confirm could otherwise mark the wrong
+ * one. `null` for a proposal tied to no bank; `undefined` off the loan track,
+ * where no bank is involved.
+ */
+function proposalBank(proposal: CaseEvent, applications: readonly LoanApplication[]): string | null | undefined {
+  if (proposal.track !== 'loan') return undefined
+  return applications.find((a) => a.id === proposal.applicationId)?.bank ?? null
+}
+
 function ProposalBlock({
   extraction,
   proposal,
+  applications,
   pending,
   onReview
 }: {
   extraction: Extraction
   proposal: CaseEvent | null
+  applications: readonly LoanApplication[]
   pending: boolean
   onReview: (eventId: string, decision: Decision) => void
 }) {
@@ -124,6 +138,7 @@ function ProposalBlock({
     document.value !== 'none' ? DOCUMENT_LABELS[document.value] : null,
     owner.value !== 'none' ? OWNER_ROLE_LABELS[owner.value] : null
   ].filter(Boolean)
+  const bank = proposal ? proposalBank(proposal, applications) : undefined
   return (
     <div className="mt-2 rounded-md border border-border bg-muted p-3">
       <p className="text-sm">
@@ -135,11 +150,17 @@ function ProposalBlock({
         <JevTag meta={meta} />
         {needsReview && <StatusPill tone="warning">Needs Review</StatusPill>}
       </div>
-      {proposal && (
-        <div className="mt-2 flex flex-wrap items-center gap-2">
-          {proposal.status === 'provisional' || proposal.status === 'disputed' ? (
-            <>
+      {proposal &&
+        (proposal.status === 'provisional' || proposal.status === 'disputed' ? (
+          <>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
               {proposal.status === 'disputed' && <EvidencePill status="disputed" />}
+              {bank !== undefined ? (
+                <span className="text-[13px]">
+                  <span className="text-muted-foreground">Updates </span>
+                  <span className="font-medium">{bank ?? 'No Bank'}</span>
+                </span>
+              ) : null}
               <Button size="sm" variant="secondary" disabled={pending} onClick={() => onReview(proposal.id, 'confirm')}>
                 <Check className="size-4" />
                 Confirm
@@ -152,12 +173,16 @@ function ProposalBlock({
               <Button size="sm" variant="ghost" disabled={pending} onClick={() => onReview(proposal.id, 'dismiss')}>
                 Dismiss
               </Button>
-            </>
-          ) : (
+            </div>
+            <p className="mt-1.5 text-[13px] text-muted-foreground">
+              {bank !== undefined ? 'Wrong Reading Or Bank?' : 'Wrong Reading?'} Dismiss It, Then Record An Update.
+            </p>
+          </>
+        ) : (
+          <div className="mt-2 flex flex-wrap items-center gap-2">
             <EvidencePill status={proposal.status} />
-          )}
-        </div>
-      )}
+          </div>
+        ))}
     </div>
   )
 }
@@ -166,12 +191,14 @@ function MessageItem({
   message,
   extraction,
   proposal,
+  applications,
   reviewer,
   onChanged
 }: {
   message: Message
   extraction: Extraction | null
   proposal: CaseEvent | null
+  applications: readonly LoanApplication[]
   reviewer: string
   onChanged: () => Promise<void>
 }) {
@@ -225,6 +252,7 @@ function MessageItem({
         <ProposalBlock
           extraction={extraction}
           proposal={proposal}
+          applications={applications}
           pending={pending}
           onReview={(eventId, decision) =>
             void run('review', () => reviewEvent(eventId, { decision, reviewer }), DECISION_TOASTS[decision], true)
@@ -241,6 +269,7 @@ export function MessagesPanel({
   messages,
   extractions,
   events,
+  applications,
   reviewer,
   onChanged,
   footer
@@ -248,6 +277,8 @@ export function MessagesPanel({
   messages: Message[]
   extractions: Map<string, Extraction>
   events: CaseEvent[]
+  /** The case's bank applications, so a loan proposal names the bank it will update. */
+  applications: readonly LoanApplication[]
   reviewer: string
   onChanged: () => Promise<void>
   /** Rendered under the list — the Add Message form. */
@@ -271,6 +302,7 @@ export function MessagesPanel({
                   message={message}
                   extraction={extraction}
                   proposal={currentProposal(events, message.id, extraction)}
+                  applications={applications}
                   reviewer={reviewer}
                   onChanged={onChanged}
                 />

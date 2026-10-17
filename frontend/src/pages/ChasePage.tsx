@@ -349,12 +349,12 @@ function AdminToday() {
               }
             },
             {
-              label: 'Value At Risk',
+              label: 'Stalled Booking Value',
               icon: Banknote,
               value: formatRmCompact(valueAtRisk),
               exact: formatRm(valueAtRisk),
               caption: 'All Accessible Bookings',
-              info: `${formatRm(valueAtRisk)}. Booking value held by stalled cases, not collected revenue.`
+              info: `${formatRm(valueAtRisk)}. Full booking prices of stalled bookings, not a loss estimate or collected revenue.`
             }
           ]}
           third={<TasksShortcut count={dueToday} onOpen={() => setView('tasks')} />}
@@ -489,7 +489,7 @@ function AdminToday() {
 /**
  * The Manager's Today: the same page, with Decisions For You as its worklist
  * (the overdue cases no follow-up covers yet) and Follow-Ups as its second
- * view, under a strip of the overdue count, value at risk across every desk
+ * view, under a strip of the overdue count, stalled booking value across every desk
  * and the busiest desk.
  */
 function ManagerToday() {
@@ -547,12 +547,12 @@ function ManagerToday() {
               }
             },
             {
-              label: 'Value At Risk',
+              label: 'Stalled Booking Value',
               icon: Banknote,
               value: formatRmCompact(team?.valueAtRisk ?? 0),
               exact: formatRm(team?.valueAtRisk ?? 0),
               caption: 'Across All Desks',
-              info: `${formatRm(team?.valueAtRisk ?? 0)}. Booking value held by stalled cases, not collected revenue.`,
+              info: `${formatRm(team?.valueAtRisk ?? 0)}. Full booking prices of stalled bookings, not a loss estimate or collected revenue.`,
               to: '/team'
             }
           ]}
