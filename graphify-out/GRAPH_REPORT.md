@@ -1,7 +1,7 @@
 # Graph Report - pr123  (2026-10-17)
 
 ## Corpus Check
-- 450 files · ~480,981 words
+- 450 files · ~481,625 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 16 file(s) not represented in the graph (top: (none) 9, .css 4, .example 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `61ff8cb5`
+- Built from commit: `bd6b9ae0`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -1114,9 +1114,9 @@ Cohesion: 0.40
 Nodes (4): ref_path, @tailwindcss/vite, vite, @vitejs/plugin-react
 
 ## Ambiguous Edges - Review These
-- `Kabel DXP Weekly Check-In, 29 September 2026` → `Chin Hin Group Property Berhad (CHGP)`  [AMBIGUOUS]
+- `Claim: 7 Of 8 Name Loan Rejection The Biggest Cause` → `Do Not Say: IFCA Is Chin Hin's System`  [AMBIGUOUS]
   docs/demo/pitch-script.md · relation: conceptually_related_to
-- `Do Not Say: IFCA Is Chin Hin's System` → `Claim: 7 Of 8 Name Loan Rejection The Biggest Cause`  [AMBIGUOUS]
+- `Kabel DXP Weekly Check-In, 29 September 2026` → `Chin Hin Group Property Berhad (CHGP)`  [AMBIGUOUS]
   docs/demo/pitch-script.md · relation: conceptually_related_to
 - `GET /api/settings` → `meta Key-Value Table`  [AMBIGUOUS]
   docs/TRD.md · relation: references
@@ -1131,17 +1131,17 @@ Nodes (4): ref_path, @tailwindcss/vite, vite, @vitejs/plugin-react
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **What is the exact relationship between `Kabel DXP Weekly Check-In, 29 September 2026` and `Chin Hin Group Property Berhad (CHGP)`?**
+- **What is the exact relationship between `Claim: 7 Of 8 Name Loan Rejection The Biggest Cause` and `Do Not Say: IFCA Is Chin Hin's System`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **What is the exact relationship between `Do Not Say: IFCA Is Chin Hin's System` and `Claim: 7 Of 8 Name Loan Rejection The Biggest Cause`?**
+- **What is the exact relationship between `Kabel DXP Weekly Check-In, 29 September 2026` and `Chin Hin Group Property Berhad (CHGP)`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **What is the exact relationship between `GET /api/settings` and `meta Key-Value Table`?**
   _Edge tagged AMBIGUOUS (relation: references) - confidence is low._
 - **What is the exact relationship between `meta Key-Value Table` and `PUT /api/settings (Manager Only)`?**
   _Edge tagged AMBIGUOUS (relation: references) - confidence is low._
 - **Why does `AGENTS.md` connect `managerQueue` to `Project Structure tree`, `About The Project section`, `Technical Requirements Document: Mortar`, `Agent Rules`?**
-  _High betweenness centrality (0.075) - this node is a cross-community bridge._
-- **Why does `Documents Index` connect `Technical Requirements Document: Mortar` to `Agent Rules`, `Mortar Notes For Agents`, `Agent Skills`, `Andrej Karpathy Skills`, `managerQueue`?**
-  _High betweenness centrality (0.068) - this node is a cross-community bridge._
+  _High betweenness centrality (0.084) - this node is a cross-community bridge._
 - **Why does `Keep It Current` connect `Keep It Current` to `patch_docs.py`, `Checklist`?**
-  _High betweenness centrality (0.066) - this node is a cross-community bridge._
+  _High betweenness centrality (0.079) - this node is a cross-community bridge._
+- **Why does `Documents Index` connect `Technical Requirements Document: Mortar` to `Agent Rules`, `Mortar Notes For Agents`, `Agent Skills`, `Andrej Karpathy Skills`, `managerQueue`?**
+  _High betweenness centrality (0.072) - this node is a cross-community bridge._

@@ -878,7 +878,7 @@
       "file_type": "code",
       "norm_label": "jevcache",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L361"
+      "source_location": "L363"
     },
     {
       "id": "packages_core_src_types_jevcacheentry",
@@ -891,7 +891,7 @@
       "file_type": "code",
       "norm_label": "jevcacheentry",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L367"
+      "source_location": "L369"
     },
     {
       "id": "packages_core_src_types_jevkind",
@@ -904,7 +904,7 @@
       "file_type": "code",
       "norm_label": "jevkind",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L279"
+      "source_location": "L281"
     },
     {
       "id": "packages_core_src_types_jevmeta",
@@ -917,7 +917,7 @@
       "file_type": "code",
       "norm_label": "jevmeta",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L281"
+      "source_location": "L283"
     },
     {
       "id": "packages_core_src_types_playbook",
@@ -943,7 +943,7 @@
       "file_type": "code",
       "norm_label": "scoreanswer",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L294"
+      "source_location": "L296"
     },
     {
       "id": "packages_jev_scripts_precompute_collectingcache",
@@ -1190,7 +1190,7 @@
       "file_type": "code",
       "norm_label": "buyersignals",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L340"
+      "source_location": "L342"
     },
     {
       "id": "packages_core_src_types_senderrole",
@@ -1346,7 +1346,7 @@
       "file_type": "code",
       "norm_label": "nextactionsuggestion",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L324"
+      "source_location": "L326"
     },
     {
       "id": "server_src_assistant_tests_assistant_test_fakedb",
@@ -1489,7 +1489,7 @@
       "file_type": "code",
       "norm_label": "jevanswerrow",
       "source_file": "server/db/mappers.ts",
-      "source_location": "L165"
+      "source_location": "L166"
     },
     {
       "id": "server_src_assistant_index_assistantoptions",
@@ -1606,7 +1606,7 @@
       "file_type": "code",
       "norm_label": "askaction",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L442"
+      "source_location": "L444"
     },
     {
       "id": "packages_core_src_types_backtest",
@@ -1619,7 +1619,7 @@
       "file_type": "code",
       "norm_label": "backtest",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L254"
+      "source_location": "L256"
     },
     {
       "id": "packages_core_src_types_booking",
@@ -1645,7 +1645,7 @@
       "file_type": "code",
       "norm_label": "casesummary",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L182"
+      "source_location": "L184"
     },
     {
       "id": "packages_core_src_types_choiceanswer",
@@ -1658,7 +1658,7 @@
       "file_type": "code",
       "norm_label": "choiceanswer",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L288"
+      "source_location": "L290"
     },
     {
       "id": "packages_core_src_types_eventkind",
@@ -1697,7 +1697,7 @@
       "file_type": "code",
       "norm_label": "extractedevent",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L302"
+      "source_location": "L304"
     },
     {
       "id": "packages_core_src_types_financingrisk",
@@ -1710,7 +1710,7 @@
       "file_type": "code",
       "norm_label": "financingrisk",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L170"
+      "source_location": "L172"
     },
     {
       "id": "packages_core_src_types_language",
@@ -1736,7 +1736,7 @@
       "file_type": "code",
       "norm_label": "noulanswer",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L300"
+      "source_location": "L302"
     },
     {
       "id": "packages_core_src_types_stagerate",
@@ -1749,7 +1749,7 @@
       "file_type": "code",
       "norm_label": "stagerate",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L220"
+      "source_location": "L222"
     },
     {
       "id": "packages_core_src_types_storyfixture",
@@ -1762,7 +1762,7 @@
       "file_type": "code",
       "norm_label": "storyfixture",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L384"
+      "source_location": "L386"
     },
     {
       "id": "packages_core_src_types_task",
@@ -1996,7 +1996,7 @@
       "file_type": "code",
       "norm_label": "applicationstatus",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L180"
+      "source_location": "L182"
     },
     {
       "id": "packages_core_src_types_caseevent",
@@ -2087,7 +2087,7 @@
       "file_type": "code",
       "norm_label": "extraction",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L314"
+      "source_location": "L316"
     },
     {
       "id": "frontend_src_components_brain_tests_askpanel_test_stubreader",
@@ -2113,7 +2113,7 @@
       "file_type": "code",
       "norm_label": "playbookranking",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L333"
+      "source_location": "L335"
     },
     {
       "id": "packages_core_src_types_snapshot",
@@ -2126,7 +2126,7 @@
       "file_type": "code",
       "norm_label": "snapshot",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L398"
+      "source_location": "L400"
     },
     {
       "id": "packages_core_src_manager_waitingsuggestion",
@@ -2165,7 +2165,7 @@
       "file_type": "code",
       "norm_label": "assumption",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L265"
+      "source_location": "L267"
     },
     {
       "id": "packages_core_src_types_sourcetag",
@@ -2178,7 +2178,7 @@
       "file_type": "code",
       "norm_label": "sourcetag",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L263"
+      "source_location": "L265"
     },
     {
       "id": "packages_core_src_sim_cases_casedatainput",
@@ -2191,7 +2191,7 @@
       "file_type": "code",
       "norm_label": "casedatainput",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L423"
+      "source_location": "L441"
     },
     {
       "id": "packages_core_src_sim_cases_casefacts",
@@ -2334,7 +2334,7 @@
       "file_type": "code",
       "norm_label": "dataset",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L377"
+      "source_location": "L379"
     },
     {
       "id": "packages_core_src_types_forecast",
@@ -2347,7 +2347,7 @@
       "file_type": "code",
       "norm_label": "forecast",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L241"
+      "source_location": "L243"
     },
     {
       "id": "packages_core_src_types_isodate",
@@ -2568,7 +2568,7 @@
       "file_type": "code",
       "norm_label": "staffprofile",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L419"
+      "source_location": "L421"
     },
     {
       "id": "server_src_app_handler",
@@ -3257,7 +3257,7 @@
       "file_type": "code",
       "norm_label": "simulationmeta",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L391"
+      "source_location": "L393"
     },
     {
       "id": "server_db_mappers_row",
@@ -3283,7 +3283,7 @@
       "file_type": "code",
       "norm_label": "storedmeta",
       "source_file": "server/db/mappers.ts",
-      "source_location": "L183"
+      "source_location": "L184"
     },
     {
       "id": "server_src_app_appoptions",
@@ -3491,7 +3491,7 @@
       "file_type": "code",
       "norm_label": "askcontext",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L431"
+      "source_location": "L433"
     },
     {
       "id": "packages_core_src_types_askquestion",
@@ -3504,7 +3504,7 @@
       "file_type": "code",
       "norm_label": "askquestion",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L463"
+      "source_location": "L465"
     },
     {
       "id": "packages_core_src_types_askreply",
@@ -3517,7 +3517,7 @@
       "file_type": "code",
       "norm_label": "askreply",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L450"
+      "source_location": "L452"
     },
     {
       "id": "packages_jev_src_proxyclient_anthropiccontentblock",
@@ -3582,7 +3582,7 @@
       "file_type": "code",
       "norm_label": "persona",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L416"
+      "source_location": "L418"
     },
     {
       "id": "server_src_assistant_guardrails_assistantimage",
@@ -3634,7 +3634,7 @@
       "file_type": "code",
       "norm_label": "forecastmodel",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L231"
+      "source_location": "L233"
     },
     {
       "id": "frontend_src_components_bookings_recordupdateform_updateapplication",
@@ -3972,7 +3972,7 @@
       "file_type": "code",
       "norm_label": "jevservice",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L349"
+      "source_location": "L351"
     },
     {
       "id": "server_src_index_systemone",
@@ -4011,7 +4011,7 @@
       "file_type": "code",
       "norm_label": "risklevel",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L168"
+      "source_location": "L170"
     },
     {
       "id": "frontend_src_components_sales_chart_saleschartgrid_blockgrid",
@@ -4609,7 +4609,7 @@
       "file_type": "code",
       "norm_label": ".get()",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L362"
+      "source_location": "L364"
     },
     {
       "id": "packages_core_src_types_jevcache_put",
@@ -4621,7 +4621,7 @@
       "file_type": "code",
       "norm_label": ".put()",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L363"
+      "source_location": "L365"
     },
     {
       "id": "packages_jev_scripts_precompute_collectingcache_get",
@@ -8101,7 +8101,7 @@
       "file_type": "code",
       "norm_label": ".canundoimport()",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L353"
+      "source_location": "L357"
     },
     {
       "id": "server_src_tests_app_test_fakedb_casedata",
@@ -8281,7 +8281,7 @@
       "file_type": "code",
       "norm_label": ".jevanswercount()",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L401"
+      "source_location": "L405"
     },
     {
       "id": "server_src_tests_app_test_fakedb_jevget",
@@ -8293,7 +8293,7 @@
       "file_type": "code",
       "norm_label": ".jevget()",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L404"
+      "source_location": "L408"
     },
     {
       "id": "server_src_tests_app_test_fakedb_jevput",
@@ -8305,7 +8305,7 @@
       "file_type": "code",
       "norm_label": ".jevput()",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L407"
+      "source_location": "L411"
     },
     {
       "id": "server_src_tests_app_test_fakedb_latestjevanswers",
@@ -8317,7 +8317,7 @@
       "file_type": "code",
       "norm_label": ".latestjevanswers()",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L397"
+      "source_location": "L401"
     },
     {
       "id": "server_src_tests_app_test_fakedb_listplaybooks",
@@ -8449,7 +8449,7 @@
       "file_type": "code",
       "norm_label": ".updatetaskstatus()",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L380"
+      "source_location": "L384"
     },
     {
       "id": "scripts_demo_tests_test_narrate_narratetests_run_narrate",
@@ -8545,7 +8545,7 @@
       "file_type": "code",
       "norm_label": "managerqueue()",
       "source_file": "frontend/src/components/manager/managerQueue.ts",
-      "source_location": "L69"
+      "source_location": "L74"
     },
     {
       "id": "frontend_src_components_manager_managerqueue_recipientrole",
@@ -9673,7 +9673,7 @@
       "file_type": "code",
       "norm_label": "answersconcern()",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L242"
+      "source_location": "L260"
     },
     {
       "id": "packages_core_src_sim_cases_appointmentday",
@@ -9697,7 +9697,7 @@
       "file_type": "code",
       "norm_label": "deriveapplication()",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L254"
+      "source_location": "L272"
     },
     {
       "id": "packages_core_src_sim_cases_derivecase",
@@ -9709,7 +9709,7 @@
       "file_type": "code",
       "norm_label": "derivecase()",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L325"
+      "source_location": "L343"
     },
     {
       "id": "packages_core_src_sim_cases_groupby",
@@ -9721,7 +9721,7 @@
       "file_type": "code",
       "norm_label": "groupby()",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L533"
+      "source_location": "L551"
     },
     {
       "id": "packages_core_src_sim_cases_lastdayof",
@@ -9733,7 +9733,7 @@
       "file_type": "code",
       "norm_label": "lastdayof()",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L315"
+      "source_location": "L333"
     },
     {
       "id": "packages_core_src_sim_cases_outstandingdocs",
@@ -9745,7 +9745,7 @@
       "file_type": "code",
       "norm_label": "outstandingdocs()",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L291"
+      "source_location": "L309"
     },
     {
       "id": "packages_core_src_sim_cases_settlesshortfall",
@@ -9757,7 +9757,7 @@
       "file_type": "code",
       "norm_label": "settlesshortfall()",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L249"
+      "source_location": "L267"
     },
     {
       "id": "packages_core_src_sim_cases_summarizecases",
@@ -9769,7 +9769,7 @@
       "file_type": "code",
       "norm_label": "summarizecases()",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L426"
+      "source_location": "L444"
     },
     {
       "id": "packages_core_src_sim_cases_unanswered",
@@ -9781,7 +9781,7 @@
       "file_type": "code",
       "norm_label": "unanswered()",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L224"
+      "source_location": "L242"
     },
     {
       "id": "packages_core_src_sim_dates_adddays",
@@ -11125,7 +11125,7 @@
       "file_type": "code",
       "norm_label": "makeapp()",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L446"
+      "source_location": "L450"
     },
     {
       "id": "server_src_util_body",
@@ -11557,7 +11557,7 @@
       "file_type": "code",
       "norm_label": "call()",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L458"
+      "source_location": "L462"
     },
     {
       "id": "server_src_tests_app_test_derivingcases",
@@ -11569,7 +11569,7 @@
       "file_type": "code",
       "norm_label": "derivingcases()",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L521"
+      "source_location": "L525"
     },
     {
       "id": "server_src_tests_app_test_errorof",
@@ -11581,7 +11581,7 @@
       "file_type": "code",
       "norm_label": "errorof()",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L500"
+      "source_location": "L504"
     },
     {
       "id": "server_src_tests_app_test_fakedb_deletebooking",
@@ -11593,7 +11593,7 @@
       "file_type": "code",
       "norm_label": ".deletebooking()",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L364"
+      "source_location": "L368"
     },
     {
       "id": "server_src_tests_app_test_fakedb_importbookings",
@@ -11605,7 +11605,7 @@
       "file_type": "code",
       "norm_label": ".importbookings()",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L319"
+      "source_location": "L323"
     },
     {
       "id": "server_src_tests_app_test_fakedb_undoimport",
@@ -11617,7 +11617,7 @@
       "file_type": "code",
       "norm_label": ".undoimport()",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L336"
+      "source_location": "L340"
     },
     {
       "id": "server_src_tests_app_test_fakejev",
@@ -11629,7 +11629,7 @@
       "file_type": "code",
       "norm_label": "fakejev()",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L410"
+      "source_location": "L414"
     },
     {
       "id": "server_src_tests_app_test_post",
@@ -11641,7 +11641,7 @@
       "file_type": "code",
       "norm_label": "post()",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L471"
+      "source_location": "L475"
     },
     {
       "id": "server_src_tests_app_test_staffevent",
@@ -11653,7 +11653,7 @@
       "file_type": "code",
       "norm_label": "staffevent()",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L503"
+      "source_location": "L507"
     },
     {
       "id": "server_src_tests_forecast_summary_test_booking",
@@ -13213,7 +13213,7 @@
       "file_type": "code",
       "norm_label": "overdueby()",
       "source_file": "frontend/src/components/manager/managerQueue.ts",
-      "source_location": "L91"
+      "source_location": "L96"
     },
     {
       "id": "frontend_src_components_ui_tooltip_tooltip",
@@ -13573,7 +13573,7 @@
       "file_type": "code",
       "norm_label": "rowstometa()",
       "source_file": "server/db/mappers.ts",
-      "source_location": "L193"
+      "source_location": "L194"
     },
     {
       "id": "server_db_mappers_rowtoapplication",
@@ -13621,7 +13621,7 @@
       "file_type": "code",
       "norm_label": "rowtojevanswer()",
       "source_file": "server/db/mappers.ts",
-      "source_location": "L173"
+      "source_location": "L174"
     },
     {
       "id": "server_db_mappers_rowtomessage",
@@ -15733,7 +15733,7 @@
       "file_type": "code",
       "norm_label": "standingfollowup()",
       "source_file": "frontend/src/components/manager/managerQueue.ts",
-      "source_location": "L51"
+      "source_location": "L53"
     },
     {
       "id": "packages_core_src_sim_forecast_range_acceptance_test_booking",
@@ -17497,7 +17497,7 @@
       "file_type": "code",
       "norm_label": ".extract()",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L350"
+      "source_location": "L352"
     },
     {
       "id": "packages_core_src_types_jevservice_nextaction",
@@ -17509,7 +17509,7 @@
       "file_type": "code",
       "norm_label": ".nextaction()",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L351"
+      "source_location": "L353"
     },
     {
       "id": "packages_core_src_types_jevservice_rankplaybooks",
@@ -17521,7 +17521,7 @@
       "file_type": "code",
       "norm_label": ".rankplaybooks()",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L352"
+      "source_location": "L354"
     },
     {
       "id": "packages_core_src_types_jevservice_signals",
@@ -17533,7 +17533,7 @@
       "file_type": "code",
       "norm_label": ".signals()",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L357"
+      "source_location": "L359"
     },
     {
       "id": "server_db_reset_adddemodata",
@@ -22747,7 +22747,7 @@
       "file_type": "code",
       "norm_label": "booking_removals",
       "source_file": "server/db/schema.sql",
-      "source_location": "L155"
+      "source_location": "L158"
     },
     {
       "id": "server_db_schema_bookings",
@@ -22835,7 +22835,7 @@
       "file_type": "code",
       "norm_label": "imports",
       "source_file": "server/db/schema.sql",
-      "source_location": "L140"
+      "source_location": "L143"
     },
     {
       "id": "server_db_schema_jev_answers",
@@ -22846,7 +22846,7 @@
       "file_type": "code",
       "norm_label": "jev_answers",
       "source_file": "server/db/schema.sql",
-      "source_location": "L166"
+      "source_location": "L169"
     },
     {
       "id": "server_db_schema_jev_answers_key_idx",
@@ -22857,7 +22857,7 @@
       "file_type": "code",
       "norm_label": "jev_answers_key_idx",
       "source_file": "server/db/schema.sql",
-      "source_location": "L197"
+      "source_location": "L200"
     },
     {
       "id": "server_db_schema_loan_applications",
@@ -22934,7 +22934,7 @@
       "file_type": "code",
       "norm_label": "schema_migrations",
       "source_file": "server/db/schema.sql",
-      "source_location": "L181"
+      "source_location": "L184"
     },
     {
       "id": "server_db_schema_tasks",
@@ -22956,7 +22956,7 @@
       "file_type": "code",
       "norm_label": "tasks_booking_idx",
       "source_file": "server/db/schema.sql",
-      "source_location": "L133"
+      "source_location": "L136"
     },
     {
       "id": "frontend_scripts_booking_template",
@@ -26440,7 +26440,7 @@
       "file_type": "code",
       "norm_label": "concern_answers",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L241"
+      "source_location": "L259"
     },
     {
       "id": "packages_core_src_sim_cases_funnel_stages",
@@ -27681,7 +27681,7 @@
       "file_type": "code",
       "norm_label": "sessions",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L457"
+      "source_location": "L461"
     },
     {
       "id": "server_src_tests_app_test_summary",
@@ -78164,7 +78164,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/components/manager/managerQueue.ts",
-      "source_location": "L77",
+      "source_location": "L82",
       "weight": 1.0
     },
     {
@@ -78176,7 +78176,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/components/manager/managerQueue.ts",
-      "source_location": "L81",
+      "source_location": "L86",
       "weight": 1.0
     },
     {
@@ -78188,7 +78188,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/components/manager/managerQueue.ts",
-      "source_location": "L82",
+      "source_location": "L87",
       "weight": 1.0
     },
     {
@@ -78200,7 +78200,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/components/manager/managerQueue.ts",
-      "source_location": "L83",
+      "source_location": "L88",
       "weight": 1.0
     },
     {
@@ -78212,7 +78212,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/components/manager/managerQueue.ts",
-      "source_location": "L84",
+      "source_location": "L89",
       "weight": 1.0
     },
     {
@@ -86924,7 +86924,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L265",
+      "source_location": "L283",
       "weight": 1.0
     },
     {
@@ -86936,7 +86936,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L333",
+      "source_location": "L351",
       "weight": 1.0
     },
     {
@@ -86948,7 +86948,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L359",
+      "source_location": "L377",
       "weight": 1.0
     },
     {
@@ -86960,7 +86960,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L368",
+      "source_location": "L386",
       "weight": 1.0
     },
     {
@@ -86972,7 +86972,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L381",
+      "source_location": "L399",
       "weight": 1.0
     },
     {
@@ -86984,7 +86984,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L384",
+      "source_location": "L402",
       "weight": 1.0
     },
     {
@@ -86996,7 +86996,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L388",
+      "source_location": "L406",
       "weight": 1.0
     },
     {
@@ -87008,7 +87008,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L418",
+      "source_location": "L436",
       "weight": 1.0
     },
     {
@@ -87020,7 +87020,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L201",
+      "source_location": "L207",
       "weight": 1.0
     },
     {
@@ -87032,7 +87032,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L318",
+      "source_location": "L336",
       "weight": 1.0
     },
     {
@@ -87044,7 +87044,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L310",
+      "source_location": "L328",
       "weight": 1.0
     },
     {
@@ -87056,7 +87056,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L427",
+      "source_location": "L445",
       "weight": 1.0
     },
     {
@@ -87068,7 +87068,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L433",
+      "source_location": "L451",
       "weight": 1.0
     },
     {
@@ -87080,7 +87080,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L441",
+      "source_location": "L459",
       "weight": 1.0
     },
     {
@@ -87092,7 +87092,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L442",
+      "source_location": "L460",
       "weight": 1.0
     },
     {
@@ -87104,7 +87104,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L469",
+      "source_location": "L487",
       "weight": 1.0
     },
     {
@@ -87116,7 +87116,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L498",
+      "source_location": "L516",
       "weight": 1.0
     },
     {
@@ -90044,7 +90044,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/db/index.ts",
-      "source_location": "L575",
+      "source_location": "L578",
       "weight": 1.0
     },
     {
@@ -90056,7 +90056,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/db/index.ts",
-      "source_location": "L580",
+      "source_location": "L583",
       "weight": 1.0
     },
     {
@@ -90068,7 +90068,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/db/index.ts",
-      "source_location": "L585",
+      "source_location": "L588",
       "weight": 1.0
     },
     {
@@ -90080,7 +90080,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/db/index.ts",
-      "source_location": "L701",
+      "source_location": "L704",
       "weight": 1.0
     },
     {
@@ -90092,7 +90092,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/db/index.ts",
-      "source_location": "L774",
+      "source_location": "L777",
       "weight": 1.0
     },
     {
@@ -90104,7 +90104,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/db/index.ts",
-      "source_location": "L781",
+      "source_location": "L784",
       "weight": 1.0
     },
     {
@@ -90116,7 +90116,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/db/index.ts",
-      "source_location": "L883",
+      "source_location": "L886",
       "weight": 1.0
     },
     {
@@ -90128,7 +90128,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/db/index.ts",
-      "source_location": "L901",
+      "source_location": "L904",
       "weight": 1.0
     },
     {
@@ -90140,7 +90140,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/db/mappers.ts",
-      "source_location": "L194",
+      "source_location": "L195",
       "weight": 1.0
     },
     {
@@ -90200,7 +90200,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/db/mappers.ts",
-      "source_location": "L178",
+      "source_location": "L179",
       "weight": 1.0
     },
     {
@@ -91760,7 +91760,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L2125",
+      "source_location": "L2129",
       "weight": 1.0
     },
     {
@@ -91772,7 +91772,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L374",
+      "source_location": "L378",
       "weight": 1.0
     },
     {
@@ -91784,7 +91784,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L328",
+      "source_location": "L332",
       "weight": 1.0
     },
     {
@@ -91856,7 +91856,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L347",
+      "source_location": "L351",
       "weight": 1.0
     },
     {
@@ -91868,7 +91868,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L390",
+      "source_location": "L394",
       "weight": 1.0
     },
     {
@@ -91880,7 +91880,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L394",
+      "source_location": "L398",
       "weight": 1.0
     },
     {
@@ -91892,7 +91892,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L447",
+      "source_location": "L451",
       "weight": 1.0
     },
     {
@@ -94448,7 +94448,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L410",
+      "source_location": "L414",
       "weight": 1.0
     },
     {
@@ -94460,7 +94460,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L446",
+      "source_location": "L450",
       "weight": 1.0
     },
     {
@@ -94472,7 +94472,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L458",
+      "source_location": "L462",
       "weight": 1.0
     },
     {
@@ -94484,7 +94484,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L471",
+      "source_location": "L475",
       "weight": 1.0
     },
     {
@@ -94496,7 +94496,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L500",
+      "source_location": "L504",
       "weight": 1.0
     },
     {
@@ -94508,7 +94508,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L503",
+      "source_location": "L507",
       "weight": 1.0
     },
     {
@@ -94520,7 +94520,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L521",
+      "source_location": "L525",
       "weight": 1.0
     },
     {
@@ -95715,7 +95715,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L402",
+      "source_location": "L404",
       "weight": 1.0
     },
     {
@@ -95727,7 +95727,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L404",
+      "source_location": "L406",
       "weight": 1.0
     },
     {
@@ -95799,7 +95799,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "server/db/mappers.ts",
-      "source_location": "L166",
+      "source_location": "L167",
       "weight": 1.0
     },
     {
@@ -96363,7 +96363,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L397",
+      "source_location": "L401",
       "weight": 1.0
     },
     {
@@ -158373,7 +158373,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L319",
+      "source_location": "L323",
       "weight": 1.0
     },
     {
@@ -158385,7 +158385,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L319",
+      "source_location": "L323",
       "weight": 1.0
     },
     {
@@ -158397,7 +158397,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L319",
+      "source_location": "L323",
       "weight": 1.0
     },
     {
@@ -158409,7 +158409,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L319",
+      "source_location": "L323",
       "weight": 1.0
     },
     {
@@ -158493,7 +158493,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L380",
+      "source_location": "L384",
       "weight": 1.0
     },
     {
@@ -159210,7 +159210,7 @@
       "confidence_score": 1.0,
       "context": "type",
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L398",
+      "source_location": "L400",
       "weight": 1.0
     },
     {
@@ -159246,7 +159246,7 @@
       "confidence_score": 1.0,
       "context": "type",
       "source_file": "server/db/mappers.ts",
-      "source_location": "L183",
+      "source_location": "L184",
       "weight": 1.0
     },
     {
@@ -169267,7 +169267,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/components/manager/managerQueue.ts",
-      "source_location": "L51",
+      "source_location": "L53",
       "weight": 1.0
     },
     {
@@ -169278,7 +169278,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/components/manager/managerQueue.ts",
-      "source_location": "L69",
+      "source_location": "L74",
       "weight": 1.0
     },
     {
@@ -169289,7 +169289,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/components/manager/managerQueue.ts",
-      "source_location": "L91",
+      "source_location": "L96",
       "weight": 1.0
     },
     {
@@ -176329,7 +176329,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L197",
+      "source_location": "L199",
       "weight": 1.0
     },
     {
@@ -176351,7 +176351,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L224",
+      "source_location": "L242",
       "weight": 1.0
     },
     {
@@ -176362,7 +176362,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L241",
+      "source_location": "L259",
       "weight": 1.0
     },
     {
@@ -176373,7 +176373,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L242",
+      "source_location": "L260",
       "weight": 1.0
     },
     {
@@ -176384,7 +176384,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L249",
+      "source_location": "L267",
       "weight": 1.0
     },
     {
@@ -176395,7 +176395,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L254",
+      "source_location": "L272",
       "weight": 1.0
     },
     {
@@ -176417,7 +176417,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L291",
+      "source_location": "L309",
       "weight": 1.0
     },
     {
@@ -176428,7 +176428,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L315",
+      "source_location": "L333",
       "weight": 1.0
     },
     {
@@ -176439,7 +176439,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L325",
+      "source_location": "L343",
       "weight": 1.0
     },
     {
@@ -176450,7 +176450,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L423",
+      "source_location": "L441",
       "weight": 1.0
     },
     {
@@ -176461,7 +176461,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L426",
+      "source_location": "L444",
       "weight": 1.0
     },
     {
@@ -176483,7 +176483,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L533",
+      "source_location": "L551",
       "weight": 1.0
     },
     {
@@ -177819,17 +177819,6 @@
     },
     {
       "source": "packages_core_src_types",
-      "target": "packages_core_src_types_risklevel",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "packages/core/src/types.ts",
-      "source_location": "L168",
-      "weight": 1.0
-    },
-    {
-      "source": "packages_core_src_types",
       "target": "packages_core_src_types_stage",
       "relation": "contains",
       "_origin": "ast",
@@ -177841,7 +177830,7 @@
     },
     {
       "source": "packages_core_src_types",
-      "target": "packages_core_src_types_financingrisk",
+      "target": "packages_core_src_types_risklevel",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -177852,13 +177841,24 @@
     },
     {
       "source": "packages_core_src_types",
+      "target": "packages_core_src_types_financingrisk",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/core/src/types.ts",
+      "source_location": "L172",
+      "weight": 1.0
+    },
+    {
+      "source": "packages_core_src_types",
       "target": "packages_core_src_types_applicationstatus",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L180",
+      "source_location": "L182",
       "weight": 1.0
     },
     {
@@ -177869,7 +177869,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L182",
+      "source_location": "L184",
       "weight": 1.0
     },
     {
@@ -177891,7 +177891,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L220",
+      "source_location": "L222",
       "weight": 1.0
     },
     {
@@ -177913,7 +177913,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L231",
+      "source_location": "L233",
       "weight": 1.0
     },
     {
@@ -177924,7 +177924,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L241",
+      "source_location": "L243",
       "weight": 1.0
     },
     {
@@ -177935,7 +177935,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L254",
+      "source_location": "L256",
       "weight": 1.0
     },
     {
@@ -177946,7 +177946,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L263",
+      "source_location": "L265",
       "weight": 1.0
     },
     {
@@ -177957,7 +177957,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L265",
+      "source_location": "L267",
       "weight": 1.0
     },
     {
@@ -177968,7 +177968,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L279",
+      "source_location": "L281",
       "weight": 1.0
     },
     {
@@ -177979,7 +177979,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L281",
+      "source_location": "L283",
       "weight": 1.0
     },
     {
@@ -177990,7 +177990,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L288",
+      "source_location": "L290",
       "weight": 1.0
     },
     {
@@ -178001,7 +178001,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L294",
+      "source_location": "L296",
       "weight": 1.0
     },
     {
@@ -178012,7 +178012,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L300",
+      "source_location": "L302",
       "weight": 1.0
     },
     {
@@ -178023,7 +178023,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L302",
+      "source_location": "L304",
       "weight": 1.0
     },
     {
@@ -178034,7 +178034,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L314",
+      "source_location": "L316",
       "weight": 1.0
     },
     {
@@ -178045,7 +178045,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L324",
+      "source_location": "L326",
       "weight": 1.0
     },
     {
@@ -178056,7 +178056,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L333",
+      "source_location": "L335",
       "weight": 1.0
     },
     {
@@ -178067,7 +178067,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L340",
+      "source_location": "L342",
       "weight": 1.0
     },
     {
@@ -178078,7 +178078,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L349",
+      "source_location": "L351",
       "weight": 1.0
     },
     {
@@ -178089,7 +178089,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L361",
+      "source_location": "L363",
       "weight": 1.0
     },
     {
@@ -178100,7 +178100,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L367",
+      "source_location": "L369",
       "weight": 1.0
     },
     {
@@ -178111,7 +178111,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L377",
+      "source_location": "L379",
       "weight": 1.0
     },
     {
@@ -178122,7 +178122,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L384",
+      "source_location": "L386",
       "weight": 1.0
     },
     {
@@ -178133,7 +178133,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L391",
+      "source_location": "L393",
       "weight": 1.0
     },
     {
@@ -178144,7 +178144,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L398",
+      "source_location": "L400",
       "weight": 1.0
     },
     {
@@ -178166,18 +178166,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L416",
-      "weight": 1.0
-    },
-    {
-      "source": "packages_core_src_types",
-      "target": "packages_core_src_types_staffprofile",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "packages/core/src/types.ts",
-      "source_location": "L419",
+      "source_location": "L418",
       "weight": 1.0
     },
     {
@@ -178189,6 +178178,17 @@
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
       "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "packages_core_src_types",
+      "target": "packages_core_src_types_staffprofile",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/core/src/types.ts",
+      "source_location": "L421",
       "weight": 1.0
     },
     {
@@ -178210,7 +178210,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L431",
+      "source_location": "L433",
       "weight": 1.0
     },
     {
@@ -178232,7 +178232,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L442",
+      "source_location": "L444",
       "weight": 1.0
     },
     {
@@ -178243,7 +178243,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L450",
+      "source_location": "L452",
       "weight": 1.0
     },
     {
@@ -178265,7 +178265,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L463",
+      "source_location": "L465",
       "weight": 1.0
     },
     {
@@ -180707,7 +180707,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/db/mappers.ts",
-      "source_location": "L165",
+      "source_location": "L166",
       "weight": 1.0
     },
     {
@@ -180718,7 +180718,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/db/mappers.ts",
-      "source_location": "L173",
+      "source_location": "L174",
       "weight": 1.0
     },
     {
@@ -180729,7 +180729,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/db/mappers.ts",
-      "source_location": "L183",
+      "source_location": "L184",
       "weight": 1.0
     },
     {
@@ -180740,7 +180740,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/db/mappers.ts",
-      "source_location": "L193",
+      "source_location": "L194",
       "weight": 1.0
     },
     {
@@ -180949,7 +180949,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/db/schema.sql",
-      "source_location": "L133",
+      "source_location": "L136",
       "weight": 1.0
     },
     {
@@ -180960,7 +180960,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/db/schema.sql",
-      "source_location": "L140",
+      "source_location": "L143",
       "weight": 1.0
     },
     {
@@ -180971,7 +180971,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/db/schema.sql",
-      "source_location": "L155",
+      "source_location": "L158",
       "weight": 1.0
     },
     {
@@ -180982,7 +180982,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/db/schema.sql",
-      "source_location": "L166",
+      "source_location": "L169",
       "weight": 1.0
     },
     {
@@ -180993,7 +180993,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/db/schema.sql",
-      "source_location": "L181",
+      "source_location": "L184",
       "weight": 1.0
     },
     {
@@ -181004,7 +181004,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/db/schema.sql",
-      "source_location": "L197",
+      "source_location": "L200",
       "weight": 1.0
     },
     {
@@ -182687,7 +182687,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L457",
+      "source_location": "L461",
       "weight": 1.0
     },
     {
@@ -183253,7 +183253,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/db/schema.sql",
-      "source_location": "L197",
+      "source_location": "L200",
       "weight": 1.0
     },
     {
@@ -183286,7 +183286,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/db/schema.sql",
-      "source_location": "L133",
+      "source_location": "L136",
       "weight": 1.0
     },
     {
@@ -183506,7 +183506,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L362",
+      "source_location": "L364",
       "weight": 1.0
     },
     {
@@ -183517,7 +183517,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L363",
+      "source_location": "L365",
       "weight": 1.0
     },
     {
@@ -183528,7 +183528,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L350",
+      "source_location": "L352",
       "weight": 1.0
     },
     {
@@ -183539,7 +183539,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L351",
+      "source_location": "L353",
       "weight": 1.0
     },
     {
@@ -183550,7 +183550,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L352",
+      "source_location": "L354",
       "weight": 1.0
     },
     {
@@ -183561,7 +183561,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/core/src/types.ts",
-      "source_location": "L357",
+      "source_location": "L359",
       "weight": 1.0
     },
     {
@@ -185112,7 +185112,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L319",
+      "source_location": "L323",
       "weight": 1.0
     },
     {
@@ -185123,7 +185123,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L336",
+      "source_location": "L340",
       "weight": 1.0
     },
     {
@@ -185134,7 +185134,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L353",
+      "source_location": "L357",
       "weight": 1.0
     },
     {
@@ -185145,7 +185145,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L364",
+      "source_location": "L368",
       "weight": 1.0
     },
     {
@@ -185156,7 +185156,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L380",
+      "source_location": "L384",
       "weight": 1.0
     },
     {
@@ -185167,7 +185167,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L397",
+      "source_location": "L401",
       "weight": 1.0
     },
     {
@@ -185178,7 +185178,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L401",
+      "source_location": "L405",
       "weight": 1.0
     },
     {
@@ -185189,7 +185189,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L404",
+      "source_location": "L408",
       "weight": 1.0
     },
     {
@@ -185200,7 +185200,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L407",
+      "source_location": "L411",
       "weight": 1.0
     },
     {
@@ -186193,7 +186193,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L334",
+      "source_location": "L352",
       "weight": 1.0
     },
     {
@@ -186205,7 +186205,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L384",
+      "source_location": "L402",
       "weight": 1.0
     },
     {
@@ -186217,7 +186217,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "packages/core/src/sim/cases.ts",
-      "source_location": "L385",
+      "source_location": "L403",
       "weight": 1.0
     },
     {
@@ -186433,7 +186433,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "server/src/__tests__/app.test.ts",
-      "source_location": "L1500",
+      "source_location": "L1504",
       "weight": 1.0
     },
     {
@@ -186601,7 +186601,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "server/db/__tests__/integration.test.ts",
-      "source_location": "L532",
+      "source_location": "L541",
       "weight": 1.0
     },
     {
@@ -186613,7 +186613,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "server/db/__tests__/integration.test.ts",
-      "source_location": "L785",
+      "source_location": "L794",
       "weight": 1.0
     },
     {
@@ -238913,5 +238913,5 @@
       "source_file": ".github/workflows/ci.yml"
     }
   ],
-  "built_at_commit": "61ff8cb5c8e648d8bc3db418457f671883f4c875"
+  "built_at_commit": "bd6b9ae00b38cd6e4efeeec55d7139aba7fd2556"
 }
